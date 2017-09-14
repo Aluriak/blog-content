@@ -1,0 +1,101 @@
+
+
+
+# Introduction
+
+[Tuto](https://cjamcl.com/blog/a-gentle-introduction-to-asp/)
+d'introduction au langage.
+
+Les scripts sont disponibles sur le dépôt git [learning-ASP](https://github.com/Aluriak/learning-ASP).
+
+
+
+## Installation
+### Compilation
+
+
+# Interface avec Python
+ASP s'interface nativement avec Python et Lua. Je ne traite que de Python ici,
+mais les principes sont exactement les même avec Lua.
+
+## Embedding dans Python
+Plutôt qu'appeler clingo pour tous nos cas de tests, et vérifier à la main si ils fonctionnent correctement,
+ou juste si on a besoin d'appeler clingo plusieurs fois avec des traitements des résultats,
+il est possible de le faire depuis Python.
+
+
+### API officielle
+Il existe un module officiel, qui est dans les sources du logiciel et que vous pouvez installer avec un `python setup.py install` standard.
+Je n'utilise pas cette API en règle générale.
+
+
+### Autres API
+Une alternative est [pyasp](https://github.com/sthiele/pyasp). Néanmoins, celle-ci est peu maintenue,
+et ne supporte pas clingo *seul*, mais plutôt gringo et clasp comme deux binaires
+séparés appelés séquentiellement.
+
+L'autre alternative, que je vous conseille pour démarrer, est [clyngor](https://github.com/aluriak/clyngor).
+C'est un module python on ne peux plus standard, disponible sur pypi,
+et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre $PATH.
+
+Et normalement, c'est déjà fait :)
+
+
+## Extending avec Python
+Vous avez déjà étendu Python avec du C pour gagner un peu de performances ?
+Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
+pour profiter, pendant le solving même, de la puissance d'un langage non-logique.
+
+
+# Real-world application
+
+## Construire un PC
+
+## Résoudre un donjon de The Legend of Zelda
+
+
+    % Dungeon objects.
+    % onedoor(g).
+    keydoor(g).
+    keydoor(b;f).
+    % door(D):- onedoor(D).
+    door(D):- keydoor(D).
+    key(c;e).
+    % one(d).
+    key(d).
+    open(start).  % links starts the dungeon
+
+    % Links between doors
+    link(start,(b;c;d)).
+    link(b,(e;f)).
+    link(f,g;g,stop).
+
+
+    % Doors next to open doors are accessible
+    accessible(Door):- link(Open,Door) ; open(Open).
+
+    % Doors with objects inside are opened freely.
+    open(ObjDoor):- accessible(ObjDoor) ; key(ObjDoor).
+    open(ObjDoor):- accessible(ObjDoor) ; oner(ObjDoor).
+
+    % Doors that are opened using one non-used key.
+    open(KeyDoor,Key):- accessible(KeyDoor) ; keydoor(KeyDoor) ; open(Key) ; key(Key) ;
+                        not open(KeyDoor,OtherKey): key(OtherKey), OtherKey!=Key ;
+                        not open(OtherDoor,Key): keydoor(OtherDoor), OtherDoor!=KeyDoor.
+
+    % Doors that are opened using a reusable object.
+    % open(OneDoor,One):- not open(OneDoor) ; accessible(OneDoor) ; open(One) ; one(One).
+    % open(TwoDoor,Two):- not open(TwoDoor) ; accessible(TwoDoor) ; open(Two) ; two(Two).
+
+    % Keep in mind which object opened which door.
+    open(Door):- open(Door,_).
+
+
+
+    #show.
+    #show open/2.
+
+
+
+# Liens
+- [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications
