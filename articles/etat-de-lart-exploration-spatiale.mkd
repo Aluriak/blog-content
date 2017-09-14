@@ -1,0 +1,449 @@
+Cet article présente un état de l'art de l'exploration spatiale aujourd'hui.
+Il est probablement incomplet, car je l'ai écrit avec les connaissances
+que j'ai pu glaner pendant 2 ans de suivis de l'actualité spatiale,
+c'est-à-dire essentiellement dirigé par les communications
+officielles des différents organismes du domaine.
+
+Il y a donc un biais évident de contenu dépendant des moyens de communication des agences et sociétés impliquées.
+
+L'objectif de cet article est de donner à ceux qui n'ont jamais étudié
+la question les principaux concepts qui aujourd'hui constituent
+l'exploration spatiale.
+
+
+# Contexte
+Après une course à l'espace qui s'est terminée assez brutalement,
+le spatial (au sens large) s'est construit autour de deux domaines:
+l'exploitation et l'exploration.
+
+Je vais rapidement discuter des deux afin d'avoir une idée de
+l'état actuel des choses.
+
+## l'exploitation spatiale
+L'exploitation spatiale est actuellement essentiellement
+associée au satellites artificiels en orbite autour de la Terre.
+
+Les principales industries impliquées sont les
+télécommunications et l'armée.
+
+L'exploitation spatiale possède ses grands noms,
+[Arianespace](https://fr.wikipedia.org/wiki/Arianespace), avec la fusée Ariane,
+et [Energia](https://fr.wikipedia.org/wiki/RKK%20Energia), avec la fusée Proton,
+sont les deux noms qui me viennent en premier.
+
+Le business de ces firmes (privées) est simple : envoyer des charges
+utiles en orbite, ou plus généralement dans l'espace.
+Par charges utiles, j'entends des appareils tels que des
+satellites artificiels.
+
+C'est le développement de cette industrie de l'espace qui a permis
+à l'Europe de lancer le projet [Galileo](https://fr.wikipedia.org/wiki/Galileo%20(syst%C3%A8me%20de%20positionnement) (concurrent du GPS),
+et d'avoir un développement important des télécoms en général.
+
+(puissance et disponibilité du réseau, ce qui permet par exemple d'avoir la 4G ou la télé numérique. Regardez un jour un lancement d'une fusée Ariane,
+et prêtez attention [aux présentations](https://www.youtube.com/watch?v=XkIr2fhWC%20s#t=34m21s)
+[des satellites](https://www.youtube.com/watch?v=XkIr2fhWC%20s#t=37m05s) produits par les sociétés (ici ViaSat Inc et Eutelsat,
+les satellites ayant été construits respectivement par Boeing et Airbus) ;
+ce sont souvent des opérateurs téléphonique ou télévisuels qui veulent améliorer la couverture d'une région pour y vendre un service de meilleur qualité).
+
+La concurrence dans cette industrie est très importante, et le nerf
+de la guerre est le prix au poids à l'orbite, et la disponibilité.
+En clair, quand une société veut avoir un satellite dans l'espace,
+il faut se poser la question de quel firme aura le contrat,
+et cela dépend principalement du prix et des contraintes de temps.
+
+Par exemple, Ariane 5 propose d'envoyer 10 tonnes de charge utile
+en orbite géostationnaire, soit deux satellites de télécom standard de 5 tonnes chacun,
+coûte 60 millions de dollars à chacun des deux clients.
+De plus, avec une centaine de satellite lancés par an, Arianespace s'assure
+de conserver une liste d'attente relativement courte, et donc une disponibilité élevée.
+
+Les concurrents d'Arianespace misent souvent sur des charges utiles plus faibles (donc, des satellites moins gros),
+mais avec des prix plus abordables.
+
+Nous verrons qu'avec l'arrivée de nouveaux acteurs, la position dominante
+d'Arianespace est mise à mal,
+et plus généralement que la compétitivité générale s'est intensifiée.
+
+
+## l'exploration spatiale
+Il s'agit probablement du domaine le plus connu. Il s'agit de la recherche
+et développement et des missions orientées dans un but
+purement scientifique, menées par les agences publiques,
+et profitant largement du développement de l'exploitation spatiale.
+
+Depuis Apollo et les navettes spatiales,
+les programmes spatiaux public ont beaucoup évolués.
+Il y a eu évidemment le programme des navettes spatiales de la NASA,
+mais aussi et surtout (au moins) trois autres agences spatiales
+qui ont mené leur opérations plus ou moins indépendamment
+les unes des autres.
+
+Une grande évolution des programmes scientifiques depuis la course à l'espace
+est l'étude systématique de la Terre.
+En effet, la plus grosse partie de l'exploration spatiale est en fait tournée vers la Terre,
+avec des satellites dédiés à des études de biodiversité, cartographie géographique ou magnétique,
+océans, urbanisation,…
+
+Quelques expériences, surtout par le biais du programme [Myriad](https://myriade.cnes.fr/fr/MYRIADE/Fr/index.htm),
+font aussi de [la recherche fondamentale](https://microscope.cnes.fr/fr/MICROSCOPE/Fr/index.htm).
+
+
+### International
+D'abord, au niveau des programmes internationaux, on trouve la très célèbre
+Station Spatiale Internationale.
+
+Il s'agit du plus gros projet international en terme de ressource.
+
+
+### ESA (Europe)
+L'European Space Agency, financée par les pays de l'Union
+Européenne, est une formidable agence qui a à son actif [plusieurs missions](http://www.esa.int/ESA/Our%20Missions)
+de grande envergure.
+
+C'est aussi un partenaire important de plusieurs organisations du spatial
+en Europe, comme le CNES ou Arianespace.
+
+[Rosetta/Philae](https://fr.wikipedia.org/wiki/Rosetta%20(sonde%20spatiale)) est probablement la mission emblématique de l'ESA.
+Elle consistait en l'envoi d'un satellite (Rosetta) et d'un atterisseur (Philae)
+sur la comète …. Cette mission est un gros succès, malgré la panne partielle de Philae
+dû à un mauvais positionnement.
+
+Les données sont encore à l'étude, mais ont déjà eu un certain retentissement scientifique puisqu'elles
+semblent renforcer la thèse de la panspermie, théorie selon laquelle la vie viendrait de l'essaimage des comètes.
+
+D'autres missions très connues sont [Hershel](http://www.esa.int/Our_Activities/Space_Science/Herschel/Herschel_at_a_glance),
+[Planck](http://www.esa.int/Our_Activities/Space_Science/Planck),
+[Gaia](http://www.esa.int/Our_Activities/Space_Science/Gaia/Gaia_overview)
+et [Cassini-Huygens](https://fr.wikipedia.org/wiki/Cassini-Huygens).
+
+Les prochaines missions de l'ESA porterons sur Mars (avec [un partenariat avec le CSA](http://www.asc-csa.gc.ca/eng/astronomy/mars/canada-exomars-pictures.asp)), Jupiter et le Soleil,
+mais une plus grande partie est dédiée à l'étude de notre planète.
+
+
+### NASA (État-Unis)
+Probablement la plus célèbre et la plus prolifique des agences,
+avec nombre de missions prestigieuses et des objectifs ambitieux
+pour les prochaines années.
+
+Ainsi, après les [explorations extrèmement réussies de la planète rouge](https://fr.wikipedia.org/wiki/Exploration%20de%20Mars),
+le survol de [Pluton et Charon](https://fr.wikipedia.org/wiki/New%20Horizons) et l'exploration du [système Jovien](https://fr.wikipedia.org/wiki/Syst%C3%A8me_jovien),
+les prochaines pistes de la NASA sont [les océans](https://solarsystem.nasa.gov/europa/overview.cfm)
+d'[Europe](https://fr.wikipedia.org/wiki/Europe%20(lune)) et d'[Encelade](https://fr.wikipedia.org/wiki/Encelade%20(lune)).
+
+
+Au passage, fun fact: lors de l'attérissage de Philae,
+les community manager de la NASA ont passé leur soirée à faire suivre
+les messages de félicitation à l'ESA.
+Beaucoup de gens considère la NASA comme *l'agence spatiale* tout court,
+alors qu'il s'agit bien de l'agence spatiale *américaine*.
+
+
+### CNSA (Chine)
+La Chine possède probablement l'agence spatiale la plus discrète, le [CNSA](https://fr.wikipedia.org/wiki/Administration%20spatiale%20nationale%20chinoise).
+
+Cette agence a mené une [mission lunaire](https://fr.wikipedia.org/wiki/Chang%27e%203) consistant en un atterisseur
+et un rover nommé Yutu, qui nous a retransmit de [belles images](http://www.agences-spatiales.fr/change-3-centaines-dimages-lune/).
+
+Elle est aussi en bonne voie pour lancer une station spatiale habitée d'ici quelques années.
+
+
+### ISRO (Inde)
+Il s'agit pour moi de la grosse surprise de ces dernières années.
+
+L'[Organisation Indienne pour la Recheche Spatiale](https://fr.wikipedia.org/wiki/Organisation_indienne_pour_la_recherche_spatiale)
+s'est, en seulement quelques années, taillée un chemin impressionnant
+dans le spatial.
+
+Avec un budget très faible comparé aux autres agences (1 milliard, soit N× moins que l'ESA, M× moins que la NASA), l'ISRO a mis en place et
+dirigé de bout en bout des missions scientifiques,
+tel que le téléscope spatial [Astrosat](https://fr.wikipedia.org/wiki/Astrosat)
+ou les sondes lunaires et martiennes [Chandrayaan-1](https://fr.wikipedia.org/wiki/Chandrayaan-1) et
+[Mangalyaan](https://fr.wikipedia.org/wiki/Mars_Orbiter_Mission).
+
+
+### CSA (Canada)
+Le Canada fait partie de ces pays ayant une agence spatiale sans pied dans l'exploitation spatial.
+En effet, des canadiens se trouvent régulièrement dans l'ISS, mais le [CSA](https://fr.wikipedia.org/wiki/Agence_spatiale_canadienne)
+n'est associé à aucune société de lancement de charge utile dans l'espace.
+
+Cela est dû à l'objectif même du CSA : promouvoir, participer, mais pas concurrencer.
+Ainsi le CSA se retrouve-t-il dans [nombre de programmes spatiaux](https://fr.wikipedia.org/wiki/Agence_spatiale_canadienne#Participations_aux_programmes_internationaux)
+(l'ISS bien sûr, mais bien d'autres comme
+[Webb](https://fr.wikipedia.org/wiki/James-Webb%20(t%C3%A9lescope%20spatial)) ou [ExoMars](https://fr.wikipedia.org/wiki/Programme%20ExoMars)),
+et a envoyé [17 astronautes dans l'espace](https://fr.wikipedia.org/wiki/Agence_spatiale_canadienne#Astronautes_canadiens).
+
+
+
+# L'arrivée du privé
+Il y a quelques années, l'exploitation spatiale a été secouée
+avec l'arrivée d'une firme privée : SpaceX.
+Avec ses prix hyper-compétitif, et ses promesses de le devenir encore plus,
+SpaceX a été pour l'Europe la principale motivation d'une alliance Airbus/Safran
+pour le développement d'Ariane 6.
+
+Dans le même temps, SpaceX annonce assurer le transport aller-retour
+entre Mars et la Terre d'ici les années 2022-2025,
+alimentant de ce fait les questions relatives à l'exploration spatial.
+
+Pour moi, que les deux domaines du spatial se retrouvent ainsi chamboulés
+est un symptôme d'un changement majeur dans le spatial :
+l'arrivée des sociétés purement privées.
+
+En effet, jusqu'ici les sociétés privées étaient extrèmement liées à leurs agences et à leur gouvernement.
+Il n'y a qu'à voir les liens extrèmement étroits qu'entretiennent Arianespace, le CNES, l'ESA et l'Union Européenne
+pour s'en convaincre.
+
+Mais, depuis quelques années, des sociétés privées, au sens de non-affiliées
+au public ou à un gouvernement, sont apparues et ont prospéré.
+
+Leurs objectifs ont d'abord été le tourisme :
+envoyer des civils non-formés dans l'espace,
+pour des durées plus ou moins longue, dans un but récréatif (expérimentation de l'apesanteur, observation de la Terre depuis l'espace).
+
+Et puis, d'autres sont apparues, avec des idées révolutionnaires
+pour l'exploitation ou l'exploration.
+
+Nous allons regarder cela en détails.
+
+
+## Privé vs Presque-privé
+Notons d'abord que le privé existait déjà dans une certaine mesure,
+par exemple avec [Arianespace](https://fr.wikipedia.org/wiki/Arianespace),
+dés le début des années 80, ou l'un de [ses nombreux rivaux](https://fr.wikipedia.org/wiki/Arianespace#Concurrence).
+
+Ces firmes, néanmoins, n'étaient pas tant versées dans l'exploration
+spatiale que dans son exploitation : ces firmes proposent avant tout
+un service de mise en orbite de satellite (communication, militaire,
+recherche ou civil), et ne travaille pas sur l'exploration en tant que tel
+(même si elles sont le support de lancement pour des missions d'exploration).
+
+Elles sont de plus liées à un corps gouvernemental,
+et aux recherches, développements et projets qui s'y rapportent.
+
+C'est ce qui les différencie des firmes apparues dans les années 2000,
+indépendantes des agences spatiales de leur pays d'origine,
+et produisant leur propre recherche et développement dans des domaines
+comme la diminution des coûts d'exploitation.
+
+
+
+## SpaceX
+Créé par Elon Musk (le cerveau derrière Paypal, Tesla et l'Hyperloop),
+SpaceX devait, en quelques années, développer un système de mise en orbite
+et sur le long terme, permettre la colonisation de Mars.
+
+Aujourd'hui, c'est SpaceX qui assure [une partie du fret](https://fr.wikipedia.org/wiki/SpaceX_Dragon) en direction
+de la Station Spatiale Internationale.
+(fun fact: le seul but de SpaceX est la colonisation, mais pour être rentable suffisemment vite (car Elon Musk ne pouvais pas tout financer),
+SpaceX a dû prendre le temps de développer ce service pour avoir un contrat qui remplisse les caisses. Et pour l'expérience aussi)
+
+En parallèle, le plan pour la colonisation de Mars, dévoilé par Elon Musk l'année dernière dans son très
+intéressant talk [*making human a multiplanetary species*](https://www.youtube.com/watch?v=H7Uyfqi%20TE8)
+(traduisible comme *faire de l'homme une espèce pluriplanétaire*),
+est lentement mais sûrement mis en application.
+
+C'est plus ou moins à l'arrivée de SpaceX que l'on a commencé à voir
+un véritable renouveau de l'exploration spatiale, avec (enfin !)
+des sociétés privées qui se sont intéressées à l'espace au sens large.
+
+Dans les mois qui ont suivis le talk de Musk,
+de nombreuses entreprises ont annoncé leur volonté de faire pareil.
+
+
+
+### La colonisation de Mars
+#### Contexte
+Dans les années 2010-2015, la colonisation de Mars était globalement au point mort.
+Les agences spatiales n'en parlais plus, ou alors pour dire que les coûts étaient tellement prohibitifs
+que c'était infaisable avant de nombreuses décennies.
+
+Tout ça dans un contexte où le budget maigrissant de la NASA devenait problématique.
+
+#### Le coups dans la fourmillière
+Quand Elon Musk est arrivé avec ses idées de colonisation, personne ne l'a vraiment pris au sérieux.
+Il a fallut attendre son talk pour qu'il arrête de passer pour un doux rêveur.
+
+Elon Musk en parle très bien dans son talk, mais je vais reprendre ici les
+concepts clefs de l'idée qui rend Mars pas si loingtaine que ça.
+
+D'abord, SpaceX n'est pas une firme de colonisation de Mars.
+SpaceX développe avant tout un système de transport (interplanétaire).
+
+Autrement dit, SpaceX va proposer un moyen de transport de fret et d'humain
+entre la Terre et Mars, et sur le long terme, entre les différents corps du
+système solaire.
+L'objectif n'est pas, pour SpaceX, de s'arroger un coin de Mars et d'y faire pousser des légumes.
+__C'est aux gouvernements de s'accorder pour savoir ce qu'on doit mettre dans
+les vaisseaux en partance pour la planète rouge.__
+
+L'intérêt d'Elon Musk dans son talk est double : faire connaître la firme
+et ses objectifs pour le grand public et les investisseurs,
+et d'autre part de lancer le débat de la planète Mars,
+et plus généralement de l'exploration/l'exploitation spatiale.
+
+Comment Mars doit-elle être considérée ? Comme l'antarctique ?
+Comme un pays ? Un ensemble de pays ? Sous quel gouvernance ?
+Que doit-on y faire ? Quel est l'objectif ?
+
+Des questions auxquelles on s'intéresse finalement assez peu,
+mais qui dont les réponses deviennent cruciales
+maintenant que de nombreuses organisations
+s'apprètent à rendre Mars atteignable par les humains.
+
+
+## Blue Origin
+Créée par Jeff Bezos, le fondateur d'Amazon,
+[Blue Origin](https://fr.wikipedia.org/wiki/Blue%20Origin) est
+une société privée ayant pour objectif l'exploitation touristique
+de l'espace.
+
+Pour cela, Blue Origin a développé son propre matériel,
+(fusée et capsule habitable).
+
+Le fond de commerce de Blue Origin est, pour le moment, l'investissement
+de Jeff Bezos.
+
+
+Blue Origin est aussi connue pour avoir coiffé SpaceX au poteau
+à la course à l'atterissage de lanceur : c'est en effet leur fusée New Shepard qui, le 23 novembre 2015, est allée dans l'espace,
+[avant de réattérir sur son pas de tir quelques minutes plus tard](https://www.youtube.com/watch?v=9pillaOxGCo).
+
+Un mois plus tard, SpaceX réalisait la même prouesse avec
+leur fusée, [la Falcon 9](https://www.youtube.com/watch?v=1B6oiLNyKKI).
+
+
+## Virgin Galactic
+Il s'agit de la première firme impliquée dans spatial touristique,
+bien qu'elle n'ait pas encore passé le stade de la preuve de concept.
+
+L'idée est de vendre des places dans un avion voyageant sur une
+trajectoire sub-orbitale (comprendre: sans atteindre l'orbite)
+atteignant l'espace.
+Virgin Galactic espère vendre ainsi la possibilité
+d'expérimenter l'apesanteur et de voir la Terre de l'espace,
+pour 250 000 dollars la place (notez que de nombreuses personalités, incluant Stephen Hawking et le groupe Muse, ont déjà manifesté leur intérêt).
+
+Le projet a néanmoins accumulé les retards, et en 2017 il n'y a,
+mis à part le prix, toujours aucune véritable information
+sur l'offre commerciale.
+
+Cependant, depuis 2016, des vols de tests réalisés avec le véhicule
+[VSS Unity](https://fr.wikipedia.org/wiki/VSS%20Unity),
+montrent que le programme est toujours vigoureux:
+l'avion a déjà réalisé une sortie dans l'espace et une réentrée atmosphérique.
+
+Peut-être que d'ici quelques années nous pourrons embarquer dans cet avion
+(ou, plus probablement, son successeur).
+
+Pour plus d'info sur cette firme, son CEO a récemment fait [un talk pour la vingtième édition de la convention internationale annuelle de la Mars Society](https://www.youtube.com/watch?v=5QNjiJBjWmQ).
+
+
+### Virgin Orbit
+En 2017, motivé par l'importance croissante du lancement de satellites
+dans le projet de Virgin Galactic, la firme
+[Virgin Orbit](https://en.wikipedia.org/wiki/Virgin%20Orbit) est créée.
+
+Elle doit s'axer sur le lancement de petits satellites.
+
+
+### The Space Company
+Il s'agit de [l'entreprise derrière la conception de l'avion et des technologies affiliées](https://en.wikipedia.org/wiki/The_Spaceship_Company),
+qui gère toute la conception des vaisseaux spatiaux de Virgin Galactic.
+
+
+
+## Boeing
+[Boeing](https://fr.wikipedia.org/wiki/Boeing) a récemment indiqué qu'eux aussi voulaient aller sur Mars.
+Leur arrivée se situe après les annonces de SpaceX, et se fait dans un
+contexte où tout le monde disait vouloir aller sur Mars.
+(entre autre, un partenariat russie-europe-japon devait voir le jour,
+et plusieurs firmes disaient vouloir participer.
+C'était à ce moment très à la mode de dire qu'on allait sur Mars)
+
+À ma connaissance, Boeing est la seule firme non-spatiale
+à avoir réellement proposé quelque chose à ce jour.
+
+Ainsi, le 10 septembre 2017, [un talk du *configuration design leader* de Boeing](https://www.youtube.com/watch?v=vReNl7cKpTY),
+Xavier D. Simon, présente le plan actuellement considéré par la firme.
+
+
+
+## Arianespace
+En 2020, Arianespace commencera l'exploitation d'Ariane 6, la nouvelle version des fusées Ariane, qui est sensée diminuer largement les coûts et les capacités de la firme, afin de rester compétitif avec les nouveaux concurrents.
+
+
+# L'innovation
+Je parle ici des innovations technologiques présentes ou à venir
+qui vont permettre à l'exploration spatiale de se développer
+dans le sens voulu par les organisations détaillées auparavant.
+
+Notez que je n'aborde des questions que très générales.
+Si vous voulez un détail de l'innovation apportée par la recherche
+dans le spatial, il existe des pages pour ça.
+Par exemple [la page officielle de l'ESA](http://web1.esa.cyso.net/patents),
+[celle de la NASA](https://technology.nasa.gov/patents), ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent).
+
+Notez également que SpaceX tient une bonne place ici ;
+c'est essentiellement dû à leur (excellente) communication sur ces sujets,
+contrairement aux autres organisations (publiques ou privées)
+qui sont en général assez chiche sur les nouveautés.
+
+## Propulsion
+## Carburant
+## Réutilisation
+## Microsatellites
+
+
+# Continuer l'aventure
+Si vous êtes intéressé par ce sujet, et que vous voulez suivre l'actualité, il y a mieux que suivre les médias habituels
+qui en général ne retranscrivent que des nouvelles souvent déformées de manière grotesque.
+
+
+
+## Organisations
+Les agences ou organisations ont souvent des fils d'actualité et des chaînes vidéos,
+par exemple [celle du CNES](https://www.youtube.com/CNES),
+ou [la page de ressource extrèmement complète](https://enseignants-mediateurs.cnes.fr/fr/web/CNES-fr/7150-ressources-et-outils.php).
+
+Un conseil au passage : pour trouver ce que vous chercher dans les news récentes sur les pages des agences,
+allez d'abord sur la page *presse* ou *for media*, ou approchant. Ce sont des pages destinées aux journalistes,
+mais elles sont très organisées et très complètes. Par exemple [celle de l'ESA](http://www.esa.int/For_Media).
+
+Notez aussi que ces organisations sont pour la majorité très présentes sur les réseaux sociaux,
+[par exemple twitter](https://twitter.com/esa).
+
+Il y a aussi des organisations, comme [The Mars Society](http://www.marssociety.org/),
+avec sa [chaîne de vidéos](https://www.youtube.com/channel/UC_GWbwWksHZCQozTKjGtm6g) alimentée
+notament pendant ses réunions annuelles
+avec des talks à propos de Mars et de ce qu'on doit y faire, y construire, ou à propos des questions philosophiques que cela pose.
+
+
+## Particuliers
+Il y a beaucoup de particuliers qui font de la vulgarisation et des news,
+par exemple Florence Porcel, avec notamment sa chronique [*la folle histoire de l'univers*](https://www.youtube.com/watch?v=FfR7lHqKdGM&list=PLGTCVNuFdipqOTZJ-yVx0AhFgVIDxtATF).
+Il y a aussi le compte twitter de l'astrochimiste [Hervé Cottin](https://twitter.com/hcottin).
+
+
+## Communautés & médias spécialisés
+exploration spatiale
+[Sciencedaily](https://www.sciencedaily.com/news/space_time/nasa/) est plutôt bon niveau news, et ne fait pas dans le sensationnel,
+et cite ses sources.
+[Space.com](https://www.space.com/) semble également sérieux.
+
+[SpaceNews](http://spacenews.com/) est, contrairement au deux premiers,
+plus orienté *exploitation*, avec des news sur le marché des satellites.
+
+Enfin, pour l'exploration, je conseille [Universe Today](https://www.universetoday.com/).
+Il est alimenté par [Patreon](https://www.patreon.com/universetoday),
+ce qui veux dire que ce sont ceux qui ont envie qui participent financièrement. Autrement dit,
+le journal n'a pas besoin de faire dans le sensationnel et gagne à avoir un bon niveau de journalisme
+(contrairement à une [économie publicitaire qui pousse au putaclic](http://www.slate.fr/story/140699/putaclic-art-faire-mauvais-teasing)).
+
+Si vous avez des questions, [l'instance space de stackexchange](https://space.stackexchange.com/) est bien pourvue et pourra certainement y répondre.
+
+Vous pouvez aussi trouver un fil de news assez complet et général au niveau de [r/space](https://reddit.com/r/space) (avec sa timeline sur le côté qui indique les prochains lancements),
+ou, selon la spécialisation, [r/spacex](https://www.reddit.com/r/spacex), [r/ESA](https://www.reddit.com/r/ESA), [r/arianespace](https://www.reddit.com/r/Arianespace),…
+
+Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran,
+je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn/).
