@@ -1,0 +1,336 @@
+Title: The ultimate engineered solar system on space engine
+Date: 2017-08-03
+Modified: 2017-08-03
+Tags: space, tuto
+Authors: Lucas Bourneuf
+Summary: visualizations of the ultimate engineered solar system
+Slug: uess
+lang: en
+translation: false
+status: published
+
+
+# Introduction
+I recently came accross an [*r/space* post](https://www.reddit.com/r/space/comments/690is5/if%20you%20design%20it%20right%20more%20than%20400%20planets%20fit/),
+featuring a very interesting series of [blog articles from Sean Raymond](https://planetplanet.net/the-ultimate-solar-system/), astronomer at Bordeaux (France).
+The goal is simple : as an engineer of a very advanced civilization, to design a solar system that maximize the amount of habitable space, while remaining stable for billion years.
+
+Working with published articles and an iterative improvements of the starting design,
+the author finally describes *The Ultimate Engineered Solar System* (UESS), which is well described in the following picture :
+
+<center>{% img https://planetplanetdotnet.files.wordpress.com/2017/05/ultimate_engineered-0012.jpg 700 "the ultimate engineered solar system in one image, by Sean Raymond" %}</center>
+
+Principle is fairly simple : many planets share the same orbit, constituting a ring.
+This have been proved as stable in studies linked in the blog article series.
+By having multiple rings packed in the habitable zone, you get dozens of planets able to harbor life.
+
+One another trick is to get rings rotating in opposite directions,
+to avoid too much gravity interferences, leading to system instability in no time.
+
+When coming accross this, i wondered : *how does it looks like, to inhabit this system ?*
+Well, the obvious way to know it is to effectively build the system, and perform the necessary observations.
+Unfortunately, the current technological level of humanity does not allow us
+to perform this right now.
+
+But there is an alternative way: do you know Space Engine ?
+It will help us to answer that question, without having to wait for technology improvements.
+
+
+## Space Engine
+SE is a free proprietary software, simulating the known universe and beyond, and allowing the player to freely move around and on bodies, and to get astonishing views of another worlds.
+Note that SE is also a universe generator, because, beyond the official catalogs of systems that are rendered in the game,
+the engine use procedural generation to populate the places we do not know. And there is an incredible amount of them.
+
+As such, SE is pretty much a very advanced wallpaper generator, you just have to look at
+the [r/spaceengine community](https://www.reddit.com/r/spaceengine/) to get an idea of its capabilities
+(note: there is no such thing as playing it on your screen. Bonus point: wallpapers are tailored for your screen).
+
+<center>{% img {filename}/images/reusable/spaceengine_screenshot_example.png 700 "Space Engine screenshot example" %}</center>
+
+SE is a great visualization tool, that also provides… modding !
+The direct consequence is that we can use this amazing software to modelize the UESS,
+and get views for anywhere, as if we were some inhabitants of one these worlds.
+
+This blog post is an exploration of the modding side of Space Engine,
+which i learned to use while writing the post itself,
+and a search for generation of cool vantage points inside the UESS.
+
+
+# Generating a solar system
+Space Engine provides a DSL to describes stars and planets.
+The star itself, named *RS 1228-511-0-0-320*, is made using the doc ; i didn't dig more about it.
+The system replace an existing one, in the Milky Way, not so far from the sun.
+
+why ? Initially i did choose a star just above Andromeda, with a great view on it
+(and without planets in order to avoid an *"i just destroyed a world for my own interest"* moral crisis).
+However, for some reason, the star was ingame relocated in the milky way.
+I imagine it's because a missed a parameter in the star definition.
+
+## The star itself
+Following the UESS description, i wrote the following definition for the star:
+
+```
+Remove "RS 1228-511-0-0-320"
+Star    "RS 1228-511-0-0-320/EngineeredSystemStar"
+{
+    RA       16 10 45  // right ascension
+    Dec     -25 12 11  // declination
+    Dist     100.0     // distance from the Sun
+    Class   "G5V"      // spectral class
+    Lum      0.50      // luminosity, or
+    RadSol   0.5       // radius in Solar radii
+    MassSol  0.5       // mass in Solar masses
+    Teff     5200      // surface temperature in Kelvin
+    NoPlanets true     // avoid procedural generation ; we will populate it ourselves
+}
+```
+
+This is a smaller-than-Sun star. The rationale is that smaller stars are more stable and live longer,
+but bigger stars offers more habitable space, so allow more planets.
+So this star, with its relative stability and its longevity, is the tradeoff considered in the UESS definition.
+
+
+## Planets
+Sticking with the UESS, there is three examples of planet repartition, depending of their masses:
+
+- 0.1 M⊕: 13 rings of 89 planets (marses).
+- 1 M⊕: 6 rings of 42 planets (earth).
+- 10 M⊕: 3 rings of 19 planets (super-earth).
+
+
+### Extensions of the three configurations
+
+The following python code :
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('dark_background')
+df = pd.DataFrame({
+    'mass': (0.1, 1, 10),
+    'planets': (1157, 252, 57),
+    'rings': (13, 6, 3),
+    'planets_per_ring': (89, 42, 19)
+})
+df.plot(x='mass', logx=True, logy=True)
+plt.show()
+```
+
+Show us that the relation binding planet masses and number of planets, number of planets per ring and number of rings seems linear on a log-log axis :
+
+<center>{% img {filename}/images/uess/plot_planets_on_mass.png 700 "plot generated by python code" %}</center>
+
+This *suggests* that we could choose any point on these lines to build a system with particular values, for instance, almost 185 planets of 1.618 M⊕ (the golden ratio). To get exactly 185 planets, we would need them to have a mass of 1.61412 M⊕.
+
+The big thing is: taking the time to understand the calculations detailed in the papers will provide the equations necessary to compute the planet repartition knowing only a subset of the values (for instance, star habitable zone & planet masses could be enough).
+While this is the most generalist and exact way to go, for now, i will stick with the three given solutions.
+
+### Generating a planet
+Using in-game search tool, i could find and export a terra-like planet hosting life in minutes.
+Not a very human-compliant one, but a one still.
+Follows the abbreviated version of the (long) export result.
+
+There is many things in the planet definition, mainly about the planet in itself.
+Here, we will concentrate on the first lines (name, parent, other details)
+and the final block speaking of orbit itself. Space Engine will take care of
+parameters we do not submit (leading to a great diversity).
+
+    ParentBody     "HIP 6694"
+    Class           "Terra"
+
+    Mass            0.986073
+    Radius          6160.23
+    InertiaMoment   0.33103
+
+    Oblateness      0.00143271
+
+    RotationPeriod  34.9755
+    Obliquity       -5.09689
+    EqAscendNode    98.9852
+
+    AlbedoBond      0.26
+    AlbedoGeom      0.312
+    Brightness      2
+    Color          (0.612 0.501 0.457)
+
+    …
+
+    Orbit
+    {
+        RefPlane        "Equator"
+        SemiMajorAxis   0.372917
+        Period          0.27011
+        Eccentricity    0.035495
+        Inclination     -1.33857
+        AscendingNode   99.2429
+        ArgOfPericenter 229.944
+        MeanAnomaly     200.939
+    }
+
+Well, only few of them are relevant in our case: for a given ring (set of planet sharing the same orbit),
+we only need the distance to the star (semimajoraxis in case of circular orbit… which is our case).
+Inclination, eccentricity and other parameters are generally set to 0.
+
+But, by having 42 planets with the same orbit will end up in… 42 planets exactly at the same place in the simulated universe.
+SE do not modelize collisions, nor detect that user wants to have planets evenly placed on one orbit.
+The solution here is the `MeanAnomaly`, that is basically the start position of the planet in the orbit,
+as an angle with the semi-major axis. Intuitively, if you have N planets, you need to place them each 360/N degrees on the ring.
+
+
+### Generating all planets
+Once this is tested with two planets, let's face a brutal reality: no, i'm not gonna write all these planets myself.
+
+You can find the python script i wrote in the [project repository](https://github.com/aluriak/ultimate-engineered-solar-system).
+In early version, the main parameters was only the number of planets per ring, and the number of ring.
+I soon added details, like planets masses, color randomization, variable ring angle,…
+
+Note that, to get a body to orbit in reverse direction (needed by UESS to maintain stability),
+the trick is to [gives a 180° inclination](https://www.reddit.com/r/spaceengine/comments/692b4n/modding_how_to_get_a_planet_to_orbit_in_the/).
+
+
+# Visualizations of another world
+Well, that's the part with pictures taken from the game itself.
+
+### Space Engine detail
+To avoid crashing problems because of too many objects to show, i had to [set the ressource loading method](https://www.reddit.com/r/spaceengine/comments/1sclki/spaceengine_crashing_when_flying_too_quickly/) to *interleaved*, which is slow, but does not crash.
+
+### The missing piece
+It is possible to [get 4K screenshots on Space Engine](https://nirklars.wordpress.com/2015/02/14/spaceengine-and-4k-screenshots/).
+As i'm not on windows, so i didn't really dig about it.
+
+
+## Wallpapers generation
+Follows some screenshots i taked, with their corresponding description.
+
+<center>{% img {filename}/images/uess/se_earth_from_above.png 700 "SE screenshot" %}</center>
+This is the *earth-like* case (only earth of 1 M⊕), from the above. We can clearly see the rings. Exposure was limited in order to filter out the stars.
+Parameters to generate it with the python code:
+
+    earth-like --ring-gap=0.2
+
+
+<center>{% img {filename}/images/uess/se_smallearth_from_above.png 700 "SE screenshot" %}</center>
+This is the *small earth* case (only earth of 0.1 M⊕), from the above.
+Space Engine is significantly slowdown by so much objects.
+Exposure was limited in order to filter out the stars.
+Parameters to generate it with the python code:
+
+    small-earth --ring-gap=0.2
+
+
+<center>{% img {filename}/images/uess/se_earth_from_outer.png 700 "SE screenshot" %}</center>
+The *earth-like* system, seen from an outer planet (one of *ES 12 5*), directly staring at the star.
+
+
+<center>{% img {filename}/images/uess/se_earth_from_above_inclinations.png 700 "SE screenshot" %}</center>
+Again the *earth-like*, but with a cumulative 5° inclination for rings,
+giving the system a new form. Parameters to generate it with the python code:
+
+    earth-like --ring-gap=0.2 --inclination-delta=5
+
+
+<center>{% img {filename}/images/uess/se_earth_from_outer_inclinations.png 700 "SE screenshot" %}</center>
+The same system, seen from an outer planet (*ES 12 5*), directly staring at the star.
+
+
+<center>{% img {filename}/images/uess/se_dawn_from_outer_inclination_weak_gap.png 700 "SE screenshot" %}</center>
+Again the same system, seen from an outer planet (one of *ES 12 5*), directly staring at the star at dawn,
+with a small trick consisting to decrease the ring gaps to 0.01, closer to the value given by Sean Raymond.
+Parameters to generate it with the python code:
+
+    earth-like --ring-gap=0.01 --inclination-delta=5
+
+
+<center>{% img {filename}/images/uess/se_dawn_from_outer_hillring.png 700 "SE screenshot" %}</center>
+Again the same system, seen from an outer planet (one of *ES 12 5*), directly staring at the star at dawn,
+with the default ring gap, computed from the hill's spheres, closer to the value given by Sean Raymond.
+Note that eclipses are really easy to get in this configuration.
+Parameters to generate it with the python code:
+
+    earth-like --inclination-delta=5
+
+
+
+## The ballet, the sunset and the speck
+I also recorded a video, taken with [recordMyDesktop](recordmydesktop.sourceforge.net),
+showing both the system's movement, a sunset view from outer planets,
+a night sky from an inner one, and an eclipse.
+
+<!-- <center>{% video {filename}/images/uess/vizu.mp4 700 %}</center> -->
+<!-- Direct inclusion of HTML because liquidtag does not handle properly the video. -->
+<!-- See https://github.com/getpelican/pelican-plugins/issues/894 -->
+<p><center><span class="videobox">
+            <video width="700" height="None" preload="none" controls poster="None"><source src='./images/uess/vizu.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></span></center></p>
+
+(used police is from the famous [Some Time Later](https://github.com/ctrlcctrlv/some-time-later))
+
+
+# The path to the good
+Many things are lacking in this visualization. The most important thing is
+probably the mathematic coherence behind: planet exact size & mass,
+real habitability zone of the star, and therefore distances between rings…
+
+All these parameters are currently tweaked without real consistencies,
+and most of visualizations i show here use a very large ring gap,
+leading to really cold planets.
+
+So, this deserve some further study.
+
+To obtain a temperate-instead-of-cool terra (an effective temperature around 0°C)
+in the system, i had to tweak the star:
+
+```
+Remove "RS 1228-511-0-0-320"
+Star    "RS 1228-511-0-0-320/EngineeredSystemStar"
+{
+    RA       16 10 45  // right ascension
+    Dec     -25 12 11  // declination
+    Dist     100.0     // distance from the Sun
+    Class   "G3V"      // spectral class
+    Lum      1.2      // luminosity, or
+    RadSol   1      // radius in Solar radii
+    MassSol  1      // mass in Solar masses
+    Teff     6600      // surface temperature in Kelvin
+    NoPlanets true
+}
+```
+
+To (sort of) prove the viability of the system, a good indicator could be life.
+I do not know the algorithm running the decision of life presence in Space Engine,
+but i do know that, on more than 200 earth-like planets, none got life,
+probably because of all parameters i didn't look at.
+
+Or maybe that is just because life appears very rarely, whatever how good
+the conditions are.
+
+
+
+# The conclusive conclusion
+When reading Sean Raymond's blog articles, the idea of rendering it using Space Engine come very quickly.
+I thought it would be complex, and maybe unfeasible because of the amount of objects in the system.
+
+Well, i was wrong. Not only Space Engine is fully able to render 1257 planets and their star,
+but it can be done in few lines of code and time, to finally provides
+pretty views of the full system, from any vantage point.
+
+Space Engine is awesome. Sean Raymond's job is awesome. My new wallpapers are awesome.
+
+
+## Now, you're turn !
+You have Space Engine. You have the sources. You have ideas.
+
+You can take beautiful screenshots of the system, tweaks it to get a different organization,
+enrich it with moons or additionnal stars, improve the code, the SE scripts, the planets generation,
+or study the equations, or generate a Carl Sagan-like voice that tells the story of the UESS, or anything else…
+
+The repository is open to PR, issues, and i'm open to mails.
+
+
+# Links
+- [Sean Raymond's blog series](https://planetplanet.net/2014/05/13/building-the-ultimate-solar-system/)
+- [Space Engine](http://spaceengine.org/)
+- [Space Engine subreddit](https://www.reddit.com/r/spaceengine/)
+- [Space Engine documentation for addons](http://spaceengine.org/manual/making-addons/)
+- [exoplanets listing and distribution](http://exoplanets.org/)
+- [contribute](https://github.com/aluriak/ultimate-engineered-solar-system) to the UESS visualization
+- [spaceengine python package](https://github.com/aluriak/spaceengine): an attempt to modelize and generate systems for Space Engine

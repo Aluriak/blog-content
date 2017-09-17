@@ -1,0 +1,450 @@
+Title: L'hypothèse de Sapir-Whorf appliquée aux langages informatiques
+Date: 2017-06-24
+Modified: 2017-06-24
+Tags: info, tools, opinion, language
+Authors: Lucas Bourneuf
+Summary: réflexion sur l'hypothèse par rapport aux langages informatiques
+Slug: sapir-worf-gpl
+lang: français
+translation: false
+toc_headers: ^h[1-2]
+toc_run: true
+status: published
+
+
+# Introduction
+L'hypothèse de Sapir-Whorf (HSW) est l'idée que notre langage modifie notre manière de modéliser nos pensées.
+C'est une hypothèse très discutée, qui semble logique au premier abord, mais qui souffre de quelques remarques bien placées.
+
+Ce post n'est pas à propos de l'HSW en tant que telle — je n'ai tout simplement
+pas le niveau pour faire un état de l'art de la discussion à son propos —
+mais plutôt d'en discuter à travers un autre type de langage que les langages naturels : les langages de programmation (un sous-ensemble des langages informatiques).
+
+La question de l'application de l'HSW sur les langages informatiques est intéressante, et pourtant,
+je n'ai rien trouvé en dehors des références des [quelques lignes de wikipédia](https://en.wikipedia.org/wiki/Linguistic_relativity#Programming_languages).
+
+
+# Hypothèse de Sapir-Whorf
+## Principes
+L'idée majeure de l'hypothèse de SW est que la langue détermine la pensée.
+En découle les deux principes suivants.
+
+1. S'il n'existe pas de mot pour un concept, il sera très difficile de le concevoir.
+2. Il existe beaucoup de mots pour décrire un concept bien connu.
+
+### Discussion du second principe
+
+L'exemple souvent donné est la langue inuit, qui possède [une grande quantité de mots pour décrire la neige](http://www.encyclopediecanadienne.ca/fr/article/les-mots-en-inuktitut-pour-la-neige-et-la-glace/),
+là où en français et anglais nous n'en avons que quelques-uns, voire un seul.
+L'intérêt pour les inuits d'avoir autant de mots pour ce que nous jugeons être un seul concept est le même que celui
+qui nous a mené à avoir de nombreux synonymes dans beaucoup d'autres domaines, l'argent par exemple.
+
+L'idée est qu'un synonyme ne convoie généralement pas exactement le même sens que le mot d'origine. Il apporte une variation.
+Du point de vue des inuits, dissocier les différents types de neige, avec leurs propriétés et leurs particularités,
+permet en un seul mot de transmettre de l'information très complexe.
+Dans un pays où la neige arrive une fois par an et est toujours de la même facture, avoir un seul mot est suffisant.
+«Je serais en retard parce qu'il a neigé» est suffisant, pas la peine de donner des informations supplémentaires
+sur sa dureté et sa consistance.
+
+Maintenant, est-il possible d'estimer l'importance d'un concept dans une culture donnée, en mesurant le nombre de mots qui s'y rapportent ?
+En français, on a de nombreux synonymes pour le travail, l'argent et le sexe. De fait, je me dit que oui, il y a peut-être un lien.
+(Ce serait intéressant d'effectivement trouver les données sur quelques langues, pour voir un peu ce qui en sort, en terme de nombre de synonymes pour un concept.
+Un biais néanmoins évident est que beaucoup de synonymes utilisés ne sont pas académiques, donc probablement pas dans les dictionnaires de synonymes)
+
+
+### Discussion du premier principe
+Le premier point est discutable, notamment avec l'exemple de langues construites,
+notamment *Toki Pona*, qui ne définit que 123 mots au total !
+Pour reprendre quelques lignes de [cet article](http://www.ulyces.co/roc-morin/peut-on-tout-dire-avec-la-langue-la-plus-concise-du-monde-toki-pona-ithkuil/), qui explique la philosophie du Toki Pona :
+
+> En chinois, le mot « ordinateur » se dit littéralement « cerveau électrique ».  
+> En islandais, une boussole est un « indicateur de direction » et un microscope « un observateur du petit ».  
+> En lakota, un cheval est littéralement un « chien prodigieux ».  
+> Ces néologismes montrent la capacité cumulative de la langue, qui nous sert à décrire l’inconnu en faisant référence au connu.
+
+Donc, en considérant cela, le premier principe de SW est-il réellement pertinent ? Il semble effectivement que beaucoup de mots
+soient construits à partir d'autres.
+On parle souvent de mot-valises, avec l'exemple très connu de la *télévision* (vision de loin).
+Pour les plus récents (et très peu utilisés), l'académie française a trouvé *ordiphone*, (qui correspond à l'anglais *smartphone*), et *égographie* (pour le mot anglais *selfie*).
+
+À ce point, il semble qu'on ait invalidé l'HSW, puisqu'on arrive très bien à désigner quelque chose,
+même si le mot n'existe pas encore (par exemple en utilisant un mot-valise, mais au fond, c'est plus général : on a rencontré le loup avant d'avoir un mot qui le définissait).
+Sauf que c'est un poil plus compliqué que ça : l'HSW propose que l'absence d'un mot pour un concept rende ce dernier difficile à *concevoir*.
+
+Or, dans les exemples donnés ici (chien prodigieux, ordiphone), les concepts *préexistaient*.
+Ils ont d'abord été observés, puis nommés, en rapport à ce qu'on connaissait déjà.
+l'HSW ne s'applique donc pas vraiment ici, puisqu'il s'agissait de donner un nom à une observation,
+pas de concevoir quelque chose à partir de rien.
+
+
+## Ce qu'on peut dire de ces deux points
+L'hypothèse de Sapir-Whorf n'est pas à propos des mots qui existent, ou de ce qu'il faut nommer.
+HSW est à propos de la conception, de la facilité d'accès à un concept sachant une langue.
+
+En considérant les concepts comme nœuds d'un gigantesque graphe, la langue est l'ensemble des arcs qui les relie.
+Une langue très orientée sur un domaine proposera de nombreux arcs liant les concepts de ce domaine,
+là où une langue plus pauvre en proposera moins.
+L'hypothèse de Sapir-Whorf est que la pensée chemine selon les arcs, et donc qu'une langue riche navigera plus facilement dans le graphe,
+sautera facilement d'un concept à un autre, et donc permettra des associations plus rapides.
+
+
+<!-- On différencie bien le «nommage de l'existant» et «la conception». -->
+
+
+## Dans la culture
+J'ai {v,l}u deux œuvres de SF qui parlent de HSW, et ce de manières complètement opposées
+(il y a plein d'autres œuvres, mais je n'ai {l,v}u que celles-là).
+
+D'abord, [1984 de Georges Orwell](https://fr.wikipedia.org/wiki/1984%20(roman)), avec la *novlangue*, une langue simplifiée à l'extrême,
+qui, dans le contexte d'une guerre totale avec les pays voisins,
+empêche la conception même de la notion d'opposition au gouvernement,
+en éliminant toute possibilité de *nuances* (par exemple avec l'absence de terme pour *mauvais* ; il y a juste *bon*, et son opposé *imbon*).
+
+Toute tentative de s'opposer au pouvoir en place, même partiellement et avec modération,
+devient synonyme d'opposition totale, et donc de conspiration avec l'ennemi.
+HSW n'y est pas explicitée directement, mais c'est une application directe de son principe :
+la langue formate les individus de la population à une vision manichéenne,
+les empêchant de s'extraire de l'idée qu'ils sont soit avec,
+soit contre le gouvernement, et par conséquent de formuler une quelconque
+critique envers le pouvoir en place.
+
+Dans un tout autre genre, le film
+<!-- [*Arrival*]({filename}/articles/revue-du-film-premier-contact_fr.mkd) -->
+[*Arrival*](https://fr.wikipedia.org/wiki/Premier%20Contact%20(film))
+propose la thématique inverse : donner du pouvoir par l'acquisition d'une langue.
+Ici, HSW est mentionnée et expliquée dans le film (et aussi, j'imagine,
+dans le bouquin dont est tiré le film, [*Story of your life*](https://en.wikipedia.org/wiki/Story_of_Your_Life)).
+Elle justifie que l'on puisse développer des capacités hors du commun
+en apprenant un langage différent, qui transcende la conception habituelle
+de nos langues naturelles.
+
+
+
+# Application aux languages de programmation
+Maintenant que l'on a quasiment compris ce qu'était l'Hypothèse de Sapir-Whorf
+appliquée aux langages naturels, nous pouvons nous poser la question de son application
+aux langages informatiques.
+(au sens de *General Purpose Language* (GPL), comme les langages de programmation)
+
+
+## Pourquoi les langages de programmation ?
+Les langages de programmation occupent une place particulière dans le spectre des langages.
+D'abord, ils sont construits, comme le lojban ou le toki pona. Mais, contrairement à ces derniers, et contrairement aux langages naturels,
+les langages de programmation ne sont pas construits pour une discussion d'humain à humain, mais d'humain à ordinateur.
+(on n'aborde pas ici les langages informatique en général, qui incluent les langages visant la discussion de ordinateur à ordinateur)
+
+Cette différence est colossale, car les langages de programmation ne sont pas conçus pour parler d'émotions ou d'idées,
+mais pour aborder la méthode et la formalisation de manière non-ambiguë.
+C'est leur caractéristique première, et c'est ce que qui explique leur diversité : diversité des méthodes, diversité des besoins.
+
+Les langages de programmation sont moins nombreux que les langues naturelles,
+mais d'un autre côté, on ne crée pas beaucoup de nouvelles langues naturelles.
+(alors que des languages de programmation… eh bien, on en trouve des [pelletées chaque année](https://cs.stackexchange.com/a/458/64054))
+
+Les langages de programmation sont facilement étudiables,
+car leur histoire est gravée dans la littérature.
+Des phylogénies des langages existent. On sait lesquels ont
+[influencé](ethw.org/Past%20programming%20languages%20and%20their%20influences%20on%20today's%20languages%20and%20programming%20paradigms) lesquels,
+on sait les diviser en [paradigmes](https://fr.wikipedia.org/wiki/Paradigme%20(programmation)),
+[par types](https://en.wikipedia.org/wiki/List%20of%20programming%20languages%20by%20type).
+
+<!-- ### programmation vs naturel -->
+<!-- Quel est l'intérêt d'utiliser deux langages naturels dans un seul projet ? -->
+<!-- A moins que l'on soit contraint de travailler avec des personnes ne parlant pas de langue commune, -->
+<!-- il semble qu'avoir une langue unique soit beaucoup plus simple à gérer, et ne souffre d'aucun inconvénient. -->
+
+<!-- Dans les projets informatiques, à l'inverse, c'est plutôt compliqué. -->
+<!-- Par exemple, pour un developpement de site web, il n'est pas rare d'avoir une -->
+<!-- équipe qui bosse sur le *frontend* (javascript), et une autre sur le *backend* (PHP). -->
+<!-- En théorie, les deux langages pourraient être utilisés pour les deux côtés. -->
+<!-- Mais, dans les faits, leurs écosystèmes respectifs -->
+<!-- (intégration par défaut dans les navigateurs pour javascript, tous les frameworks de PHP) -->
+<!-- font que ces outils travaillent généralement main dans la main. -->
+
+<!-- Bref, si tous les langages turing-complet devraient tous pouvoir faire la même chose, -->
+<!-- il est clair que certains sont plus adaptés à certaines tâche, -->
+<!-- expliquant pourquoi on divise aussi facilement les projets. -->
+<!-- (fun fact: tous les langages, à un point ou à un autre, ont été conçus dans l'idée) -->
+
+<!-- Dans ces cas là, les langages de programmation sont choisis, -->
+<!-- non pas pour leur auditoire, mais pour leur fonctionnalités. -->
+<!-- Lorsque le code est critique, [Ada](https://www.adacore.com/adaanswers/about/ada) est souvent impliqué. -->
+<!-- Dans le jeu vidéo, on utilisais (quasi-uniquement, jusqu'à récemment) le C++, ou encore lisp pour l'IA. -->
+
+<!-- Bien sûr, dans certains cas moins critiques, on préfère des langages à d'autres pour des raisons pratiques : -->
+<!-- «*on a choisi java plutôt que c++ parce que l'équipe a plus d'expérience dans ce langage*» est un argument tout à fait valide dans de nombreux cas, -->
+<!-- quoiqu'en général utilisé quand les deux langages font aussi bien le job l'un que l'autre. -->
+<!-- Le coût ne serait pas le même pour utiliser PHP à la place de javascript. -->
+
+<!-- Ce n'est pas tant que les langages de programmation *tendent* à être utilisés de concert dans un projet, -->
+<!-- mais qu'ils sont **conçus** avec cette idée en tête : -->
+<!-- Python embarque un support natif du C ; PHP s'interface facilement avec du SQL ; -->
+<!-- Rust propose un support natif de… euh… quasiment tous les langages que je connaît. -->
+
+<!-- Lorsqu'un nouveau concept arrive, du point de vue des langues vivantes, -->
+<!-- toutes évoluent pour permettre son nommage (quitte à réutiliser un mot d'une autre langue, comme *smartphone*). -->
+<!-- Mais en informatique, quand ce concept arrive, seuls les langages concernés s'y intéressent. -->
+
+<!-- Alors que les langues vivantes tendent à évoluer pour rester dans la course, quitte à s'approprier les termes d'autres langues, -->
+<!-- les langages de programmation sont créés au sein d'un écosystème existant. -->
+<!-- Que l'idée soit de s'y insérer élégemment ou de chercher à tous remplacer, -->
+<!-- les langages de programmation se désignent souvent par rapport aux autres, -->
+<!-- ou par rapport à une philosophie autour des concepts que le langage manipule. -->
+
+
+### La problématique
+La question est *L'hypothèse Sapir-Whorf est-elle applicable dans le cadre
+des langages de programmation ?*, ce qui se traduit, plus explicitement, par
+**le lien entre langage et conceptualisation prédit par l'hypothèse Sapir-Whorf
+se retrouve-t-il dans le cadre de l'usage des langages de programmation ?**
+
+Je pense que pour bien introduire la réponse, si vous ne l'avez pas déjà trouvée,
+il faut se demander pourquoi on utilise si souvent plusieurs langages dans un seul projet.
+
+
+## Les incarnations de projet
+Un cas assez récurrent est l'usage de deux langages de *niveaux* différents,
+pour implémenter la même chose, ou juste quelques bouts.
+C'est souvent motivé par l'optimisation ou la recherche de bug.
+
+C'est selon moi purement technique, mais il y aura quelque chose à en retirer.
+
+### Principes
+De nombreux projets en informatique bénéficient d'une réécriture complète dans un autre langage.
+Par exemple, on peut vouloir d'abord écrire le projet dans un langage haut-niveau (développement et debug rapide),
+puis une fois qu'on a montré que l'architecture était bonne, on lance la réécriture dans le langage final (développement lent, perfs maximales).
+C'est ce qu'on appelle du *prototypage*.
+
+L'inverse existe aussi : commencer un projet dans un langage bas niveau, et, en parallèle,
+avoir une implémentation avec un langage de plus haut niveau (ça revient presque à une forme de prototypage).
+Frederick P. Brooks en parle dans son bouquin *The Mythical Man-month* (Chapitre 12 *Sharp tools*, page 135).
+L'idée est la suivante : coder dans un autre langage, si possible plus haut niveau, va permettre de se concentrer sur d'autres tâches,
+d'autres idées, et va éviter certains bugs. De fait, d'autres bugs plus coriaces vont être trouvés, et il sera possible de les corriger dans la version bas-niveau.
+
+C'est cette idée qui m'a motivé à écrire [pydelaunator](https://github.com/aluriak/pydelaunator),
+la version (quasiment) full-python de [delaunator](https://github.com/aluriak/delaunator), une triangulation de delaunay en C++ avec un binding python.
+Avec pydelaunator, j'ai certes dû réimplémenter la majorité des fonctionnalités de la librairie originelle,
+mais j'ai surtout découvert de nombreux bugs et cas limites auxquels je n'avais jamais pensé, expliquant certains comportements erratiques de delaunator.
+
+F.P. Brooks ira plus loin en faisant remarquer que, en suivant la logique de la règle des [90/10](https://fr.wikipedia.org/wiki/Principe%20de%20Pareto),
+une fois la version haut-niveau implémentée, il suffirait de réécrire seulement quelques parties bien choisies
+du code dans un langage bas-niveau pour retrouver l'essentiel des performances, sans trop sacrifier la maintenabilité.
+Je vous renvoie vers [le blog pro-domo](https://pro-domo.ddns.net/blog/optimiser-son-code-python.html)
+pour un exemple de programme Python qui gagne en performance avec un peu de C,
+avec des conclusions qui font écho à celles de F.P. Brooks.
+
+
+### Bon, ok, et alors ?
+Cette manière d'inclure un langage dans un autre ressemble beaucoup aux emprunts de mot dans les langues naturelles.
+
+Parce que nous n'avions pas de mots pour exprimer *smartphone*, on a utilisé *smartphone*.
+Ce n'est pas, comme dans le cas du C intégré dans du Python, une question d'optimisation de temps ou d'espace.
+Il s'agit plutôt du cas où l'on intègre Python dans un code C : une question *d'optimisation sémantique* :
+on se simplifie la vie en intégrant un langage qui permet, localement, une meilleure expressivité.
+
+Ceci n'a rien à voir directement avec l'HSW.
+Cependant, on réutilisera ces idées dans la conclusion.
+
+<!-- ### Autre exemple: curl et rust -->
+<!-- [Curl](https://en.wikipedia.org/wiki/CURL) est une librairie codée en *C*, extrèmement utilisée -->
+<!-- permettant le transfert de ressources à travers de nombreux protocoles. C'est de fait une librairie où la sécurité est critique. -->
+
+<!-- [Rust](https://fr.wikipedia.org/wiki/Rust%20(langage)) est un langage extrèmement récent (sortit en 2010) dont l'objectif à peine caché est -->
+<!-- de [remplacer le C sur le long-terme](https://blog.rust-lang.org/2015/04/24/Rust-Once-Run-Everywhere.html). -->
+<!-- Il propose des fonctionnalités et un environnement d'une grande modernité, travaillant notamment sur la sécurité et l'intégrité des programmes. -->
+
+<!-- Rien qu'en lisant ça, on se dit : mais pourquoi ne pas réécrire curl en rust ? -->
+<!-- Eh bien, il y a [plein de raisons](https://daniel.haxx.se/blog/2017/03/27/curl-is-c/), et les principales sont techniques. Florilège : -->
+
+<!-- - les projets qui utilisent curl (et ils sont nombreux) seraient obligés d'intégrer une dépendance à rust. Donc rust deviendrait une dépendance très importante, potentiellement difficile à gérer dans certains environnements, en comparaison avec le C qui est aujourd'hui le langage le plus universel et portable. -->
+<!-- - l'expertise des développeurs en C serait perdue. C'est un argument contre rust de manière générale : les *C-wizards* n'ont aucun intérêt à utiliser rust. -->
+<!-- - les failles de curl, lorsqu'elles sont découvertes, sont patchées et régulièrement vérifiées. Rust apporterais certainement des corrections et protections, mais rien qui ne soit pas faisable en C. -->
+
+<!-- Donc passer curl en rust n'apporte pas beaucoup de gain comparés aux coûts. -->
+<!-- Mais, suivant l'idée de *développement parallèle*, -->
+<!-- on pourrais imaginer avoir une version concurrente de curl en rust qui *ouvre la voie* -->
+<!-- à l'implémentation en C, détectant les problèmes en amont pour les éviter en aval. -->
+
+
+<!-- ### Bon, ok, et alors ? -->
+<!-- En bref, un même projet, implémenté dans deux langages différents, bénéficie de meilleurs résultats globaux, -->
+<!-- même si une seule des deux implémentations est effectivement mise en production. -->
+
+<!-- Certes, mais quel est le rapport avec l'hypothèse de Sapir-Whorf ? -->
+
+<!-- On pourrait arguer que, puisqu'une implémentation avec un langage change la manière de voir le problème, -->
+<!-- implémenter le même programme/projet avec un autre langage apporterais un autre point de vue, -->
+<!-- expliquant pourquoi il y a un gain général au projet lorsque l'on fait du prototypage. -->
+
+<!-- L'idée est qu'un langage de haut-niveau permet au développeur de ne pas s'attarder sur des détails, -->
+<!-- et de tout de suite donner la logique globale du programme. -->
+<!-- Ainsi, le langage de haut-niveau détermine la conception du problème en faisant travailler le programmeur à haut niveau, -->
+<!-- plus proche du modèle mental qu'il s'est imaginé. -->
+
+<!-- Dans le cas de python, le programmeur manipule des structure de très expressives, -->
+<!-- et ne s'embarasse presque plus de concepts secondaires qui n'ont pas de lien direct avec son problème. -->
+
+<!-- Dans le cas de rust, le programmeur est affranchi de beaucoup de réflexion sur la sécurité et l'intégrité, -->
+<!-- grâce au langage lui-même qui oblige le programmeur à toujours travailler dans un environnement sain (cf *unsafe* et *ownership system*). -->
+
+<!-- En cela, on retrouve bien un bout de l'HSW : le langage détermine la pensée, la conception des choses. -->
+<!-- Mais c'est juste un bout. Est-on vraiment plus capable d'imaginer un algorithme en pseudocode qu'en C ou en python ? -->
+<!-- Ou est-ce que ce n'est pas juste une manière de s'affranchir d'une syntaxe ? -->
+
+<!-- Personnellement, je pense qu'effectivement, il n'y a pas réellement de gain conceptuel à utiliser python ou C pour concevoir un algo. -->
+<!-- Il faut juste prendre celui avec lequel on est le plus à l'aise, et basculer au pseudocode dés que nécessaire. -->
+
+<!-- Mais si on parlait plutôt d'Haskell et de C ? Qu'est-ce que ça change ? -->
+
+
+On va passer à une autre raison pour
+laquelle les langages de programmation sont souvent utilisés en synergie.
+
+
+## La complémentarité
+L'autre raison majeure de la co-existance de plusieurs langages dans un projet
+est la complémentarité desdits langages.
+
+Un seul langage, fût-il généraliste, ne peut pas tout faire *efficacement*.
+Si vous devez exécuter un script dans une page web, utiliser javascript est un réflexe.
+Personne n'imaginerait envoyer du Python, en espérant que le navigateur cible sache quoi en faire.
+(là, ça touche à l'écosystème plus qu'au langage, mais les deux sont intimement liés)
+
+De la même manière, beaucoup de projets s'interfacent avec des langages aux objectifs et concepts très différents,
+employant l'un ou l'autre selon leur pertinence.
+Par exemple, en robotique, on utilise souvent [Prolog](https://fr.wikipedia.org/wiki/Prolog), pour gérer les bases de données,
+ou [Ada](https://www.adacore.com/adaanswers/about/ada) pour les codes dont la fiabilité est critique.
+
+Comme autres exemples, on peut remarquer que beaucoup de logiciels de bureautique intègrent
+un système de scripting, exploitant un langage de script pour manipuler les données.
+De leur côté, les développeurs web utilisent souvent trois langages en étroite synergie, PHP, SQL et javascript.
+Et personnellement, dans plusieurs de mes projets, je mets en synergie un langage procédural/OO
+avec un langage logique pour pouvoir rapidement implémenter et modifier des idées.
+
+L'idée développée ici est qu'un projet doit remplir plusieurs objectifs,
+et que souvent ces objectifs sont tous simples à atteindre… s'ils sont abordés avec le bon paradigme.
+
+D'où la nécessité, pour se simplifier la vie, de faire
+**intervenir plusieurs langages avec des paradigmes différents**,
+qui vont chacun de leur côté remplir une partie du cahier des charges et
+ensuite travailler ensemble pour aggréger les résultats.
+
+
+### Croiser les paradigmes
+Ces exemples sont des démonstrations évidentes de l'usage croisé de différents *paradigmes* de programmation.
+
+Bien énervé, on pourrait faire un logiciel avec un seul langage. Tout faire, base de données, dessins, interfaces et serveurs, avec un unique langage,
+plutôt qu'agglomérer et faire coopérer SQL, SVG et Qt au sein d'une structure commune.
+
+Mais il est conceptuellement et pratiquement plus simple d'en employer plusieurs, car leurs différences et leur diversité
+permet de visualiser un problème sous de nombreux angles différents, et de choisir le plus intéressant au cas par cas.
+
+C'est pour cette raison qu'il existe tant de pont entre les langages, et que les projets complexes
+nécessitent des expertises dans beaucoup de domaines différents.
+
+
+
+## L'évidence Sapir-Whorf
+Et tout cela, des fois que vous m'ayez pas déjà vu venir,
+c'est **exactement** ce que définit l'hypothèse de Sapir-Whorf.
+
+De la même manière que les inuit ont une vingtaine de mots pour la neige,
+[COBOL](https://fr.wikipedia.org/wiki/COBOL), un langage de programmation né en 1959, a pour caractéristique notoire la possession d'au moins [une centaine de mot-clefs réservés](http://www.math-cs.gordon.edu/courses/cs323/COBOL/COBOL-reservedWords.html).
+
+Sont-ce réellement des facteurs déterminants pour la pensée ?
+Ou finalement juste un choix d'implémentation d'un même paradigme ?
+COBOL n'est pas si différent des autres langages structurés,
+et ce ne sont pas ses pelletées de mot-clefs
+qui le rendent différent des langages non-structurés.
+De la même manière, la langue inuit n'est peut-être pas si différente du français, finalement.
+
+Pour l'inuit et le COBOL, proposer autant de mots correspond probablement plus
+à une **nécessité utilitaire** plutôt qu'une véritable manière de penser.
+
+Nous pouvons alors penser que l'hypothèse de Sapir-Whorf porte
+sur la notion de *paradigme*, et non sur celle du vocabulaire
+(le cas des mots inuits ou du COBOL) ou de la grammaire
+(aggregation des lettres pour former des mots, conjugaison,…).
+
+
+# Conclusion
+
+On dit qu'haskell (fonctionnel), lisp (homoiconique) ou prolog (logique)
+vous retournent le cerveau quand vous apprenez à les utiliser pour la première fois.
+Qu'après les avoir appris, vous continuez à intégrer des notions que leurs paradigmes
+apportent, même lorsque vous utilisez d'autres langages, dans d'autres contextes.
+
+Les paradigmes «inhabituels» de programmations change votre manière de voir le code,
+d'appréhender les problèmes que vous rencontrez. C'est d'ailleurs la raison principale pour laquelle
+les développeurs expérimentés encouragent les débutants à apprendre des langages employant des paradigmes différents de ceux qu'ils connaissent déjà.
+
+Il ne s'agit pas juste du savoir que tel ou tel problème peut être résolu de telle ou telle manière.
+Résoudre un problème, quand on débute, c'est se poser la question
+*comment je code ça dans le langage X ?*
+Mais, à la lumière d'autres langages, d'autres paradigmes, de l'expérience,
+cette question devient *comment je résouds ça, conceptuellement ?*
+La manière de penser la réponse est profondément ancrée dans votre conception,
+qui transcende le langage que vous devez utiliser dans l'instant.
+C'est dans un second temps que vous pensez à *comment implémenter mon concept dans le langage X*.
+<!-- (et c'est à ce moment qu'on hurle parce que X est limité… sauf si (eq X lisp) :p ) -->
+
+
+De par leur statut particulier, les langages construits à destination des
+interactions humain-machine posent des questions sur l'application de l'hypothèse
+de Sapir-Whorf sur nos langages naturels.
+
+Les paradigmes de nos langages de programmations apportent exactement ce qui est prédit par l'hypothèse :
+un dépassement du langage dans la conception, permis par
+la connaissances de langages fondamentalement différents
+(car exploitant des paradigmes tout à fait différents).
+
+Mais du côté des langages dédiés aux discussions d'humain à humain,
+est-il possible de retrouver ce dépassement ?
+Quid de l'hypothèse de Sapir-Whorf ?
+Peut-on réellement l'appliquer dans le cadre de nos langages naturels ?
+L'humanité a-t-elle, à un quelconque point de son histoire,
+conçu un autre paradigme que celui que nous utilisons peut-être tous aujourd'hui ?
+
+Autrement dit, est-ce que nos langages naturels sont divisibles par paradigmes ?
+Si oui, lesquels ? La conjugaison et l'aggrégation des lettres pour former des mots sont-ils des paradigmes ?
+Quid des langues construites, qui apportent par exemple
+la [non-ambiguïté](https://fr.wikipedia.org/wiki/Lojban) de la grammaire et les
+[attitudinaux](https://mw.lojban.org/papri/Le%C3%A7ons_d'onde#Le.C3.A7ons_de_lojban_.E2.80.93_le.C3.A7on_quatre_.28les_attitudinaux.29) ?
+
+Peut-être ne sont-ce finalement que des variations mineures du seul
+et unique paradigme que l'humanité utilise aujourd'hui pour s'exprimer.
+
+C'est selon moi l'idée du *Arrival*, avec le langage hectapode ;
+c'est là que ce film touche du doigt l'hypothèse de Sapir-Whorf,
+encore plus profondémment et encore plus justement que ne le fait *1984* avec la novlangue.
+Peut-être que la représentation de ce nouveau paradigme n'est pas parfaite,
+qu'il s'agit en réalité d'une énième variation du même paradigme.
+Peut-être que la non-linéarité de l'écriture n'est pas un paradigme.
+
+Mais qu'importe, l'idée est là : **les hectapodes apportent un paradigme, pas un langage.**
+
+
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+### Liens et remarques
+#### Notes aux linguistes
+J'utilise indifféremment *langue* et *langage*. C'est mal, je sais.
+Mais je suis pas linguiste, donc je ne sais pas de quoi je parle.
+Et en plus c'est les autres qui ont commencé avec *langages de programmation*.
+
+#### À l'envers
+On pourrais imaginer appliquer l'hypothèse Sapir-Whorf dans le sens inverse.
+Est-ce qu'un japonais apprenant l'anglais, et donc
+(j'en suis pas sûr à 100%, mais vous avez l'idée) la notion d'aggregation
+de lettres pour former des mots, connaît une transcendance ? Si non,
+alors l'aggrégation de lettres pour former des mots n'est pas un paradigme
+dans le langage.
+
+#### Deep web
+- le japonais propose toute une cohorte de mots (plus encore qu'en français) pour parler de [la pluie](http://www.sakura-house.com/blog/fr/2012/09/07/pourquoi-50-facons-de-dire-dire-pluie-en-japonais/). Cela fait écho avec la *nécessité utilitaire* abordée plus haut.
+- [Voici un article de blog](https://shuriken.wordpress.com/2006/06/01/non-linear-writing-systems/) (premier d'une série avec plein de liens, notamment [celui-ci](saizai.livejournal.com/657391.html) qui est très complet) qui aborde la question des systèmes d'écriture non-linéaires, et leur intérêt (spoil : ils sont plus expressifs ; normal, ce sont des graphes ; c'est pas un hasard que l'on ait imaginé le [RDF](https://fr.wikipedia.org/wiki/Resource%20Description%20Framework) pour le web sémantique).

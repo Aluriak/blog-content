@@ -1,17 +1,528 @@
-
+Title: Introduction à Answer Set Programming (ASP)
+Date: 2017-03-31
+Modified: 2017-03-31
+Tags: asp, language, tuto
+toc_headers: ^h[1-2]
+toc_run: true
+Authors: Lucas Bourneuf
+Summary: un tuto pour ASP
+Slug: answer-set-programming-asp
+<!-- lang: français -->
+translation: false
+status: draft
 
 
 # Introduction
 
-[Tuto](https://cjamcl.com/blog/a-gentle-introduction-to-asp/)
-d'introduction au langage.
+Cet article est un tuto sur [Answer Set Programming](https://en.wikipedia.org/wiki/Answer%20set%20programming),
+un langage de programmation déclaratif implémentant la PPC,
+ou *Programmation Par Contrainte* (comme java implémente la POO et haskell la PF).
 
-Les scripts sont disponibles sur le dépôt git [learning-ASP](https://github.com/Aluriak/learning-ASP).
+Pour ceux qui connaissent, il fera certainement penser à [Prolog](http://www.learnprolognow.org/),
+puisque ces deux langages reposent sur les même concepts, bien qu'il ne l'implémentent pas de la même manière.
 
+L'objectif n'est pas seulement d'apprendre les bases en faisant joujou,
+mais de développer des programmes qui résolvent des problèmes de la vie réelle,
+éventuellement avec quelques lignes en plus pour pouvoir réellement l'utiliser dans la vie de tous les jours.
+
+
+
+## Quelques liens préliminaires
+Comme je passerais très vite sur les *bases*, je conseille une lecture d'un tuto existant.
+Pour être franc, je n'ai trouvé que [celui-ci](https://cjamcl.com/blog/a-gentle-introduction-to-asp/) (en anglais),
+qui passe aussi très vite sur les bases.
+
+Les scripts ASP utilisés ici sont disponibles
+sur le dépôt git [learning-ASP](https://github.com/Aluriak/learning-ASP).
+
+
+# Concepts généraux
+## Principes de Programmation Déclarative
+Comment collecter tous les entiers positifs inférieurs à 100 et multiples de 3 ?
+En python, une manière de faire est la suivante :
+
+```python
+    for nb in range(0, 100):
+        if nb % 3 == 0:
+            print(nb)
+```
+
+Ce qu'il y a à voir ici, c'est que l'on *explique* au programme exécutant le code (l'interpréteur python)
+comment arriver à la solution qui nous intéresse.
+Ce paradigme, dit *impératif*, consiste à expliquer **comment calculer la solution**.
+
+C'est une approche qui est en fait assez peu naturelle, et ça se voit quand on commence à apprendre à programmer.
+C'est effectivement assez consternant de devoir s'expliquer auprès d'un ordinateur qui semble avoir
+les capacités de compréhension d'un enfant de 5 ans (8, quand on utilise un langage haut-niveau),
+et c'est un gros problème dans l'enseignement en informatique.
+
+La programmation déclarative aborde le problème d'un angle différent :
+l'humain ne doit plus expliquer **comment** atteindre la solution,
+mais plutôt la **décrire** ,
+c'est à dire répondre au **quoi**, ce qui est beaucoup plus naturel pour un humain.
+Le paradigme *déclaratif* consiste en l'explication du **quoi**.
+
+HTML est un bon exemple de langage déclaratif: on décrit bien la solution (la structure finale de la page web).
+Le HTML n'est pas un langage impératif ; d'ailleurs, si la page finale dépend de paramètres extérieurs (compte enregistré par exemple),
+vous ne pouvez plus compter que sur le HTML. C'est généralement là qu'interviennent PHP, Python, Java,…
+Des langages impératifs qui permettent
+de générer du HTML à partir de templates et des paramètres extérieurs.
+
+Sans ces languages, il faudrait avoir en mémoire toutes les solutions possibles,
+ce qui n'est pas pratique.
+
+
+## Principes de Programmation Logique
+Le paradigme logique est un sous-ensemble du paradigme déclaratif.
+Autrement dit, un langage *logique* est un langage *déclaratif*.
+À l'inverse, comme le HTML, un langage *déclaratif* n'est pas nécessairement *logique*.
+
+Le paradigme logique repose sur les méthodes formelles issues des maths
+et de la théorie de la logique.
+C'est avec ces outils que la description de la solution (la réponse au **quoi**) est formulée.
+
+C'est précisément à cette catégorie de langage qu'ASP appartient.
+
+Pour présenter un peu le concept de la programmation logique,
+imaginons un langage qui nous permettrais d'expliquer ce qu'est la solution au programme python vu précédemment :
+
+```
+    x tel que : x est un entier, 1 < x < 100, x%3 égal à 0.
+```
+
+C'est compréhensible, simple et efficace ; c'est de la programmation logique !
+Ce langage précis n'est pas utilisé, certes, mais il s'agit d'une tentative d'approcher un langage expressif.
+La syntaxe et la grammaire seront certainement déroutantes, mais il ne s'agit finalement que de *décrire* la solution.
+
+La [page wikipédia en français sur la programmation déclarative](https://fr.wikipedia.org/wiki/Programmation%20d%C3%A9clarative)
+est (très) courte, mais suffisante pour notre étude.
+
+
+## Principes de Programmation Par Contrainte
+Nous pouvons définir une *contrainte* comme *une restriction sur les solutions*.
+En d'autres termes, la programmation par contrainte consiste à ajouter des expressions qui écartent des solutions,
+qui sinon seraient autorisées.
+
+C'est un moyen efficace de s'assurer qu'une propriété est respectée dans tous les modèles.
+«*Deux joueurs ne peuvent démarrer à une distance de moins de 5 mètres*» pourrait dire un designer de jeu.
+«*Un taxon ne peut appartenir à deux branches*» dira le phylogénéticien.
+«*Je ne peux pas mettre deux packs de lait sur le support arrière du caddie*» dis-je pendant mes courses.
+
+Bref, il est souvent plus simple (et moins coûteux) d'exprimer une contrainte plutôt qu'inclure
+cette restriction dans la génération du modèle lui-même.
+
+En général, un langage autorisant la programmation par contrainte pourra être divisé en deux parties :
+
+1. définir les possibles solutions (modélisation de l'espace de recherche)
+2. interdire les résultats qui ne nous intéressent pas (contraintes)
+
+La première partie, c'est la *génération*, où l'on génère les candidats pour la solution.
+Comme en général ces candidats ne sont pas tous bons, on besoin de les filtrer,
+d'où la seconde étape, *l'application de contraintes*,
+qui permet de définir quels candidats seront écartés.
+
+Answer Set Programming est un langage logique où les contraintes
+font partie du langage autant que le reste des déclarations.
+Ainsi, la dichotomie entre génération et contraintes se voit dans beaucoup de codes ASP,
+car les développeurs ont intuitivement ce découpage dans leur réflexions.
+
+
+
+# Outillage
+Pour ce tuto, nous allons utiliser la suite [Potassco](), un ensemble de logiciels
+qui gravitent autour d'une idée : implémenter et utiliser ASP.
+
+Plus particulièrement, nous allons utiliser *clingo*.
+
+Clingo est à ASP ce que CPython est à Python: une usine à gaz qui comprend et applique les effets de bord du langage.
+<!-- Faut vraiment que je fasse un article sur ces notions -->
+
+Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
+
+Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python:
+une grammaire et un ensemble de routines
+qui compilent vers un langage simplifié à l'extrême.
+
+Clasp est à ASP ce que l'interpréteur de CPython est à Python: un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
+et en appliquent les effets de bord (mémoire et calculs).
+
+Pour être plus précis à propos de gringo et clasp, le premier compile un programme
+qui suit la grammaire d'Answer Set Programming (et un peu plus, nous verrons cela),
+et le second est une routine qui, à l'aide d'une heuristique très personnalisable,
+va chercher les solutions acceptables dans le programme compilé.
+
+En ASP, on parle de *grounding* pour la partie assurée par *gringo*,
+et de *solving* pour la partie assurée par *clasp*.
+Clingo est donc un programme qui se charge du grounding et du solving
+d'un seul coups.
 
 
 ## Installation
 ### Compilation
+
+
+## Quelques tests préliminaires
+### Version
+Pour avoir la versions de clingo, il suffit de demander: `clingo --version`.
+Vous verrez quelque chose du style:
+
+    clingo version 5.2.1
+    Address model: 64-bit
+
+    libgringo version 5.2.1
+    Configuration: with Python 3.6.2, with Lua 5.3.4
+
+    libclasp version 3.3.2 (libpotassco version 1.0.0)
+    Configuration: WITH_THREADS=1
+    Copyright (C) Benjamin Kaufmann
+
+    License: The MIT License <https://opensource.org/licenses/MIT>
+
+On peut, notamment, voir les versions de gringo et clasp utilisées,
+ainsi que les supports de langages de scripts (ici python et lua sont supportés tous les deux).
+
+
+### Le «bytecode» d'ASP
+Il est possible de voir la sortie de gringo avec l'option `--text`. Avec ce flag,
+clasp ne sera pas appelé et ne sera retourné que le code simplifié issu du grounding.
+
+Lorsque l'on utilise ASP pour un problème combinatoire, il arrive souvent que l'on
+s'intéresse au grounding du programme.
+C'est en effet en étudiant ce code intermédiaire qu'il sera possible de déterminer
+quelles règles en ASP génèrent beaucoup de données,
+et donc quelles règles sont impliquées dans un temps de solving long.
+
+
+## Lancez la machine !
+Lancez clingo sur les fichiers contenant les programmes de ce tuto, ou lancez le sans fichier en argument,
+et tapez directement le programme, puis contrôle-D (fin de fichier).
+Clingo vous répondra en fonction.
+
+Prenez **vraiment** l'habitude de lancer les programmes, et de les trifouiller.
+C'est comme ça qu'on apprend !
+
+Pour bien montrer comment clingo s'utilise, voici
+une session complète où j'écris un programme ASP
+dans le fichier `program.lp`, puis lance clingo dessus:
+
+    ❯ echo "a.b." > program.lp
+    ❯ clingo -n 0 program.lp
+    clingo version 5.2.1
+    Reading from program.lp
+    Solving...
+    Answer: 1
+    a b
+    SATISFIABLE
+
+    Models       : 1
+    Calls        : 1
+    Time         : 0.000s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+    CPU Time     : 0.000s
+
+Du point de vue de clingo, que se passe-t-il ici ?
+
+- d'abord, clingo parse les arguments de la ligne de commande (ici `-n 0` et `program.lp`)
+- il apprend que je veux *tous* les modèles, toutes les réponses possibles (`-n 0`)
+- il apprend également que le programme est intégralement contenu dans `program.lp`
+- il lance gringo sur le programme, et obtient le code groundé.
+- il lance clasp sur le code groundé, et m'affiche le résultat
+- j'apprend que mon programme n'a qu'une seule et unique solution, où les atomes a et b sont vrais.
+
+Notez que la ligne `Reading from program.lp` correspond au grounding, et la suivante, `Solving...`, correspond au solving.
+Si clingo semble ne rien faire après avoir écrit la première, c'est que le grounding est long (et le pc ne fait pas *rien* ;
+vous avez probablement un CPU qui tourne à 100% pendant toute la durée du grounding).
+
+Dans l'autre cas, c'est le solveur qui pédale dans la semoule.
+
+
+
+# Principes d'Answer Set Programming
+Maintenant que l'on a plein de théorie dans la tête et clingo sur le pc,
+attaquons le vif du sujet: parler ASP !
+
+## Commentaires
+Les commentaires commencent par un `%`:
+
+```asp
+% Je suis un commentaire
+Je ne suis pas un commentaire  % ni de l'ASP valide d'ailleurs
+```
+
+Les commentaires multilignes commencent avec `%*` et terminent avec `*%`.
+Notez que clingo n'est pas capable de gérer la présence d'un `%*`
+dans un commentaire multiligne, ni ne considère ce qu'il y a après un `%`,
+empêchant d'utiliser le snippet `% *%` comme le `//*/` en C.
+
+
+## Les atomes
+Par défaut, toute valeur est considérée fausse.
+Un atome est un fait, une relation qui est considérée vraie.
+
+Considérons le programme suivant:
+
+```asp
+    a.
+```
+
+Ici, on indique que le *fait* `a` est vrai. Le point est un peu comme le point-virgule en C,
+ou le saut de ligne en Python : il sépare chaque règle et atome.
+
+```asp
+    a(4).
+```
+
+Cette déclaration est un peu plus complexe, mais revient au même : le prédicat `a` d'arité 1
+(c'est-à-dire avec 1 argument) avec comme premier (et unique) argument 4, est vrai.
+
+De la même manière, il est possible de déclarer `b`, `b(42)`, mais aussi `a(b)`, `a(a,b,c,3)`, `a(b(1))`, ou encore `a(a(b(b(9))))`.
+
+
+## Retour sur les atomes
+Ci-après, un autre programme qui génère des atomes
+(donc, des *faits*, des éléments considérés vrais pendant le solving).
+
+```asp
+    % Les atomes nb(X) sont vrais pour tout X positif inférieur à 100.
+    nb(1..99).
+    % Les atomes nb_ex(X) sont vrais pour tout X ∈ [1;4]
+    nb_ex(1;2;3;4).
+    % On peut combiner les deux:
+    nb_cb(1;2;3..10).
+```
+
+Donnez ce programme directement à manger à clingo !
+Vous comprendrez vite comment ça fonctionne.
+
+
+## Règles
+Maintenant que l'on peut déclarer des faits, nous pouvons commencer à déclarer
+des règles de causalité.
+En d'autres termes, il est possible de définir qu'un atome est vrai
+en se basant sur des conditions.
+
+En ASP, cela se fait avec l'opérateur `:-`, une espèce de `if` à l'envers:
+
+```asp
+    % l'atome ok(X) est vrai si a(X) est vrai
+    ok(X):- a(X).
+    % L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
+    nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.
+```
+
+Les règles sont les premiers éléments réellement utiles dans un programme ASP.
+Ce sont ces règles qui vont permettre d'exprimer des implications,
+et donc de réellement commencer à travailler sur les données.
+
+Notez qu'il est possible d'utiliser la négation:
+
+```asp
+% l'atome ko(X) est vrai pour tout X de nb_ex(X) qui n'est pas ok(X)
+ko(X):- nb_ex(X) ; not ok(X).
+```
+
+Notez que le point-virgule est utilisé comme opérateur *et*, l'équivalent de `and` en Python ou `&&` en C.
+Il n'existe pas réellement de *ou* en ASP ; c'est un détail qui reviendra plus tard.
+
+Une autre manière de voir cette règle, plus verbeuse mais plus puissante, est la suivante:
+*Pour tout X tel que nb_ex(X) est vrai et ok(X) est faux, on a ko(X)*.
+
+Cette formulation nous permettra de mieux comprendre une prochaine construction du langage.
+
+
+## Choix
+Une construction très importante en ASP est le *choix*.
+Le choix consiste en un… choix. C'est dur à expliquer autrement.
+
+Voici un exemple simple, avec le résultat donné par clingo,
+qui consiste en un choix de exactement 1 parmis 3 atomes :
+
+```
+❯ echo "1{a;b;c}1." > program.lp
+❯ clingo -n 0 program.lp
+clingo version 5.2.1
+Reading from program.lp
+Solving...
+Answer: 1
+b
+Answer: 2
+c
+Answer: 3
+a
+SATISFIABLE
+
+Models       : 3
+Calls        : 1
+Time         : 0.000s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+CPU Time     : 0.000s
+```
+
+La sortie de clingo est toujours très semblable à celle-ci.
+Les données importantes sont les différentes réponses possibles (et leur nombre).
+
+(notez que sans l'option `-n 0`, seul un modèle aurait été montré. le `n`
+est en fait la version courte de *nombre de modèle à afficher, ou 0 pour tous les afficher*.
+Notez que, si des modèles n'ont pas été affichés à cause de cette option, clingo
+le fera savoir en affichant un `+` à côté du nombre total de modèles calculés)
+
+La première réponse (ou *modèle*, ou *answer set*, ou *ensemble réponse*),
+contient uniquement l'atome b.
+La seconde contient uniquement l'atome c.
+Enfin, la dernière réponse contient uniquement l'atome a.
+
+
+### Pourquoi cet ordre ?
+Parce qu'en ASP, on travaille sur des *set* (answer *set* programming).
+Les *set*, *ensemble* en français, au sens mathématique du terme,
+sont des ensembles non ordonnés d'éléments uniques.
+
+Les conséquences de ces propriétés sont les suivantes :
+
+- les réponses ne sont nativement pas ordonnées (nous verrons que… mais c'est pour plus tard)
+- un atome ne peut pas être *choisi* deux fois : soit il est vrai, soit il ne l'est pas. Il ne peut être vrai deux fois (car cela reviendrait à avoir deux fois le même élément dans un *set*)
+- l'ordre des régles en ASP n'a pas d'importance (contrairement à Prolog, vous pouvez donc mélanger les lignes de votre programme sans que cela n'ait d'effet)
+
+Gardez cela à l'esprit, car ces propriétés sont fondamentales dans
+la construction mathématique derrière ASP, et donc dans les notions que l'on va voir après.
+
+
+### Retour à nos moutons
+Le programme traité par clingo est le *choix* suivant : `1 { a ; b ; c } 1`,
+qui se traduit *un élément parmis a, b ou c*.
+Le 1 à gauche est la borne minimale, par défaut égale à zéro.
+Le 1 à droite est la borne maximale, par défaut l'infini.
+
+Si le programme avait été `2 { a ; b ; c } 2`, j'aurais également eu trois modèles/réponses,
+mais leur contenu exact aurait changé:  `a b`, `b c` et `c a` sont les trois ensembles possibles de deux éléments parmis a, b et c.
+
+De la même manière, si le programme était `{ a ; b ; c }`, j'aurais eu 8 modèles.
+Et si il était `{ a ; b ; c } 2`, j'aurais eu 7 modèles.
+Pourquoi 8 et 7 ? Je vous laisse tester vous-même,
+vous comprendrez tout de suite.
+
+(remarquez que tout cela n'est que pure [combinatoire](https://fr.wikipedia.org/wiki/Combinatoire))
+
+
+Aller, un dernier exemple pour la route, qui montre comment avoir un seul nb(X) vrai pour chaque answer set:
+
+```asp
+% On choisis un nombre entre 1 et 100.
+1 { nb(1..100) } 1.
+```
+
+Vous pouvez (devriez) vérifier : nous obtenons bien 100 answer sets, chacun avec sa propre valeur de nb(X).
+
+
+## Contraintes
+Les contraintes ! On en a parlé longuement, et certainement que vous brûlez d'impatience à l'idée de les utiliser !
+
+Reprenons notre dernier exemple, en ajoutant une contrainte qui écarte tous les modèles avec une valeur qui n'est pas multiple de 3 :
+
+```asp
+% On écarte tout modèle dont le nombre choisis n'est pas multiple de 3.
+:- nb(N) ; N \ 3=0.
+```
+
+Premier constat, l'écriture d'une contrainte ressemble à celle d'une règle, à l'exception de la *tête*, qui est vide.
+C'est exacement la description d'une contrainte dans la grammaire d'ASP: une règle sans tête.
+
+Cela, mathématiquement, à un sens : la contrainte est une règle.
+Hors, dans une règle, rappelez-vous : lorsque le *corps* est vrai, la *tête* est vraie.
+
+Sauf que, dans le cas de la contrainte, la *tête* est vide : cela veux dire que si le *corps*
+est vrai… rien ne peut être vrai !
+
+C'est l'exact sens de la contrainte : si son *corps* est vrai, alors rien n'est vrai.
+Il s'agit d'une contradiction fondamentale entre le fait que rien n'est vrai, et que le *corps* (et probablement d'autres atomes du programme) est vrai.
+Par conséquent, le modèle est faux, et ne sera pas considéré par le solveur.
+
+Ici `N\3 = 0` n'est vrai que si `N` est un multiple de 3.
+Par conséquent, le *corps* de la contrainte est vrai lorsque nb(X) est vrai avec X un multiple de trois.
+Donc le modèle est invalidé dans ce cas.
+Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 67: le nombre de nombre entre 1 et 100 qui n'est pas multiple de 3.
+
+
+
+## Insatisfiabilité
+Avec cette histoire de contraintes qui empêchent certains modèles d'exister,
+on est en droit de se poser une question… Et si un problème n'est pas satisfiable,
+c'est à dire qu'il n'existe pas de réponse ?
+
+Et bien, accrochez vous à vos ceinture, c'est tout à fait possible:
+
+```asp
+a.  % a est vrai
+:- a.  % a ne peut pas être vrai
+```
+
+Ceci est la contradiction la plus simple imaginable.
+Et clingo réagit exactement comme il faut:
+
+    clingo version 5.2.1
+    Reading from program.lp
+    Solving...
+    UNSATISFIABLE
+
+    Models       : 0
+    Calls        : 1
+    Time         : 5.189s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+    CPU Time     : 0.000s
+
+Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set, aucune réponse.
+
+
+## ∃ vs ∀
+Vous connaissez certainement les deux opérateurs mathématiques suivant :
+- ∃: *il existe*, c'est-à-dire qu'il y en a au moins un
+- ∀: *pour tout*, c'est-à-dire que tous les éléments sont considérés
+
+En ASP, ces signes cabalistiques n'apparaissent pas, mais leur sémantique apparaît visiblement.
+Le premier, *il existe*, nous l'avons déjà utilisé : il est implicite dans les *corps* des règles.
+
+Ainsi, dans `a(X):- p(X)`, il est dit que a(X) est vrai si *il existe* un p(X).
+C'est particulièrement visible avec la règle `a:- p(X)`.
+Ici, il suffit qu'un `p(X)` soit vrai, quelque soit la valeur de X, pour que `a` soit vrai.
+
+Maintenant que l'on comprend bien que le *il existe* est partout par défaut, attaquons
+le *pour tout* avec un exemple complet :
+
+```asp
+% J'ai 3 copains dans ma classe
+copain(1..3).
+% Parfois certains ne viennent pas à la récré
+{ en_recre(1..3) } 3.
+% On joue au ballon quand on est tous les quatre
+on_joue_au_ballon:- en_recre(C): copain(C).
+```
+
+Cet exemple génère 8 answer sets, dont un seul contient `on_joue_au_ballon`.
+
+Ici, le corps de la dernière règle implémente
+la condition *en_recre(C) doit être vrai __pour tout__ les copains C.*
+Autrement dit, si il existe un copain C tel que `en_recre(C)` est faux, alors la condition est brisée,
+et le corps de la règle est faux, et par conséquent, on ne joue pas au ballon.
+
+
+## Tokens
+En ASP, il existe cinq types de tokens:
+- les identifiants: par exemple `a`, `hello_world` ou `a_3_on_y_va`, mais pas `A`, `_`, `Arachide` ou `_case` (`[a-z][a-z0-9A-Z_]*`).
+- les variables: un identifiant qui commence par une majuscule ou un underscore (`[A-Z_][a-z0-9A-Z_]*`).
+- les nombres: seuls les nombres entiers sont gérés (`-?[0-9]+`).
+- les textes: encadrés par des double-guillemets `"`, ils peuvent contenir n'importe quoi, sauf des double guillemets non précédés d'un antislash.
+- les opérateurs: mathématiques (`+ - / * / \ ^ ..`) ou logiques (`; , :- : { }`)
+
+Tout le langage ASP repose sur ces tokens.
+Nous verrons qu'il existe un sur-ensemble du langage plus ou moins spécifique à clingo,
+qui rentre dans la catégorie de la méta-programmation.
+C'est la méta-programmation qui nous permettra de *tuner* la recherche de la solution,
+par exemple en définissant quels atomes doivent être affichés dans les résultats,
+ou définir les valeurs de constantes.
+
+
+
+
+# En pratique !
+Maintenant que l'on a les bases, nous allons (enfin !) pouvoir
+attaquer des vrai problèmes.
 
 
 # Interface avec Python
@@ -30,9 +541,12 @@ Je n'utilise pas cette API en règle générale.
 
 
 ### Autres API
-Une alternative est [pyasp](https://github.com/sthiele/pyasp). Néanmoins, celle-ci est peu maintenue,
-et ne supporte pas clingo *seul*, mais plutôt gringo et clasp comme deux binaires
+Une alternative est [pyasp](https://github.com/sthiele/pyasp).
+Néanmoins, ce package et ne supporte pas clingo *seul*,
+mais plutôt gringo et clasp comme deux binaires
 séparés appelés séquentiellement.
+Hors, dans les nouvelles versions du solveur, seul clingo est distribué.
+Pyasp n'est donc (pour le moment) pas une alternative viable pour utiliser les versions les plus récentes.
 
 L'autre alternative, que je vous conseille pour démarrer, est [clyngor](https://github.com/aluriak/clyngor).
 C'est un module python on ne peux plus standard, disponible sur pypi,
@@ -44,12 +558,20 @@ Et normalement, c'est déjà fait :)
 ## Extending avec Python
 Vous avez déjà étendu Python avec du C pour gagner un peu de performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
-pour profiter, pendant le solving même, de la puissance d'un langage non-logique.
+pour profiter, pendant le solving même, de la puissance d'un langage impératif.
 
 
 # Real-world application
 
 ## Construire un PC
+1PC == plusieurs pièces : CPU, GPU, RAM, carte mère, refroidissement, boite, périphérique.
+Pour chaque, différentes solutions avec chacune un prix, une note de préférence, des dépendances, des incompatibilités,…
+Et bien sûr un prix maximum à ne pas dépasser.
+
+Donc : programme où l'on donne son prix, et ses préférences, et pif le solveur propose les meilleures solutions.
+
+Le code est disponible sur [le dépôt](https://github.com/aluriak/learning-ASP/blob/master/build-pc.lp).
+
 
 ## Résoudre un donjon de The Legend of Zelda
 
@@ -99,3 +621,7 @@ pour profiter, pendant le solving même, de la puissance d'un langage non-logiqu
 
 # Liens
 - [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications
+- N'hésitez pas à poser des questions sur ASP sur [stack-overflow](http://stackoverflow.com/questions/tagged/answer-set-programming).
+- la page [potassco/teaching](https://potassco.org/teaching/) regorge de liens.
+- une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content)
+- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp_en.mkd)

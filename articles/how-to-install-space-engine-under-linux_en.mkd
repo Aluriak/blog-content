@@ -1,0 +1,117 @@
+Title: How to install Space Engine on linux
+Date: 2017-08-30
+Modified: 2017-08-30
+Tags: tuto, space
+Authors: Lucas Bourneuf
+Summary: small tutorial showing how to install Space Engine under recent GNU/linux distributions
+Slug: space-engine-linux
+lang: english
+translation: false
+status: published
+
+Since i discovered Space Engine, i used to run it with [Wine](https://en.wikipedia.org/wiki/Wine%20(software)).
+The bad news is : since a recent OS update,
+it stopped working with a wine database-related error. Nothing was really clear,
+except that i couldn't play Space Engine anymore.
+
+So, following advices of a [friend](https://pro-domo.ddns.net/blog),
+i gave a try to [Play on Linux](https://en.wikipedia.org/wiki/PlayOnLinux),
+an ambitious project built on top of Wine, that allow to install and run without any configuration needed many windows software,
+including a lot of games (age of empire, fallout, EVE online, neverwinter nights,…) and many utilities softwares (word processor, music edition, education,…).
+
+I took me about 30 minutes to get Space Engine working.
+(And i feel like this install is slightly smoother than the wine-only one, but probably it's just the relief to be able to play again)
+
+This blog post is a tutorial, with explanations and few screenshots, about how to install and run Space Engine 0.9.8.0 with PlayOnLinux 4.2.10.
+(This should be valid even for later versions of PlayOnLinux and SpaceEngine ; until SpaceEngine officially get the linux native support)
+
+
+# Get PlayOnLinux
+Depends of your [distributions](https://www.playonlinux.com/en/download.html).
+I am on [manjaro](https://manjaro.org/), so it was the archlinux way: `pacman -S playonlinux`.
+
+You also have to download SpaceEngine's [installer binary](http://spaceengine.org/download/spaceengine) (use bittorrent, it's *way* faster).
+
+
+# Run and configure
+This is the hard part. Run playonlinux, and the opening GUI should looks like this:
+
+<center>{% img {filename}/images/playonlinux/mainMenu.png 700 "main menu" %}</center>
+
+Since Space Engine is not in the list of default programs of PlayOnLinux, we will have to install it manually.
+Click on the install button, and, in the opening window, look for *install a game not in the list*.
+The installer starts, and will ask a series of questions.
+
+- *What to do ?*: we want to create a new virtual disk. Each program (may) live in its own virtual disk, so we need to create one for Space Engine.
+- *Which name ?*: virtual disk's name can be whatever. *SpaceEngineDisk* and *default* are two possible choices.
+- *What to do before install ?*: nothing currently ; all needed configuration will be done later.
+- *32 or 64 bits ?*: 32 (i tried with 64, it do not works well)
+
+Now the virtual disk is created. We will now populate it with Space Engine, by providing the path to the installer binary.
+Then, the Space Engine installer is running.
+Just perform a regular install, do not change the intallation directory, and do not launch Space Engine at the end.
+
+Now, we will be prompted about the icons/shortcuts to add to PlayOnLinux:
+
+<center>{% img {filename}/images/playonlinux/chooseIcons.png 700 "choose icons" %}</center>
+
+In order to simplify our future life, we will add one icon to launch Space Engine. To do that, just select *SpaceEngine.exe* in the list,
+click *Next* two times (you can change the shortcut name between the two *Next*),
+then click *I don't want to create new icons*, then *Next*.
+
+Now, Space Engine is ready to be launched. Try it yourself !
+If it does not work (like in my case), it is probably because of the new wine version.
+
+Consequently, we will change the wine version to use by clicking on our shortcut in the list
+(if Space Engine is your only shortcut, it is probably already selected), then *configure* on the left panel (just under *run* and *debug*).
+
+The new window appearing provides a lot of insight about the software configuration, but only one change will be enough.
+Search for *Wine version* on the right, which will probably be *system* by default. By clicking on the drop-down list, probably only this one is available.
+
+Space Engine works for me with the `2.14-staging` version. Click on the `+` mark next to the drop-down list,
+and in the new window add this version to the left block.
+Note: since we have installed Space Engine as 32 bits application,
+we have to install 32 bits versions of Wine. Make sure to install the x86 version of Wine (first tab), and not the amd64 (second tab).
+
+<center>{% img {filename}/images/playonlinux/chooseWineVersion.png 700 "choose wine version" %}</center>
+
+Now quit the window, and select in the drop-down list the version you just installed.
+
+Now try again to run Space Engine.
+
+
+## error !
+If it do not work, try other versions of Wine (the most recent first).
+
+
+# Easy run
+Remember that, in order to run a PlayOnLinux application, you do not need to start its GUI ; just type this simple command:
+
+     playonlinux --run SpaceEngine
+
+I mapped this command with one keystroke ; now space engine is running like a charm.
+
+# Migration
+If you had a previously installed instance of Space Engine, you may want to keep saves, journal, screenshots,…
+
+Locate you're previous install directory, `~/.wine/drive_c/SpaceEngine` with Wine, or `C:/SpaceEngine` under Windows,
+and go to the new one `~/.PlayOnLinux/wineprefix/SpaceEngineDisk/drive_c/SpaceEngine` (or whatever PlayOnLinux indicates in the configuration).
+
+You may want to copy:
+
+- `config/keys.cfg`: keyboard mapping
+- `config/journal.cfg`: journal entries (last visited places)
+- `config/places-user.cfg`: places registered ("bookmarks")
+- `config/spacecraft.cfg`: spacecraft-related data
+- `config/save-user.cfg`: user name, settings, and place since last session
+- `addons`: contains additionnal catalogs and mods that you could have installed
+- `screenshots`: contains all screenshots taken from SE
+
+
+# What next ?
+Install [additional music](http://forum.spaceengine.org/viewtopic.php?f=3&t=163),
+like [Emmitremus' *Welcome to Nova*](https://www.jamendo.com/track/1219424/welcome-to-nova) that fits Space Engine wonderfully.
+
+Install [other mods](http://forum.spaceengine.org/viewtopic.php?f=3&t=142) for new spacecraft and systems,
+or try the [ultimate engineered solar system](https://lucas.bourneuf.net/blog/uess.html) for yourself,
+or install the [last patch implementing ephemerides](http://spaceengine.org/news/patch0980e/) (and therefore eclipses).

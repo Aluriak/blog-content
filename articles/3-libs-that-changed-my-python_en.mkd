@@ -1,0 +1,704 @@
+Title: Three libs that have changed my use of python
+Date: 2016-12-12
+Modified: 2016-12-12
+Tags: python, stdlib
+Authors: Lucas Bourneuf
+Summary: quick overview of three pages of the stdlib documentation
+Slug: 1
+lang: en
+translation: false
+status: published
+
+
+
+
+# Philosophic introduction
+
+Take a look to the [stdlib reference](https://docs.python.org/3.4/library/index.html),
+
+imagine that you take a good long look at it. Stare at the doc for any length of time and
+then try to convince yourself that Python implements the whole stdlib for one
+of the 10 billion or so programs that inhabit that internet.
+
+Now take it a step further: imagine that everything was made
+just for a single shade of that language,
+or version, or implementation or plateform sub-division.
+
+We can recognize here a shortcoming — in some circumstances serious — in our ability to understand the world.
+
+As always, [Carl Sagan words](https://www.youtube.com/watch?v=5bb1OzPVz0U) are full of wisdom.
+
+
+
+# Normal introduction
+
+Reading the doc is not always a matter of necessity.
+You really enjoy a doc only when you read it to discover things
+than you didn't know you need, until you learn their existence.
+
+Well, at least, i don't enjoy a doc when i'm actively searching
+for something in it since two hours.
+
+So, this article is about three pages of the Python stdlib that change my
+usage of Python to *cool language* to *powerful language*.
+Follows a quick overview of three documentation pages, and particularly some of my favorite functions they provides.
+All of this is stdlib, so anyone can enjoy the awesomness, Python-style.
+
+I hope it will encourage you to read more doc, as it happened to me.  
+Who could imagine that i end up reading a [doc page](https://docs.python.org/3.4/library/cmd.html)
+instead of sleeping, the night before an internship defense ?
+
+
+
+# itertools
+*read(word) for word in this.article*
+
+[link](https://docs.python.org/3/library/itertools.html) to the one that show you the [power of `[iter(l)] * 2`](https://www.youtube.com/watch?v=VkAVfsw5xSQ).
+
+
+
+
+## iterable counting
+`count`, `cycle` and `repeat` have good names, because when you see them, you barely know what they do.  
+
+Count does not works on iterables. Count… counts.
+Note that `count` is basically `enumerate` without the input iterable parameter.
+
+Cycle will endlessly repeat a given iterable. Useful for round robin.
+
+Repeat will yield n times the same value, and therefore does not works on iterable neither.
+Both the yielded value and n are received in parameter.
+
+That's all folks !
+
+
+## iterable manipulation
+Because the two basics provided in global namespace, `zip` and `enumerate`, are not enough.
+
+`zip_longest` provides a convenient way to handle iterables of different size. Useful to get a default behavior, for instance when you have no remaining colors to give to the remaining nodes.
+
+```python
+import random
+from itertools import zip_longest
+peoples = ['jeanne', 'michel', 'julie', 'gérard']
+gifts = ['book', 'boat', 'bulldozer']
+random.shuffle(peoples)  # who's gonna ¬have a present ?
+print(dict(zip_longest(peoples, gifts, fillvalue='nothing, sorry, Santa Claus is a stinker')))
+```
+
+`islice` allows to read a particular part of an iterable. Useful to filter out header in a CSV file, or read only one line on ten in a file, without using the slicing notation `[0::10]` that needs to load all data in memory, and therefore doesn't work with generators.
+
+```python
+from itertools import islice
+with open('my_very_long_file') as fd:
+    one_line_on_ten = islice(fd, 0, None, 10)  # None stands for "no stop"
+```
+Note that islice does not support negative indexing like in slices (and that's sad, but documented).
+
+`chain` is maybe the best of all, the funnier and the prettier: it returns an iterable on multiple iterables:
+
+```python
+from itertools import chain
+all_cards_with_chain = chain(my_hand, your_hand, deck, cards_in_my_sleeve)
+```
+
+Plus, it provides a variation of its behavior, not through a weird & elusive parameter handling trick,
+but with a handy and absolutely cute sub-namespace: `chain.from_iterable`. This one expects to have all iterables packed in as a single parameter:
+
+```python
+all_cards_with_chain_from_iterable = chain.from_iterable((my_hand, your_hand, deck, cards_in_my_sleeve))
+```
+
+This allows us to avoid the *star syntax*, which is always a good idea (especially when you handle [*a lot* of iterables](https://gist.github.com/Aluriak/ad238aac6540b701a07b3fe166bb4e5f)):
+
+```python
+all_cards_with_star_syntax = chain(*(my_hand, your_hand, deck, cards_in_my_sleeve))
+```
+
+
+Other functions like `tee` and `takewhile` are awesome, too, but i didn't have to use them on a regular basis. Quite rare, in fact.
+
+Don't forget that tee is storing the difference between the n iterables in memory.
+(when you access next value on one iterable, the result is stored until all other iterables also access it)
+That can be exactly not what you want, for instance when you need two passes on a 32 Go file.
+
+
+### The (¬)bad guys: filter(false)
+`filterfalse` definitively looks really ankward to me, while `filter` is not really useful in most of cases.
+Needs to get integers that are NOT selected by a `f` function ? Just do it, python-style:
+
+    :::python
+    (n for n in range(10) if not f(n))
+
+which is far more readable than
+
+```python
+filterfalse(f, range(10))
+```
+
+The example in documentation gives a showcase:
+
+```python
+filterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
+```
+
+As an odd number % 2 is zero, we need to keep those f(n) which are false. I personally found this one much more simpler:
+
+```python
+(n for n in range(10) if n % 2 == 0)
+```
+
+It's clear, and don't have a negation that could mess up my understanding.
+But, when i will need to have a *function* to do that,
+i know i can count on these ones.
+
+
+## iterable combination
+
+You will need the carthesian product of multiple sets. Check `product`,
+which is basically a for-loop imbrication in one line/level,
+helping you to not reach the 80 chars limit.
+
+In the same spirit, you will need [combinations]( https://docs.python.org/3/library/itertools.html#itertools.combinations ) and *the-one-i-always-forgot-its-name*, [permutations]( https://docs.python.org/3/library/itertools.html#itertools.permutations ).
+Each time i use it, i imagine myself trying to coding them without error in less than an hour.
+
+
+## itertools recipes
+Most of the itertools [recipes](https://docs.python.org/3/library/itertools.html#itertools-recipes) are pure dope, and looks to me as good candidates to builtin implementation,
+especially `grouper` that have some powerful usage:
+
+```python
+for oddline, evenline in grouper(fd, 2):
+    # your code
+```
+
+Bonus point: implementation is both funny, extremely efficient and simple.
+
+
+
+# Functools
+*How to put functions on functions. And eventually never call functions (directly).*
+
+[link](https://docs.python.org/3/library/functools.html).
+
+
+## lru cache
+A function is, mathematically, just a mapping between a domain and a co-domain. For instance, `**` maps 2 with 4, 3 with 9,…
+`lru_cache`, or *least recently used cache*, is just a way to avoid repetitive computation of the function,
+by caching the parameters at each call, and save the output result
+for quick retrieval when function is called with the same parameters.
+
+The best part ? Maximal cache size control is already implemented with the `maxsize` parameter.
+Also, any lru-cached function provides the `clear_cache` method,
+allowing to invalidating the cache: `my_lru_cached_function.clear_cache()`,
+allowing you to deal with one of the [two main problems of Computer Science](http://martinfowler.com/bliki/TwoHardThings.html).
+
+
+Beyond Python, this technique have been applied everywhere, even on arbitrary libraries through [a dynamic approach]( https://hal.inria.fr/hal-01178085 ).
+If you already play with pure functions, you will love LRU caches.
+
+
+For the example, let's implement a [levenstein distance](https://en.wikipedia.org/wiki/Levenshtein_distance),
+using the recursive implementation that is not suitable for real world problem:
+
+```python
+def lev(a:str, b:str) -> int:
+    i, j = len(a), len(b)
+    if min(i, j) == 0:
+        return max(i, j)
+    else:
+        return min((
+            lev(a[:-1], b) + 1,
+            lev(a, b[:-1]) + 1,
+            lev(a[:-1], b[:-1]) + (0 if a == b else 1),
+        ))
+```
+
+Which is very slow when comparing strings of length greater than a dozen of characters:
+```python
+base = 'abcdefghijklmnop'
+print(lev(base, base + 'q'))  # hang up
+```
+
+Now, just decorate the function with the lru cache:
+```python
+from functools import lru_cache
+@lru_cache()
+def lev(a:str, b:str) -> int:
+    ...  # insert here the previous implementation
+```
+
+If you run the previous test case, instead of hanging up,
+the program ends in few milliseconds.
+Same thing for other recursive computations like fibonacci numbers, syracuse suite,…
+
+It's also a cheap mean to implement a caching, for instance
+[here](https://github.com/Aluriak/shaarpli/blob/master/shaarpli/core.py#L86) to accelerate the page
+loading by avoiding database access.
+
+
+## partial
+`partial` is awesome: it allows us to do partial application.
+I recently learned that partial application is
+[different from currying](http://stackoverflow.com/a/23438430/3077939),
+and that many peoples says mix that two concepts.
+Now, we are all aware of the difference.
+
+Partial application is good in many ways, and one of them is to implements
+objects without objects. Instead of:
+
+```python
+class Neighbor:
+    def __init__(self, name):
+        self.name = name
+
+    def do_noise(self, db_spl):
+        print('{} is doing noise at {} dB SPL !'.format(self.name, db_spl))
+```
+
+Just write this function:
+
+```python
+def do_noise(neighbor_name, db_spl):
+    print('{} is doing noise at {} dB SPL !'.format(neighbor_name, db_spl))
+```
+
+And, instead of instanciate and manipulate a Neighbor object like that:
+
+```python
+my_neighbor = Neighbor('Mister Fizz')
+my_neighbor.do_noise(80)
+```
+
+You could create a partial object, ready to be called:
+```python
+my_neighbor_do_noise = partial(do_noise, 'Mister Buzz')
+my_neighbor_do_noise(80)
+```
+
+It's a great way to reduce OOP usage when OOP is not necessary. As in [a great amount of cases]( https://www.youtube.com/watch?v=o9pEzgHorH0 ),
+or, for instance, to implement the Command pattern with functions instead of objects.
+
+But it's not the only way to use it, and the most useful way is when you seek to compare multiple methods with `timeit`.
+See [here](https://gist.github.com/Aluriak/89015cbaa4965c520a373d9287a6359a) for instance.
+You can provides function to timeit, but they have to be callable
+without arguments. Partialization allows us to specify the parameters to use.
+
+The `partialmethod` provides a way to partially apply an object method.
+
+Under the hood, the partial object returned by `partial` is just a container of a function and the given parameters.
+Consequently, all of them are kept in memory.
+Also, because the partial object is also a function, you can use `partial` on it, and do a funny but not really efficient accumulator travelling accross your code base. In fact, it is a very unclear way to find the maximum recursion limit:
+
+```python
+for nb_n in range(990, 1000):
+    def acc(*args):
+        return sum(args)
+    for n in range(nb_n):
+        acc = partial(acc, n)
+    try:
+        acc()
+    except RuntimeError:
+        print('RuntimeError at', nb_n)
+```
+
+I found that 998 is the limit. This can be overwritten with the [sys module]( http://stackoverflow.com/a/3323013/3077939 ).
+Note that there is probably something to do with [a tail recursion optimization]( https://github.com/lihaoyi/macropy#tail-call-optimization ) (the explanation of how is handled a tail call optimization is very good).
+
+In the real world, a `list` do the job better.
+
+
+## reduce
+[Don't use reduce]( http://www.artima.com/weblogs/viewpost.jsp?thread=98196 ).
+Reduce is dangerous for readability. The government should launch a
+advertisement program against its usage.
+
+Use `any` and `all` instead. They are pretty, readable, powerful,
+and probably [all you need](https://www.youtube.com/watch?v=dsxtImDVMig).
+
+```python
+if all(friend.location is here for friend in my_friends):
+    print('Lets start the game')
+    while any(friend.hate(choosen_game) for friend in my_friends):
+        print('Lets choose ANOTHER game')
+        choosen_game = random.choice(games)
+```
+
+
+
+
+
+
+
+# collections
+*Where can i put that ? And this that ? And that this that ?*
+
+[Link]( https://docs.python.org/3/library/collections.html ) to my (probably) favorite stdlib module.
+
+Globally accessible collections are `dict`, `set`, `frozenset`, `list` and `tuple`.
+We need more, and follows my favorite parts of the `collections` module.
+
+
+
+## deque
+[*Qu'importe le côté par où on s'aime, pourvu qu'on s'aime quand même*](https://www.youtube.com/watch?v=pp4OL-lFVec)
+
+The [deque](https://docs.python.org/3.6/library/collections.html#deque-objects)
+is basically a list where add and remove from one side or another reach O(1) complexity.
+In other words, unlike the list, if you add an object to the beginning of a deque,
+it will __not__ move all cells in memory in order to get a free cell.
+
+The deque can then implements both fifo and filo containers, or a sliding window on a stream of data:
+```python
+    def sliding(iterable, n):
+        "Yield windows of n items over given iterable"
+        # sliding('ABCD', 2) --> AB BC CD
+        slide = collections.deque(itertools.islice(iterable, n-1), maxlen=n)
+        for item in iterable:
+            slide.append(item)
+            yield tuple(slide)
+```
+
+It can also get you the N-th last elements in an iterable, as shown in itertools recipes:
+```python
+    def tail(n, iterable):
+        "Return an iterator over the last n items"
+        # tail(3, 'ABCDEFG') --> E F G
+        return iter(collections.deque(iterable, maxlen=n))
+```
+
+The doc provides some [recipes](https://docs.python.org/3.6/library/collections.html#deque-recipes)
+that i found worth reading.
+
+
+
+
+## ChainMap, the magician
+*one dict to query them all*
+
+Maybe the most epic of all collections, because it is both a dict and an iterable.
+[ChainMap](https://docs.python.org/3.3/library/collections.html#collections.ChainMap)
+chains the maps, i.e. is an iterable of dictionnaries to be sequentially queried
+for a given key:
+
+```python
+from collections import ChainMap
+
+cm = ChainMap({1: 'a'}, {2: 'B', 1: 'A'})
+assert cm[1] == 'a'  # found in first dict
+assert cm[2] == 'B'  # found in second dict
+```
+
+Because the ChainMap doesn't copy input dict, but just get a reference to them,
+it's a very good way to [merge dictionnaries](http://stackoverflow.com/a/16259217/3077939)
+without having to copy their content, unlike the
+[`{**da, **db}` expression](http://stackoverflow.com/a/26853961/3077939):
+
+```python
+da, db = {1: 12}, {1:21, 2:22}
+assert dict(ChainMap(da, db)) == {**db, **da}
+```
+
+
+### Parameters recipe
+I often use ChainMap object in order to implement a configuration map,
+i.e. a dictionnary that associate, for each configuration field of a program
+(population size for a genetic algorithm, for instance), the value.
+
+Problem: these values can be found at least in three places: in the configuration file,
+in the command line parameters, and in the hardcoded default values.
+CLI have precedence over configuration file, and this last have precedence over default values,
+so we can easily know which value to use if a field is specified in multiple places.
+But how can we do that efficiently ?
+
+A solution is to get a copy of the default values, and update it by increasing order of priority:
+
+```python
+cli = {'pop size': 200}
+default = {'pop size': 100, 'mutation rate': 0.01}
+config_file = {'mutation rate': 0.05}
+
+final_config = dict(default)
+final_config.update(config_file)
+final_config.update(cli)
+```
+
+This solution is simple and efficient, but if one of the three parameters dict changes (config file, for instance),
+the final config have to be computed again.
+
+Moreover, if the user change some parameters during the program itself, we will have to manually keep track of these changes
+if we want to save them for future use.
+
+
+#### The solution
+You already guessed it: ChainMap can answers elegantly to all these problems:
+
+```python
+cli = {'pop size': 200}
+default = {'pop size': 100, 'mutation rate': 0.01}
+config_file = {'mutation rate': 0.05}
+
+final_config = ChainMap({}, cli, config_file, default)
+
+assert final_config['pop size'] == 200
+assert final_config['mutation rate'] == 0.05
+```
+
+Now, only one copy of the data is performed,
+and if a dict change, the change is immediately effective.
+Moreover, we can easily detect at which levels of priority a field have been specified.
+The first given dict is an empty one that will be updated in final config is modified,
+allowing us to track post-init modifications of the configuration: `final_config.maps()[0]`.
+
+And, if you need a real `dict` object at some point, ChainMap can be converted easily with `dict(final_config)`.
+
+
+### Another recipe: IterMap, an iterable of dict of iterable
+Use case: As for the configuration, but where fields must be added,
+not replaced, by sources of higher priority.
+
+```python
+cli = {'methods': ['B', 'C']}
+default = {'methods': ['A'], 'files': ['calibration.txt']}
+config_file = {'files': ['ecoli.txt']}
+final_config = IterMap(cli, config_file, default)
+
+assert tuple(final_config['files']) == ('ecoli.txt', 'calibration.txt')
+assert tuple(final_config['methods']) == ('B', 'C', 'A')
+```
+
+Here is a simple and incomplete implementation:
+
+```python
+import itertools
+
+class IterMap:
+
+    def __init__(self, *maps):
+        self.maps = tuple(maps)
+
+    def __getitem__(self, key):
+        return itertools.chain.from_iterable(map.get(key, ()) for map in self.maps)
+```
+
+
+### Another recipe: IDIDDDTGFIMap, an iterable of dict of iterable of dict of deque of defaultdict of tuple of generator of frozenset of iterable
+Left as an exercise for the reader™.
+
+
+
+## defaultdict, your new best friend
+*I'm wolf. I solve problems.*
+
+the [defaultdict](https://docs.python.org/3.6/library/collections.html#collections.defaultdict),
+is basically a dict that never raise a KeyError.
+
+In order to have that behavior, the defaultdict takes one parameter named a *factory*,
+which is a function that takes no parameter and returns a new object.
+
+The interest ? When you ask for the key `a` in a defaultdict that haven't this key,
+it will call the factory, and assign the returned value to the key.
+
+The documentation provides some examples, allowing code to be a little more readable,
+and, in some case, [quicker](http://stackoverflow.com/a/36549535/3077939).
+
+Here is a function i use on a regular basis, allowing to revert keys
+and values of a dictionnary that maps keys with multiple values (like a [graph](https://www.python.org/doc/essays/graphs/)):
+```python
+def reversed_dict(dct:dict) -> dict:
+    ret = defaultdict(set)
+    for key, values in dct.items():
+        for value in values:
+            ret[value].add(key)
+    return dict(ret)
+```
+
+The interesting thing here is to note that all python types provides a constructor without parameters:
+```python
+>>> int()
+0
+>>> list()
+[]
+>>> set()
+set()
+>>> defaultdict()
+defaultdict(None, {})
+```
+
+Then, it's possible to have a very readable declaration of defaultdict, like `defaultdict(int)`
+that is basically a collections.Counter-like object, or `defaultdict(defaultdict(list))` that
+maps keys with dictionnary mapping subkeys with lists.
+
+
+
+### UID mapping
+Another way i already used this wonderful collection is to attribute an unique id for incoming data,
+using the itertools.count function:
+```python
+def next_id_factory() -> callable:
+   counter = itertools.count()
+   return lambda: next(counter)
+
+uid = defaultdict(next_id_factory())
+
+# Now we can access the uid of any object, computed the first time
+#  the object is needed, then always the same until deletion.
+uid['a']
+uid['b']
+```
+
+This snippet is interesting because:
+- each uid is used only one time
+- uid is only assigned the first time the object is needed
+- you can easily change the generator of uid: here it's itertools.count, but it can be a random value, a suite,…
+
+
+
+### A variant named datadefaultdict
+Defaultdict is awesome, yes, but it annoys me that we can't access, in the factory,
+the key that needs to be assigned.
+Well, i never had to access this information, so it's probably not so important.
+But, if i need that information, maybe the best way is to use
+the [setdefault](https://docs.python.org/3.6/library/stdtypes.html#dict.setdefault) method.
+
+But still, i want to implement my datadefaultdict !
+
+```python
+class datadefaultdict(dict):
+
+    def __init__(self, factory=lambda _: None, *args):
+        super().__init__(*args)
+        self.factory = factory
+
+    def __missing__(self, key):
+        return self.factory(key)
+```
+
+This dict-like object, that expects to receive a function with one parameter, can be used as follow:
+
+```python
+ddd = datadefaultdict(lambda k: len(k))
+print(ddd['A'])  # -> 1
+print(ddd['hi !'])  # -> 4
+print(ddd[4])  # -> TypeError
+```
+
+
+
+
+## Counter, the friend of data analysis
+A simple object that is able to perform in one readable line what you often have to do quickly:
+
+```python
+from collections import Counter
+
+counts = Counter((random.choice('ATGC') for _ in range(10000)))
+print(counts)  # -> {'A': 2500, 'T': 2500, 'G': 2500, 'C': 2500} (something like that, because it's random)
+assert sum(counts.values()) == 10000
+
+print(counts.most_common(2))  # print the two most commons letters
+
+ratio = {nuc: count / 10000 for nuc, count in counts.items()}
+assert round(sum(ratio.values()), 2) == 1.
+```
+
+Counter provides an helpful API. [Check it out !](https://docs.python.org/3/library/collections.html#collections.Counter)
+
+
+
+## namedtuple, another good way to avoid OOP
+*a tuple, with names*
+
+What is the conceptual use-case of list and tuples ?
+List should be used for a set of uniform data, where tuples is designed to store a fixed set of predefined data.
+
+Typical exemples are a list of time measures, and a tuple that contains an entry in a database.
+For the record, a line in a relational database table is named a *tuple*. Not a coincidence IMHO.
+
+Yes, also, tuple sometimes offers a speed up and (almost) always a read-only access, meaning that it can be used for optimization,
+but that's not the subject of this part.
+
+In many case, you appear to store inside a tuple some data:
+
+```python
+def last_best_inventions():
+    ...  # some implementations
+    return inventor, year, name
+```
+
+That you basically use as `inventor, year, name = last_best_inventions()`, or,
+worse, `invention = last_best_inventions()` then access fields using indexing.
+But *namedtuple* brings some interesting twist:
+
+```python
+Invention = namedtuple('Invention', 'inventor, year, name')
+
+def last_best_inventions():
+    ...  # some implementations
+    return Invention(inventor, year, name)
+```
+
+That you can use both as tuple, and as an object holding the 3 specified attributes:
+
+```python
+best = last_best_inventions()
+print("The best inventor is " + best.inventor)
+
+# but it remains a tuple !
+inventor, year, name = best
+```
+
+I often use the namedtuple to give some semantic meaning to a data structure that doesn't need more than few normalized fields.
+Moreover, namedtuple is another way to avoid to implement OOP by yourself in some simple cases.
+And sometimes, [having default values for the constructor](http://stackoverflow.com/a/18348004) is helpful.
+
+
+### attrs, even more efficient
+`namedtuple` are introduced [in this article]( https://glyph.twistedmatrix.com/2016/08/attrs.html ) as an almost-saver
+in most case of data holder objects.
+
+This article present the attr module, that i have never used because namedtuple is usually sufficient, but it looks very useful.
+
+
+
+
+## User{List,Dict,String}
+These are objects build for subclassing in mind.
+Interestingly, core dev of python seems to consider that these classes [should not be used](http://bugs.python.org/issue5402), except in few cases.
+
+Well, if you need to create your own dict, choose [the method you prefer](http://stackoverflow.com/a/25464724/3077939):
+
+- subclass the type itself if you need it to **be** a dict.
+- don't subclass the type, but rather [UserDict](https://docs.python.org/3.6/library/collections.html#userdict-objects), if you just need it to **act like** a dict.
+
+UserDict is a proxy to a real dict: instead of being a dict,
+it just implements the same interface and work on its attribute `data`, which is the real dictionnary.
+It's then easy to add more methods or modify those implemented.
+
+UserDict source code can be found [here](https://hg.python.org/cpython/file/3.5/Lib/collections/__init__.py#l956).
+
+Same apply for UserList and UserString.
+
+
+
+
+
+
+# TCC: The Conclusive Conclusion
+Reading the doc is useful for your future you.
+You will find many useful modules for later,
+or modules you will *want* to use just because they are fun.
+(and so begins your 1793-th side-project)
+
+Some other pages i liked:
+[browser control](https://docs.python.org/3/library/webbrowser.html),
+[bytecode disasembler](https://docs.python.org/3/library/dis.html),
+[Windows registers](https://docs.python.org/3/library/winreg.html),
+[UNIX tty](https://docs.python.org/3/library/termios.html),
+[mime types](https://docs.python.org/3/library/mimetypes.html).
+
+Some other links:
+
+- [how are dict implemented ?](http://www.laurentluce.com/posts/python-dictionary-implementation/)
+- [fast non-stdlib data structures](http://kmike.ru/python-data-structures/), that notabily present the bloom filter :)
+- [the hierarchical dictionnary](http://www.stat.washington.edu/~hoytak/code/treedict/overview.html)

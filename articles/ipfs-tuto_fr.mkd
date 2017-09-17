@@ -1,0 +1,495 @@
+Title: IPFS, l'intérêt, le but et le fonctionnement
+Date: 2017-01-06
+Modified: 2017-01-06
+Tags: internet, tutorial
+Authors: Lucas Bourneuf
+Summary: une présentation du web, et plus précisément d'une techno qui l'implémente
+Slug: ipfs
+lang: français
+translation: false
+status: published
+
+
+IPFS: the Inter-Planetary File System / Le système de fichier interplanétaire.
+
+Le nom semble ronflant comme ça, mais le fait est que c'est exactement ce que
+cette technologie permet. [Et on en a besoin](https://ipfs.io/ipfs/QmNhFJjGcMPqpuYfxL62VVB9528NXqDNMFXiqN5bgFYiZ1/its-time-for-the-permanent-web.html).
+
+Pour reprendre la présentation :
+
+    IPFS is a distributed file system that seeks to connect all computing devices
+    with the same system of files. In some ways, this is similar to the original
+    aims of the Web, but IPFS is actually more similar to a single bittorrent
+    swarm exchanging git objects. IPFS could become a new major subsystem of the internet.
+    If built right, it could complement or replace HTTP.
+
+Ce que je traduis par :
+
+    IPFS est un système de fichier distribué qui cherche à connecter tous les appareils
+    avec le même système de fichier. En un sens, c'est similaire au but initial du Web,
+    mais IPFS est en réalité plus proche d'une flotte de serveurs BitTorrent
+    qui échange des objets git. IPFS pourrait bien devenir un nouveau sous-système majeur d'internet.
+    S'il est bien conçu, il pourrait complémenter, voire remplacer HTTP.
+
+Je vais dans cet article expliciter un peu ces phrases,
+et montrer le principe de fonctionnement de la techno.
+
+
+
+# IPFS — Principes généraux
+
+## Définitions
+### systèmes de fichiers
+Un système de fichier, c'est une structure de donnée qui permet d'organiser, quérir et maintenir un ensemble de fichiers,
+en général organisés comme un arbre (on parle d'arborescence de fichiers,
+où des fichiers particuliers, appellés *dossiers*, peuvent contenir d'autres fichiers).
+
+
+
+
+### interplanétaire
+L'appellation *inter planétaire* véhicule une idée bien quantifiable :
+c'est un système de fichier partagé par tout le monde, c'est-à-dire que
+tout le monde peut accéder à tous les fichiers qui y sont présents.
+
+L'intérêt est grand : c'est une surcouche à internet, où l'on peut organiser
+les données de manière cohérente et potentiellement sans contrôle central.
+Ça peut permettre, par exemple, l'échange de fichier de manière privée ou non,
+à la manière de [keybase.io](https://privacyworkshop.wordpress.com/2017/02/28/what-is-keybase-io/).
+
+Mais cette échelle pose des questions sur les accès concurrents, les modifications, les consensus,…
+bref, les problématiques de l'informatique distribuée, très importantes
+en ces heures où les blockchain et autres techno distribuées prennent de l'ampleur.
+
+### systèmes de fichiers interplanétaire
+Le système de fichier doit être *distribué*, c'est-à-dire :
+
+- accessible : où que l'on soit sur le réseau, on peut avoir n'importe quelle ressource qui s'y trouve, indépendemment de l'endroit où elle a été publié initialement.
+- décentralisé : ajouter une ressource peut se faire n'importe quand et n'importe où dans le réseau, indépendamment d'instance centrales.
+
+Ces principes là sont très généraux, et sont à la base du web tel que conçu initialement,
+qui s'oppose aux technologies comme le minitel, ou aux services web centralisés comme facebook.
+C'est à la fois le manque d'éducation numérique et l'hégémonie de certaines entreprises
+sur certains usages du net qui ont complètement dénaturé le but initial,
+au point que certains parlent de [minitel 2.0](https://archive.org/details/InternetLibreOuMinitel2.0).
+
+L'idée du web, c'est que l'information est possédée par les gens, là où,
+pour le minitel ou facebook, il y a un serveur central qui **centralise** l'information,
+et les ordinateurs-clients ne servent que de relais entre l'utilisateur et le serveur central.
+La centralisation est très décriée, notamment à cause de tous
+[les problèmes sociaux qu'elle implique](http://www.owni.fr/2011/08/10/benjamin-bayart-proteger-la-biodiversite-du-net/index.html).
+
+Sans rentrer dans le débat, ce tuto explique, en gros, le principe d'IPFS,
+comment le mettre en place sur sa machine, et surtout, est bardé de liens
+pour être sûr qu'il soit possible de creuser le sujet.
+
+
+
+
+## IPFS
+IPFS est annoncé comme un remplacement au HTTP.
+
+En effet, nous verrons qu'IPFS apporte des fonctionnalités
+qui complémentent voire sont équivalentes à celles d'HTTP, tout en changeant la
+philosophie même de l'accès aux données.
+
+HTTP a quelques lacunes qui sont vraiment gênantes,
+dont celle d'être *orienté-localisation*.
+
+Qu'est-ce que ça veux dire ?
+Ça veut dire que, quand je me connecte en HTTP à un blog, par exemple [celui du hollandais volant](https://lehollandaisvolant.net/),
+je le fait pour accéder à son contenu. Pourtant, je m'y réfère en donnant une adresse correspondant à un serveur.
+
+Et si le serveur est en panne ? Et si l'auteur du blog a changé la localisation de son blog ?
+Le contenu est perdu, et le retrouver nécessite, dans le premier cas, de chercher [une sauvegarde à la main](https://archive.org),
+ou, dans le second cas, de chercher le nouveau serveur qui abrite le blog (par exemple en envoyant un mail à l'auteur, ou en cherchant une info sur les réseaux sociaux).
+De la même manière, si le serveur est loin géographiquement, le temps de réponse est long. Si nous sommes plusieurs dans le voisinage à vouloir accéder au blog, nous allons tous prendre du temps, là ou un seul transfert aurait suffit (et ensuite on se serait dispatché les données entre nous). Ce principe est d'ailleurs celui des [CDN](https://fr.wikipedia.org/wiki/Content_delivery_network). Qui posent aussi des problèmes, notamment par rapport à la vie privée.
+
+Ça paraît un peu bête, tout ça, non ? Vous vous fichez de savoir
+quel serveur contient le dernier article publié par le hollandais volant,
+*vous voulez juste l'article*.
+
+Maintenant, imaginons un système *orienté-contenu* :
+vous vous connectez à une porte d'entrée sur le système,
+et vous donnez un identifiant unique qui identifie littéralement *la dernière version du blog du hollandais volant*.
+Et maintenant, la porte d'entrée va chercher la ressource auprès de ses voisins au sein du système,
+qui vont faire de même, jusqu'à obtenir la ressource attendue (si elle existe), et vous la renvoyer.
+
+Si la ressource que vous demandez est peu populaire, il est probable qu'il se passe un peu de temps avant que la gateway identifie qui possède le contenu.
+Mais, inversement, si elle est très demandée, tous les serveurs du système vont savoir où la chercher, voire l'auront gardée en mémoire pour aller plus vite.
+
+Dans le jargon IPFS, la porte d'entrée est une *gateway*, et l'ensemble des serveurs
+qui hébergent du contenu s'appelle la *swarm* (c'est une *nuée*, ou *flotte* de serveurs).
+
+Les identifiants sont des *hashs* du contenu, c'est-à-dire une chaine de caratères
+qui peut être calculée à partir du contenu, mais qui ne permet pas l'opération inverse
+(on ne peut pas calculer facilement le contenu à partir du hash, sinon on parlerais de compression, qui a d'autres propriétés mais pas celles qui nous intéressent ici).
+
+Quelque soit la taille de la ressource (texte, vidéo, image),
+le hash possède toujours la même longueur, qui est assez petite (moins de cent caractères, souvent).
+Il y a des risques de collisions (deux ressources différentes obtiennent le même hash),
+mais une bonne fonction de hash (le programme qui calcule le hash à partir de la ressource)
+permet de rendre la probabilité d'une collision insignifiante.
+
+L'avantage du hash ? Si deux ressources sont identiques, elles auront le même hashs.
+Aux collisions près (considérées trop rares pour être plausibles),
+l'inverse est vrai aussi : deux ressources différentes n'ont pas le même hashs.
+Cela veux dire qu'un serveur de la nuée, sachant de quelles ressources il possède une copie, entretient une liste des hashs associés.
+Ainsi, quand on lui demande si il possède la ressource identifiée par un hash, il doit juste le comparer avec ceux qu'il possède, ce qui est très rapide (beaucoup plus que de comparer les ressources directement).
+Le hash permet donc de savoir très rapidement où sont les ressources, indépendemment de leur type, format, contenu. C'est universel.
+
+Cela veux aussi dire que, si je demande une ressource particulière en utilisant son hash, et qu'on m'en fournie une autre (par erreur ou par malice),
+je le sais immédiatement : les hashs sont différents !
+Un système se basant sur les hashs préserve donc l'intégrité des données par défaut.
+Il n'est plus possible de corrompre une ressource à la volée.
+
+Ce détail peut sembler insignifiant, mais je rappelle qu'en HTTP, il est impossible de prouver la véracité d'une page.
+La norme [HTTPS](http://sebsauvage.net/comprendre/ssl/index.html) (S pour Secure),
+permet d'assurer la provenance d'une page (et cela nécessite tout un système
+faisant notamment intervenir une autorité extérieure, [les autorités de certification](https://fr.wikipedia.org/wiki/Autorit%C3%A9_de_certification)).
+
+Notez la subtilité : la *provenance* d'une page.
+HTTP est orienté localisation : la page vient donc du bon serveur, mais c'est tout ce qu'on peut garantir.
+
+Avec un système orienté-contenu comme IPFS, il devient difficile de perdre une page ou de recevoir une copie modifiée de la page voulue.
+L'intérêt de ce système est aussi dans sa résistance, par exemple en cas de catastrophe qui sépare le réseau en deux.
+Les ressources sont possiblement toujours présentes sur les deux sous-réseaux, et peuvent exister indépendemment l'un de l'autre. Lorsqu'elles seront réunifiées, les échanges reprendrons, et chaque côté pourra constater les mises à jour de l'autre. Tout ça est géré naturellement sans réel problème.
+
+Un tel système pourrait être conçu, entre autre, pour la publication de contenu régulier (blog par exemple),
+ou pour de la messagerie, du transferts de fichiers,…
+Le principe étant très général, les applications le sont aussi.
+
+
+### Parallèle avec git
+Git est un gestionnaire de version très utilisé, qui a d'abord été pensé comme un système de fichier avec un système de version intégré.
+Il est très utilisé dans la gestion projet, souvent en association avec une forge, comme [gitlab](https://gitlab.com), github ou bitbucket.
+
+L'idée de git : chaque modification du système de fichier (donc, des fichiers eux-même, mais aussi de leur place dans l'arborescence et les permissions associées)
+est sauvegardée dans un *commit*, une brique de donnée.
+Ces commits ne contiennent qu'un patch entre avant et après le commit, par exemple *créer le fichier a/b/c.txt*, ou *ajouter la ligne «bla bla bla» à la 8ème ligne du fichier c/d.py*.
+(Ils sont de fait très légers)
+
+Un projet est donc une suite ordonée de commits (des concepts plus complexes, comme les branches, existent, mais ce n'est pas le sujet).
+
+Donc, en appliquant les commits dans l'ordre, on arrive à reconstruire le système de fichier tel qu'il devrait être.
+Chacun de ces commit possède un identifiant unique, qui est en fait un hash de son contenu,
+assurant que deux commits faisant la même chose sont en fait un seul et unique commit.
+
+IPFS travaille quasiment de la même manière. Chaque contenu référencé par IPFS
+se voit associer un identifiant, qui est plus ou moins le hash son contenu.
+
+On peut donc, de la même manière que l'on peut se référer à un commit par son hash,
+se référer à une page web et à tout ce qu'elle contient par un hash.
+
+Bien sûr, le hash d'une page web dépend du contenu qu'elle contient, par exemple des images, qui sont elles aussi gérées par IPFS,
+il y a donc une arborescence de hash, nécessitant alors, en interne, la gestion d'un [merkle tree](https://en.wikipedia.org/wiki/Merkle_tree),
+une structure de donnée aussi drôle que complexe.
+
+
+#### Détails
+Pour être plus exact, ce qui donne vraiment sa nature *orienté-contenu* à git,
+c'est pas tant les hashs que les [*git objects*](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects).
+
+Cela explique la phrase de l'introduction à propos des git object :
+IPFS utilise le même principe pour adresser les fichiers par leur contenus.
+
+
+### Parallèle avec BitTorrent
+Maintenant que l'on sait comment référencer une ressource avec IPFS,
+la question est *comment récupère-t-on une ressource sachant son identifiant ?*.
+
+Et cette question, elle est plus simple qu'il n'y paraît, car on le fait tous les jours,
+parfois sans s'en apercevoir ; avec le [protocole BitTorrent](https://fr.wikipedia.org/wiki/BitTorrent%20(protocole)) par exemple,
+et plus particulièrement via les [Distributed Hash Table](https://fr.wikipedia.org/wiki/Table_de_hachage_distribu%C3%A9e).
+
+Le torrent repose sur le principe du [peer-to-peer](http://sebsauvage.net/comprendre/p2p/index.html),
+et consiste simplement en l'idée qu'un contenu peut-être cassé en plusieurs segments indépendants,
+qui peuvent être envoyés à différentes personnes qui souhaitent obtenir le fichier final.
+
+Ces personnes pourront ensuite s'échanger les parties qui leur manquent entre elles.
+Du point de vue du serveur, celui-ci n'a eu besoin d'envoyer le fichier qu'une fois en tout.
+Du point de vue d'un client, il reçoit un morceau du fichier, et une liste d'adresse à qui il peut demander le reste.
+
+Grossièrement, on peut considérer que le temps de téléchargement du fichier
+est identique, qu'il y ait un ou mille clients.
+
+Le [tuto de sebsauvage](http://sebsauvage.net/comprendre/p2p/index.html)
+est probablement la meilleure ressource que je connaisse à propos de cette techno.
+
+Pour revenir à IPFS : le principe est le même pour le partage des fichiers.
+Quand vous récupérez une ressource via IPFS, vous demandez en fait, via la gateway,
+de récupérer une ressource avec un certain hash. La gateway va entrer en contact
+avec le *swarm* pour savoir si quelqu'un la possède. Ça peut prendre du temps.
+Une fois ce peer trouvé, la ressource sera téléchargée, et elle pourra vous
+être envoyée.
+
+
+#### Petit plaidoyer en faveur de BitTorrent
+Parce qu'il est utilisé par les réseaux illégaux d'échange de données culturelles,
+BitTorrent est en général confondu avec lesdits réseaux eux-même, en oubliant
+qu'une technologie n'est pas bonne ou mauvaise en soi.
+
+BitTorrent est, indépendemment des réseaux illégaux, de plus en plus utilisé ; et ce n'est pas un hasard.
+
+Du point du vue du particulier, une fois pris en main, c'est un vrai bonheur :
+le téléchargement peut être contrôlé (arrêt, limite de vitesse), ne peut pas être corrompu,
+et est d'autant plus rapide qu'il y a de gens qui le possèdent et le téléchargent,
+ce qui assure la disponibilité des données même (et surtout) en cas d'accès massif.
+
+<!-- Il est facile de publier des fichiers, et même de les partager. -->
+<!-- Imaginez : vous voulez envoyer vos photos de vacances à votre famille. Il y a quelques années, c'était globalement compliqué. -->
+<!-- Aujourd'hui, il y a des sites qui vous proposent d'héberger gratuitement vos photos en échange de récolte de données -->
+<!-- (qui les récupère, qui il y a sur les photos, etc.). -->
+<!-- Demain, peut-être qu'il paraîtra évident à tout le monde qu'il suffit de démarrer -->
+<!-- son client bittorrent, faire un fichier torrent qui référencie les photos à partager, -->
+<!-- et envoyer ce fichier torrent par mail à ceux qui veulent les photos (qui est tout peit, quelque soit la quantité de photos). -->
+
+<!-- Bonus 1 : vous ne donnez votre vie privée à personne à part à votre famille. -->
+
+<!-- Bonus 2 : même si vous avez un tout petit débit en upload (avec l'ADSL), -->
+<!-- vous irez vite. -->
+
+<!-- Bonus 3 : et tout ça, c'est l'objet d'un de mes projets perso, [Wagon](https://github.com/aluriak/Wagon). -->
+
+Concernant, les entreprises, vous êtes vous déjà demandé comment les
+gros éditeurs de jeux vidéos faisaient
+pour distribuer plusieurs dizaines de gigaoctets de données à tous leur clients,
+le jour de la sortie d'un jeu vidéo ?
+
+Réponse dans [la FAQ d'un de ces gros éditeur](http://us.blizzard.com/en-us/company/about/legal-faq.html):
+
+    How is it that Blizzard can distribute such large files to the public?
+
+        To distribute large files, such as cinematic trailers, Blizzard utilizes the Blizzard Downloader, which is a software utility that will make use of the "upload" capability of your computer to distribute the Program to other individuals who may also be downloading files from Blizzard. Note that this utility is only active when you are downloading files, and that only files associated with the file that you are downloading are uploaded. Blizzard will not upload any other files, or obtain any personal information about you as a result of this activity.
+
+        The Blizzard Downloader is based upon the BitTorrent open source […].
+
+Je n'ai trouvé aucune trace de cela sur le net, mais je serais très surpris si steam,
+microsoft, apple et toutes les entreprises qui ont besoin de fournir des mises à jour
+à leurs client/OS ne passent pas par du bittorrent ou équivalent.
+
+Imaginez publier une mise à jour sur des serveurs en direct download.
+Pour peu que quelques millions de personne ait leur logiciel/OS allumé à ce moment,
+il est probable que vos serveurs tombent sous le poids des requêtes.
+Et les clients qui sont géographiquement éloignés auront besoin d'un serveur proche,
+pour éviter d'avoir à attendre 2 heures pour télécharger quelques mégabits.
+
+Alors qu'avec un peu de bittorent, il n'y a même pas besoin de déployer de gros serveurs.
+Un seul pourrait même suffire, vu que les clients proches les uns des autres
+vont privilégier les échanges entre eux pour maximiser l'usage de leur bande passante.
+Le gain en temps et en énergie est non seulement monstrueux,
+mais aussi *builtin*, naturel, avec cette techno !
+
+Bref, le bittorrent, c'est un standard ouvert & libre qui est bon pour l'économie
+et pour la planète.
+
+
+<!-- ## Le sous-système majeur qui remplace HTTP -->
+<!-- TODO: cette partie est-elle utile ? -->
+
+
+## Implémentations
+Notez qu'IPFS, comme HTTP, BitTorrent, SOAP, TCP/IP ou le Morse,
+sont des **protocoles**, c'est-à-dire des conventions plus ou moins longues et détaillées
+qui détaillent *comment* il fonctionne. Rien d'utile en soi,
+donc (sauf, une fois imprimés, pour caler un meuble).
+
+Néanmoins, histoire que ce soit un peut plus palpable, les concepteurs d'IPFS se
+sont également lancés dans une implémentation du protocole, c'est-à-dire
+dans l'écriture d'un programme qui utilise le protocole.
+
+Ce programme, il s'appelle [go-ipfs](https://github.com/ipfs/go-ipfs), car il est implémenté en utilisant le [langage Go](https://fr.wikipedia.org/wiki/Go%20(langage)).
+Il existe d'autres implémentations, mais go-ipfs est celle de référence : elle est officielle.
+Elle est aussi, au moment où j'écris ces lignes, celle qui implémente le mieux le protocole.
+
+### Parallèle
+Python est un langage, CPython est une implémentation de l'interpréteur
+qui comprend le language Python et est capable de l'exécuter.
+
+BitTorrent est un protocole, [transmission](https://en.wikipedia.org/wiki/Transmission%20(BitTorrent%20client)) et utorrent sont des programmes
+qui implémentent ce protocole pour permettre à l'utilisateur de télécharger
+des fichiers à partir de *fichiers torrent* glanés par exemple sur [internet archive](https://archive.org/details/bittorrent).
+
+De la même manière, go-IPFS est un programme qui implémente le protocole IPFS,
+et est capable de l'exécuter via internet, et de s'interfacer avec et s'intégrer
+dans la nuée de serveurs qui constitue le réseau IPFS.
+
+
+
+
+
+
+## IPNS
+Maintenant, une question se pose : si le contenu de mon site change tout le temps,
+comment les utilisateurs peuvent-ils obtenir l'identifiant de la version la plus à jour ?
+
+En HTTP, c'est facile : on se connecte au site, et on peut constater
+l'apparition de nouveau contenu.
+Les flux RSS ne sont qu'une manière d'automatiser ce processus.
+
+Dans le cadre d'IPFS, avoir un moyen sûr et efficace de tomber
+sur la dernière version d'un site est un besoin qui est couvert
+par **IPNS** : Inter-Planetary *Naming* System.
+
+IPNS est un autre protocole, globalement identique à IPFS, qui associe à un ensemble d'identifiants
+IPFS un seul et unique identifiant IPNS. Là où c'est intéressant,
+c'est qu'une fois que l'identifiant IPNS est généré, il y a juste besoin d'indiquer
+au réseau quelles ressources doivent y être associées.
+
+Pour être plus précis, l'identifiant IPNS est en lien avec le *peerid*,
+qui est le hash de la [clef publique](http://sebsauvage.net/comprendre/encryptage/crypto_asy.html) qui vous identifie sur le réseau.
+
+Par exemple, l'identifiant IPNS de ce blog est `Qmd4up4kjr8TNWc4rx6r4bFwpe6TJQjVVmfwtiv4q3FSPx`.
+En passant par une gateway IPNS (par exemple [celle d'ipfs.io](https://gateway.ipfs.io/ipns/),
+ou celle dans la barre de menu de ce blog, à gauche), vous pouvez indiquer l'IPNS d'une ressource,
+et être assurée de trouver la version la plus à jour connue dans le réseau.
+
+Et voilà, vous pouvez publier du contenu régulièrement sur votre blog, avec des
+snapshots réguliers et un identifiant unique qui renvoie vers le plus récent.
+
+En bref, si IPFS remplace HTTP, **IPNS remplace le [DNS](http://sebsauvage.net/comprendre/dns/index.html)**.
+
+
+## Projets dérivés
+À partir d'IPFS, de nombreux projets ont vu le jour (gros avantage d'un standard ouvert : tout le monde peut l'exploiter pour en faire quelque chose d'inattendu).
+
+Beaucoup des liens suivants viennent d'une instance de la série des *awesome lists*: [awesome ipfs](https://github.com/ipfs/awesome-ipfs).
+Cette liste grandit vite, et beaucoup de projets proposés ont clairement un pied (voir les deux) dans le web.
+
+- [pics](https://ipfs.pics), upload d'images sur le web permanent
+- [sia](https://sia.tech/), le cloud décentralisé, comparable à [filecoin](http://filecoin.io/) mais sans gestion centrale de l'argent
+- [akasha](https://akasha.world/), réseau social basé sur IPFS et la blockchain Etherum
+- [wiki interplanétaire](https://github.com/jamescarlyle/ipfs-wiki), preuve de concept pour un wiki distribué
+- [module firefox](https://github.com/ipfs/ipfs-firefox-addon) qui agit comme une gateway
+- [js-ipfs](https://github.com/ipfs/js-ipfs), l'implémentation d'IPFS en javascript. Hyperactif, mais probablement mort dans 6 mois.
+
+
+### Le mot de la fin (de l'introduction)
+Maintenant que l'on a bien compris ce qu'était IPFS, on va pouvoir le mettre
+en place sur le serveur, et publier du contenu !
+
+
+
+# IPFS — cas pratique
+Dans cette partie, nous allons rapidement voir comment installer une gateway
+IPFS sur sa machine, et comment uploader du contenu en utilisant IPFS.
+
+Je vais surtout donner quelques codes que j'utilise pour la maintenance
+et la mise en place ; ça peut vous éviter d'avoir à le taper vous-même :)
+
+
+## Installation de go-ipfs
+Télécharger le paquet peut se faire via [le site officiel](https://ipfs.io/docs/install/).
+Les instructions d'installation sont sur [le dépôt](https://github.com/ipfs/go-ipfs#install).
+
+Sur Archlinux, il y a [un paquet](https://www.archlinux.org/packages/community/x86_64/go-ipfs/) qui est maintenu à jour,
+et qui gère les dépendances.
+
+Pour me simplifier la vie sur le long-terme, j'ai créé un service systemd (niveau système, et pas user, parce que j'ai point réussi à le faire fonctionner ainsi),
+que j'ai placé dans `/etc/systemd/system/ipfs.service`:
+
+    [Unit]
+    Description=IPFS daemon
+    After=network.target
+
+    [Service]
+    Environment="IPFS_PATH=/home/lucas/.ipfs"
+    ExecStart=/usr/bin/ipfs daemon
+    Restart=on-failure
+    RestartSec=60s
+
+    [Install]
+    WantedBy=default.target
+
+Le seul truc que vous devez changer, c'est `Environment`,
+qui doit pointer sur votre install ipfs (le dossier qui contient, entre autre, les fichiers/dossiers `config`, `datastore`, `keystore` et `version`).
+
+
+## Live example ; ce blog
+Ce blog est sur IPFS, et possède un identifiant IPNS: `Qmd4up4kjr8TNWc4rx6r4bFwpe6TJQjVVmfwtiv4q3FSPx`.
+
+Pour éviter d'avoir à me retaper la doc à chaque fois que je met à jour le blog,
+j'ai écris un script bash qui :
+
+- ajoute le blog au démon ipfs qui tourne sur mon serveur
+- publie ledit blog sur ipns
+- s'assure que tout fonctionne correctement
+
+J'ai recopié le code en dessous. Il est possible qu'il finisse un jour sur
+mon dépôt github.
+
+```bash
+# Upload target to ipfs using already launched ipfs daemon
+TARGET=~/www/blog
+EXPECTED_PEER_ID=Qmd4up4kjr8TNWc4rx6r4bFwpe6TJQjVVmfwtiv4q3FSPx
+
+# Get hash of the target site
+HASH=$(ipfs add -q -r $TARGET | tail -n1)
+if [[ ! $HASH ]]
+then
+    echo "ERROR: ipfs add returns nothing."
+    echo "Last time it happen, it was du to a new version of go-ipfs, leading to different version between client and daemon."
+    echo "It was fixed by restarting the ipfs service."
+    exit
+fi
+echo "Hash of $TARGET is now $HASH"
+
+# Publish it, keep record of the peer id
+FOUND_PEER_ID=$(ipfs name publish "$HASH" | cut -f 3 -d " " | cut -d ":" -f 1)
+
+# Critical error log if expected and generated peer ids are different
+if [ "$EXPECTED_PEER_ID" != "$FOUND_PEER_ID" ]
+then
+    echo "Found peer id ($FOUND_PEER_ID) is unexpected (expect $EXPECTED_PEER_ID)"
+    exit 1
+fi
+
+FOUND_HASH=$(ipfs name resolve $FOUND_PEER_ID)
+
+# Critical error log if hash computed earlier is not the same as the one published
+if [ "/ipfs/$HASH" = "$FOUND_HASH" ]
+then
+    echo "Published !"
+else
+    echo "Found peer id ($FOUND_PEER_ID) is unexpected (expect $EXPECTED_PEER_ID)"
+fi
+```
+
+Bon, en clair, ce script lance toutes les commandes, parse les output avec un peu de bash,
+pour récupérer les hashs et s'assurer que tout fonctionne normalement.
+Et si ce n'est pas le cas, il le fait savoir.
+
+Donc, quand j'update mon blog, la seule chose que j'ai a faire, c'est lancer
+ce script et m'assurer qu'il me répond bien *Published !*.
+
+Et paf, je sais que je peux aller lire mon blog depuis [n'importe quelle gateway IPFS/IPNS](https://gateway.ipfs.io/ipns/Qmd4up4kjr8TNWc4rx6r4bFwpe6TJQjVVmfwtiv4q3FSPx/).
+
+
+
+# Conclusion
+Un article un peu long, mais que j'espère bien explicatif sur le côté théorique.
+Pour le côté pratique, je vous renvoie vers les nombreux tutos.
+
+J'espère qu'avec tous ça, j'aurais réussi à transmettre l'enthousiasme que j'ai pour ce genre de techno.
+IPFS n'est pas la première, et certainement pas la dernière, qui propose une alternative plausible à HTTP.
+
+IPFS a de gros points forts, notamment la communauté qui est assez vivante,
+mais a également des points d'ombre, notamment concernant la gestion des sites dynamiques et des données secrètes,
+mais ces interrogations sont levées peu à peu, et rapidement il apparaît que [le protocole peut supporter ces fonctionalités plus ou moins facilement](https://github.com/ipfs/faq/issues/28).
+
+Mais bon, la communauté est encore jeune, la techno aussi ; il n'y a donc pas beaucoup de personne
+avec de l'expérience dans le domaine qui ont pu hausser la voix contre IPFS.
+J'attends donc impatiemment un point de vue mitigé sur la techno, avec les critiques de fond qui vont avec
+(sur le côté implémentation et parti pris, pas sur des questions subjectives).
+
+
+
+# Liens
+
+- [wiki d'archlinux, reprend toute l'installation](https://wiki.archlinux.org/index.php/IPFS)
+- [article de blog qui explique simplement toute la procédure de publication](https://ipfs.io/ipfs/QmdPtC3T7Kcu9iJg6hYzLBWR5XCDcYMY7HV685E3kH3EcS/2015/09/15/hosting-a-website-on-ipfs/)
+- [IPNS en quelques lignes](https://github.com/ipfs/examples/tree/master/examples/ipns)
+- l'instance stackexchange pour Etherum propose un [tag ipfs](https://ethereum.stackexchange.com/questions/tagged/ipfs)
+- [IPFS vs Swarm](https://github.com/ethersphere/go-ethereum/wiki/IPFS-&-SWARM), le second étant une alternative ; les deux pourraient bien se complémenter
+- [la littérature blanche](https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf) qui explique les bases d'IPFS
+- les [web seeds](http://techie-buzz.com/how-to/what-are-web-seeds-bittorrent.html) du protocole bittorrent permettent d'allier ftp et torrent

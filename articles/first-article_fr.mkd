@@ -1,0 +1,112 @@
+Title: Premier article du blog
+Date: 2016-09-20
+Modified: 2016-09-20
+Tags: meta, todo-list
+Authors: Lucas Bourneuf
+Summary: quelques mots à son propos
+Slug: zero
+lang: fr
+translation: false
+status: published
+
+
+# premier article du blog
+Ça fait un moment que j'y pense, et le voilà !
+
+L'intérêt est d'avoir une plate forme de publication pour les projets qui
+m'excite suffisamment pour avoir envie d'en parler,
+et sortir des explications/tutos sur des concepts que je trouve rigolos/utiles.  
+Une sorte d'exutoire, donc.
+
+Niveau informatique, ce sera probablement en rapport avec python,
+le langage avec lequel je développe de préférence, ou avec un domaine plus langage-agnostique.  
+Il est assez improbable qu'[ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
+ne soit pas de la partie, car j'ai pas mal de choses à tripatouiller avec.
+
+Un autre usage est la présentation de projets persos, histoire de répondre
+à des questions qui n'ont pas leur place dans le README.
+
+Enfin, je n'exclue pas d'ajouter dans ce site des reviews ou prises de notes d'évènements,
+tel que je le fît pour [une conférence sur l'ALMA](http://blog.matael.org/writing/compte-rendu-dune-conference-sur-lalma-avec-des-vrais-chercheurs-dedans/).
+(billet qui donne un coups de vieux : à ce moment Curiosity venait juste d'atterir sur Mars. Diantre !)
+
+
+## un peu de méta
+J'utilise [Pelican](http://getpelican.com) pour la génération du présent site,
+en utilisant comme base le thème [bootstrap2-dark](http://github.com/getpelican/pelican-themes/tree/master/bootstrap2-dark),
+auquel j'ai retiré toute notion de catégorie, et, de fils en aiguille, beaucoup de choses.
+Mes notions antédiluviennes de CSS m'empêchent de vraiment tripoter à tout. Notamment la barre en haut qui est parfaitement désagréable.  
+*EDIT: oblitération terminée. En attente de la prochaine cible.*
+
+Le contenu publié du site, ainsi que ce que je développe autour de lui, est accessible sur [github](http://github.com/aluriak/blog).  
+
+Normalement, je devrais publier régulièrement, en anglais ou en français, et peut-être bien qu'un jour il y aura du lojban.
+
+
+
+## objectifs long terme
+En théorie, je suis sensé apprendre des trucs avec ce serveur, car c'est l'occasion de me mettre au [*web*](http://i.imgur.com/kSh5G5o.gif).  
+
+Et j'ai d'ailleurs déjà commencé : des extensions de pélican dans tous les sens, des configs pour automatiser les tâches répétitives…
+J'ai même commencé à développer mon moteur [shaarli-like](https://github.com/Aluriak/shaarpli).
+Bref, ça me simplifie des problèmes que je n'aurais pas eu si j'étais resté tranquille.
+
+
+### TODO-LIST
+
+- [ ] automatiser le système d'envois des articles
+    - [v] via ssh
+    - [v] via rsync
+    - [ ] heuristique de publication automatique
+    - [v] upload sur IPFS
+    - [s] il y a même une gateway IP{[F](https://bourneuf.net/ipfs),[N](https://bourneuf.net/ipns)}S !
+- [ ] blog theme
+    - [ ] bouger le panneau de lien à gauche
+    - [ ] centrer l'article en milieu de page
+    - [ ] mettre les tags à la suite du titre d'article, pas en-dessous
+    - [ ] diminuer la taille des titres à l'index
+    - [v] augmenter la taille de la police dans les articles
+    - [v] mettre un espacement entre les titres au sein des articles
+    - [b] défourrailler la bannière en haut
+    - [ ] trouver des pages à généner en plus
+        - [ ] about
+    - [v] lien vers shaarli
+    - [v] augmenter la taille de la police
+    - [ ] trouver un moyen de gérer la nouvelle version de font awesome
+        - [v] gérer la nouvelle version de font awesome avec un hack dégueux
+        - [ ] remplacer le hack dégueux par un truc propre
+    - [v] faire le système de check box de github, probablement avec font awesome
+        - [v] [checked check box](http://fontawesome.io/icon/check-square-o/)
+        - [v] [nonchecked check box](http://fontawesome.io/icon/square-o)
+        - [v] using [python-markdown preprocessor](https://pythonhosted.org/Markdown/extensions/api.html#preprocessors)
+        - [s] faire plus généraliste que juste une checkbox
+- [ ] blog behavior
+    - [ ] ajout automatique de tag selon la langue
+    - [ ] gérer automatiquement les dates sur pelican, car les modifier à la main m'irrite déjà
+        - [ ] passer par le système de plugin ?
+        - [ ] utiliser la date système de modif via [os](http://stackoverflow.com/a/237084/3077939)
+- [v] shaarli
+    - [x] trouver comment administrer les liens sans passer par l'interface
+    - [x] enlever l'interface de connexion
+    - [v] installer, setuper
+    - [v] remplacer par une solution plus adaptée à mes besoins
+        - [v] ainsi naquit [shaarpli](https://github.com/Aluriak/shaarpli)
+- [ ] remplacer le système de tag du blog par une ontologie
+    - [ ] design de l'ontologie
+    - [ ] implémentation + en faire un truc utile, genre un graphe
+- [ ] point d'accès sparql, en lien avec le projet PKM
+    - [ ] requête d'articles
+    - [ ] requête de liens
+    - [ ] BMB
+- [ ] peupler le serveur de services
+    - [ ] [serveur mail](http://i.imgur.com/gQJAa4m.gifv)
+    - [ ] gitlab ou gogs, à voir
+    - [ ] diaspora
+    - [x] shaarli
+    - [v] shaarpli
+    - [ ] un nœud IPFS, pour la gloire
+- [v] push blog code on github
+    - [v] config
+    - [v] published content
+    - [v] used theme
+    - [v] check box plugin
