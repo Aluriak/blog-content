@@ -1,0 +1,12 @@
+Title: Introduction to Answer Set Programming (ASP)
+Date: 2017-03-31
+Modified: 2017-03-31
+Tags: asp, language, tuto
+toc_headers: ^h[1-2]
+toc_run: true
+Authors: Lucas Bourneuf
+Summary: a tutorial for ASP
+Slug: tuto-asp-en
+<!-- Lang: français -->
+Translation: true
+Status: draft
