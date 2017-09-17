@@ -1,3 +1,16 @@
+Title: État de l'art de l'exploration spatiale
+Date: 2017-06-24
+Modified: 2017-06-24
+Tags: espace, opinion
+Authors: Lucas Bourneuf
+Summary: petit état de l'art en matière de spatial à destination de ceux qui ne connaissent pas
+Slug: space-now
+lang: français
+translation: false
+toc_headers: ^h[1-2]
+toc_run: true
+status: draft
+
 Cet article présente un état de l'art de l'exploration spatiale aujourd'hui.
 Il est probablement incomplet, car je l'ai écrit avec les connaissances
 que j'ai pu glaner pendant 2 ans de suivis de l'actualité spatiale,
