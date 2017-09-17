@@ -1,0 +1,419 @@
+Title: The Python ecosystem
+Date: 2017-03-18
+Modified: 2017-03-18
+Tags: python, env, tools
+Authors: Lucas Bourneuf
+Summary: basic explanations of the python ecosystem
+Slug: pyeco
+lang: english
+translation: false
+status: published
+
+
+# Python
+Python is a language created in 1990 by [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum).
+
+This article is about the Python ecosystem,
+to help the many peoples that are drawn
+in its apparent complexity.
+
+
+## Python 2 and Python 3
+This is maybe the most problematic thing with python :
+there is two coexisting major versions.
+
+Python creators broke the compatibility between version 2 and version 3 for many reasons
+(but essentially [unicode support](https://snarky.ca/why-python-3-exists/)).
+
+The consequence is, many programs written in python 2 can't be executed with newer python versions,
+while many others are only runnable with python 3 (Note that some are compatible with both).
+
+On pypi, there is a *lot* of programs of either kind,
+but more and more that migrate to [python 3](https://python3wos.appspot.com/).
+
+You can sometimes heard about python 2.6 ; it's because it is also not compatible with 2.7.
+The third major version was not the first to break the compatibility.
+
+To be more exact, the Python language got very important changes between
+all minor versions until the *final* version 2.7. Python 3 is just
+a greater break that also breaks compatibility with the *legacy* language.
+
+(Note that, if you encounter a code compatible with python 2.6 only,
+chances are it is not maintained at all)
+
+
+## Language vs norm vs implementation
+When someone talk about *python*, three things are usually mixed for the sake of simplicity.
+However, it is wise to be able to understand the differences.
+
+The python **language** is defined [here](https://docs.python.org/3/reference/index.html).
+It speaks exclusively about the language itself : mostly vocabulary and grammar.
+
+The python **norm** is all the things that are defined above the language,
+like the standard library (modules like *csv*, *itertools* or *pprint*),
+or the implementation details and data structure behaviors.
+It is mainly defined [here](https://docs.python.org/3/library/index.html).
+
+A python **implementation** is a program that understand the language,
+in order to operate as explained in the norm.
+The most well-known example is [*CPython*](https://github.com/python/cpython),
+the official (and first)
+python implementation, and happens to be the one you probably use.
+It is named *CPython* because, well, it is implemented in C.
+
+Other well-known [implementations](https://wiki.python.org/moin/PythonImplementations)
+are *pypy*, that is able to compile python lamguage to a C/C++ program
+that, once compiled and run, perform the actions defined by the norm,
+*Jython*, an interpreter (like CPython) implemented in Java,
+or *Cython*, that implements a little more than Python language
+and norm in order to allow more aggressive optimizations.
+
+
+So, when someone is saying *i use python*, they probably wanted to transmit an idea like
+*i know both python language and a bit of the norm, and i regularly use an interpreter
+on the code i produce in order to benefit from its side-effects*.
+
+Well, nobody ever said that, but you get the idea.
+
+
+## Language evolution
+
+Note that, Guido van Rossum could have, in theory, just define the language and the norm.
+But, because he found them to be interesting,
+he also starts an implementation (which became CPython).
+
+Not all languages follows this path. Some expose dozens of implementations, all with their own flavors of norm,
+and waited decades before having a meeting between the users in order to fix a definitive and common norm (see *lisp*).
+Others, like C/C++, have a norm defined early, numerous implementations coexisting, and, few times in history,
+an expert meeting defines new language and norm, in order to use new interesting features or important ideas (see c++11 or c++17 for instance).
+Meanwhile, the multiple implementations are in a race to implement the incoming new features,
+and to implement some of their own in order to *do better* than the concurrent implementation.
+(See gcc and clang)
+
+Python belongs to a special group, where a Benevolent Dictator For Life (which is Guido van Rossum)
+is the only and absolute decision power about the language and the norm.
+Moreover, Python implements, instead of a meeting between experts once a decade,
+a community system named [Python Enhancement Proposal](https://www.python.org/dev/peps/pep-0000/) (PEP),
+that allow anyone to propose, motivate and explain a modification
+to [language](https://www.python.org/dev/peps/pep-0380/),
+[norm](https://www.python.org/dev/peps/pep-0628/),
+or [conventions](https://www.python.org/dev/peps/pep-0008/).
+Reading PEPs is an interesting exercise, and some of them are really entertaining !
+
+The PEP system explains why Python evolves so quickly between versions,
+each [new one bringing improvements and new features](https://www.python.org/dev/peps/pep-0537/).
+The BDFL system, on the other hand, is a very efficient method to conserve
+the architectural and philosophical coherence of the language,
+since the BDFL himself (Guido van Rossum) is greatly concerned by these aspects.
+
+
+### How to read a PEP
+All PEPs follows a common format, vocabulary and states, as defined in
+[in PEP 1](https://www.python.org/dev/peps/pep-0001/)
+(yes, a PEP defines how to read and write PEPs).
+
+PEPs are clustered in three types: standard track, informational
+and process, [all explained here](https://www.python.org/dev/peps/pep-0001/#id32).
+
+In short, standard tracks are for python itself, informational are for the community,
+and process are meta-PEP working on the way python is designed, developped and used.
+
+The [Zen of Python](https://en.wikipedia.org/wiki/Zen_of_Python)
+is defined in [an informational PEP](https://www.python.org/dev/peps/pep-0020/),
+while the [PEP 8 is a process one](https://www.python.org/dev/peps/pep-0008/),
+and [f-string a pure standard tracks](https://www.python.org/dev/peps/pep-0498/).
+
+Standard tracks PEPs usually
+[share a common outline](https://www.python.org/dev/peps/pep-0001/#what-belongs-in-a-successful-pep),
+containing notabily the table of all metadata (PEP name, status, owner name, mails,…),
+an abstract giving a general idea of the PEP ideas,
+and multiple parts describing the new feature in multiple point of view.
+
+A PEP also have a status. PEP 1 [explains well](https://www.python.org/dev/peps/pep-0001/#pep-review-resolution)
+how it works, and almost all states are well explained by their names and this diagram:
+
+<center>{% img https://www.python.org/m/dev/peps/pep-0001/pep-0001-1.png 700 "State change diagram PEP1" %}</center>
+
+
+A PEP is a living document, at least until it reach the *final* status,
+indicating that, at some point,
+[an informational PEP](https://www.python.org/dev/peps/pep-0494#features-for-3-6)
+declares (among other things) that the feature
+will be shipped with a new Python version.
+
+
+
+# Pypi
+[Pypi](https://pypi.python.org) is *The Python Package Index*.
+
+Think of it as a gargantuan database of python packages.
+As any other user, you can browse this database, or query a particular package
+(see the *search* box in the upper-right corner).
+For instance, you could want to search for a particular package, like `numpy` or `pytest`.
+
+At the moment i wrote this line, some of the packages just updated on pypi were, among others,
+`PySpice`, a lib to simulate electronic circuits,
+`simplyrestful`, a lib to work with rest apis,
+and `virtualenvwrapper-win`, a port of virtualenv for windows.
+But it's not even representative of what you can find in pypi !
+
+[Here](http://sametmax.com/tres-grand-listing-des-libs-tierce-partie-les-plus-utiles-en-python/)
+is a list of some useful tierce-party libraries (french).
+
+On Pypi, you can get the code of any published version of these packages.
+You get these code in a packaged format, compressed in `tar.gz` or `zip` in most cases,
+that you can use to *install* the package on your system, and therefore be able
+to use it as any package in your code.
+
+That's what we usually call a *manual installation*.
+And there is some serious caveats to this approach :
+
+- you have to choose the files to use for your system. In some cases, like [pillow](https://pypi.python.org/pypi/Pillow/4.1.1), it can need reflexion or *ctrl+f*
+- if the package gets an update, you have to re-install it manually
+- if the package have dependencies, you have to figure out which ones, and install them too
+
+So, very quickly, python conceptors comes with a solution : a package manager.
+
+A package manager is… [a package manager](https://en.wikipedia.org/wiki/Package_manager),
+*id est* a program able to search,
+retrieve, install, update, delete, maintain, compile and manage packages.
+It is a very used concept in linux distributions world. Debian have `apt`,
+archlinux have `pacman`, fedora have `dnf`,… All these programs may have different interfaces,
+but they all basically do the same thing : `dnf install python` is enough to
+get python installed and ready-to-work on a fedora system.
+
+For python, a specific package manager was designed : `easy_install`.
+I never used it, because when i started using python, `pip` already exists.
+Pip is another package manager (built on `easy_install` i think),
+that do exactly the same things, but better.
+
+Pip is easy to use and very convenient :
+
+    pip install pillow
+
+And then, the pillow library is installed on your system.
+There is many options (`--user` and `--update` for instance), but the idea is here : in one single command,
+you have downloaded and installed the pillow library (and all its dependancies).
+
+Pip will manage your tierce-party packages for you. So, unless you are in a very specific case
+(like having dependancies version incompatibility, something that never happen to anyone i know),
+always use pip. **If you must install only one package manually, install *pip*. Then install the packages you need.**
+
+Bonus point : pip is shipped with [any python installation since 3.4](https://www.python.org/dev/peps/pep-0453/),
+so you don't even have to install pip in order to install a pypi package. Isn't that awesome ?
+
+NB: as pip **is** an installed python package, it can be launched using the `-m` flag, as any installed python package providing a *__main__.py* script : `python -m pip install numpy`,
+and can therefore be programmatically manipulated as any python library.
+
+**Warning:** pypi packages are not code-reviewed. This allowed, few times ago, some packages that mimics
+real packages to be [uploaded and used to do (begnin) harm](http://www.nbu.gov.sk/skcsirt-sa-20170909-pypi/index.html).
+Independently, a package named `pipsec` is under developpment, associated to project [pytosquatting](https://pytosquatting.org/)
+that aims to adress these sort of security problems.
+So, verify twice the name of the package you're about to install.
+
+(btw, i'm pretty sure that the begnin arm found in the first article is a result of the pytosquatting experiments ;
+they spoke about **exactly** the same thing)
+
+
+
+
+# pip2 vs pip vs pip3
+As we just saw, `pip` is the name of a python program that is able
+to retrieve python packages from the [pypi repository](https://pypi.python.org/),
+i.e. pieces of code distributed by other users.
+
+Sound simple. Until you found a half-dozen programs named `pip` on your system.
+
+
+## The first variable : python 2 or python 3
+As we saw earlier, python comes with two main flavors (2 or 3), and most packages
+installable with pip do not handles all versions.
+
+
+## The second variable : the environment
+Your system contains programs. One of them could be python.
+Or, probably, many of them.
+
+On my linux system, i can list them as follow:
+
+    $➤ ls /usr/bin | grep python
+    python
+    python2
+    python2.7
+    python2.7-config
+    python2-config
+    python3
+    python3.6
+    python3.6-config
+    python3.6m
+    python3.6m-config
+    python3-config
+    python-config
+
+Basically, we found `python`, `pythonX` with X in [2;3], `pythonX.Y` with Y in [6;7], and some `-config` and `m` suffixed alternatives.
+The `m` stands for an optimized version of the interpreter, [using an alternative version of *malloc*](http://stackoverflow.com/a/16677339/3077939).
+
+There is basically two clusters of programs : python interpreter (CPython), and config generator
+(they return gcc flags to use when embedding python into C/C++).
+Those that ends by `-config` belongs to the second category. The others are interpreters.
+
+So, now, we can get, for each python interpreter, the python version it uses:
+
+    $➤ python2 --version
+    Python 2.7.13
+    $➤ python2.7 --version
+    Python 2.7.13
+    $➤ python3 --version
+    Python 3.6.0
+    $➤ python3.6 --version
+    Python 3.6.0
+    $➤ python --version
+    Python 3.6.0
+
+Well, first observation : python3 (python2) and python3.6 (python2.7) understand the same python version.
+
+
+### Why so much pain ?
+This apparent complexity is necessary to fullfill the following use cases and needs:
+
+- multiple versions of python 3 (python 2) could coexist on the system
+- system have a default python version
+- system have a default python 3 version
+- system have a default python 2 version
+
+More precisely, `python3` (`python2`) is the system's default python 3 (python 2) interpreter.
+Similarly, `python` is the default python interpreter.
+
+Few years ago, python 2 was the default python interpreter in most linux distributions.
+These days, migration to python 3 is happening everywhere,
+and many distributions works on switching to python 3.
+
+Because many applications use it, most linux distributions comes with their default version of python installed, often both.
+For instance, debian stable store in its repositories both python 2.7 and 3.2, and use the first as default version,
+while archlinux stores 2.7 and 3.6, using the last as default version.
+
+
+### Mathematical analysis
+Let binaries be objects and their attributes be… attributes, and consider the following context:
+
+                     |2|7|3|6|c|m|
+    python2          | |X| | | | |
+    python2.7        |X|X| | | | |
+    python2.7-config |X|X| | |X| |
+    python2-config   |X| | | |X| |
+    python3          | | |X| | | |
+    python3.6        | | |X|X| | |
+    python3.6-config | | |X|X|X| |
+    python3.6m       | | |X|X| |X|
+    python3.6m-config| | |X|X| |X|
+    python3-config   | | |X|X|X|X|
+    python-config    | | | | |X| |
+
+Which can be written in Lattice Miner format (lmb extension):
+
+    LM_BINARY_CONTEXT
+    | python2 | python2.7 | python2.7-config | python2-config | python3 | python3.6 | python3.6-config | python3.6m | python3.6m-config | python3-config | python-config
+    | 2 | 7 | 3 | 6 | config | m
+    0 1 0 0 0 0
+    1 1 0 0 0 0
+    1 1 0 0 1 0
+    1 0 0 0 1 0
+    0 0 1 0 0 0
+    0 0 1 1 0 0
+    0 0 1 1 1 0
+    0 0 1 1 0 1
+    0 0 1 1 1 1
+    0 0 1 1 1 1
+    0 0 0 0 1 0
+
+Follow the concept lattice of the very same table, generated by [Lattice Miner](https://sourceforge.net/projects/lattice-miner/):
+
+<center>{% img {filename}/images/maths/python-pip-bin-lattice.png 700 "lattice generated by Lattice Miner" %}</center>
+<!-- note to self: see writing/pip_binaries_concept/ for code and data -->
+
+
+
+## The final variable : user needs
+We know that user have an environment having potentially both python versions available, and a default one.
+
+Now, user wants to install a python package.
+
+To install a package, user could use the `pip` program,
+allowing him to retrieve package from [pypi](https://pypi.python.org/) and install it on its system.
+
+Let's look at the pip programs available, as we've done earlier for python programs:
+
+    $➤ ls /usr/bin | grep pip
+    pip
+    pip2
+    pip2.7
+    pip3
+    pip3.6
+
+Hey ! That's look exactly like the previous python programs !
+Now let's look at their versions:
+
+    $➤ pip2 --version
+    pip 9.0.1 from /usr/lib/python2.7/site-packages (python 2.7)
+    $➤ pip2.7 --version
+    pip 9.0.1 from /usr/lib/python2.7/site-packages (python 2.7)
+    $➤ pip --version
+    pip 9.0.1 from /usr/lib/python3.6/site-packages (python 3.6)
+    $➤ pip3 --version
+    pip 9.0.1 from /usr/lib/python3.6/site-packages (python 3.6)
+    $➤ pip3.6 --version
+    pip 9.0.1 from /usr/lib/python3.6/site-packages (python 3.6)
+
+Nothing unexpected here: `pip3` == `pip3.6`, and, because my linux distribution use python 3 by default, `pip` == `pip3`.
+All are pip programs, but are not targeting the same *interpreter version* and *installation path*.
+
+For instance, if i want `pytest` for python 3, i can do any of the following lines:
+
+    pip install pytest
+    pip3 install pytest
+    pip3.6 install pytest
+
+In all these cases, installed package will go into `/usr/lib/python3.6/site-packages`.
+On a linux distribution with python 2 by default, the first line would install for python 2, as `pip2` or `pip2.7`.
+
+
+## In short
+Why is there 3 versions of pip ?
+Because systems must handle both python 2 and python 3, and this will remain true until so many programs use python 3 that python 2 integration becomes useless.
+The third one represent the system's default.
+
+Note that, in [virtual environnements](https://www.python.org/dev/peps/pep-0405/#impact-on-other-python-implementations),
+the default python version is set at environement creation.
+Moreover, a python 3 virtual env may not include python 2 by default,
+therefore you could end up with an environnment with only one python program, and only one pip program.
+
+Long live the venv !
+
+
+
+## Integrated Developpment Environment
+A good way to get python on your machine is to install it, [manually](https://www.python.org/downloads/) or through package manager.
+There is however some alternatives, bigger programs that embeds much more than just python and its standard lib,
+generally a full graphical interface, and facilities to code, debug and manage your programs and projects.
+
+DoctorPython, Spyder, Pythonxy are popular IDE, but if i were you, i would *never* use Spyder
+(i don't know the others, but it's probable that the same problems arise).
+They give you *very bad* habits while coding.
+I personally have to regularly fix weird problems for peoples that use Spyder.
+Weird problems that could be fixed by using a real IDE instead,
+or by implementing weird tricks in the code.
+So, never use Spyder.
+
+A good alternative, but a little long to configure, is [eric](https://eric-ide.python-projects.org/).
+(intro in french [here](https://pro-domo.ddns.net/blog/editeur_python_eric.html))
+
+[(Ana)conda](https://conda.io/docs/user-guide/tasks/manage-python.html)
+is another popular big package that contains, in addition to CPython,
+a graphical interface, a graphical package manager built on top of pip,…
+
+In the realm of the non-libre IDE, [pycharm](https://www.jetbrains.com/pycharm/) is really good and cool,
+and to me, clearly the best Python IDE currently available.
+(intro in french [here](https://pro-domo.ddns.net/blog/ide-python-pycharm.html))
+
+Finally, you can also use real [text editors](https://pascalprecht.github.io/2014/03/18/why-i-use-vim/),
+like *(neo)vim* or *emacs*.

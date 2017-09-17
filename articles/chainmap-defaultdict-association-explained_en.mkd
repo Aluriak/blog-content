@@ -1,0 +1,140 @@
+Title: ChainMap + defaultdict association explained
+Date: 2017-01-06
+Modified: 2017-01-06
+Tags: python
+Authors: Lucas Bourneuf
+Summary: why two data structures are not designed to work together
+Slug: cm-dd
+lang: en
+translation: false
+status: draft
+
+# Intro
+`ChainMap` and `defaultdict` are two data structures provided by the `collections` standard library.
+(i wrote about them [here]({filename}/3-libs-that-changed-my-python_en.mkd))
+
+The first is a dictionnary chainer:
+
+```python
+from collections import ChainMap
+cm = ChainMap({1:1}, {1: 2, 2: 2})
+assert cm[1] == 1
+assert cm[2] == 2
+cm[3] = 1
+assert 3 in cm.maps[0]
+```
+
+The second is a dictionnary having a builder of default values:
+
+```python
+from collections import defaultdict
+dd = defaultdict(set)
+for idx in range(3):
+    dd[idx].add(idx)
+assert dd == {0: {0}, 1: {1}, 2: {2}, 3: {0, 1, 2}}
+```
+
+# Background
+Sometimes, you use a ChainMap to divide the *initial data* from the *new data*.
+For instance, a container of annotations stored as a mapping `{property: {values}}`, retrieved from a database.
+When you get new annotations, you want to add them to the mapping, but you want to be able to retrieve specifically the new or the old annotations.
+
+The `naive` solution is to save the new annotations two times: one in the annotations mapping (allowing one to access it), and one more time in a dedicated mapping,
+allowing one to get only the news annotations.
+
+By using a ChainMap, this is easier to use and easily extendable to any number of annotation classes.
+With two internal maps: the first, empty, that receive the new annotations, and the second, holding data known by database.
+Now, you can (1) add new annotations, eventually override the old one, and (2) retrieve specifically what is *new* (it's in the first map).
+
+
+# Problem
+As the properties values are sets of values (because one property can hold multiple values), it could be useful to use a `defaultdict` in order to provide a default value when a property has not been yet created:
+
+```python
+    cm = ChainMap(defaultdict(set), {1: 2})
+```
+
+But, as is, it leads to a very logical (but annoying in this case) behavior:
+
+```python
+    assert cm[1] == set()  # key `1` is created in first map, without using the second one
+```
+
+Yes. Whatever is in the second set, the first will always intercept the key search.
+Therefore, involving a defaultdict in the process is not a solution,
+because now the data retrieved from database is not directly accessible.
+
+This blog post is not here to provide a perfect solution. It's more to explain why, because it shows a direct side-effect of the python language philosophy itself.
+
+
+# ChainMap is the key
+There is two possibilities for ChainMap to implement the *search value knowing a key* behavior: trying, or asking.
+The *trying* implementation is something like:
+
+```python
+    for map in maps:
+        try:
+            return map[key]
+        except KeyError:
+            pass
+    raise KeyError
+```
+
+While the *asking* implementation is something like:
+
+```python
+    for map in maps:
+        if key in map:
+            return map[key]
+    raise KeyError
+```
+
+The two implementations have probably some performances differences: looking two times for a key can be costly, probably more than a try clause without raised exception.
+But, more importantly, __one of these implementation have a very important side-effect__: the first tries to access the key. Directly. Which is exactly the trigger for `defaultdict` to create a default value.
+
+Obviously, the ChainMap implementation is the first, because we precisely meet the problem of ChainMap allowing defaultdict to hide the next maps.
+If ChainMap used the second implementation, the verification `key in map` would avoid any key creation, allowing the ChainMap to continue the exploration of its maps.
+
+## Field observation
+A quick lookup in python doc for ChainMap sources leads us [here](https://hg.python.org/cpython/file/3.3/Lib/collections/__init__.py),
+and particularly around the [786-th lines](https://hg.python.org/cpython/file/3.3/Lib/collections/__init__.py#l786), which confirm our guess:
+
+```python
+def __getitem__(self, key):
+    for mapping in self.maps:
+        try:
+            return mapping[key]   # can't use 'key in mapping' with defaultdict
+        except KeyError:
+            pass
+    return self.__missing__(key)  # support subclasses that define __missing__
+```
+
+Hey ! The source itself say something about defaultdict usage ; obviously, the problem was spotted,
+and is summarized in one comment: we can't use *key in ChainMap instance* when having defaultdict inside.
+
+
+# But why ?
+It is the interesting thing about that implementation detail: it is because of the *python philosophy*, more precisely the [EAFP](https://docs.python.org/3/glossary.html#term-eafp) principle: *Easier to Ask for Forgiveness than Permission*.
+Because you should try, then if needed ask forgiveness, the first implementation has been choosen over the second.
+According to some authors, EAFP is clearer and fancier than the opposite philosophy, *Look Before You Leap*.
+According to others, it's not.
+The best answer is probably *it depends*™.
+
+# And now ?
+Well, that's all. This post is mainly about pointing a problem anyone could face one day, and **understanding why this problem appears**,
+which is particularly insteresting because tied with python's way of life.
+
+## Ok, but the problem ?
+There is at least 3 possible workarounds if you need to have a defaultdict in a ChainMap:
+
+- playing with the [`default_factory` attribute](https://docs.python.org/3.3/library/collections.html#collections.defaultdict.default_factory): when set to None, lead the defaultdict instance to raise KeyError in case of inexistant key.
+- use [`dict.setdefault`](https://docs.python.org/3/library/stdtypes.html#dict.setdefault) instead of defaultdict
+- do not use defaultdict nor anything else: they just provide convenient API for something doable without it.
+
+
+# More reading
+[This really interesting PEP](https://www.python.org/dev/peps/pep-0463/) allows source code to simplify greatly the use of EAFP principles, by allowing `try…except` expression in only one line.
+I am personally very excited by this feature, but Guido van Rossum was [not really enthousiast about it](https://mail.python.org/pipermail/python-dev/2014-March/133118.html).
+The PEP is in draft since febuary 2014, so it will probably not come back before a while.
+
+This [blog post](http://www.oranlooney.com/lbyl-vs-eafp/) is an interesting reading about *EAFP vs LBYL*. The first comment about race condition seems to be a good reason to choose EAFP.

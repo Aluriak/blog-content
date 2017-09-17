@@ -1,0 +1,305 @@
+Title: Things i do not like in Python
+Date: 2017-08-19
+Modified: 2017-08-19
+Tags: python, opinion
+Authors: Lucas Bourneuf
+Summary: Some details in the language that range from weird to outrageous
+Slug: bad-python
+<!-- lang: english -->
+translation: false
+status: draft
+
+
+
+# In the standard library
+## global mess
+Just look at collections: `defaultdict` is in snakecase without underscores.
+`ChainMap` and `Counter` are in mixed case.
+And `functools.lru_cache` happens to be in snake case,
+while the full `logging` lib is in camel case
+(because inherited from java world).
+
+You know what ? I just ran [an experience](https://github.com/Aluriak/cases-in-stdlib) about it:
+
+TODO
+
+
+My point is: the global API of stdlib is a mess.
+It's so a mess it looks like Common Lisp.
+
+I'm a huge fan of Ada's way, where all libs are carefully standardized,
+so you find little or no surprise in them.
+Well, the fact that the language itself is case insensitive certainly helps a little, but it anyway reach
+a global coherence that i didn't find anywhere else
+(maybe [racket](https://racket-lang.org/) ? I didn't dig more about it yet).
+
+Python is somewhere between Common Lisp and Ada, but IMHO closer to CL.
+
+
+## csv
+This module is a huge success to me: simple, efficient, rich.
+
+With the notable exception of a very annoying behavior: *record* separator is hardcoded.
+
+In other words, if you want your lines (*record* is the formal name) to be separated by a specific character,
+for instance the standard [*record separator*](https://en.wikipedia.org/wiki/Delimiter#ASCII%20delimited%20text),
+__you just can't__. You are stuck with `\n`/`\r`.
+
+Or you have to use a tierce-party library. So much for the *battery-included*.
+
+At least, [the documentation](https://docs.python.org/2.7/library/csv.html#csv.Dialect.lineterminator) is clear about it, althouth somewhat outrageous:
+
+> The reader is hard-coded to recognise either '\r' or '\n' as end-of-line, and ignores lineterminator. This behavior may change in the future.
+
+Well, instead of writing this, i guess i could work on a PEP for that.
+
+
+## functools
+### lru_cache
+It's a good function, because it's powerful.
+
+But it's seriouly retarded.
+There is *no tuning at all*, so there is no real way to ignore some parameters for the caching.
+
+Now i'm going with [cachetools](https://github.com/tkem/cachetools).
+This third party lib has many flaws, but it's way better than functools and provides other types of caches.
+
+
+## itertools
+### islice
+
+    >>> islice([1, 2, 3], start=1, stop=3)
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    TypeError: islice() does not take keyword arguments
+
+Seriously ? In **python 3.6** ?
+
+This is because islice is coded by CPython in C, directly, without consideration for the Python side. Like `str.split` few versions ago.
+
+And you know what ? As far as i understand the problem, [PEP 362](https://www.python.org/dev/peps/pep-0362/) should have fixed the problem.
+But we still get an error with `islice`, and so you can't set its second
+and third parameters with `functools.partial`.
+
+
+# About base types
+## get for indexables
+A `get` for lists, tuples and sets, similar to the `dict.get`, is missing.
+Would be awesome, but we don't have that.
+
+We're stuck with the good old `l[n] if n < len(l) else k`.
+
+To me, the `get` is an *indexable property*,
+not some random utility method arbitrarily given to dict.
+
+
+## frozendict
+It do not exists. But `frozenset` do.
+
+The main argument against frozendict is *because we can't define a frozendict
+implementation that is more efficient than dict, like we did for frozenset and set*.
+
+That's dubious. It's not because *right now* we can't design an optimization
+that we will never be able to.
+
+Frozendict should exists. Because all standard base types have their
+frozen equivalent, except dict.
+Symmetry matters.
+
+
+# In metaprogramming and underprogramming
+Metaprogramming in Python is just a pain. I don't speak of metaclasses
+that works globally well, even if most of the time they are useless.
+
+## macros
+They are just missing. The only way to get them is to use Lisp instead of Python.
+It's not because it's impossible that it is not a good idea.
+
+## exec
+
+## importlib
+
+## ast
+Complicated, too low level.
+
+Some projects like [redbaron](https://github.com/PyCQA/redbaron) works on it, in order to bypass
+the `ast` module itself.
+
+## Parsing
+Language parsing and easy AST manipulation should be integrated in all languages.
+Why is there no real grammar-related library in the standard ?
+With included grammar to parse python code ?
+
+## Bytecode
+Why can't i put bytecode into my Python just as i put assembly into my C ?
+Bytecode should be integrated in the language, allowing microoptimization when necessary.
+
+It's almost useless with the almost not-painful C integration in Python.
+But then, you end up with packaging problems,
+and need external libraries like cffi or swig.
+
+
+
+# In the language
+This is things i want to see in the language.
+Not always feasible, not always a good idea in the end, but still.
+
+
+## Class
+Using type annotations in class' methods is easy. But type annotate a building
+method is a pain:
+
+```python
+class Thing:
+    ...
+
+    @staticmethod
+    def build_default() -> Thing:
+        ...
+```
+
+This raises a NameError because `Thing` is not defined during the `build_from`
+definition.
+
+This is a symptom of a very annoying behavior in python classes definitions:
+the class itself is not accessible during its definition.
+
+In this case, the problem is easy to patch:
+
+```python
+class Thing:
+    ...
+
+def build_default() -> Thing:
+    ...
+Thing.build_default = build_default
+```
+
+But why the hell should i to care about this name resolution
+in a *dynamic* language ?
+
+The consequence of this is that having a decorator on a class methods than run checks depending
+of the class itself must be done with a **class decorator**.
+So much for the simplicity.
+
+Edit: good news: [PEP 563](https://www.python.org/dev/peps/pep-0563) fixes the problem.
+
+
+## generalized intension syntax
+```
+for item in (1, 2, 3, 4) if item not in (2, 4):
+    print(item)
+```
+
+
+## for-with
+```
+items = 1, 2, 3, 4
+for item in items with item*2 as post_treated_bigitem:
+    print(post_treated_bigitem)
+
+```
+
+## inlined except
+In the continuity of the [*Easier to Ask Forgiveness than Permission* philosophy](https://docs.python.org/3/glossary.html#term-eafp),
+which is prefered over *Look Before You're Leap* in Python, and to avoid the full try..except blocks:
+
+```python
+t = 1, 2, 3
+print(t[4])  except IndexError: print('Nope !')
+```
+
+This was proposed in a [now rejected PEP](https://www.python.org/dev/peps/pep-0463/).
+
+
+## errors
+Error handling is simple, efficient, but so simple it's sometimes exasperating.
+In [the python-idea mailing list](http://code.activestate.com/lists/python-ideas/45907/),
+a solution was proposed: promote
+critical information of errors into attributes. I don't have news since.
+
+Thus, IndexError would have a `.index` and `.indexable` attribute,
+containing respectively the non-existing index in the indexable that raised
+the error, and the index itself.
+
+This extend to user-defined exceptions, where at creation, instead of
+a [ridiculously blank definition](https://stackoverflow.com/questions/1319615/proper-way-to-declare-custom-exceptions-in-modern-python#1319675),
+that gain in ridiculous complexity when you want more than just a message,
+you could just provides the template message and expected keys:
+
+```python
+class NoThankYouError(ValueError):
+    message = "I don't want the {thing} to be {action}"
+
+# simply used as:
+raise NoThankYouError(thing='fish', action='put in my plate')
+
+# or, even more simply:
+raise NoThankYouError('fish', 'put in my plate')
+```
+
+This can sound useless, but in some cases, notabily testing, if you want to
+test an exception content you have to parse its error message.
+From computer to human readable message to computer. That is *absurd*.
+
+
+# Packaging
+It's a pain.
+
+## distutils
+Or setuptools ? distutils2 maybe ?
+
+Or whatever is the name of the current mainstream package facility,
+that have just the same API, the same over-complicated documentation,
+or, in case of a very specific case, no documentation at all and a very different API ?
+
+Note that:
+- there is no easy to find simple example for simple cases in the documentation.
+- the corner cases are not treated. Or very well hidden…
+- … like the (not so) special cases that everybody encounter in its first real-life packaging.
+
+
+
+# The not so *bad*
+Follows a thing i used to hate in Python, that i end up… not hating so much.
+
+
+## Name mangling
+Lets define a base class `A` having a private attribute, then
+a `B` class inherited from `A`.
+
+When trying to reach for the private attribute, you will hurt the Name Mangling system,
+that force you to use the not so obvious `_QUALNAME__ATTRNAME` attribute naming.
+
+```python
+class A:
+    def __init__(self):
+        self.__attr = 12
+
+class B(A):
+    def __init__(self):
+        super().__init__()
+
+    def direct_access(self): return self.__attr
+    def indirect_access(self): return getattr(self, '__attr')
+
+if __name__ == "__main__":
+    print(B().direct_access())  # AttributeError: 'B' object has no attribute '_B__attr'
+    print(B().indirect_access())  # AttributeError: 'B' object has no attribute '__attr'
+```
+
+I now that *privates* attributes are, well, privates. But still,
+it's a very disconcerting behavior.
+
+More details [here]() and [here]().
+
+
+### Why it's not *so* bad
+It takes its root in [the holy PEP8](https://www.python.org/dev/peps/pep-0008/#designing-for-inheritance):
+
+> If your class is intended to be subclassed, and you have attributes that you do not want subclasses to use, consider naming them with double leading underscores and no trailing underscores. This invokes Python's name mangling algorithm, where the name of the class is mangled into the attribute name. This helps avoid attribute name collisions should subclasses inadvertently contain attributes with the same name.
+
+This is followed by few notes giving details ; but, yes, it's not so bad. Once you now the rule,
+you know how to deal with it ; yielding clear benefits.
+That's precisely because of that name collision avoidance solution that
+i finally ended up ¬hating the name mangling.
