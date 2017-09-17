@@ -7,7 +7,7 @@ Summary: basic explanations of the python ecosystem
 Slug: pyeco
 lang: english
 translation: false
-status: published
+status: draft
 
 
 # Python

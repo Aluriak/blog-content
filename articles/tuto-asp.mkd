@@ -9,7 +9,7 @@ Summary: un tuto pour ASP
 Slug: tuto-asp
 Lang: français
 Translation: false
-Status: published
+Status: draft
 
 
 # Introduction
