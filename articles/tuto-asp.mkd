@@ -6,10 +6,10 @@ toc_headers: ^h[1-2]
 toc_run: true
 Authors: Lucas Bourneuf
 Summary: un tuto pour ASP
-Slug: answer-set-programming-asp
-<!-- lang: français -->
-translation: false
-status: draft
+Slug: tuto-asp
+Lang: français
+Translation: false
+Status: published
 
 
 # Introduction
@@ -35,6 +35,15 @@ qui passe aussi très vite sur les bases.
 Les scripts ASP utilisés ici sont disponibles
 sur le dépôt git [learning-ASP](https://github.com/Aluriak/learning-ASP).
 
+Notez aussi que clingo, le groundeur/solveur que nous allons utiliser,
+est accompagné [d'un manuel bien fournis](http://sourceforge.net/projects/potassco/files/guide/),
+d'un [nombre impressionnant d'exemples de tous types dans ses sources](https://github.com/potassco/clingo/tree/master/examples)
+(j'insiste ; faites y un tour, il y a un exemple pour presque toute les fonctionalités du solveur),
+et [d'une mailing list active](https://sourceforge.net/p/potassco/mailman/potassco-users/)
+où beaucoup de questions intéressantes sont posées.
+(il y a [une autre mailing list](https://lists.sourceforge.net/lists/listinfo/potassco-announce)
+pour les annonces des développeurs)
+
 
 # Concepts généraux
 ## Principes de Programmation Déclarative
@@ -42,9 +51,9 @@ Comment collecter tous les entiers positifs inférieurs à 100 et multiples de 3
 En python, une manière de faire est la suivante :
 
 ```python
-    for nb in range(0, 100):
-        if nb % 3 == 0:
-            print(nb)
+for nb in range(0, 100):
+    if nb % 3 == 0:
+        print(nb)
 ```
 
 Ce qu'il y a à voir ici, c'est que l'on *explique* au programme exécutant le code (l'interpréteur python)
@@ -87,7 +96,7 @@ Pour présenter un peu le concept de la programmation logique,
 imaginons un langage qui nous permettrais d'expliquer ce qu'est la solution au programme python vu précédemment :
 
 ```
-    x tel que : x est un entier, 1 < x < 100, x%3 égal à 0.
+x tel que : x est un entier, 1 < x < 100, x%3 égal à 0.
 ```
 
 C'est compréhensible, simple et efficace ; c'est de la programmation logique !
@@ -129,21 +138,24 @@ car les développeurs ont intuitivement ce découpage dans leur réflexions.
 
 
 # Outillage
-Pour ce tuto, nous allons utiliser la suite [Potassco](), un ensemble de logiciels
+Pour ce tuto, nous allons utiliser la suite [Potassco](https://potassco.org), un ensemble de logiciels
 qui gravitent autour d'une idée : implémenter et utiliser ASP.
 
 Plus particulièrement, nous allons utiliser *clingo*.
 
-Clingo est à ASP ce que CPython est à Python: une usine à gaz qui comprend et applique les effets de bord du langage.
+Clingo est à ASP ce que CPython est à Python:
+une usine à gaz qui comprend et applique les effets de bord du langage.
 <!-- Faut vraiment que je fasse un article sur ces notions -->
 
 Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
 
-Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python:
+Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
+(dans le cas d'ASP, c'est du …, pour CPython c'est le bytecode, et pour C c'est l'assembleur)
 
-Clasp est à ASP ce que l'interpréteur de CPython est à Python: un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
+Clasp est à ASP ce que l'interpréteur de CPython est à Python:
+un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
 et en appliquent les effets de bord (mémoire et calculs).
 
 Pour être plus précis à propos de gringo et clasp, le premier compile un programme
@@ -158,10 +170,51 @@ d'un seul coups.
 
 
 ## Installation
+Clingo est disponible sur le [dépôt github](https://github.com/potassco/clingo/)
+et sur [sourceforge](http://potassco.sourceforge.net/).
+Le premier est aujourd'hui le site de référence.
+Plus d'informations sur [le site de Potassco lui-même](https://potassco.org/doc/start/)
+
+À l'écriture de ce tuto, la version de clingo la plus récente est la 5.2.1.
+Il est aussi possible, pour de petites instances,
+de [faire tourner clingo dans un navigateur](https://potassco.org/clingo/run/).
+
+### Installation manuelle
+A moins que vous ne soyez concerné par l'un des quelques OS qui ont un packaging,
+le plus simple est probablement de
+
+1. Télécharger ou compiler le binaire *clingo*
+2. Le mettre dans le PATH (`/usr/bin` pour les bourrins, `~/.local/bin/` pour les moins bourrins)
+
+*Qu'est-ce que le PATH ?*
+[Pour les windowsiens](http://sametmax.com/ajouter-un-chemin-a-la-variable-denvironnement-path-sous-windows/),
+[pour les unxiens](http://generation-linux.fr/index.php?post/2008/10/15/Changer-les-dossiers-par-defaut-dans-le-PATH).
+
+Personnellement, j'ai un répertoire `~/bin/` vers lequel mon PATH pointe. C'est ici que j'y ai mis
+mes binaires clingo:
+
+```
+❯ ls -lA ~/bin | cut -c 50- | grep clingo
+clingo521
+clingo454
+clingo -> clingo521
+```
+
+(clingo est un lien symbolique vers l'une des versions installée… généralement la plus récente)
+<!-- [comme pour les binaires python]({filename}/articles/the-python-ecosystem.mkd) -->
+
 ### Compilation
+La compilation de clingo depuis les source est possible,
+et conseillée si vous voulez une version particulière avec le support de python
+ou de lua avec une version particulière (je pense à python 3, notamment)
+
+<!-- TODO: put the readme here -->
 
 
 ## Quelques tests préliminaires
+Maintenant que vous avez bien installé clingo, effectuons quelques
+tests préliminaires pour étudier un peu l'environnement.
+
 ### Version
 Pour avoir la versions de clingo, il suffit de demander: `clingo --version`.
 Vous verrez quelque chose du style:
@@ -255,26 +308,40 @@ empêchant d'utiliser le snippet `% *%` comme le `//*/` en C.
 
 
 ## Les atomes
-Par défaut, toute valeur est considérée fausse.
 Un atome est un fait, une relation qui est considérée vraie.
+Par défaut, tout atome est considéré faux, jusqu'à ce
+qu'il soit explicitement statué comme vrai.
+
+Un programme ASP repose sur ce principe,
+si bien que la solution à un problème est en fait décrite
+par les atomes vérifiés.
+
+Tout le jeu d'un programme ASP est de définir quels atomes doivent être vrais,
+sous quelles conditions (c'est la modélisation du problème),
+et quelles combinaisons d'atomes rendent une réponse caduque (c'est le job des contraintes).
 
 Considérons le programme suivant:
 
 ```asp
-    a.
+a.
 ```
 
-Ici, on indique que le *fait* `a` est vrai. Le point est un peu comme le point-virgule en C,
-ou le saut de ligne en Python : il sépare chaque règle et atome.
+Ici, on indique que le *fait* `a` est vrai.
+À l'inverse, tout autre fait est faux, et si on lance clingo sur ce programme,
+nous ne trouverons qu'un seul et unique modèle : celui où a est vrai.
+
+Le point `.` est un peu comme le point-virgule en C,
+ou le saut de ligne en Python : il sépare chaque règle et atome du programme.
 
 ```asp
-    a(4).
+a(4).
 ```
 
 Cette déclaration est un peu plus complexe, mais revient au même : le prédicat `a` d'arité 1
 (c'est-à-dire avec 1 argument) avec comme premier (et unique) argument 4, est vrai.
 
 De la même manière, il est possible de déclarer `b`, `b(42)`, mais aussi `a(b)`, `a(a,b,c,3)`, `a(b(1))`, ou encore `a(a(b(b(9))))`.
+Le nombre d'argument est virtuellement infinie, et un atome peut être argument d'un autre.
 
 
 ## Retour sur les atomes
@@ -282,12 +349,12 @@ Ci-après, un autre programme qui génère des atomes
 (donc, des *faits*, des éléments considérés vrais pendant le solving).
 
 ```asp
-    % Les atomes nb(X) sont vrais pour tout X positif inférieur à 100.
-    nb(1..99).
-    % Les atomes nb_ex(X) sont vrais pour tout X ∈ [1;4]
-    nb_ex(1;2;3;4).
-    % On peut combiner les deux:
-    nb_cb(1;2;3..10).
+% Les atomes nb(X) sont vrais pour tout X positif inférieur à 100.
+nb(1..99).
+% Les atomes nb_ex(X) sont vrais pour tout X ∈ [1;4]
+nb_ex(1;2;3;4).
+% On peut aussi combiner les deux:
+nb_cb(1;2;3..10).
 ```
 
 Donnez ce programme directement à manger à clingo !
@@ -303,15 +370,22 @@ en se basant sur des conditions.
 En ASP, cela se fait avec l'opérateur `:-`, une espèce de `if` à l'envers:
 
 ```asp
-    % l'atome ok(X) est vrai si a(X) est vrai
-    ok(X):- a(X).
-    % L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
-    nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.
+% l'atome ok(X) est vrai si a(X) est vrai
+ok(X):- a(X).
+% L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
+nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.
 ```
 
-Les règles sont les premiers éléments réellement utiles dans un programme ASP.
+On appelle la partie *avant* le `:-` la *tête* (head),
+et la partie à droite le *corps*.
+La tête est vraie si et uniquement si le corps est vrai.
+
+Les règles sont les premiers éléments utiles dans un programme ASP.
 Ce sont ces règles qui vont permettre d'exprimer des implications,
-et donc de réellement commencer à travailler sur les données.
+et donc de réellement commencer à travailler sur les atomes existants.
+
+Donc, dans un programme ASP, vous avez des atomes considérés vrais (souvent, ce sont des données du problème),
+et des ensembles de règles qui vont permettrent d'inférer la véracité d'autres atomes.
 
 Notez qu'il est possible d'utiliser la négation:
 
@@ -329,7 +403,7 @@ Une autre manière de voir cette règle, plus verbeuse mais plus puissante, est 
 Cette formulation nous permettra de mieux comprendre une prochaine construction du langage.
 
 
-## Choix
+## Disjonction (choix)
 Une construction très importante en ASP est le *choix*.
 Le choix consiste en un… choix. C'est dur à expliquer autrement.
 
@@ -337,10 +411,9 @@ Voici un exemple simple, avec le résultat donné par clingo,
 qui consiste en un choix de exactement 1 parmis 3 atomes :
 
 ```
-❯ echo "1{a;b;c}1." > program.lp
-❯ clingo -n 0 program.lp
+❯ echo "1{a;b;c}1." | clingo -n 0
 clingo version 5.2.1
-Reading from program.lp
+Reading from stdin
 Solving...
 Answer: 1
 b
@@ -467,7 +540,7 @@ Et clingo réagit exactement comme il faut:
     Time         : 5.189s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
     CPU Time     : 0.000s
 
-Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set, aucune réponse.
+Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set, aucune réponse possible.
 
 
 ## ∃ vs ∀
@@ -523,6 +596,74 @@ ou définir les valeurs de constantes.
 # En pratique !
 Maintenant que l'on a les bases, nous allons (enfin !) pouvoir
 attaquer des vrai problèmes.
+
+
+
+# Métaprogrammation
+Clingo (gringo) est capable de comprendre un sur-ensemble de l'ASP qui relève de la méta programmation.
+Autrement dit, il existe des expressions valides qui ne sont pas de l'ASP, mais qui permettent de manipuler
+le grounding ou le solving du programme.
+
+Les directives de métaprogrammation commencent systématiquement par un `#`.
+Nous allons ici voir les plus utiles. Pour plus d'exhaustivité,
+je vous renvoie [au manuel de clingo](http://sourceforge.net/projects/potassco/files/guide/).
+
+
+## #show
+Il s'agit probablement de la directive la plus utilisée : il s'agit de déterminer
+quels atomes seront affichés dans la sortie de clingo.
+
+En effet, pour chaque answer set, clingo donne la liste complète des atomes
+vrais. Dans certains cas, notamment quand vous avez beaucoup de données et d'atomes intermédiaires,
+seuls quelques uns vous intéressent.
+
+Par exemple, si vous codez un solveur de sudoku, les données (les cases déjà remplies)
+ne changent pas, sont constantes d'un answer set à l'autre : vous ne voulez pas les afficher.
+
+C'est là que `#show` intervient.
+
+```asp
+a(1;2;3).
+b(X):- a(X).
+#show b/1.
+```
+
+En runnant ce programme, avec ou sans la dernière ligne,
+vous allez avoir *exactement* 1 modèle/answer set, contenant 3 ou 6 atomes selon les cas.
+
+Pour être plus rigoureux, dans les deux cas les atomes vérifiés dans le modèle sont strictement identiques,
+c'est juste qu'avec la dernière ligne, seuls 3 sont affichés (ceux ayant `b` comme prédicat).
+
+Notez la manière dont on renseigne *l'ensemble des atomes de prédicat `b`*: en utilisant une notation très courante dans le monde de la programmation logique: `<prédicat>/<arité>`.
+Si vous remplacez le 1 par un 2, clingo n'affichera rien : il va en effet afficher uniquement les atomes de prédicat `b` avec deux arguments, c'est-à-dire, dans ce cas précis, aucun.
+
+
+### Le côté obscur de #show
+Le programme suivant affiche 4 atomes, et aucun d'entre eux ne fait réellement partis du modèle trouvé par le solveur.
+
+```asp
+b(1).
+#show b.
+#show 23.
+#show p(X): b(X).
+```
+
+Nous voyons ici trois usages différents de show.
+Le premier et le second sont des moyens d'afficher des données, y comprit des nombres.
+
+Le troisième montre qu'il est possible de faire quelques opérations logiques sur les règles à montrer.
+Cela peut servir pour filtrer précisément les atomes à afficher, ou pour renommer les atomes
+(ici, on renomme `b/1` en `p/1`).
+
+Notez bien que ces usages de *show* sont *génératives* : elles ajoutent des atomes dans la réponse,
+sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est pas vérifiable)
+
+
+## #const
+## #minimize et #maximize
+## #min et #max
+## #count
+## #project
 
 
 # Interface avec Python
