@@ -208,7 +208,23 @@ La compilation de clingo depuis les source est possible,
 et conseillée si vous voulez une version particulière avec le support de python
 ou de lua avec une version particulière (je pense à python 3, notamment)
 
-<!-- TODO: put the readme here -->
+
+```makefile
+all: update_repo compile install
+
+install:
+	cp clingo/bin/clingo ~/bin/clingo_compiled_from_repo
+
+compile:
+	cd clingo && cmake -H. -B.  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
+	cd clingo && make
+	cd clingo && cmake --target test -H. -B.  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
+	cd clingo/app/clingo/tests && python3.5m run.py --clingo ../../../bin/clingo run
+
+update_repo:
+	cd clingo && git pull
+	cd clingo && git submodule update --init --recursive
+```
 
 
 ## Quelques tests préliminaires
