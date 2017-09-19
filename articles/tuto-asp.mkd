@@ -921,3 +921,13 @@ devient votre source d'utilisateur principale.
 - la page [potassco/teaching](https://potassco.org/teaching/) regorge de liens.
 - une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content)
 - If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp_en.mkd)
+
+
+*[ASP]: Answer Set Programming
+*[answer set]: Un ensemble réponse, un modèle valide contenant un ensemble d'atomes qui sont tous vrais
+*[answer set]: Un ensemble réponse, un modèle valide contenant un ensemble d'atomes qui sont tous vrais
+*[CPU]: Computing Processing Unit, le processeur.
+*[GPU]: Graphical Processing Unit, la carte graphique.
+*[RAM]: Random Access Memory, la mémoire vive.
+*[POO]: Programmation Orientée Objet, un paradigme où les concepts sont séparés et doivent interagir par envoie de messages
+*[PF]: Programmation Fonctionnelle, un paradigme où les fonctions sont manipulées au même titre que les types de base
