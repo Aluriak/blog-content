@@ -807,6 +807,11 @@ Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
 
 
+### Multi-shot solving
+TODO
+
+### Iterative solving
+TODO
 
 
 
