@@ -154,6 +154,7 @@ For instance, you could want to search for a particular package, like `numpy` or
 At the moment i wrote this line, some of the packages just updated on pypi were, among others,
 `PySpice`, a lib to simulate electronic circuits,
 `simplyrestful`, a lib to work with rest apis,
+`vlcplaylister`, a generator of VLC playlists,
 and `virtualenvwrapper-win`, a port of virtualenv for windows.
 But it's not even representative of what you can find in pypi !
 
