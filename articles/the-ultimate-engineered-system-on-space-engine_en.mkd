@@ -5,9 +5,9 @@ Tags: space, tuto
 Authors: Lucas Bourneuf
 Summary: visualizations of the ultimate engineered solar system
 Slug: uess
-lang: en
-translation: false
-status: published
+Lang: en
+Translation: false
+Status: published
 
 
 # Introduction
