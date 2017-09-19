@@ -2,14 +2,15 @@ Title: Introduction à Answer Set Programming (ASP)
 Date: 2017-03-31
 Modified: 2017-03-31
 Tags: asp, language, tuto
-toc_headers: ^h[1-2]
-toc_run: true
 Authors: Lucas Bourneuf
 Summary: un tuto pour ASP
 Slug: tuto-asp
 Lang: français
 Translation: false
 Status: draft
+
+
+[TOC]
 
 
 # Introduction
@@ -60,7 +61,7 @@ Ce qu'il y a à voir ici, c'est que l'on *explique* au programme exécutant le c
 comment arriver à la solution qui nous intéresse.
 Ce paradigme, dit *impératif*, consiste à expliquer **comment calculer la solution**.
 
-C'est une approche qui est en fait assez peu naturelle, et ça se voit quand on commence à apprendre à programmer.
+C'est une approche qui est en fait assez peu naturelle, et ça se voit quand on commence la programmation.
 C'est effectivement assez consternant de devoir s'expliquer auprès d'un ordinateur qui semble avoir
 les capacités de compréhension d'un enfant de 5 ans (8, quand on utilise un langage haut-niveau),
 et c'est un gros problème dans l'enseignement en informatique.
@@ -73,7 +74,7 @@ Le paradigme *déclaratif* consiste en l'explication du **quoi**.
 
 HTML est un bon exemple de langage déclaratif: on décrit bien la solution (la structure finale de la page web).
 Le HTML n'est pas un langage impératif ; d'ailleurs, si la page finale dépend de paramètres extérieurs (compte enregistré par exemple),
-vous ne pouvez plus compter que sur le HTML. C'est généralement là qu'interviennent PHP, Python, Java,…
+vous ne pouvez plus compter que sur le HTML. C'est généralement là qu'interviennent Javascript, PHP, Python, Java,…
 Des langages impératifs qui permettent
 de générer du HTML à partir de templates et des paramètres extérieurs.
 
@@ -93,18 +94,19 @@ C'est avec ces outils que la description de la solution (la réponse au **quoi**
 C'est précisément à cette catégorie de langage qu'ASP appartient.
 
 Pour présenter un peu le concept de la programmation logique,
-imaginons un langage qui nous permettrais d'expliquer ce qu'est la solution au programme python vu précédemment :
+imaginons un langage qui nous permettrais d'expliquer ce qu'est la solution au programme python vu précédemment (calculer les nombres entre 1 et 100 qui sont multiples de 3) :
 
 ```
-x tel que : x est un entier, 1 < x < 100, x%3 égal à 0.
+x tel que : x est un entier, 1 < x < 100, x est un multiple de 3.
 ```
 
 C'est compréhensible, simple et efficace ; c'est de la programmation logique !
-Ce langage précis n'est pas utilisé, certes, mais il s'agit d'une tentative d'approcher un langage expressif.
-La syntaxe et la grammaire seront certainement déroutantes, mais il ne s'agit finalement que de *décrire* la solution.
+Ce langage précis n'est pas implémenté (et ASP est un peu moins haut niveau que cela),
+certes, mais il s'agit d'un exemple d'approche d'un langage expressif.
+On remarque bien ici qu'il ne s'agit finalement que de *décrire* la solution.
 
 La [page wikipédia en français sur la programmation déclarative](https://fr.wikipedia.org/wiki/Programmation%20d%C3%A9clarative)
-est (très) courte, mais suffisante pour notre étude.
+est courte, mais suffisante pour notre étude.
 
 
 ## Principes de Programmation Par Contrainte
@@ -132,22 +134,31 @@ qui permet de définir quels candidats seront écartés.
 
 Answer Set Programming est un langage logique où les contraintes
 font partie du langage autant que le reste des déclarations.
-Ainsi, la dichotomie entre génération et contraintes se voit dans beaucoup de codes ASP,
+Néanmoins, la dichotomie entre génération et contraintes se voit dans beaucoup de codes ASP,
 car les développeurs ont intuitivement ce découpage dans leur réflexions.
 
 
 
 # Outillage
+Il existe [de nombreuses implémentations d'ASP](https://en.wikipedia.org/wiki/Answer_set_programming#Comparison_of_implementations),
+chacunes avec des approches unique
+et intéressantes pour résoudre des problèmes plus ou moins spécifiques.
+
 Pour ce tuto, nous allons utiliser la suite [Potassco](https://potassco.org), un ensemble de logiciels
 qui gravitent autour d'une idée : implémenter et utiliser ASP.
-
 Plus particulièrement, nous allons utiliser *clingo*.
+
+(si ça vous motive, prenez une autre implémentation ; en général les différences d'utilisation ne seront pas monstrueuses)
+
+
+## Clingo, en deux cents mots
 
 Clingo est à ASP ce que CPython est à Python:
 une usine à gaz qui comprend et applique les effets de bord du langage.
 <!-- Faut vraiment que je fasse un article sur ces notions -->
 
 Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
+(que l'on peut récupérer et utiliser à part)
 
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
@@ -595,8 +606,10 @@ ou définir les valeurs de constantes.
 
 # En pratique !
 Maintenant que l'on a les bases, nous allons (enfin !) pouvoir
-attaquer des vrai problèmes.
+attaquer de vrais problèmes.
 
+
+TODO
 
 
 # Métaprogrammation
@@ -659,11 +672,87 @@ Notez bien que ces usages de *show* sont *génératives* : elles ajoutent des at
 sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est pas vérifiable)
 
 
+### Le #show impératif
+Il existe une dernière forme pour cette directive : `#show.`.
+Elle se traduit par *n'affique strictement que ce qui est demandé*.
+
+Par exemple, si tous les shows de mon programme sont génératifs (cf section précédente),
+comment faire pour n'afficher que ceux-là, et pas le reste du programme ?
+
+```asp
+a.
+#show 23.
+```
+
+Ce programme va afficher dans l'unique modèle les atomes *a* et *23*.
+Maintenant, si j'ajoute `#show.` quelque part…
+
+```asp
+a.
+#show.
+#show 23.
+```
+
+Paf ! Seul *23* est affiché. Pourquoi ? Parce que *a* n'a pas été explicitement rattaché au show.
+
+En général, les directives `#show` se trouvent en fin de fichier (assez logiquement,
+c'est la dernière chose qui est faite), et le premier *show* est généralement `#show.`.
+C'est une habitude qu'on retrouve dans beaucoup de codes ASP.
+
+
 ## #const
+Comme C utilise `#define` et `const`, clingo utilise un mélange des deux : `#const`.
+Là s'arrête le parallèle, et commence un exemple :
+
+```asp
+#const ma_constante_avec_un_nom_a_rallonge = 42
+#const m_constnte_sns_l_lettre_ = "a"
+
+a(m_constnte_sns_l_lettre_).
+a(ma_constante_sans_la_lettre_b).
+p(X):- X=ma_constante_avec_un_nom_a_rallonge.
+#show ma_constante_avec_un_nom_a_rallonge.
+```
+
+Nous avons ici deux constantes, nommées `ma_constante_avec_un_nom_a_rallonge`
+et `m_constnte_sns_l_lettre_`, associées aux valeurs 42 et "a", respectivement.
+
+Le `#const` se comporte comme le `#define` du C: lors du *grounding*,
+toute occurence du nom de la constante sera remplacée par sa valeur.
+
+Et tout comme le `#define` en C, il peut être réécrit lors de l'appel au compilateur.
+Dans notre cas, lors de l'appel à clingo.
+
+Ainsi, si vous voulez définir la valeur d'une constante lors du lancement du programme,
+il suffit d'utiliser l'option `-c` : `clingo -c ma_constante_avec_un_nom_a_rallonge=23`.
+Il s'agit donc d'un excellent moyen de proposer une personalisation d'un programme
+sans avoir à tripoter le code.
+
+Enfin, notez que tout comme le préprocesseur du C, clingo est malin :
+
+```asp
+#const cst = b.
+cst(cst).
+```
+
+Ce code génère un answer set d'un atome qui est… `cst(b)`,
+car le __`#const` agit sur les valeurs, pas les prédicats.__
+
+
 ## #minimize et #maximize
+Le nerf de la guerre.
+
 ## #min et #max
+Utiles.
 ## #count
+Utile.
 ## #project
+Un détail avec de l'importance.
+## #program
+Des fichiers dans des fichiers.
+
+
+
 
 
 # Interface avec Python
@@ -702,16 +791,82 @@ Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
 
 
+
+
+
+
 # Real-world application
 
 ## Construire un PC
-1PC == plusieurs pièces : CPU, GPU, RAM, carte mère, refroidissement, boite, périphérique.
-Pour chaque, différentes solutions avec chacune un prix, une note de préférence, des dépendances, des incompatibilités,…
-Et bien sûr un prix maximum à ne pas dépasser.
+Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
-Donc : programme où l'on donne son prix, et ses préférences, et pif le solveur propose les meilleures solutions.
+Ce genre de programme s'organise autour de deux principaux programmes:
+celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
+comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
+et celui qui construit le pc à partir des pièces récupérées, c'est-à-dire
+qui choisi quelles pièces utiliser.
+
+Le mot-clef, vous l'aurez compris, c'est *choisir*, et il se trouve dans la seconde
+catégorie. L'interface avec un distributeur de matériel informatique n'est pas
+le sujet de ce tuto, donc on s'arrangera avec quelques données faites à la main.
+
+Mais si un jour quelqu'un veux s'amuser, la première étape est tout à fait automatisable,
+par exemple en tapant dans l'api d'un distributeur qui en propose une.
+
+
+### Spécifications
+Une machine est un ensemble de plusieurs pièces : CPU, GPU, RAM, carte mère, refroidissement, disque dur, SSD, boite, périphérique.
+Chacune de ces *catégories* doit se voir assigner une (et une seule) pièce, ou éventuellement zéro si la catégorie est optionnelle
+(par exemple, je peux vouloir un SSD *si possible* ; c'est donc optionnel)
+
+Chaque pièce appartient donc à une catégorie, et possède un prix, des dépendances et des incompatibilités.
+Aussi, elles auront chacune une note de *préférence* : je pourrais ainsi dire *je préfère la GPU 1080 à la 1070*
+en mettant une plus grande préférence sur la première.
+
+Enfin, et c'est là tout le sel : on ne veux pas dépasser un prix maximum.
+
+### En clair
+On veut un programme ASP qui, en considérant les pièces disponibles, nos préférences personnelles, les interdépendances
+entre les pièces, et un prix maximum, soit capable de nous donner une bonne solution, voir la meilleure.
+
+Là où ASP est génial, c'est qu'il n'y a pas besoin de connaître grand chose en heuristique pour résoudre ce genre de problème
+(qui, j'en suis sûr, est NP-complet).
 
 Le code est disponible sur [le dépôt](https://github.com/aluriak/learning-ASP/blob/master/build-pc.lp).
+
+
+### Commentaires
+
+
+### Aller plus loin
+#### Attrapez les toutes
+Déjà, une première étape, c'est effectivement de récupérer les données.
+Évidemment, récupérer TOUTES les pièces possibles est un peu long,
+alors avoir des informations en amont, notamment les prix minimaux et maximaux (globaux, et par catégorie)
+permet déjà d'élaguer. En général, toute limitation est bonne à prendre : taille de la RAM, du stockage, nombre de cœurs…
+
+Tout cela est facile à intégrer dans le programme ASP : il ne s'agit que de rajouter des pièces,
+des préférences, voir des contraintes.
+
+
+#### Dans le ¬Sephiroth
+Une fois que les deux premières parties sont mises en place et travaillent ensembles,
+vient l'étape de distribution.
+
+Une manière de faire, c'est une interface web, où les utilisateurs peuvent checker
+les pièces disponibles qui les intéressent, éventuellement faire un peu d'apprentissage pour proposer
+des pièces intéressantes (si 80% des utilisateurs qui prennent 8Go de RAM choissisent aussi une 1080,
+alors automatiquement proposer une 1080 à tout utilisateur qui prend 8Go de RAM).
+
+La deuxième étape, c'est de faire tourner le solveur
+(dans le navigateur du client grâce à du [webassembly](https://fr.wikipedia.org/wiki/WebAssembly)
+parce qu'on vit dans le futur),
+et de sortir les meilleurs *build* au client.
+
+Et paf, vous vous faites connaître, et [r/buildapc](https://www.reddit.com/r/buildapc/)
+devient votre source d'utilisateur principale.
+
+
 
 
 ## Résoudre un donjon de The Legend of Zelda
