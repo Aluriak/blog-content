@@ -7,9 +7,10 @@ Summary: réflexion sur l'hypothèse par rapport aux langages informatiques
 Slug: sapir-worf-gpl
 lang: français
 translation: false
-toc_headers: ^h[1-2]
-toc_run: true
 status: published
+
+
+[TOC]
 
 
 # Introduction
@@ -21,7 +22,7 @@ pas le niveau pour faire un état de l'art de la discussion à son propos —
 mais plutôt d'en discuter à travers un autre type de langage que les langages naturels : les langages de programmation (un sous-ensemble des langages informatiques).
 
 La question de l'application de l'HSW sur les langages informatiques est intéressante, et pourtant,
-je n'ai rien trouvé en dehors des références des [quelques lignes de wikipédia](https://en.wikipedia.org/wiki/Linguistic_relativity#Programming_languages).
+je n'ai rien trouvé en dehors des références des [quelques lignes de wikipédia](https://en.wikipedia.org/wiki/Linguistic%20relativity#Programming%20languages).
 
 
 # Hypothèse de Sapir-Whorf
@@ -448,3 +449,8 @@ dans le langage.
 #### Deep web
 - le japonais propose toute une cohorte de mots (plus encore qu'en français) pour parler de [la pluie](http://www.sakura-house.com/blog/fr/2012/09/07/pourquoi-50-facons-de-dire-dire-pluie-en-japonais/). Cela fait écho avec la *nécessité utilitaire* abordée plus haut.
 - [Voici un article de blog](https://shuriken.wordpress.com/2006/06/01/non-linear-writing-systems/) (premier d'une série avec plein de liens, notamment [celui-ci](saizai.livejournal.com/657391.html) qui est très complet) qui aborde la question des systèmes d'écriture non-linéaires, et leur intérêt (spoil : ils sont plus expressifs ; normal, ce sont des graphes ; c'est pas un hasard que l'on ait imaginé le [RDF](https://fr.wikipedia.org/wiki/Resource%20Description%20Framework) pour le web sémantique).
+
+
+*[HSW]: l'Hypothèse de Sapir-Whorf
+*[GPL]: General Purpose Language, ou *language généraliste*, i.e. un language qui en théorie peut effectuer n'importe quel traitement
+*[DSL]: Domain Specific Language, ou *language dédié*, qui s'oppose conceptuellement au GPL puisque dédié à un seul domaine d'application
