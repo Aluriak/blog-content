@@ -818,6 +818,121 @@ TODO
 
 # Real-world application
 
+## Golfing
+Si vous ne connaissez pas [codegolf.stackexchange](https://codegolf.stackexchange.com),
+il s'agit d'une des instances de stackexchange (la plus connue est probablement stackoverflow),
+où les questions sont des challenges de code golf, c'est-à-dire des challenges où le but est de faire les programmes les plus courts possible,
+indépendemment du language. Le score correspond au nombre de caractères dans le code ; le but est donc de minimiser ce score.
+
+Par exemple, [**calculer le score du jeu boggle**](https://codegolf.stackexchange.com/questions/143213/score-a-game-of-boggle).
+Nous allons faire celui-ci, car il est simple et nécessite un peu de python.
+
+Nous allons voir qu'il est possible d'atteindre un score certes moins bon que
+[python seul](https://codegolf.stackexchange.com/a/143218),
+mais meilleurs que les langages les plus verbeux comme java.
+
+### Principes
+Chaque joueur possède un ensemble de mot uniques d'au moins 3 caractères.
+Le score d'un joueur est la somme des valeurs de ses mots.
+Un mot trouvé par un autre joueur vaux zéro.
+Un mot de 3 ou 4 lettres vaux 1 point. 5 lettres, 2 points, 6 lettres, 3 points, 7 lettres, 5 points,
+8 lettres ou plus, 11 points.
+
+### Données
+Les données seront encodées avec un prédicat qui associe un numéro de joueur et les mots qu'il a trouvé.
+Les contraintes sur les mots nous servent bien : un mot ne peut pas apparaître plus d'une fois pour un joueur.
+
+Suit le premier exemple donné dans la question :
+
+```asp
+player(1,("cat";"dog";"bird";"elephant")).  % score: 12
+player(2,("bird";"dog";"coyote")).  % score: 3
+player(3,("dog";"mouse")).  % score: 2
+```
+
+Calculons ensembles le score du joueur 1: *cat* donne 1 point, *dog* et *bird* ont été trouvés par d'autres joueurs et donnent donc 0 point, et *elephant* donne 11, soit un total de 12 points pour le premier joueur. De notre point de vue, cela veux dire que nous devons générer `score(1,12)`.
+
+### Méthodologie
+
+Déjà, nous avons besoin de déterminer quels sont les mots qui compterons pour le score.
+Une première solution est de dire que 1 et 1 seul joueur à trouvé le mot.
+L'autre solution est que, sachant un joueur l'ayant trouvé, tous les autres ne l'on pas trouvé.
+
+```asp
+unique(P,W):- 1 { player(_,W) } 1 ; player(P,W).
+unique(P,W):- player(P,W) ; not player(P2,W): player(P2,_) P2!=P.
+```
+
+Maintenant que l'on sait quel mots doivent être comptés dans le score pour chaque joueur,
+il est temps de se poser la question du score lui-même :
+
+```asp
+score(P,S):- S = #sum{L: unique(P,W), value(W,L)} ; player(P,_).
+```
+L'atome `score(P,S)` associe un joueur et son score final,
+obtenu en faisant la somme des valeurs *L* des mots *W* qui sont uniques et associés au joueur.
+
+Le problème de cette approche, c'est la génération automatique de `value(W,L)`.
+En effet, en ASP, il n'est pas possible d'obtenir la longeur d'une chaîne.
+Par conséquent, nous allons faire un peut de magie avec python:
+
+```asp
+#script (python)
+def value(word):
+    return len(word.string)
+#end.
+```
+Notons que la valeur est facilement calculable en python, en utilisant le snippet utilisé [ici](https://codegolf.stackexchange.com/a/143218):
+
+```asp
+#script (python)
+def value(word):
+    return [1,1,2,3,5,11][min(len(word.string),8)-3]#end.#show s/2.
+#end.
+```
+
+Et voilà, nous pouvons accéder à la valeur d'un mot W avec `@value(W)`. Que c'est magnifique !
+Il serait possible d'encoder le mapping de la taille et de la valeur en ASP ainsi:
+
+```asp
+value(3,1).
+value(4,1).
+value(5,2).
+value(6,3).
+value(7,5).
+n(8..99).
+value(X,5):- n(X).
+```
+Mais l'inconvénient est triple : c'est long, il y a une génération de nombreux atomes inutiles,
+et ça oblige à donner une limite supérieure à la taille des mots.
+
+Donc, on garde la fonction python qui fait la totalité du mapping mot -> score,
+ce qui nous permet de l'appeler dans la somme, et on obtient le code total suivant :
+
+```asp
+unique(P,W):- 1 { player(_,W) } 1 ; player(P,W).
+score(P,S):- S = #sum{@value(W): unique(P,W)} ; player(P,_).
+#script (python)
+def value(word):
+    return [1,1,2,3,5,11][min(len(word.string),8)-3]
+#end.
+```
+
+Wow ! On obtient bien les bons scores pour chaque joueurs :
+`score(1,12)`, `score(2,3)` et `score(3,2)`.
+
+Maintenant que le programme fonctionne, il ne reste plus qu'à le *golfer*, et à compter les caractères. Voici donc notre script final, atteignant un score de 137 caractères, ce qui le place avant-avant dernier (devant PHP et Java) au moment où j'ai écrit ce programme :
+
+```asp
+u(P,W):-1{p(_,W)}1;p(P,W).s(P,S):-S=#sum{@v(W):u(P,W)};p(P,_).#script(python)
+def v(w):return[1,1,2,3,5,11][min(len(w.string),8)-3]#end.
+```
+
+Notez que les données d'entrées doivent être encodées avec le prédicat `p` à place de `player`.
+Aussi, la directive de script ignore le reste de sa ligne, par conséquent,
+faire un one liner parfait est impossible ici.
+
+
 ## Construire un PC
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
