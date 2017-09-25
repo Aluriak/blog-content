@@ -1,0 +1,101 @@
+
+Réaction à une avalanche (environ 20) de tweets qui me sont tombés dessus, initialement à propos de [celui-ci](https://twitter.com/TomCornebize/status/890535770339069952) :
+
+> C'est quoi la voie "classique" ? Info puis bio-info, ou bio puis bio-info ?
+
+Ça dépends de ce qui est visé.
+Dans mon équipe, intégrée dans un labo d'info, la majorité des gens viennent de math/info et se sont spécialisés après.
+Il n'y a pas de paillasse, mais de nombreuses collaboration avec des structures «biologie», comme l'INRA,
+au point que des biologistes purs et durs ont un bureau dans l'équipe qu'ils occupent la moitié de la semaine.
+
+En vrai, les bioinformaticiens ne sont pas des véritables double-compétences qui conçoivent une techno de séquençage le lundi,
+la mettent en place le mardi et dev un assembleur le mercredi.
+Un bioinformaticien, il est spécialisé dans un domaine,
+et la teneur en info/bio dépend du poste qu'il occupe (et donc de ses études,
+de ses expériences passées, et de ses préférences).
+Un bon bioinformaticien, c'est soit un informaticien qui comprend bien les biologistes, soit un biologiste qui sait bien expliquer son besoin aux informaticiens.
+De temps en temps, ya des génies qui maîtrisent les deux suffisemment pour être biologistes ET informaticiens.
+Mais même ceux-là ne touchent pas à tout, et retiennent les deux leçons les plus importantes en informatique: *ne pas réinventer la roue* et *apprendre les concepts, pas les technos*.
+
+Donc, quel est le parcours typique ?
+Rejoindre un master de bioinfo après une licence de math, info ou bio.
+Les licence de bioinfo sont encore marginales, mais j'imagine que c'est bien aussi, mais AMHA ça ne vise pas le même boulot.
+
+Est-ce que j'aurais été pris dans mon équipe de bioinfo si j'avais fait une licence de bioinfo plutôt qu'info ?
+J'en doute. Je fait une thèse en informatique, et clairement le côté bio de ma thèse est lointain. Mon point fort, c'est l'info,
+et ma thèse c'est de l'info avec une application sur des données bio.
+
+Pas mal de gens dans mon labo sont des gros matheux, avec un gros arsenal derrière que tu ne vois
+dans un parcours de bioinfo __QUE__ parce que ce sont des techniques aujourd'hui bien connues du domaine.
+Mais à un moment où à un autre, un mec pas biologiste ni bioinformaticien pour un sou a proposé la technique. Quelques années plus tard, les bioinformaticiens l'utilisaient pour un truc hyper spécifique en biologie.
+
+C'est exactement la même chose dans l'autre sens : ce ne sont pas des bioinformaticiens
+qui fournissent les données des bases de données.
+
+
+Les `N+GS` ne sont pas trouvées par des mecs qui font une formation bioinfo, mais par ceux qui font une formation généraliste de chimie organique, et qui sont capable d'appliquer des techniques nouvelles.
+
+Donc, pour moi, une licence de bioinfo, c'est bien pour un boulot d'ingénieur en bioinfo.
+Pour la recherche, il vaut mieux bien connaître un domaine, et dans un second temps s'intéresser
+à l'autre pour trouver des moyens d'y appliquer des techniques de son domaine de prédilection.
+
+Au bout d'un moment, les problèmes de biologie sont formalisés, et il faut des *vrais* matheux/info pour
+les résoudre __proprement__. De l'autre côté, les résultats donnés par les ordinateurs n'ont aucun intérêt
+sans une étude approfondie et systématique de l'apport à la question biologique initiale.
+
+En bref, être bioinformaticien, ce n'est pas savoir faire les deux ; c'est *savoir faire un petit pas vers l'autre*.
+
+
+## La question de la propreté
+J'insiste sur le proprement, quand je parle d'une résolution informatique.
+
+Parce que oui, il est toujours possible d'attaquer un problème d'une manière dégueux,
+c'est-à-dire sans réelle compréhension de l'informatique, au sens de *computer science*.
+
+Croyez moi ou non, c'est la majorité des cas que je rencontre : les programmes qui se baladent en bioinfo sont
+dégueux. Leur doc est dégueux, leur code est dégueux, si tant est que quelqu'un puisse le retrouver,
+et les technos sont mal utilisées.
+
+Bien sûr, vous pouvez former les biologistes à python en 20h top chrono, les lancer sur des projets,
+et attendre qu'ils finissent. Ça prendra longtemps, ça sera inefficace, [non testé](https://blog.codinghorror.com/assets/images/codinghorror-app-icon.png?v=d0f5f84b2b), non maintenable et incompréhensible,
+mais ça donnera les résultats attendus et grâce au magnifique système de la science, ce sera même publiable en l'état.
+
+(Le pire de mon point de vue, c'est le *non testé*. Ce que ça veux dire :
+__on ne sait pas si ça marche, mais on a regardé les résultats, on a eu ce qu'on attendais__. C'est une erreur majeure.)
+
+
+## Info-machin
+Et tout ça, c'est la même chose en acoustique, en astronomie,…
+bref, dans tous les domaines qui nécessitent un arsenal mathématique pour travailler.
+Parce que, oui, il y a des astroinformaticiens, et des infoacousticiens.
+On en parle pas, parce que c'est vachement plus matheux comme millieux, donc l'info est de base plus présente,
+et donc ces scientifiques sont souvent info-machin par nature, mais ils ont des problématiques
+et des questionnement très proches des nôtres.
+
+Ils ont eux aussi leurs double-compétences avec tout le spectre de possibilités et toutes les frictions,
+incompréhensions, malfaçons que cela entraîne.
+
+Ne pensez pas que la biologie est le seul domaine où l'info a révolutionné les méthodes.
+C'est juste celui qui fait le plus de bruit.
+
+
+
+## Eula
+Donc, ma réaction par rapport à [ce tweet](https://twitter.com/sardinimouspip/status/890539014243184640) est assez prévisible :
+
+> sans connaitre je dirais bio puis info, car l'info c'est vite appris, voire même appris sur le tas, bio c'est plus diff plus spécialisé
+
+L'inverse est vrai aussi, la bio ça s'apprend vite, la preuve : tant que les composés dans les données bio
+sont dans la liste d'ingrédient de mon shamppoing, je considère qu'ils ne sont pas dangereux
+et donc qu'une sur-représentation desdits composés n'est pas dangereuse dans les cellules humaine.
+
+
+
+## Un monde parfait
+Je suis personnellement convaincu que, dans un monde parfait, un chercheur ne devrait jamais avoir à coder. Une armée d'informaticien devrait exister pour la gestion des données, des scripts, des programmes. C'est eux qui codent, qui rangent, qui annotent, qui gèrent les runs et les résultats. Les scientifiques formalisent, demandent l'implémentation, reçoivent les résultats, et enfin, font leur boulot.
+Si je suis en thèse d'informatique, c'est pas pour pondre du code, ou organiser mon home de manière à pouvoir retrouver
+le script de 10 lignes qui m'a permis d'obtenir le fichier X créé le 21 mai 2016 à 15h34 à partir
+des données dans le fichier envoyé par le biologiste par mail 20 jours avant, en retirant la 3ème colonne du fichier
+d'entrée et en remplacant 4 mot-clefs par des identifiants donnés à la main par un biologiste.
+
+
