@@ -1,13 +1,13 @@
 Title: La bioinfo pour un informaticien
-Date: 2017-08-19
-Modified: 2017-08-19
-Tags: python, opinion
+Date: 2017-10-25
+Modified: 2017-10-25
+Tags: opinion
 Authors: Lucas Bourneuf
 Summary: La bioinformatique est-elle une option possible pour un informaticien ?
 Slug: bioinfo-by-info
 lang: français
 translation: false
-status: draft
+status: published
 
 Réaction à une avalanche (environ 20) de tweets qui me sont tombés dessus, initialement à propos de [celui-ci](https://twitter.com/TomCornebize/status/890535770339069952) :
 
@@ -17,8 +17,8 @@ Réaction à une avalanche (environ 20) de tweets qui me sont tombés dessus, in
 Dans mon équipe, intégrée dans un labo d'info, la majorité des gens viennent de math/info
 et se sont spécialisés après.
 Il n'y a pas de paillasse, mais de nombreuses collaboration avec des structures «biologie»,
-comme [l'INRA](https://fr.wikipedia.org/wiki/Institut_national_de_la_recherche_agronomique)
-ou des [CHU](https://fr.wikipedia.org/wiki/Centre_hospitalier_universitaire),
+comme [l'INRA](https://fr.wikipedia.org/wiki/Institut%20national%20de%20la%20recherche%20agronomique)
+ou des [CHU](https://fr.wikipedia.org/wiki/Centre%20hospitalier%20universitaire),
 au point que des biologistes purs et durs ont un bureau dans l'équipe qu'ils occupent
 une partie (jusqu'à 80%) de la semaine.
 
