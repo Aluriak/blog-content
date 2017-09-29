@@ -1114,7 +1114,7 @@ devient votre source d'utilisateur principale.
 - N'hésitez pas à poser des questions sur ASP sur [stack-overflow](http://stackoverflow.com/questions/tagged/answer-set-programming).
 - la page [potassco/teaching](https://potassco.org/teaching/) regorge de liens.
 - une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content)
-- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp_en.mkd)
+- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp%20en.mkd)
 
 
 *[ASP]: Answer Set Programming
