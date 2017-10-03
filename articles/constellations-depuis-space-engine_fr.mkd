@@ -9,6 +9,11 @@ Lang: fr
 Translation: false
 Status: published
 
+<br/>
+
+[TOC]
+
+<br/>
 
 Un ami qui a souvent [des idées pertinentes](http://dridk.labsquare.org/),
 lorsque je lui ai montré Space Engine, a immédiatement posé la question des constellations.
