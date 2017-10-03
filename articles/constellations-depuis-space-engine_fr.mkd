@@ -1,0 +1,274 @@
+Title: Les constellations dans Space Engine
+Date: 2017-06-25
+Modified: 2017-06-25
+Tags: space
+Authors: Lucas Bourneuf
+Summary: petit inventaire des constellation vues depuis Space Engine
+Slug: se-constellations
+Lang: fr
+Translation: false
+Status: published
+
+
+Un ami qui a souvent [des idées pertinentes](http://dridk.labsquare.org/),
+lorsque je lui ai montré Space Engine, a immédiatement posé la question des constellations.
+Peut-on voir les constellations, comme on les voit en vrai ?
+
+(offre soumise à condition géographique)
+
+Intuitivement, vu que l'univers connu est rendu dans son intégralité, on a envie de répondre oui. Mais sur le moment, j'ai eu un gros doute.
+Et si pour des raisons de perfs ou de complexité d'implémentation, Space Engine ne permettait pas de regarder le ciel depuis mon fauteuil ?
+
+Nous avons donc regardé ensemble, et oui : on voit bien les constellations !
+
+Suis un petit descriptif des tests que j'ai fait après coups, lorsque j'ai eu le temps de me repencher sur la question
+et de sortir inkscape du placard (il m'a fallut du temps pour trouver comment faire des lignes droites et blanches !).
+
+Au menu : des captures d'écran, et des effets spéciaux fait avec inkscape.
+
+
+
+
+# Attrapez les toutes
+
+## Un ciel habitable
+
+D'abord, aller sur la Terre, atterrir sur un endroit connu, lever le nez sur le ciel,
+baisser un peu l'exposition (et retirer les nuages, mais pas l'atmoshère pour éviter l'effet noël).
+
+On obtient les images suivantes (avant/après ajout de filtres) :
+
+<img src="images/constellations/se_arcturus_polaris_noatm.png"
+     onmouseout="this.src='images/constellations/se_arcturus_polaris_noatm.png';"
+     onmouseover="this.src='images/constellations/se_arcturus_polaris.png';"
+     width=700
+     alt="Space Engine Arcturus and Polaris"
+     />
+
+Il est intéressant de voir que des motifs plus ou moins connus apparaissent déjà, même sans filtre (la grande ourse se voit bien).
+
+En sélectionnant les deux étoiles les plus brillantes dans les coins haut-droit et bas-gauche, j'apprend qu'il s'agit,
+respectivement, de [l'étoile polaire](https://fr.wikipedia.org/wiki/%C3%89toile%20polaire) et [d'Arcturus](https://fr.wikipedia.org/wiki/Arcturus).
+
+
+
+
+## Antisèche astronomique
+Ne connaissant pas toutes les constellations par cœur, et histoire de savoir ce que je cherche,
+j'ai utilisé [stellarium](http://www.stellarium.org/). J'aime beaucoup ce logiciel aussi ; la quantité d'options
+et tout les efforts de contenus sont hallucinant. Rien de généré aléatoirement : tout vient des bases de données standard,
+avec un sens du détails impressionnant. Tous les évènements attendus sont rendus !
+
+Je me rappelle que, lors de l'évènement de la [lune rousse](https://fr.wikipedia.org/wiki/Lune%20rousse) il y a un an ou deux, stellarium l'avait pris en compte :)
+(de même, pour voir l'éclipse du 21 août 2017, il suffit de se positionner aux état-unis et donner la date… 2017-08-21 19:50:00 UTC+02:00
+Pour space engine, ce n'est possible que depuis le jour de l'éclipse lui-même, [via le patch 9.8.0e](http://spaceengine.org/news/blog180817/) qui ajoute un éphéméride au jeu ; lire ce billet est par ailleurs passionnant, il explique toute la théorie derrière les éphémérides)
+
+Bon bref, en utilisant stellarium, je me place au même endroit sur la planète que sur space engine (pointe du raz ; c'est facile à viser),
+et je vise le ciel étoilé, de manière à avoir Arcturus et l'étoile polaire dans mon champs de vision… Et j'active les constellations:
+
+<center>{% img {filename}/images/constellations/stl%20arcturus%20polaris.png 700 "Stellarium Arcturus and Polaris" %}</center>
+
+Maintenant, ya plus qu'à comparer !
+
+
+## Le jeu des 7 différences
+Maintenant, retour sous space engine, une capture d'écran suivie d'un petit tour sur inkscape, et voilà,
+une représentation des constellations sous space engine :
+
+<a href="images/constellations/se_arcturus_polaris_annotated.png">
+<img src="images/constellations/se_arcturus_polaris_annotated.png"
+     onmouseout="this.src='images/constellations/se_arcturus_polaris_annotated.png';"
+     onmouseover="this.src='images/constellations/se_arcturus_polaris.png';"
+     width=700
+     />
+</a>
+
+Mes compétences en matière de cadrage sont à l'œuvre ici : j'ai réussi à couper quatre constellations au total, sur sept présentes.
+
+
+
+
+## Tauréador, prend garde
+La constellation d'Orion, avec notamment sa ceinture qui est très connue, se retrouve très bien aussi,
+avec le Dragon et le Taureau qui ne sont pas loin.
+
+<a href="images/constellations/se_orion_annotated.png">
+<img src="images/constellations/se_orion_annotated.png"
+     onmouseout="this.src='images/constellations/se_orion_annotated.png';"
+     onmouseover="this.src='images/constellations/se_orion.png';"
+     width=700
+     />
+</a>
+
+Souvenez vous bien d'Orion, on en reparlera après.
+
+
+
+## Et d'un W il signa -Wall
+
+En fouillant un peu le ciel, j'ai fini par trouver une constellation que j'arrive parfois à reconnaître tout seul :
+Cassiopée.
+
+<a href="images/constellations/se_cassiopee_annotated.png">
+<img src="images/constellations/se_cassiopee_annotated.png"
+     onmouseout="this.src='images/constellations/se_cassiopee_annotated.png';"
+     onmouseover="this.src='images/constellations/se_cassiopee.png';"
+     width=700
+     />
+</a>
+
+
+
+
+## Les quatre saisons
+
+Maintenant que l'on a vu les deux constellations que tout le monde connaît, et cinq autres que tout le monde oublie,
+essayons autre chose : [le triangle d'été](https://fr.wikipedia.org/wiki/Triangle%20d%27%C3%A9t%C3%A9),
+qui n'est visible toute la nuit qu'en été.
+
+Et effectivement, avec space engine, j'ai suivi le triangle d'été à deux moments: vers novembre 2113 et juillet 2114
+(je suis arrivé à cette date, à force de voyager).
+
+Dans le premier cas, le triangle a disparu pendant la nuit, plusieurs heures avant que le soleil ne se lève.
+Dans le second, je l'ai vu toute la nuit, finalement éclipsé par la lumière du soleil. Vega ne s'est couchée que vers 10h du matin.
+
+Suit une capture (en jaune) du triangle d'été une nuit de novembre 2113, vers 2H du matin.
+On voit Altaïr qui se couche, rougit par l'atmosphère.
+
+<a href="images/constellations/se_triangle_ete_annotated.png">
+<img src="images/constellations/se_triangle_ete_annotated.png"
+     onmouseout="this.src='images/constellations/se_triangle_ete_annotated.png';"
+     onmouseover="this.src='images/constellations/se_triangle_ete.png';"
+     width=700
+     />
+</a>
+
+Au passage, en regardant la constellation du [Dauphin](https://fr.wikipedia.org/wiki/Dauphin%20(constellation)),
+on découvre que trois des cinq étoiles sont des étoiles binaires,
+et que la quatrième, Al Ukud d'après Stellarium, est une [étoile variable](https://fr.wikipedia.org/wiki/%C3%89toile%20variable).
+La cinquième étoile est la queue du dauphin, *deneb dulphin*.
+
+Notons qu'Altaïr («aigle en vol» en arabe) appartient à la constellation de l'Aigle qui n'est pas mise en avant ici car coupée par l'horizon.
+
+
+# Vis-ma-vie d'étoile
+Maintenant, changons de plan, au sens propre : fonçons sur Altaïr et regardons un peu le ciel de son point de vue !
+
+## Home sweet home
+D'abord, chercher le système solaire, et voir à quoi ressemblent les constellations de là-bas.
+
+J'en ai un peu bavé des ronds de chapeaux, mais j'ai réussi à retracer les constellations que j'ai pu trouver.
+La plus grosse difficulté, c'est que space engine ne connaît pas tous les noms directement.
+Certains (les étoiles les moins connues des constellations, notamment dans la constellation du grand chien)
+ne ressortent pas dans le moteur de recherche du jeu. Les trouver à la main est un peu… laborieux.
+
+<a href="images/constellations/se_sun_by_altair_annotated.png">
+<img src="images/constellations/se_sun_by_altair_annotated.png"
+     onmouseout="this.src='images/constellations/se_sun_by_altair_annotated.png';"
+     onmouseover="this.src='images/constellations/se_sun_by_altair.png';"
+     width=700
+     />
+</a>
+
+Le plus méconaissable, c'est le grand chien. Il est tout tordu, et ressemble
+un peu à un escargot avec un fanion sur la coquille et les deux antennes dressées.
+
+Pour Orion, on reconnaît bien la ceinture (l'alignement est parfaitement conservé), mais deux étoiles sont particulièrement
+mal placées, donnant à orion l'impression qu'il tend son arc en même temps qu'il croise les jambe.
+Ou qu'il fait du ski, [avec les deux bâtons en arrière](https://previews.123rf.com/images/bokononist/bokononist1309/bokononist130900029/22027913-skieur-Banque-d%27images.jpg).
+*Orion fait du ski*, donc.
+
+Le système solaire se situe juste en dessous de l'escargot.
+
+
+## Inside man
+Avec les deux autres membres du triangle d'été :
+
+
+<a href="images/constellations/se_triangle_by_altair_annotated.png">
+<img src="images/constellations/se_triangle_by_altair_annotated.png"
+     onmouseout="this.src='images/constellations/se_triangle_by_altair_annotated.png';"
+     onmouseover="this.src='images/constellations/se_triangle_by_altair.png';"
+     width=700
+     />
+</a>
+
+Ce plan est assez vide : au sein du triangle, la Flèche, le Petit Renard, la Petite Ourse, le Lézard,
+le Dauphin, Céphée, Hercule et Pégase sont excentrées !
+
+C'est la Lyre qui profite le moins du plan : Vega est à une grande distance des quatre autres étoiles,
+qui elles n'ont entre elles pas vraiment bougé.
+Le Dragon s'est quant à lui lové sur lui-même.
+
+
+## Mind the bear
+Braquons maintenant nos objectifs vers les Ourses :
+
+<a href="images/constellations/se_ourses_by_altair_annotated.png">
+<img src="images/constellations/se_ourses_by_altair_annotated.png"
+     onmouseout="this.src='images/constellations/se_ourses_by_altair_annotated.png';"
+     onmouseover="this.src='images/constellations/se_ourses_by_altair.png';"
+     width=700
+     />
+</a>
+
+Clairement, on retrouve bien les motifs, mais ils sont un peu dérangés.
+La Grande Ourse ressemblent maintenant à un héron en vol, et la Petite Ourse…
+dort [un peu comme Sid dans l'Âge de Glace](https://www.youtube.com/watch?v=fqgxRcGkTSo).
+
+On retrouve aussi deux morceaux du Dragon, qui manquaient sur le plan précédent.
+
+
+
+# Et après ?
+Non seulement space engine permet d'explorer le ciel connu, mais en plus il rend très bien compte de son évolution,
+comme montré avec l'exemple du triangle d'été qui n'est pas visible toute la nuit en hiver.
+
+Cela étant dit, les logiciels plus adaptés comme Stellarium sont clairement meilleurs
+pour ce genre de questions ; ne serais-ce que pour l'inclusion de l'éphéméride et
+l'annotation automatique des objets de la voûte céleste.
+
+Cela étant dit, Space Engine permet de changer de point de vue, et avec un peu de travail on
+retrouve les constellations quoique légèrement déformées, ici étudiées depuis Altaïr,
+ce qui n'est pas (encore) possible dans Stellarium.
+
+
+## Représentation 3D
+Un projet qui m'intéresse beaucoup serais de représenter les étoiles des constellations dans un espace en trois dimension,
+et créer des gifs/visualizations qui permettent de retrouver les constellations telles qu'on les voit depuis la Terre,
+ou depuis n'importe quel point de l'espace.
+
+J'ai commencé [ce petit projet](https://github.com/aluriak/constellations-in-3D)
+avec du Python, de la trigonométrie, et des visualisations avec gnuplot.
+Les résultats ont quelques défauts actuellement mais quelques constellations
+sont clairement reconnaissables, comme le Cygne ou la Petite Ourse !
+
+
+## Sci-fi assistant
+Il serais sympa d'automatiser un peu tout ça, pour essayer de déterminer
+*Earth II* de Battlestar Galactica. Dans cette série (SPOILER),
+en s'appuyant sur douze constellations,
+les humains trouvent la planète annoncée par une prophétie.
+Malheureusement irradiée et inhabitable,
+ils cherchent dans les environs et trouvent une seconde planète, habitable celle-ci,
+qui se trouve être notre Terre.
+(Peut-être la première planète est-elle Mars ? … Trop proche par rapport au plot)
+
+Toujours est-il que, la deuxième planète ayant les même douze constellations,
+elles ne doivent donc pas être bien loin l'une de l'autre.
+
+Il serais intéressant de calculer un score de similarité entre les différents
+dessins de constellation, et décider quel espace autour de la Terre
+voit les constellations changer au minimum (et de trouver une planète habitable
+dans cet espace… paf ! On a trouvé la planète radioactive annoncée par
+la prophétie de Battlestar Galactica).
+
+Cela étant dit, vu comme la recherche par la communauté de Space Engine
+de planète où la vie humaine est possible
+est active mais néanmoins infructueuse, il est possible que, même si quelques
+système conservent à peu près les traits de douze de nos constellations,
+aucun d'entre eux n'hébergent de planète où la vie ait été possible.
+
+
+## Préparer son voyage dans le désert d'Acatama
+[Un jour, j'irais là-bas](https://www.youtube.com/watch?v=Dn1XWaF9jiY).
