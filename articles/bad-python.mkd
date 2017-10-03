@@ -10,6 +10,12 @@ translation: false
 status: draft
 
 
+<br/>
+
+[TOC]
+
+<br/>
+
 
 # In the standard library
 ## global mess
