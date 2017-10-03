@@ -1,6 +1,6 @@
 Title: La bioinfo pour un informaticien
-Date: 2017-10-25
-Modified: 2017-10-25
+Date: 2017-09-25
+Modified: 2017-09-25
 Tags: opinion
 Authors: Lucas Bourneuf
 Summary: La bioinformatique est-elle une option possible pour un informaticien ?

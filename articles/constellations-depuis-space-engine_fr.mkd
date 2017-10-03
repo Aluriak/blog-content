@@ -1,6 +1,6 @@
 Title: Les constellations dans Space Engine
-Date: 2017-06-25
-Modified: 2017-06-25
+Date: 2017-10-03
+Modified: 2017-10-03
 Tags: space
 Authors: Lucas Bourneuf
 Summary: petit inventaire des constellation vues depuis Space Engine
