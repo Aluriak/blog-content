@@ -970,12 +970,70 @@ On veut un programme ASP qui, en considérant les pièces disponibles, nos préf
 entre les pièces, et un prix maximum, soit capable de nous donner une bonne solution, voir la meilleure.
 
 Là où ASP est génial, c'est qu'il n'y a pas besoin de connaître grand chose en heuristique pour résoudre ce genre de problème
-(qui, j'en suis sûr, est NP-complet).
+(qui, j'en suis sûr, se réduit [au problème du sac-à-dos](https://fr.wikipedia.org/wiki/Problème%20du%20sac%20à%20dos), et par conséquent est NP-complet).
 
-Le code est disponible sur [le dépôt](https://github.com/aluriak/learning-ASP/blob/master/build-pc.lp).
+Le code le plus récent est disponible sur [le dépôt](https://github.com/aluriak/learning-ASP/blob/master/build-pc.lp).
+Nous allons ici l'aborder point par point.
 
 
 ### Commentaires
+Nous allons étudier le programme, découpé en 5 parties.
+Les premières parties sont de la pure description,
+nous allons donc nous contenter de décrire des faits,
+comme par exemple *cette GPU est trop cool*,
+ou *ce composant est incompatible avec celui-là*.
+
+Les dernières parties vont implémenter le moteur réel, la partie du programme
+qui va utiliser les faits pour en déduire une configuration valide d'ordinateur.
+C'est ici que nous trouverons les contraintes et les directives de maximisation.
+
+
+#### Données
+Tout d'abord, nous déclarons les données que nous allons utiliser,
+c'est-à-dire les pièces disponibles, pour chaque catégories, avec leur nom et leur score (qui représente à quel point la pièce nous intéresse).
+
+```asp
+component(gpu,"A",330,10).
+```
+
+Ici, le composant de catégorie GPU, sobrement nommé *A*, coûte 330€ et est noté 10/10,
+autrement dit, cette GPU, c'est notre préférée.
+
+Les deux autres GPU accessibles sont données avec les trois lignes suivantes.
+
+```asp
+component(gpu,"B",200,7).
+component(gpu,"embedded graphic chipset",0,4).
+require(gpu,"embedded graphic chipset",cpu,"C").
+```
+
+Les deux autres gpu étant moins bonnes, leurs notes sont moins hautes (voir nulle pour la *C*, mais il s'agit d'une puce graphique intel, ce n'est donc qu'une solution par défaut).
+
+##### Dépendances
+Notez l'atome `require/4`  qui nous permet de définir que la puce intégrée
+nécessite le CPU *C*, et par conséquent (et la règle qui s'en assure sera vue plus tard
+que le choix de cette GPU oblige à utiliser le processeur qui l'embarque (c'est assez logique, finalement).
+
+Néanmoins, si on choisi le cpu *C*, nous ne sommes pas obligés de choisir la puce intégrée,
+laissant le champs libre pour une autre carte graphique plus puissante.
+(la logique étant que la puce intégrée ne prend pas l'emplacement de la carte graphique, c'est juste un module du processeur ; personnellement mon processeur possède une puce intégrée, mais je ne l'ai jamais utilisée, j'ai une vrai carte graphique à la place)
+
+##### Les autres composants
+CPU, RAM, SSD, HDD,… Tous vont passer dans la grande moulinette de l'ASP.
+Je vous invite à regarder le code pour avoir une idée de toutes les pièces qui seront utilisées.
+
+
+
+
+#### Préférences
+Les choix concernant le build : pièces optionelles, importances relatives.
+#### Connaissances du domaine
+Pas très utilisé pour le moment, mais donne un exemple simple de ce qui pourrait y être placé.
+#### Expansion des données
+De l'interface haut niveau aux atomes pour la couche d'en dessous.
+#### Modèle
+C'est ici que le principal se passe.
+
 
 
 ### Aller plus loin
