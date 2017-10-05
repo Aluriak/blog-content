@@ -16,11 +16,11 @@ Status: draft
 # Introduction
 
 Cet article est un tuto sur [Answer Set Programming](https://en.wikipedia.org/wiki/Answer%20set%20programming),
-un langage de programmation déclaratif implémentant la PPC,
-ou *Programmation Par Contrainte* (comme java implémente la POO et haskell la PF).
+un langage de programmation déclaratif implémentant la *Programmation Par Contrainte*,
+ou PPC (comme java implémente la POO et haskell la PF).
 
 Pour ceux qui connaissent, il fera certainement penser à [Prolog](http://www.learnprolognow.org/),
-puisque ces deux langages reposent sur les même concepts, bien qu'il ne l'implémentent pas de la même manière.
+puisque ces deux langages reposent sur les même concepts, bien qu'ils ne l'implémentent pas de la même manière.
 
 L'objectif n'est pas seulement d'apprendre les bases en faisant joujou,
 mais de développer des programmes qui résolvent des problèmes de la vie réelle,
@@ -87,8 +87,7 @@ Le paradigme logique est un sous-ensemble du paradigme déclaratif.
 Autrement dit, un langage *logique* est un langage *déclaratif*.
 À l'inverse, comme le HTML, un langage *déclaratif* n'est pas nécessairement *logique*.
 
-Le paradigme logique repose sur les méthodes formelles issues des maths
-et de la théorie de la logique.
+Le paradigme logique repose sur les méthodes formelles issues des maths et de la théorie de la logique.
 C'est avec ces outils que la description de la solution (la réponse au **quoi**) est formulée.
 
 C'est précisément à cette catégorie de langage qu'ASP appartient.
@@ -105,7 +104,7 @@ Ce langage précis n'est pas implémenté (et ASP est un peu moins haut niveau q
 certes, mais il s'agit d'un exemple d'approche d'un langage expressif.
 On remarque bien ici qu'il ne s'agit finalement que de *décrire* la solution.
 
-La [page wikipédia en français sur la programmation déclarative](https://fr.wikipedia.org/wiki/Programmation%20d%C3%A9clarative)
+La [page wikipédia française sur la programmation déclarative](https://fr.wikipedia.org/wiki/Programmation%20d%C3%A9clarative)
 est courte, mais suffisante pour notre étude.
 
 
@@ -115,9 +114,9 @@ En d'autres termes, la programmation par contrainte consiste à ajouter des expr
 qui sinon seraient autorisées.
 
 C'est un moyen efficace de s'assurer qu'une propriété est respectée dans tous les modèles.
-«*Deux joueurs ne peuvent démarrer à une distance de moins de 5 mètres*» pourrait dire un designer de jeu.
+«*Deux joueurs ne peuvent commencer à une distance de moins de 5 mètres*» pourrait dire un designer de jeu.
 «*Un taxon ne peut appartenir à deux branches*» dira le phylogénéticien.
-«*Je ne peux pas mettre deux packs de lait sur le support arrière du caddie*» dis-je pendant mes courses.
+«*Je ne peux pas mettre plus de deux packs de lait sur le support arrière du caddie*» dis-je pendant mes courses.
 
 Bref, il est souvent plus simple (et moins coûteux) d'exprimer une contrainte plutôt qu'inclure
 cette restriction dans la génération du modèle lui-même.
@@ -148,7 +147,8 @@ Pour ce tuto, nous allons utiliser la suite [Potassco](https://potassco.org), un
 qui gravitent autour d'une idée : implémenter et utiliser ASP.
 Plus particulièrement, nous allons utiliser *clingo*.
 
-(si ça vous motive, prenez une autre implémentation ; en général les différences d'utilisation ne seront pas monstrueuses)
+(si ça vous motive, prenez une autre implémentation ; en général les différences d'utilisation
+ne seront pas monstrueuses, mais certaines implémentations proposeront des fonctionalités différentes.)
 
 
 ## Clingo, en deux cents mots
@@ -163,7 +163,7 @@ Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
-(dans le cas d'ASP, c'est du …, pour CPython c'est le bytecode, et pour C c'est l'assembleur)
+(dans le cas d'ASP, c'est du TODO, pour CPython c'est le bytecode, et pour C c'est l'assembleur)
 
 Clasp est à ASP ce que l'interpréteur de CPython est à Python:
 un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
@@ -172,7 +172,7 @@ et en appliquent les effets de bord (mémoire et calculs).
 Pour être plus précis à propos de gringo et clasp, le premier compile un programme
 qui suit la grammaire d'Answer Set Programming (et un peu plus, nous verrons cela),
 et le second est une routine qui, à l'aide d'une heuristique très personnalisable,
-va chercher les solutions acceptables dans le programme compilé.
+va chercher les solutions acceptables (ou modèles stables) dans le programme compilé.
 
 En ASP, on parle de *grounding* pour la partie assurée par *gringo*,
 et de *solving* pour la partie assurée par *clasp*.
@@ -187,8 +187,8 @@ Le premier est aujourd'hui le site de référence.
 Plus d'informations sur [le site de Potassco lui-même](https://potassco.org/doc/start/)
 
 À l'écriture de ce tuto, la version de clingo la plus récente est la 5.2.1.
-Il est aussi possible, pour de petites instances,
-de [faire tourner clingo dans un navigateur](https://potassco.org/clingo/run/).
+Il est aussi possible de [faire tourner clingo dans un navigateur](https://potassco.org/clingo/run/).
+
 
 ### Installation manuelle
 A moins que vous ne soyez concerné par l'un des quelques OS qui ont un packaging,
@@ -358,17 +358,18 @@ Ici, on indique que le *fait* `a` est vrai.
 nous ne trouverons qu'un seul et unique modèle : celui où a est vrai.
 
 Le point `.` est un peu comme le point-virgule en C,
-ou le saut de ligne en Python : il sépare chaque règle et atome du programme.
+ou le saut de ligne en Python : il termine chaque règle et atome du programme.
+Si vous oubliez un point, vous aurez droit à une erreur de type `unexpected machin-bidule bla bla bla`.
 
 ```asp
 a(4).
 ```
 
 Cette déclaration est un peu plus complexe, mais revient au même : le prédicat `a` d'arité 1
-(c'est-à-dire avec 1 argument) avec comme premier (et unique) argument 4, est vrai.
+(c'est-à-dire avec 1 argument) avec comme premier (et unique) argument `4`, est vrai.
 
 De la même manière, il est possible de déclarer `b`, `b(42)`, mais aussi `a(b)`, `a(a,b,c,3)`, `a(b(1))`, ou encore `a(a(b(b(9))))`.
-Le nombre d'argument est virtuellement infinie, et un atome peut être argument d'un autre.
+Le nombre d'argument potentiel est virtuellement illimité, et un atome peut être argument d'un autre.
 
 
 ## Retour sur les atomes
@@ -391,16 +392,15 @@ Vous comprendrez vite comment ça fonctionne.
 ## Règles
 Maintenant que l'on peut déclarer des faits, nous pouvons commencer à déclarer
 des règles de causalité.
-En d'autres termes, il est possible de définir qu'un atome est vrai
-en se basant sur des conditions.
+En d'autres termes, il est possible de définir qu'un atome est vrai sous certaines conditions.
 
 En ASP, cela se fait avec l'opérateur `:-`, une espèce de `if` à l'envers:
 
 ```asp
-% l'atome ok(X) est vrai si a(X) est vrai
-ok(X):- a(X).
-% L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
-nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.
+% l'atome ok est vrai si l'atome a est vrai
+ok:- a.
+% l'atome ok est vrai si les atomes b ET c sont vrais
+ok:- b ; c.
 ```
 
 On appelle la partie *avant* le `:-` la *tête* (head),
@@ -414,6 +414,31 @@ et donc de réellement commencer à travailler sur les atomes existants.
 Donc, dans un programme ASP, vous avez des atomes considérés vrais (souvent, ce sont des données du problème),
 et des ensembles de règles qui vont permettrent d'inférer la véracité d'autres atomes.
 
+
+## Variables
+Les variables permettent d'écrire des règles plus généralistes.
+Tout mot commencant par une majuscule est une variable.
+
+Par exemple:
+```asp
+% l'atome ok(X) est vrai si l'atome a(X) est vrai
+ok(X):- a(X).
+```
+
+Avec ce programme, si `a(2)` est vrai, alors `ok(2)` le sera également.
+Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000` et `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop,"hello, world!")`.
+
+Exemples de règles avec des variables :
+
+```asp
+% l'atome ok(X) est vrai si l'atome a(X) est vrai
+ok(X):- a(X).
+% L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
+nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.
+```
+
+
+## Négation
 Notez qu'il est possible d'utiliser la négation:
 
 ```asp
@@ -422,12 +447,19 @@ ko(X):- nb_ex(X) ; not ok(X).
 ```
 
 Notez que le point-virgule est utilisé comme opérateur *et*, l'équivalent de `and` en Python ou `&&` en C.
-Il n'existe pas réellement de *ou* en ASP ; c'est un détail qui reviendra plus tard.
 
 Une autre manière de voir cette règle, plus verbeuse mais plus puissante, est la suivante:
 *Pour tout X tel que nb_ex(X) est vrai et ok(X) est faux, on a ko(X)*.
 
 Cette formulation nous permettra de mieux comprendre une prochaine construction du langage.
+
+Il n'existe pas réellement de *ou* en ASP ; il faut alors créer 2 règles, chacune implémentant un cas :
+
+```asp
+% l'atome ok(X) est vrai si nb_ex(X) ou si nb_in(X)
+ok(X):- nb_ex(X).
+ok(X):- nb_in(X).
+```
 
 
 ## Disjonction (choix)
@@ -436,6 +468,7 @@ Le choix consiste en un… choix. C'est dur à expliquer autrement.
 
 Voici un exemple simple, avec le résultat donné par clingo,
 qui consiste en un choix de exactement 1 parmis 3 atomes :
+
 
 ```
 ❯ echo "1{a;b;c}1." | clingo -n 0
@@ -473,7 +506,7 @@ Enfin, la dernière réponse contient uniquement l'atome a.
 ### Pourquoi cet ordre ?
 Parce qu'en ASP, on travaille sur des *set* (answer *set* programming).
 Les *set*, *ensemble* en français, au sens mathématique du terme,
-sont des ensembles non ordonnés d'éléments uniques.
+sont des ensembles **non ordonnés** d'éléments **uniques**.
 
 Les conséquences de ces propriétés sont les suivantes :
 
@@ -512,12 +545,37 @@ Aller, un dernier exemple pour la route, qui montre comment avoir un seul nb(X) 
 Vous pouvez (devriez) vérifier : nous obtenons bien 100 answer sets, chacun avec sa propre valeur de nb(X).
 
 
-## Contraintes
-Les contraintes ! On en a parlé longuement, et certainement que vous brûlez d'impatience à l'idée de les utiliser !
-
-Reprenons notre dernier exemple, en ajoutant une contrainte qui écarte tous les modèles avec une valeur qui n'est pas multiple de 3 :
+## Disjonction simple
+L'écriture de la disjonction avec les accolades est une généralisation d'une écriture plus simple,
+qui exprime le choix *d'exactement un* des opérandes.
 
 ```asp
+a;b;c.
+```
+
+Lorsque vous lancez clingo là-dessus, vous trouverez trois modèles, un pour chacun de ces trois atomes.
+Il est également possible de mettre cette construction dans le head d'une règle :
+
+```asp
+b;c:-a.
+```
+
+Ici, *b* OU *c* sera vrai si *a* est vrai.
+
+Notez bien que `{a;b;c}` n'est pas égal à `a;b;c` !
+Comme expliqué précédemment, les bornes minimales et maximales par défault dans l'écriture avec accolades
+sont respectivement zéro et l'infini. Autrement dit, `a;b;c` est équivalent à `1{a;b;c}1`.
+
+
+## Contraintes
+Les contraintes ! On en a parlé longuement, et certainement brûlez-vous d'impatience à l'idée de les utiliser !
+
+Reprenons un de nos derniers exemples, en ajoutant une contrainte qui écarte tous les modèles avec une valeur qui n'est pas multiple de 3 :
+
+```asp
+% On choisis un nombre entre 1 et 100.
+1 { nb(1..100) } 1.
+
 % On écarte tout modèle dont le nombre choisis n'est pas multiple de 3.
 :- nb(N) ; N \ 3=0.
 ```
@@ -532,14 +590,18 @@ Sauf que, dans le cas de la contrainte, la *tête* est vide : cela veux dire que
 est vrai… rien ne peut être vrai !
 
 C'est l'exact sens de la contrainte : si son *corps* est vrai, alors rien n'est vrai.
-Il s'agit d'une contradiction fondamentale entre le fait que rien n'est vrai, et que le *corps* (et probablement d'autres atomes du programme) est vrai.
+Il s'agit d'une contradiction fondamentale entre le fait que rien n'est vrai,
+et que le *corps* (et probablement d'autres atomes du programme) est vrai.
 Par conséquent, le modèle est faux, et ne sera pas considéré par le solveur.
 
 Ici `N\3 = 0` n'est vrai que si `N` est un multiple de 3.
 Par conséquent, le *corps* de la contrainte est vrai lorsque nb(X) est vrai avec X un multiple de trois.
 Donc le modèle est invalidé dans ce cas.
-Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 67: le nombre de nombre entre 1 et 100 qui n'est pas multiple de 3.
+Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 67:
+le nombre de nombre entre 1 et 100 qui n'est pas multiple de 3.
 
+Un peu de gymnastique intellectuelle est nécessaire quand vous manipulez les contraintes :
+elles expriment ce qui doit être faux, pas ce qui doit être vrai.
 
 
 ## Insatisfiabilité
@@ -600,6 +662,9 @@ Ici, le corps de la dernière règle implémente
 la condition *en_recre(C) doit être vrai __pour tout__ les copains C.*
 Autrement dit, si il existe un copain C tel que `en_recre(C)` est faux, alors la condition est brisée,
 et le corps de la règle est faux, et par conséquent, on ne joue pas au ballon.
+
+Il est possible d'avoir plusieurs conditions à droite du `:`, et elles doivent être
+séparées par une virgule `,` (et non un point virgule).
 
 
 ## Tokens
@@ -684,7 +749,7 @@ Le troisième montre qu'il est possible de faire quelques opérations logiques s
 Cela peut servir pour filtrer précisément les atomes à afficher, ou pour renommer les atomes
 (ici, on renomme `b/1` en `p/1`).
 
-Notez bien que ces usages de *show* sont *génératives* : elles ajoutent des atomes dans la réponse,
+Notez bien que ces usages de *show* sont *génératifs* : ils ajoutent des atomes dans la réponse,
 sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est pas vérifiable)
 
 
@@ -711,7 +776,7 @@ a.
 
 Paf ! Seul *23* est affiché. Pourquoi ? Parce que *a* n'a pas été explicitement rattaché au show.
 
-En général, les directives `#show` se trouvent en fin de fichier (assez logiquement,
+En général, les directives `#show` se trouvent en fin de fichier (du point de vue de l'humain,
 c'est la dernière chose qui est faite), et le premier *show* est généralement `#show.`.
 C'est une habitude qu'on retrouve dans beaucoup de codes ASP.
 
@@ -721,8 +786,8 @@ Comme C utilise `#define` et `const`, clingo utilise un mélange des deux : `#co
 Là s'arrête le parallèle, et commence un exemple :
 
 ```asp
-#const ma_constante_avec_un_nom_a_rallonge = 42
-#const m_constnte_sns_l_lettre_ = "a"
+#const ma_constante_avec_un_nom_a_rallonge = 42.
+#const m_constnte_sns_l_lettre_ = "a".
 
 a(m_constnte_sns_l_lettre_).
 a(ma_constante_sans_la_lettre_b).
@@ -752,7 +817,7 @@ cst(cst).
 ```
 
 Ce code génère un answer set d'un atome qui est… `cst(b)`,
-car le __`#const` agit sur les valeurs, pas les prédicats.__
+car __*#const* agit sur les valeurs, pas les prédicats.__
 
 
 ## #minimize et #maximize
@@ -933,6 +998,9 @@ Aussi, la directive de script ignore le reste de sa ligne, par conséquent,
 faire un one liner parfait est impossible ici.
 
 
+
+
+
 ## Construire un PC
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
@@ -1052,69 +1120,146 @@ les pièces disponibles qui les intéressent, éventuellement faire un peu d'app
 des pièces intéressantes (si 80% des utilisateurs qui prennent 8Go de RAM choissisent aussi une 1080,
 alors automatiquement proposer une 1080 à tout utilisateur qui prend 8Go de RAM).
 
-La deuxième étape, c'est de faire tourner le solveur
-(dans le navigateur du client grâce à du [webassembly](https://fr.wikipedia.org/wiki/WebAssembly)
-parce qu'on vit dans le futur),
+La deuxième étape, c'est de constituer la base de donnée et de préférence de l'utilisateur
+en fonction des composants qu'il a choisi et des indications qu'il a donnée.
+
+Enfin, il faut faire tourner le solveur
+([dans le navigateur du client](https://github.com/aluriak/webclingo-example)
+grâce à du [webassembly](https://fr.wikipedia.org/wiki/WebAssembly)
+parce que nous vivons déjà dans le futur),
 et de sortir les meilleurs *build* au client.
 
-Et paf, vous vous faites connaître, et [r/buildapc](https://www.reddit.com/r/buildapc/)
-devient votre source d'utilisateur principale.
-
+Et paf, vous vous faites connaître, [r/buildapc](https://www.reddit.com/r/buildapc/)
+devient votre source d'utilisateur principale,
+et vous devenez riche grâce à un système comme [*coinhive*](https://coinhive.com),
+qui bien sûr, dans le futur, est bien plus mature, démocratisé, et contrôlable par l'utilisateur final.
 
 
 
 ## Résoudre un donjon de The Legend of Zelda
+### Contexte
+Dans sa franchement intéressante série [*Boss Keys*](https://www.youtube.com/watch?v=ouO1R6vFDBo&list=PLc38fcMFcV_ul4D6OChdWhsNsYY3NA5B2),
+Mark Brown, un designer de jeux vidéos, cherche, épisode par épisode, à comprendre la structure interne et les logiques
+qui sous-tendent les donjons des jeux de la licence [The Legend of Zelda](https://fr.wikipedia.org/wiki/The%20Legend%20of%20Zelda%20(s%C3%A9rie)).
+
+Si vous aimez cette série de jeu, ou le game design en général,
+je ne peut que trop vous conseiller *Boss Keys*, et plus généralement son excellente chaîne,
+[*Game Makers Toolkit*](https://www.youtube.com/channel/UCqJ-Xo29CKyLTjn6z2XwYAw).
+
+Lorsqu'on regarde *Boss Keys*, au fur et à mesure des épisodes on s'aperçoit que Mark Brown
+imagine, formalise et améliore, vidéo après vidéo, un langage qui lui permet de définir formellement les donjons des jeux.
+Dans les derniers épisodes, le langage devient vraiment complet et descriptif.
+
+Sans surprise, le langage est un graphe, qui donne des informations précises sur la répartition dans l'espace et le temps
+des objets et mécanismes qui constituent les donjons, et permet à Mark Brown de délimiter la *solution* du donjon,
+c'est-à-dire la succession d'actions à opérer qui permettent, à la fin, d'ouvrir la porte du *boss* avec la clef dudit *boss*
+(d'où le nom de la série, *boss keys*).
 
 
-    % Dungeon objects.
-    % onedoor(g).
-    keydoor(g).
-    keydoor(b;f).
-    % door(D):- onedoor(D).
-    door(D):- keydoor(D).
-    key(c;e).
-    % one(d).
-    key(d).
-    open(start).  % links starts the dungeon
+### Notre boulot
+En lisant les lignes précédentes, une idée vous est venue : si nous avons accès à une représentation formelle des donjons du jeu,
+et que nous pouvons formellement décrire les actions et les buts, alors il serait possible d'écrire un programme qui,
+comprenant le langage de description de Mark Brown, serais capable de décider d'une solution au donjon.
 
-    % Links between doors
-    link(start,(b;c;d)).
-    link(b,(e;f)).
-    link(f,g;g,stop).
+Bien sûr, vous vous doutez que si j'en parle ici, c'est parce que nous allons nous y intéresser avec ASP.
 
+Voici une image piquée de la vidéo [*The Legend of Zelda: A Link Between Worlds' dungeon design | Boss Keys*](https://www.youtube.com/watch?v=E7sm-0nGV34) :
 
-    % Doors next to open doors are accessible
-    accessible(Door):- link(Open,Door) ; open(Open).
+<center>{% img {filename}/images/asp/zelda_mark_brown_dungeon.png 700 "Zelda dungeon representation by Mark Brown" %}</center>
 
-    % Doors with objects inside are opened freely.
-    open(ObjDoor):- accessible(ObjDoor) ; key(ObjDoor).
-    open(ObjDoor):- accessible(ObjDoor) ; oner(ObjDoor).
-
-    % Doors that are opened using one non-used key.
-    open(KeyDoor,Key):- accessible(KeyDoor) ; keydoor(KeyDoor) ; open(Key) ; key(Key) ;
-                        not open(KeyDoor,OtherKey): key(OtherKey), OtherKey!=Key ;
-                        not open(OtherDoor,Key): keydoor(OtherDoor), OtherDoor!=KeyDoor.
-
-    % Doors that are opened using a reusable object.
-    % open(OneDoor,One):- not open(OneDoor) ; accessible(OneDoor) ; open(One) ; one(One).
-    % open(TwoDoor,Two):- not open(TwoDoor) ; accessible(TwoDoor) ; open(Two) ; two(Two).
-
-    % Keep in mind which object opened which door.
-    open(Door):- open(Door,_).
+On voit bien le départ, la fin (*boss*, en bas), et les différentes étapes qui mène à la résolution du donjon.
+On comprend bien ici qu'une solution au donjon est un parcours de ce graphe qui part du départ et arrive au boss
+en ne passant par les obstacles que lorsque la clef/l'outils associé(e) est possédé(e).
 
 
+### Modélisation
+Petit rappel sur le langage développé par Mark Brown, i.e. la représentation en graphes des donjons :
 
-    #show.
-    #show open/2.
+- les nœuds sont des salles, ou zones du donjon portant un objet d'intérêt.
+- deux nœuds sont reliés si il existe un passage entre les deux.
+- un objet d'intérêt est soit un obstacle, soit un objet à ramasser.
+- un obstacle ne peut être contourné/annulé que par un objet.
+- un objet à ramasser est sois un outils, soit une clef.
+- une clef est à usage unique, mais ouvre n'importe quel obstacle qui attend une clef.
+- un outil est soit la clef du boss, qui permet d'ouvrir la porte du boss, soit un objet de l'univers du jeu (grapping, arc, bottes,…).
+
+Donc, en clair : il faut ramasser une clef pour pouvoir annuler un obstacle qui nécessite une clef (une porte verrouillée, donc),
+ou dans le cas des autres obstacles l'objet associé à l'obstacle
+(pour annuler un obstacle de type *arc*, il faut que l'objet *arc* ait été ramassé auparavant).
+
+Notez que le graphe n'est pas orienté. Néanmoins, on peut imaginer l'intérêt de l'orientation :
+des passages ne pouvant être pratiqués que dans un seul sens par le personnage
+(porte de sortie, toboggan,…).
+
+Notez également que le langage est en fait un poil plus complexe, car il a une composante graphique importante
+(le placement des nœuds dépends de l'ordre dans lequel les objets/obstacles doivent être traités).
+Nous allons néanmoins ignorer cela, car (1) tout le sel est de laisser l'ordinateur faire la résolution totale,
+et (2) l'information de l'ordre est redondante, et n'est là que pour faciliter la lecture pour les humains qui regardent la vidéo/l'image.
+
+
+### Le code
+D'abord, la définition du donjon.
+
+```asp
+% Dungeon objects.
+% onedoor(g).
+keydoor(g).
+keydoor(b;f).
+% door(D):- onedoor(D).
+door(D):- keydoor(D).
+key(c;e).
+% one(d).
+key(d).
+open(start).  % links starts the dungeon
+
+% Links between doors
+link(start,(b;c;d)).
+link(b,(e;f)).
+link(f,g;g,stop).
+```
+
+
+```asp
+% Doors next to open doors are accessible
+accessible(Door):- link(Open,Door) ; open(Open).
+
+% Doors with objects inside are opened freely.
+open(ObjDoor):- accessible(ObjDoor) ; key(ObjDoor).
+open(ObjDoor):- accessible(ObjDoor) ; oner(ObjDoor).
+
+% Doors that are opened using one non-used key.
+open(KeyDoor,Key):- accessible(KeyDoor) ; keydoor(KeyDoor) ; open(Key) ; key(Key) ;
+                    not open(KeyDoor,OtherKey): key(OtherKey), OtherKey!=Key ;
+                    not open(OtherDoor,Key): keydoor(OtherDoor), OtherDoor!=KeyDoor.
+
+% Doors that are opened using a reusable object.
+% open(OneDoor,One):- not open(OneDoor) ; accessible(OneDoor) ; open(One) ; one(One).
+% open(TwoDoor,Two):- not open(TwoDoor) ; accessible(TwoDoor) ; open(Two) ; two(Two).
+
+% Keep in mind which object opened which door.
+open(Door):- open(Door,_).
+
+
+
+#show.
+#show open/2.
+```
 
 
 
 # Liens
-- [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications
+## Autres applications
+- [ASP for FCA](https://github.com/Aluriak/ASP-for-FCA) un ensemble de programmes qui utilisent ASP pour exprimer des concepts (*pun intended*) de l'[Analyse de Concepts Formels](https://fr.wikipedia.org/wiki/Analyse%20de%20concepts%20formels).
+- [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications.
+- Au sein [du projet pygarden](https://github.com/IndexErrorCoders/pygarden), [solasp](https://github.com/IndexErrorCoders/pygarden#solasp) est un code ASP qui permet d'optimiser le placement de plantes dans le jardin sachant leurs préférences de voisinage.
+
+
+## And now, for something totally different
+- Tuto/howto pour [utiliser clingo en javascript, côté client](https://github.com/aluriak/webclingo-example).
 - N'hésitez pas à poser des questions sur ASP sur [stack-overflow](http://stackoverflow.com/questions/tagged/answer-set-programming).
 - la page [potassco/teaching](https://potassco.org/teaching/) regorge de liens.
-- une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content)
-- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp%20en.mkd)
+- une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content).
+- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp%20en.mkd).
 
 
 *[ASP]: Answer Set Programming
