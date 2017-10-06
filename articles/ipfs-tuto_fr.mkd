@@ -10,6 +10,13 @@ translation: false
 status: published
 
 
+<br/>
+
+[TOC]
+
+<br/>
+
+
 IPFS: the Inter-Planetary File System / Le système de fichier interplanétaire.
 
 Le nom semble ronflant comme ça, mais le fait est que c'est exactement ce que

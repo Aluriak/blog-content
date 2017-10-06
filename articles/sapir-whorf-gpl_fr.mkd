@@ -9,9 +9,11 @@ lang: français
 translation: false
 status: published
 
+<br/>
 
 [TOC]
 
+<br/>
 
 # Introduction
 L'hypothèse de Sapir-Whorf (HSW) est l'idée que notre langage modifie notre manière de modéliser nos pensées.
