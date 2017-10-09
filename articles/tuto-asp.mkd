@@ -167,7 +167,7 @@ Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
-(dans le cas d'ASP, c'est du TODO, pour CPython c'est le bytecode, et pour C c'est l'assembleur)
+(dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour CPython c'est le bytecode, et pour C c'est l'assembleur)
 
 Clasp est à ASP ce que l'interpréteur de CPython est à Python:
 un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
@@ -240,6 +240,14 @@ update_repo:
 	cd clingo && git pull
 	cd clingo && git submodule update --init --recursive
 ```
+
+### Clingo dans le browser
+Il est aussi possible de compiler clingo en javascript,
+afin de le faire tourner côté client dans un navigateur,
+comme cela est fait sur [le site officiel](https://potassco.org/clingo/run).
+
+Voir [l'issue à propos](https://github.com/potassco/clingo/issues/66),
+et [mon exemple fonctionnel](https://github.com/Aluriak/webclingo-example).
 
 
 ## Quelques tests préliminaires
@@ -318,6 +326,17 @@ vous avez probablement un CPU qui tourne à 100% pendant toute la durée du grou
 
 Dans l'autre cas, c'est le solveur qui pédale dans la semoule.
 
+
+### help et options diverses
+Vous pouvez avoir l'aide de clingo avec l'option `--help`, ou `--help=3` pour l'aide complète.
+Quelques options intéressantes dont je ne parlerais pas ou peu :
+
+- `--text`: pour avoir le code groundé (le solveur, clasp, n'est pas appelé). Cf `--mode`.
+- `--stats`: pour avoir plus d'info sur le déroulement du solving lorsque celui-ci est terminé
+- `--time-limit`: permet de donner un temps maximum de grounding/solving
+- `--parallel-mode`: utiliser le multithreading
+- `--enum-mode`: choix de l'énumération des modèles : *tous les modèles*, ou *tous les meilleurs modèles* par exemple
+- `--outf`: choix du format de sortie (l'un des plus intéressant est probablement JSON, si vous voulez récupérer le résultat sans faire de parsing manuel)
 
 
 # Principes d'Answer Set Programming
@@ -408,7 +427,7 @@ ok:- b ; c.
 ```
 
 On appelle la partie *avant* le `:-` la *tête* (head),
-et la partie à droite le *corps*.
+et la partie à droite le *corps* (body).
 La tête est vraie si et uniquement si le corps est vrai.
 
 Les règles sont les premiers éléments utiles dans un programme ASP.
@@ -430,7 +449,7 @@ ok(X):- a(X).
 ```
 
 Avec ce programme, si `a(2)` est vrai, alors `ok(2)` le sera également.
-Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000` et `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop,"hello, world!")`.
+Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000`, `"i have υτφ-8 characters"` et `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop,"hello, world!")`.
 
 Exemples de règles avec des variables :
 
@@ -572,9 +591,11 @@ sont respectivement zéro et l'infini. Autrement dit, `a;b;c` est équivalent à
 
 
 ## Contraintes
-Les contraintes ! On en a parlé longuement, et certainement brûlez-vous d'impatience à l'idée de les utiliser !
+Les contraintes ! On en a souvent parlé,
+et certainement brûlez-vous d'impatience à l'idée de les utiliser !
 
-Reprenons un de nos derniers exemples, en ajoutant une contrainte qui écarte tous les modèles avec une valeur qui n'est pas multiple de 3 :
+Reprenons un de nos derniers exemples, en ajoutant une contrainte qui écarte
+tous les modèles avec une valeur qui n'est pas multiple de 3 :
 
 ```asp
 % On choisis un nombre entre 1 et 100.
@@ -587,7 +608,7 @@ Reprenons un de nos derniers exemples, en ajoutant une contrainte qui écarte to
 Premier constat, l'écriture d'une contrainte ressemble à celle d'une règle, à l'exception de la *tête*, qui est vide.
 C'est exacement la description d'une contrainte dans la grammaire d'ASP: une règle sans tête.
 
-Cela, mathématiquement, à un sens : la contrainte est une règle.
+Cela, logiquement, à un sens : la contrainte est une règle.
 Hors, dans une règle, rappelez-vous : lorsque le *corps* est vrai, la *tête* est vraie.
 
 Sauf que, dans le cas de la contrainte, la *tête* est vide : cela veux dire que si le *corps*
@@ -602,7 +623,7 @@ Ici `N\3 = 0` n'est vrai que si `N` est un multiple de 3.
 Par conséquent, le *corps* de la contrainte est vrai lorsque nb(X) est vrai avec X un multiple de trois.
 Donc le modèle est invalidé dans ce cas.
 Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 67:
-le nombre de nombre entre 1 et 100 qui n'est pas multiple de 3.
+le nombre de nombres entre 1 et 100 qui ne sont pas multiples de 3.
 
 Un peu de gymnastique intellectuelle est nécessaire quand vous manipulez les contraintes :
 elles expriment ce qui doit être faux, pas ce qui doit être vrai.
@@ -638,8 +659,8 @@ Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set,
 
 ## ∃ vs ∀
 Vous connaissez certainement les deux opérateurs mathématiques suivant :
-- ∃: *il existe*, c'est-à-dire qu'il y en a au moins un
-- ∀: *pour tout*, c'est-à-dire que tous les éléments sont considérés
+- ∃: *il existe*, c'est-à-dire *il y en a au moins un*
+- ∀: *pour tout*, c'est-à-dire *tous les éléments considérés*
 
 En ASP, ces signes cabalistiques n'apparaissent pas, mais leur sémantique apparaît visiblement.
 Le premier, *il existe*, nous l'avons déjà utilisé : il est implicite dans les *corps* des règles.
@@ -731,6 +752,7 @@ vous allez avoir *exactement* 1 modèle/answer set, contenant 3 ou 6 atomes selo
 
 Pour être plus rigoureux, dans les deux cas les atomes vérifiés dans le modèle sont strictement identiques,
 c'est juste qu'avec la dernière ligne, seuls 3 sont affichés (ceux ayant `b` comme prédicat).
+**Show change les atomes affichés, pas les answer sets.**
 
 Notez la manière dont on renseigne *l'ensemble des atomes de prédicat `b`*: en utilisant une notation très courante dans le monde de la programmation logique: `<prédicat>/<arité>`.
 Si vous remplacez le 1 par un 2, clingo n'affichera rien : il va en effet afficher uniquement les atomes de prédicat `b` avec deux arguments, c'est-à-dire, dans ce cas précis, aucun.
@@ -754,7 +776,7 @@ Cela peut servir pour filtrer précisément les atomes à afficher, ou pour reno
 (ici, on renomme `b/1` en `p/1`).
 
 Notez bien que ces usages de *show* sont *génératifs* : ils ajoutent des atomes dans la réponse,
-sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est pas vérifiable)
+sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est jamais affiché)
 
 
 ### Le #show impératif
@@ -826,6 +848,53 @@ car __*#const* agit sur les valeurs, pas les prédicats.__
 
 ## #minimize et #maximize
 Le nerf de la guerre.
+
+Les answer sets trouvés par le solveur ne sont pas toujours égaux :
+souvent, l'objectif est de maximiser ou minimizer un score,
+et cela permet de trier les bonnes et les mauvaises solutions.
+
+Par exemple, si vous créez un solveur de puzzle, vous allez vouloir préférer
+les solutions qui utilisent le moins de ressources (nombre de coups, nombre de pièces,
+nombre de je-sais-pas-quoi-que-le-puzzle-utilise-et-qu'on-veut-utiliser-le-moins-ou-le-plus-possible,…).
+
+En soit, ça ne change pas grand chose sur le solving, puisqu'en théorie,
+il suffit de générer toutes les réponses, puis les trier selon leur score.
+
+L'inconvénient, c'est qu'il faut (1) énumérer tous les réponses, ce qui n'est pas forcément pratique
+(essayez donc de générer et sauvegarder les 10 puissance 21 grilles de sudoku possibles pour voir),
+et (2), trouver le maximum là-dedans *a posteriori*, c'est-à-dire sans que l'heuristique du solveur n'ait joué de rôle.
+
+Hors, et c'est bien là tout l'intérêt d'une heuristique faite par des experts :
+si on donnait la mesure du score à l'heuristique, elle ne se contenterait pas d'énumérer les réponses possibles et de les triers par score :
+elle s'abstiendrait de générer celles qui sont moins bonnes que celles déjà générées.
+
+En d'autre terme, donner à l'heuristique nos préférences en matière de modèle lui permet d'élaguer l'espace de recherche
+pour aller plus vite, et se diriger petit à petit vers l'une des meilleure réponse, le *modèle optimal*.
+
+### Syntaxe
+La syntaxe est un poil bizarre au début, mais on s'y fait bien.
+
+```asp
+1 { nb(1..100) } 2.  % un modèle == un entier
+#maximize{N:nb(N)}.  % maximiser l'entier choisi
+```
+
+Ici, c'est la deuxième ligne qui fait le travail : on dit à clingo de maximiser N,
+pour N le nombre choisi en ligne 1.
+
+Il y a beaucoup de subtilités avec cette syntaxe, essayez par exemple de changer
+la borne supérieure de la disjonction par un 2, ou par rien.
+
+
+### Priorité
+Parfois, il y a plusieurs paramètres à minimiser/maximiser.
+
+```asp
+1 { nb(1..100) } 1.  % un modèle == un entier
+#minimize{N@2:nb(N)}.  % minimiser l'entier choisi (priorité 2)
+#maximize{N@1:nb(N)}.  % maximiser l'entier choisi (priorité 1)
+```
+
 
 ## #min et #max
 Utiles.
