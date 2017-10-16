@@ -251,6 +251,7 @@ Créé par Elon Musk (le cerveau derrière Paypal, Tesla et l'Hyperloop),
 SpaceX devait, en quelques années, développer un système de mise en orbite
 et sur le long terme, permettre la colonisation de Mars.
 
+Le 29 septembre 2008, SpaceX réussissait son premier lancé de fusée.
 Aujourd'hui, c'est SpaceX qui assure [une partie du fret](https://fr.wikipedia.org/wiki/SpaceX_Dragon) en direction
 de la Station Spatiale Internationale.
 (fun fact: le seul but de SpaceX est la colonisation, mais pour être rentable suffisemment vite (car Elon Musk ne pouvais pas tout financer),
@@ -259,7 +260,7 @@ SpaceX a dû prendre le temps de développer ce service pour avoir un contrat qu
 En parallèle, le plan pour la colonisation de Mars, dévoilé par Elon Musk l'année dernière dans son très
 intéressant talk [*making human a multiplanetary species*](https://www.youtube.com/watch?v=H7Uyfqi%20TE8)
 (traduisible comme *faire de l'homme une espèce pluriplanétaire*),
-est lentement mais sûrement mis en application.
+est lentement mais sûrement mis en application ([mis à jour lors du neuvième anniversaire du premier lancement réussi, avec une présentation détaillée du vaisseau spatial](https://www.youtube.com/watch?v=tdUX3ypDVwI)).
 
 C'est plus ou moins à l'arrivée de SpaceX que l'on a commencé à voir
 un véritable renouveau de l'exploration spatiale, avec (enfin !)
@@ -267,6 +268,30 @@ des sociétés privées qui se sont intéressées à l'espace au sens large.
 
 Dans les mois qui ont suivis le talk de Musk,
 de nombreuses entreprises ont annoncé leur volonté de faire pareil.
+
+
+### Le plan de SpaceX
+Les meilleurs ressources sont clairement les deux talks linkés précédemment,
+mais voici un petit rappel :
+
+<center>{% img {filename}/images/spacex/spacex_bfr_to_mars.png 700 "bfr to mars" %}</center>
+
+Une fusée, le [BFR](https://en.wikipedia.org/wiki/BFR%20(rocket)),
+[intégralement réutilisable](https://en.wikipedia.org/wiki/SpaceX%20reusable%20launch%20system%20development%20program),
+permettra d'envoyer des charges utiles de plusieurs centaines de tonnes sur Mars,
+ou en orbite autour de la Terre, ou n'importe où dans le système solaire.
+
+Comment :
+- deux étages : le lanceur, qui réattérit sur Terre, près à être remplis de carburant, et le vaisseau spatial, qui se balade dans l'espace et sur les autres planètes.
+- utilise un (nouveau) carburant qui peut être produit partout
+- utilise un [nouveau moteur](https://en.wikipedia.org/wiki/Raptor%20(rocket%20engine%20family)), au nombre de 31 par lanceurs, plus 6 sur le vaisseau spatial.
+
+Pour un prix au lancement moins grand que pour les fusées actuelles, l'investissement se fait donc à la construction.
+L'objectif est bien de créer un système qui remplacera tous les équipements de SpaceX (toutes les fusées falcons, en fait),
+que ce soit pour le transport interplanétaire évidemment, mais aussi pour la mise en orbite et l'accès à l'ISS.
+
+Imaginez ce qu'on pourrait faire de l'ISS avec 100 tonnes de cargo (contre les 6 tonnes actuellement) !
+Plus d'astronautes ! Plus de modules ! Plus de science !
 
 
 
@@ -324,7 +349,8 @@ de Jeff Bezos.
 
 
 Blue Origin est aussi connue pour avoir coiffé SpaceX au poteau
-à la course à l'atterissage de lanceur : c'est en effet leur fusée New Shepard qui, le 23 novembre 2015, est allée dans l'espace,
+à la course à l'atterissage de lanceur : c'est en effet leur fusée, *New Shepard*,
+qui la première, le 23 novembre 2015, est allée dans l'espace,
 [avant de réattérir sur son pas de tir quelques minutes plus tard](https://www.youtube.com/watch?v=9pillaOxGCo).
 
 Un mois plus tard, SpaceX réalisait la même prouesse avec
@@ -366,7 +392,7 @@ Elle doit s'axer sur le lancement de petits satellites.
 
 
 ### The Space Company
-Il s'agit de [l'entreprise derrière la conception de l'avion et des technologies affiliées](https://en.wikipedia.org/wiki/The_Spaceship_Company),
+Il s'agit de [l'entreprise derrière la conception de l'avion et des technologies affiliées](https://en.wikipedia.org/wiki/The%20Spaceship%20Company),
 qui gère toute la conception des vaisseaux spatiaux de Virgin Galactic.
 
 
@@ -388,7 +414,39 @@ Xavier D. Simon, présente le plan actuellement considéré par la firme.
 
 
 ## Arianespace
-En 2020, Arianespace commencera l'exploitation d'Ariane 6, la nouvelle version des fusées Ariane, qui est sensée diminuer largement les coûts et les capacités de la firme, afin de rester compétitif avec les nouveaux concurrents.
+En 2020, Arianespace commencera l'exploitation d'Ariane 6, la nouvelle version des fusées Ariane,
+qui est sensée diminuer largement les coûts et les capacités de la firme, afin de rester compétitif avec les nouveaux concurrents.
+
+Pas d'objectif Mars ici, Ariane 6 est vraiment juste là pour assurer la place dominante de l'Europe en matière de mise en orbite.
+
+
+## Vector Space System
+Il s'agit d'une firme américaine dont [l'objectif est la mise en orbite simple et peu coûteuse](https://vectorspacesystems.com/)
+de [microsatellites](https://fr.wikipedia.org/wiki/Miniaturisation%20des%20satellites).
+
+Je ne la connait pas depuis longtemps, mais il semble qu'elle soit bien avancée, avec un business model très accessible
+à destination des entreprises qui n'ont pas les moyens de se lancer dans la création satellitaire de bout en bout
+avec des contrats avec au moins deux autres entreprises (le lanceur, Arianespace par exemple, et le constructeur, Airbus par exemple).
+Avec Vector Space System, elles n'auront à traiter qu'avec elle, dans un environnement simplifié
+car normalisé grâce à leur système logiciel Galactic Sky présenté après,
+et lancé par [les véhicules Vector Space System](https://vectorspacesystems.com/technology/).
+
+Cela peut sembler être une niche, mais cela est prometteur : qui peut imaginer
+tout ce qu'il sera possible de faire avec des ordinateurs aussi facilement placable en orbite ?
+
+
+### Galactic Sky
+Développé par Vector Space System, ce logiciel permet le développement facile de satellites pour toute entreprise qui en aurait besoin.
+Petite overview, traduite de [la page officielle](http://www.galacticsky.net/) :
+
+- design de satellite
+- gestion du cycle de vie
+- SDK et API pour le développement (notes aux non programmeurs: ça, c'est un truc qui rend les programmeurs heureux, car c'est ça qui permet de travailler plus sur la logique métier, et moins sur la technique (ce qui est justement coûteux))
+- virtualisation, pour tester le satellite avant qu'il ne soit effectivement lancé
+
+Personnellement, rien qu'en lisant ça, je suis enthousiasmé : je veux designer mon satellite !
+Je trouve ça personnellement énorme de vivre à une époque où ce genre d'application tout à fait futuriste arrive.
+
 
 
 # L'innovation
@@ -400,17 +458,49 @@ Notez que je n'aborde des questions que très générales.
 Si vous voulez un détail de l'innovation apportée par la recherche
 dans le spatial, il existe des pages pour ça.
 Par exemple [la page officielle de l'ESA](http://web1.esa.cyso.net/patents),
-[celle de la NASA](https://technology.nasa.gov/patents), ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent).
+[celle de la NASA](https://technology.nasa.gov/patents),
+ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent).
 
 Notez également que SpaceX tient une bonne place ici ;
 c'est essentiellement dû à leur (excellente) communication sur ces sujets,
 contrairement aux autres organisations (publiques ou privées)
-qui sont en général assez chiche sur les nouveautés.
+qui sont en général assez chiches sur la communication des nouveautés.
 
 ## Propulsion
+## Logiciel
+Retour sur [Vector Space System](https://vectorspacesystems.com/), qui a développé [Galactic Sky](http://www.galacticsky.net/)
 ## Carburant
+
 ## Réutilisation
-## Microsatellites
+Les nouvelles firmes du spatial s'attaquent à ce problème de plusieurs manières,
+dépendant fortement de leurs objectifs :
+Virgin Galactic a un avion qui décolle et attérit d'un bloc
+(il ne s'agit pas d'un SSTO, mais leur système est intégralement réutilisable),
+Blue Origin étaient les premiers à récupérer leur lanceur proprement,…
+
+Comme montré dans [ce talk](https://www.youtube.com/watch?v=tdUX3ypDVwI),
+SpaceX ne s'est pas seulement intéressé au carburant, mais aussi au conteneur.
+Celui utilisé par le [BFR](https://en.wikipedia.org/wiki/BFR%20(rocket)) est fait d'un nouveau matériau à base de fibre de carbone,
+qui apparemment pourrait également servir comme [bouclier thermique](https://fr.wikipedia.org/wiki/Bouclier%20thermique) réutilisable… Wow !
+
+
+## Micro/nano/pico/femto satellites
+La masse d'un satellite de télécom, ça approche la tonne. Mais récemment, on a commencé à voir un véritable développement de satellites plus petits.
+Selon leur masse, ils sont nommés microsatellites, nanosatellites,…
+La [correspondance masse/nom est donnée ici](https://fr.wikipedia.org/wiki/Miniaturisation%20des%20satellites#Classification%20des%20petits%20satellites).
+
+C'est une grosse évolution ces dernière années : ces satellites plus petits, souvent largement nécessaires pour des applications simples
+ou que la miniaturisation rend possible malgré les contraintes technique,
+sont lancés [par paquets](https://en.wikipedia.org/wiki/PSLV-C37)
+ou [à côté de satellites plus gros](http://www.arianespace.com/mission/ariane-flight-vs14/).
+
+Il existe plusieurs manières de construire un petit satellite.
+[Cubesat](https://fr.wikipedia.org/wiki/CubeSat) est l'un des formats les plus connus.
+
+Ces satellites sont particulièrement intéressants, car, de par leur petite taille,
+leur coût au lancement est minimal, ce qui les rends intéressant pour des applications de recherche
+qui [n'ont pas besoin d'un outillage gourmand ou gigantesque](),
+ou [pour l'éducation](https://janus.cnes.fr/fr/JANUS/Fr/index.htm).
 
 
 # Continuer l'aventure
@@ -465,3 +555,6 @@ ou, selon la spécialisation, [r/spacex](https://www.reddit.com/r/spacex), [r/ES
 
 Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran,
 je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn/).
+
+
+*[SSTO]: Single Stage To Orbit
