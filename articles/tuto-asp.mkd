@@ -1183,6 +1183,10 @@ permet déjà d'élaguer. En général, toute limitation est bonne à prendre : 
 Tout cela est facile à intégrer dans le programme ASP : il ne s'agit que de rajouter des pièces,
 des préférences, voir des contraintes.
 
+Une solution pourrait être de parser ou chopper l'API d'un site de vente
+de matériel, par exemple [LDLC](https://www.ldlc.com/configurateur-pc/)
+ou [partpicker](https://pcpartpicker.com/).
+
 
 #### Dans le ¬Sephiroth
 Une fois que les deux premières parties sont mises en place et travaillent ensembles,
