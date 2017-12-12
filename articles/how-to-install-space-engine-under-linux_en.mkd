@@ -1,7 +1,7 @@
-Title: How to install Space Engine on linux
+Title: HOWTO install Space Engine on linux
 Date: 2017-08-30
 Modified: 2017-08-30
-Tags: tuto, space
+Tags: tuto, space, howto
 Authors: Lucas Bourneuf
 Summary: small tutorial showing how to install Space Engine under recent GNU/linux distributions
 Slug: space-engine-linux

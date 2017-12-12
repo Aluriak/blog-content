@@ -1,7 +1,7 @@
-Title: How to connect (Arch) linux and Android
+Title: HOWTO connect (Arch) linux and Android
 Date: 2017-10-28
 Modified: 2017-10-28
-Tags: tuto
+Tags: howto
 Authors: Lucas Bourneuf
 Summary: Very short memo about how to do something a priori simple
 Slug: arch-android
