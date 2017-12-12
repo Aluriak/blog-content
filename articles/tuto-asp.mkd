@@ -919,9 +919,9 @@ c'est que la phrase précédente n'a pas été retirée depuis leur incorporatio
 ### Unsafeness
 En codant, il vous arrivera régulièrement de voir clingo lever une erreur du type :
 
-```asp
-test.lp:19:1-36: error: unsafe variables in:
-  hadoken(Y):-[#inc_base];saiyan(X,Y):gandalf(X).
+```
+test.lp:19:1-24: error: unsafe variables in:
+  hadoken(Y):-[#inc_base];saiyan(X).
 test.lp:19:9-10: note: 'Y' is unsafe
 ```
 
@@ -934,19 +934,47 @@ Vous vous doutez que si le nombre de valeur possible sur un atome est infini, on
 
 Eh bien, c'est plus ou moins ce que détecte ici clingo : on ne sait pas quoi mettre en valeur de *Y*.
 
-Dans ce cas là, pas d'inquiétude : il suffit de donner un range de valeur.
+Dans ce cas précis, il s'agit juste d'une erreur de nom de variable :
+
+```asp
+hadoken(Y):- saiyan(X).  % effectivement, on se demande bien ce que peut être Y…
+```
+
+Il faut juste corriger pour que toute variable utilisée dans la tête soit définie dans le corps de la règle.
+
+
+### Unsafeness, deuxième tournée
+Retrouvons l'erreur, légèrement changée :
+
+```asp
+test.lp:19:1-36: error: unsafe variables in:
+  hadoken(Y):-[#inc_base];saiyan(X,Y):gandalf(X).
+test.lp:19:9-10: note: 'Y' is unsafe
+```
+
 Dans ce cas précis, on avait le code suivant :
+
 ```asp
 hadoken(Y):- saiyan(X,Y): gandalf(X).
 ```
-Autrement dit: on a hadoken Y s'il existe un saiyan X Y pour tout gandalf X. Ne cherchez pas la logique dans le lexique, mais plutôt dans la sémantique.
+Autrement dit: on a hadoken Y s'il existe un saiyan X Y pour tout gandalf X. Ne cherchez pas la logique dans la sémantique, mais plutôt dans le lexique.
 On définit bien X: il s'agit d'une valeur donnée par l'atome gandalf. Mais Y ?
 Eh bien, imaginons que `saiyan(X,Y)` soit définit tel que X est une valeur donnée par gandalf/1, et Y une valeur donnée par dumbledore/1.
 Dans ce cas, il nous suffit de rajouter une définition pour Y:
+
 ```asp
 hadoken(Y):- saiyan(X,Y): gandalf(X) ; dumbledore(Y).
 ```
+
 Et voilà, l'erreur a disparue.
+Maintenant, le sens pourrait être différent: on pourrait vouloir hadoken Y s'il existe un saiyan X Y pour tout gandalf X **et pour tout dumbledore de Y**.
+Dans ce cas, on utilise la virgule pour include dumbledore dans la condition *pour tout* :
+
+```asp
+hadoken(Y):- saiyan(X,Y): gandalf(X), dumbledore(Y).
+```
+
+L'unsafeness arrive également quand dans une condition *pour tout* des variables à gauche du `:` ne sont pas définies, à droite du `:` (premier cas) ou dans le contexte de la règle (second cas).
 
 
 ### Syntax error
