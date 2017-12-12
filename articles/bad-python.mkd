@@ -60,6 +60,12 @@ At least, [the documentation](https://docs.python.org/2.7/library/csv.html#csv.D
 Well, instead of writing this, i guess i could work on a PEP for that.
 
 
+## glob
+You have `glob`, and `iglob`, the generator equivalent. Like in dinopython. Unlike the rest of Python API.
+
+Why ?
+
+
 ## functools
 ### lru_cache
 It's a good function, because it's powerful.
