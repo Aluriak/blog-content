@@ -1,4 +1,4 @@
-Title: How to connect Archlinux and Android
+Title: How to connect (Arch) linux and Android
 Date: 2017-10-28
 Modified: 2017-10-28
 Tags: tuto
@@ -24,16 +24,6 @@ The second is a communication channel needed by [Anki's Cozmo SDK](https://devel
 One very simple way to go is to get [`simple-mtpfs`](https://wiki.archlinux.org/index.php/MTP#simple-mtpfs) from the AUR,
 `yaourt -S simple-mtfs`.
 
-### Everyday use
-I use the following Makefile to mount/umount my phone as needed in my home directory, at `~/android`.
-
-    mount_android:
-            mkdir -p ~/android
-            simple-mtpfs --device 1 ~/android -o enable-move
-    umount_android:
-            fusermount -u ~/android
-            rm -d ~/android
-
 
 ## ADB setup
 You basically just have to follow the [Arch tutorial about the detection of your device](https://wiki.archlinux.org/index.php/Android#Android%20Debug%20Bridge%20.28ADB.29).
@@ -49,7 +39,20 @@ Notes:
 - do not forget `sudo`
 - `lsusb` do not necessarily find a description for the phone. Mine was empty, yielding only the Bus and ID parts.
 
+
+### Device detection
+Once correctly setup, the only thing you need is the call `adb devices`.
+You may get an `unauthorized` status, if you do not accept, phone-side, the communication quickly enough.
+Just retry: run the command a second time, accepte the communication on your phone, and you should get the expected `device`.
+
+
 ### Everyday use
-Once correctly setup, the only thing you need, next time, is the call `adb devices`.
-You may get an `unauthorized` status, if you do not accept the communication on you phone quickly enough.
-Just ignore this: running the command a second time, after accepting the communication will give you the expected `device`.
+I use the following Makefile to mount/umount my phone as needed in my home directory, at `~/android`.
+
+    mount_android:
+            mkdir -p ~/android
+            simple-mtpfs --device 1 ~/android -o enable-move
+
+    umount_android:
+            fusermount -u ~/android
+            rm -d ~/android
