@@ -36,8 +36,7 @@ It's so a mess it looks like Common Lisp.
 I'm a huge fan of Ada's way, where all libs are carefully standardized,
 so you find little or no surprise in them.
 Well, the fact that the language itself is case insensitive certainly helps a little, but it anyway reach
-a global coherence that i didn't find anywhere else
-(maybe [racket](https://racket-lang.org/) ? I didn't dig more about it yet).
+a global coherence that i didn't find anywhere else.
 
 Python is somewhere between Common Lisp and Ada, but IMHO closer to CL.
 
@@ -61,7 +60,8 @@ Well, instead of writing this, i guess i could work on a PEP for that.
 
 
 ## glob
-You have `glob`, and `iglob`, the generator equivalent. Like in dinopython. Unlike the rest of Python API.
+You have `glob`, and `iglob`, the generator equivalent. Like in dinopython.
+Unlike the rest of Python library.
 
 Why ?
 
@@ -146,10 +146,13 @@ With included grammar to parse python code ?
 Why can't i put bytecode into my Python just as i put assembly into my C ?
 Bytecode should be integrated in the language, allowing microoptimization when necessary.
 
-It's almost useless with the almost not-painful C integration in Python.
+This feature is made almost useless with the almost not-painful C integration in Python.
 But then, you end up with packaging problems,
 and need external libraries like cffi or swig.
 
+Bytecode could be even lower level than the one of CPython.
+It could be closer to ASM.
+And it should not complexify the project management.
 
 
 # In the language
