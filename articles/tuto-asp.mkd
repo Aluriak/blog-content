@@ -19,30 +19,34 @@ Status: draft
 
 # Introduction
 
-Cet article est un tuto sur [Answer Set Programming](https://en.wikipedia.org/wiki/Answer%20set%20programming),
+Cet article est un tuto qui se veut accessible sur [Answer Set Programming](https://en.wikipedia.org/wiki/Answer%20set%20programming),
 un langage de programmation déclaratif implémentant la *Programmation Par Contrainte*,
 ou PPC (comme java implémente la POO et haskell la PF).
 
 Pour ceux qui connaissent, il fera certainement penser à [Prolog](http://www.learnprolognow.org/),
 puisque ces deux langages reposent sur les même concepts, bien qu'ils ne l'implémentent pas de la même manière.
+Pour les matheux, il fera penser à TLA+, en beaucoup moins puissant, certainement.
 
 L'objectif n'est pas seulement d'apprendre les bases en faisant joujou,
 mais de développer des programmes qui résolvent des problèmes de la vie réelle,
-éventuellement avec quelques lignes en plus pour pouvoir réellement l'utiliser dans la vie de tous les jours.
+éventuellement avec quelques lignes en plus pour pouvoir être réellement utilisés dans la vie de tous les jours.
 
 Dans une certaine mesure, ce tuto s'adresse aussi à ceux qui n'ont jamais codé ;
-après tout, (un petit troll pour la route) les langages logiques sont les meilleurs pour apprendre :)
+après tout, les langages logiques sont les meilleurs pour commencer :)
+(je fais un effort de simplification durant tout le tuto, justement pour permettre à des personnes n'ayant jamais codé de s'y intéresser néanmoins)
 
 
 ## Quelques liens préliminaires
+*Où l'on se demande pourquoi faire un tuto si c'est pour renvoyer tout le monde voir ailleurs*
+
 Je conseille volontier la lecture parallèle d'un tuto existant ; ça aide toujours d'avoir
 plusieurs sources pour comprendre un concept.
 Pour être franc, je n'ai trouvé que [celui-ci](https://cjamcl.com/blog/a-gentle-introduction-to-asp/) (en anglais),
-qui passe aussi très vite sur les bases.
+qui passe très vite sur les bases.
 
 Les scripts utilisés ici sont disponibles
 sur le dépôt [learning-ASP](https://github.com/Aluriak/learning-ASP).
-Vous pouvez les télécharger, et même participer à leur développement si vous le désirez.
+Vous pouvez les télécharger, et même participer à leur développement si besoin.
 
 Notez aussi que clingo, le groundeur/solveur que nous allons utiliser,
 est accompagné [d'un manuel bien fournis](http://sourceforge.net/projects/potassco/files/guide/),
@@ -55,9 +59,11 @@ pour les annonces des développeurs, typiquement les nouvelles versions)
 
 
 # Concepts généraux
+*Où l'on découvre à quelle sauce nous allons être mangés*
+
 ## Principes de Programmation Déclarative
 Comment collecter tous les entiers positifs inférieurs à 100 et multiples de 3 ?
-En python, une manière de faire est la suivante :
+En python, une manière de faire est la suivante (à droite, après le `#`, il s'agit de commentaires qui ne sont pas interprétés par la machine, qui sont là juste pour l'humain) :
 
 ```python
 for nb in range(0, 100):  # pour chacun des nombres de 1 à 100
@@ -71,7 +77,7 @@ Ce paradigme, dit *impératif*, consiste à expliquer **comment calculer la solu
 
 C'est une approche qui est en fait assez peu naturelle, et ça se voit quand on commence la programmation.
 C'est effectivement assez consternant de devoir s'expliquer auprès d'un ordinateur qui semble avoir
-les capacités de compréhension d'un enfant de 5 ans (8, quand on utilise un langage haut-niveau),
+les capacités de compréhension d'un enfant de 5 ans (et c'est encore pire avec les langage de bas-niveau),
 et c'est un gros problème dans l'enseignement en informatique.
 
 La programmation déclarative aborde le problème d'un angle différent :
@@ -88,13 +94,13 @@ C'est généralement là qu'interviennent des langages *impératifs* (Javascript
 qui permettent de générer du HTML à partir de templates et des paramètres extérieurs.
 
 Sans ces languages, il faudrait avoir en mémoire toutes les solutions possibles,
-ce qui n'est pas possible pour une grande partie des sites web.
+ce qui n'est pas possible pour une grande partie des sites web, et difficilement maintenable.
 
 
 ## Principes de Programmation Logique
 Le paradigme logique est un sous-ensemble du paradigme déclaratif.
 Autrement dit, un langage *logique* est un langage *déclaratif*.
-À l'inverse, un langage *déclaratif* n'est pas nécessairement *logique* (le HTML, par exemple).
+À l'inverse, un langage *déclaratif* n'est pas nécessairement *logique* (le HTML, par exemple, n'est pas logique).
 
 Le paradigme logique repose sur les méthodes formelles issues des maths et de la théorie de la logique
 C'est avec ces outils que la description de la solution (la réponse au **quoi**) est formulée.
@@ -120,7 +126,7 @@ Le problème, c'est qu'aujourd'hui en informatique, créer un programme qui
 comprendrais ce language relève encore de la science-fiction.
 Hors, et c'est bien là l'objet de ce tuto, on veut utiliser l'ordinateur
 (et un ordinateur de bureau, hein, pas un super calculateur et
-l'équipe de chercheur en langage naturel qui va avec)
+l'équipe de chercheur en langage naturel qui va avec).
 
 Donc, essayons maintenant de faire un language que nos petits ordinateurs puisse comprendre :
 
@@ -168,7 +174,7 @@ La première partie, c'est la *génération*, où l'on génère les candidats po
 Comme en général ces candidats ne sont pas tous bons, on besoin de les filtrer,
 d'où la seconde étape, *l'application de contraintes*,
 qui permet de définir quels candidats seront écartés.
-(digression-culture: ce n'est pas le seul usage des contraintes, mais on verra ça après)
+(digression-culture: ce n'est pas le seul usage des contraintes, mais on verra ça bien après)
 
 Answer Set Programming est un langage logique où les contraintes
 font partie du langage autant que le reste des déclarations.
@@ -178,8 +184,10 @@ car les développeurs ont intuitivement ce découpage dans leur réflexions.
 
 
 # Outillage
+*Où l'on va enfin faire quelque chose ; dommage que ce soit pas très intéressant*
+
 Il existe [de nombreuses implémentations d'ASP](https://en.wikipedia.org/wiki/Answer%20set%20programming#Comparison%20of%20implementations),
-chacunes avec des approches unique
+chacunes avec des approches uniques
 et intéressantes pour résoudre des problèmes plus ou moins spécifiques.
 
 Pour ce tuto, nous allons utiliser la suite [Potassco](https://potassco.org), un ensemble de logiciels
@@ -191,25 +199,25 @@ en général les différences conceptuelles du langage
 ne seront pas monstrueuses, mais certaines implémentations proposeront des fonctionalités différentes.
 
 Cela étant dit, suivre un tuto avec les bons outils, c'est pas plus mal.
-Bref, faites comme vous voulez, mais dans le doute, utilisez clingo et explorez les autres après)
+Bref, faites comme vous voulez, mais dans le doute, utilisez clingo et explorez les autres après si l'envie vous en prend)
 
 
 ## Clingo, en deux (cents) mots et deux parties
+Si vous ne comprenez rien au charabia de cette, pas d'inquiétude : c'est juste pour fixer les idées des informaticiens.
+Lisez tout de même, je met quelques simplifications au milieu.
 
 Clingo est à ASP ce que CPython est à Python:
 une usine à gaz (un gros programme bien compliqué) qui comprend et applique les effets de bord du langage.
 <!-- Faut vraiment que je fasse un article sur ces notions -->
 
-Clingo est en fait constitué de deux composantes: *gringo* et *clasp*.
-(que l'on peut récupérer et utiliser à part)
+Clingo est en fait constitué de deux composantes: *gringo* et *clasp* (que l'on peut récupérer et utiliser à part).
 
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
 (dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour CPython c'est le bytecode, et pour C c'est l'assembleur)
-Si vous ne comprenez rien à ce charabia, pas d'inquiétude : c'est juste pour étaler ma culture.
 
-Clasp est à ASP ce que l'interpréteur de CPython est à Python:
+Clasp est à ASP ce que l'interpréteur de CPython est à Python :
 un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
 et en appliquent les effets de bord (mémoire et calculs).
 
@@ -223,7 +231,8 @@ et de *solving* pour la partie assurée par *clasp*.
 Clingo est donc un programme qui se charge du grounding et du solving
 d'un seul coups.
 
-De notre point de vue, c'est ça en moins à gérer, mais c'est important de s'en rendre compte.
+De notre point de vue, c'est ça en moins à gérer, mais c'est important de s'en rendre compte,
+car dans pas mal de cas il peut être intéressant de manipuler les deux indépendemment.
 
 
 ## Installation
@@ -268,10 +277,11 @@ clingo -> clingo521
 <!-- [comme pour les binaires python]({filename}/articles/the-python-ecosystem.mkd) -->
 
 ### Compilation
-La compilation de clingo depuis les source est possible,
-et conseillée si vous voulez une version particulière avec le support de python
+Pour les plus à l'aise, la compilation de clingo depuis les sources est aussi possible,
+et nécessaire si vous voulez une version particulière avec le support de python
 ou de lua avec une version particulière (je pense à python 3, notamment)
 
+Voici le makefile que j'utilise sous fedora pour l'update, la compilation et l'installation :
 
 ```makefile
 all: update_repo compile install
@@ -293,6 +303,8 @@ update_repo:
 
 
 ## Quelques tests préliminaires
+*Où l'on commence à jouer, avec une retenue typique d'une centrale hydroélectrique*
+
 Maintenant que vous avez clingo qui fonctionne, effectuons quelques
 tests préliminaires pour étudier un peu l'environnement.
 
@@ -340,12 +352,12 @@ C'est comme ça qu'on apprend !
 
 Pour bien montrer comment clingo s'utilise, voici
 une session complète où j'écris un programme ASP
-dans le fichier `program.lp`, puis lance clingo dessus:
+dans l'entrée standard de clingo (j'aurais aussi pu l'écrire directement dans l'entrée standard clingo) :
 
     ❯ echo "a. b." > program.lp
     ❯ clingo -n 0 program.lp
     clingo version 5.2.1
-    Reading from program.lp
+    Reading from stdin
     Solving...
     Answer: 1
     a b
@@ -356,14 +368,16 @@ dans le fichier `program.lp`, puis lance clingo dessus:
     Time         : 0.000s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
     CPU Time     : 0.000s
 
+(pour ceux qui sont dans l'interface web, juste ajoutez `a. b.` dans le champs de texte, et appuyez sur run)
+
 Du point de vue de clingo, que se passe-t-il ici ?
 
 - d'abord, clingo parse les arguments de la ligne de commande (ici `-n 0` et `program.lp`)
-- il apprend que je veux *tous* les modèles, toutes les réponses possibles (`-n 0`)
+- il apprend que je veux *touts* les modèles, toutes les réponses possibles (`-n 0`)
 - il apprend également que le programme est intégralement contenu dans `program.lp`
 - il lance gringo sur le programme, et obtient le code groundé.
 - il lance clasp sur le code groundé, et m'affiche le résultat
-- j'apprend que mon programme n'a qu'une seule et unique solution, où les atomes a et b sont vrais.
+- j'apprend que mon programme n'a qu'une seule et unique solution (*Answer: 1*), où les atomes a et b sont vrais.
 
 Notez que la ligne `Reading from program.lp` correspond au grounding, et la suivante, `Solving...`, correspond au solving.
 
@@ -379,12 +393,14 @@ Quelques options intéressantes dont je ne parlerais pas ou peu :
 - `--text`: pour avoir le code groundé (le solveur, clasp, n'est pas appelé). Cf `--mode`.
 - `--stats`: pour avoir plus d'info sur le déroulement du solving lorsque celui-ci est terminé (il y a une checkbox sur l'interface web)
 - `--time-limit`: permet de donner un temps maximum de grounding/solving
-- `--parallel-mode`: utiliser le multithreading
+- `--parallel-mode`: utiliser le multithreading : utiliser plusieurs cœurs en même temps pour le solving
 - `--enum-mode`: choix de l'énumération des modèles : *tous les modèles*, ou *tous les meilleurs modèles* par exemple
 - `--outf`: choix du format de sortie (l'un des plus intéressant est probablement JSON, si vous voulez récupérer le résultat sans faire de parsing manuel)
 
 
 # Principes d'Answer Set Programming
+*Où l'on va (enfin !) faire quelque chose de significatif dans ce monde où seule l'action prime*
+
 Maintenant que l'on a plein de théorie dans la tête et clingo sur le pc,
 attaquons le vif du sujet: parler ASP !
 
@@ -394,6 +410,7 @@ Pour le dire autrement, vous pouvez mettre les pires cochonneries dans des comme
 clingo ne se formalisera pas.
 En général, c'est très utilisé par les humains pour expliquer
 à quoi sert le code qui est à côté.
+Utiliser les commentaires aide à comprendre ce que fait un code ; il est donc conseillé d'utiliser les commentaires pour s'aider soi-même.
 
 Les commentaires commencent par un `%`:
 
@@ -401,6 +418,8 @@ Les commentaires commencent par un `%`:
 % Je suis un commentaire
 Je ne suis pas un commentaire  % ni de l'ASP valide d'ailleurs
 ```
+
+Ici, clingo plante sur `Je ne suis pas un commentaire`, car il ne s'agit pas d'ASP valide. Comme indiqué dans le commentaire à droite.
 
 Les commentaires multilignes commencent avec `%*` et terminent avec `*%`.
 Notez que clingo n'est pas capable de gérer la présence d'un `%*`
@@ -429,7 +448,7 @@ a.
 
 Ici, on indique que le *fait* `a` est vrai.
 À l'inverse, tout autre fait est faux, et si on lance clingo sur ce programme,
-nous ne trouverons qu'un seul et unique modèle (ou (ensemble-)réponse) : celui où a est vrai.
+nous ne trouverons qu'un seul et unique modèle (ou (ensemble-)réponse) : celui où `a` est vrai.
 
 Le point `.` est un peu comme le point-virgule en C,
 ou le saut de ligne en Python : il termine chaque règle et atome du programme.
@@ -449,9 +468,9 @@ L'usage typique des arguments, c'est de donner des valeurs à un concept, par ex
 
 ```
 papa(jacques_dutronc,thomas_dutronc).  % J. Dutronc est le papa de T. Dutronc
-papa(dark_vador,luke_skywalker).
-papa(chronos,zeus).
-papa(zeus,athena).
+papa(dark_vador,luke_skywalker).  % Pareil pour dark vador et luke
+papa(chronos,zeus).  % idem
+papa(zeus,athena).  % bref, vous avez compris
 papa(zeus,hercule).
 papa(geb,isis).
 papa(geb,nephtys).
@@ -463,6 +482,16 @@ Voilà, toutes ces données sont considérées vraies par clingo (et en plus son
 Bien sûr, on ne va pas s'amuser à les mettre dans tous les programmes qu'on utilise :
 ça a beau être vrai, ce n'est pas toujours pertinent.
 
+
+## Notation
+`a/1` est l'ensemble des atomes de prédicat `a` avec un seul argument. Par exemple `a(1)` ou `a(a(a(staying,alive)))`.
+De la même manière, `ha(do,pi)` et `ha(do,ken)` appartiennent tout deux à l'ensemble des atomes décrits par `ha/2`.
+
+Questions (sans piège) : comment décrire l'atome `k(2,"mille",v(2))` ?
+`coucou` ?
+Et `symballium(v,o,l,u,m,e," ",I,V,"<3")` ?
+
+(si vous n'êtes pas sûr de vos réponses, allez voir la fin de page)
 
 
 ## Retour sur les atomes
@@ -487,13 +516,13 @@ Maintenant que l'on peut déclarer des faits, nous pouvons commencer à déclare
 des règles de causalité.
 En d'autres termes, il est possible de définir qu'un atome est vrai sous certaines conditions.
 
-En ASP, cela se fait avec l'opérateur `:-`, une espèce de `si` ou `if` à l'envers:
+En ASP, cela se fait avec l'opérateur `:-`, une espèce de *si* :
 
 ```asp
-% l'atome ok est vrai si l'atome a est vrai
-ok:- a.
-% l'atome ok est vrai si les atomes b ET c sont vrais
-ok:- b ; c.
+% l'atome ok est vrai SI l'atome a est vrai
+ok :- a.
+% l'atome ok est vrai SI les atomes b ET c sont vrais
+ok :- b ; c.  % notez que le ET est symbolisé par le point-virgule
 ```
 
 On appelle la partie *avant* le `:-` la *tête* (head),
@@ -515,11 +544,11 @@ Tout mot commencant par une majuscule est une variable.
 Par exemple:
 ```asp
 % l'atome ok(X) est vrai si l'atome a(X) est vrai
-ok(X):- a(X).
+ok(X) :- a(X).
 ```
 
 Avec ce programme, si `a(2)` est vrai, alors `ok(2)` le sera également.
-Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000`, `"i have υτφ-8 characters"` et `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop,"hello, world!")`.
+Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000`, `"i have υτφ-8 characters"` ou `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop(py(disk)),"hello, world!")`.
 
 Exemples de règles avec des variables :
 
@@ -531,9 +560,7 @@ entoure(X-1,X,X+1):- a(X).  % par exemple, avec a(2), ça donne entoure(1,2,3)
 ```
 
 ### Variable muette
-Les variables muettes sont tout à fait optionnelle, c'est ce qu'on appelle du *sucre syntaxique*.
-C'est une manière de dire : *cette valeur ne m'intéresse pas*.
-
+La variable muette, c'est une manière de dire explicitement : *cette valeur ne m'intéresse pas*.
 Par exemple, si je voulais avoir un atome d'arité 1 qui me donne les papas, indépendemment de leurs enfants,
 je pourrais faire ainsi :
 
@@ -544,11 +571,14 @@ papa(P):- papa(P,E).
 Sauf que le `E` qui sert à rien là, c'est pas très joli. Du coups, on peut le remplacer par une variable muette :
 
 ```
-papa(P):- papa(P,_).
+papa(P):- papa(P,_).  % une variable muette commence par un _ ('underscore')
 ```
 
-Et voilà ! Il est bien clair pour tout le monde que les valeurs ici ne nous intéressent pas.
-Il faut qu'une existe, évidemment, mais la valeur exacte n'est pas pertinente dans le contexte.
+Et voilà ! Il est bien clair pour tout le monde que le second argument ici ne nous intéresse pas.
+Il faut qu'il existe, évidemment, mais la valeur exacte n'est pas pertinente dans le contexte.
+
+Notez qu'on pourrait tout à fait se passer des variables muettes. Elles sont tout à fait optionnelle.
+C'est ce qu'on appelle du *sucre syntaxique* : un truc sympa qui ne fait que simplifier la vie du programmeur.
 
 
 ## Exeeeeerciiiiiiice ! Tel père, tel fils
@@ -556,7 +586,7 @@ Petit exercice à faire chez vous, c'est obligatoire, sinon, lorsque vous commen
 ce site s'autodétruira (offre soumise à condition).
 
 Je vous propose simplement de reprendre la base de donnée des pères présentée plus haut
-(avec `papa(jacques_dutronc,thomas_dutronc).`),
+(avec `papa(jacques_dutronc,thomas_dutronc)` et les autres),
 et de faire un programme qui, connaissant ces liens de parenté, va définir qui est l'enfant de qui.
 
 En clair, si j'ai `papa(monpapa,moi).`, je veux obtenir `enfant(moi,monpapa).`.
@@ -569,6 +599,9 @@ Si au bout de 20 minutes vous :
 - **n'avez rien essayé :** bah quoi ? Allez-y ! **Tapez des trucs !** Si ya bien un domaine où il faut se tromper pour y arriver, c'est l'informatique ! Et l'ordi il est là pour ça vous savez ; et il aura oublié aussi tôt que vous aurez essayé autre chose. À moins que vous ne soyez détenu par un psychopathe qui vous observe et vous oblige à faire ce tuto ? Et qu'à la moindre erreur, il vous fait boire une soupe d'avocat ? Si c'est le cas, je suis désolé que ça tombe sur mon tuto, mais cela étant dit, je suis assez content d'avoir vu juste. Envoyez moi un mail quand vous serez sortit de là, hein ? Ça me rassurera. Et puis, dans votre malchance, vous avez de la chance : ya vraiment rien de *compliqué*. Nouveau, oui, mais il faut savoir sortir de sa zone de confort. Par contre, j'avoue, la soupe d'avocat c'est un peu sévère. Bref. Concentrez-vous, vous allez y arriver, faites vous confiance (par contre, dépêchez-vous, la soupe d'avocat froide, c'est encore pire ! … désolé).
 - **n'avez rien essayé, malgré le fait qu'aucun psychopathe ne vous menace avec une soupe d'avocat :** là, il va falloir se lancer, hein (et revenez ensuite, hein ?).
 - **toujours pas trouvé, malgré bien des tentatives :** en bas de page, ya les solutions.
+
+### Bonus
+Un atome `moi/1` permet d'indiquer qui je suis. Si mon père est Dark Vador, alors l'atome `nooooooooooon` doit être vrai.
 
 
 ## Négation
@@ -710,7 +743,7 @@ on prendra le premier modèle (ou le second. Ou le dernier. Bref, celui qui nous
 ### Aide
 Si au bout de 20 minutes, vous:
 
-- **n'avez rien essayé :** j'en déduit que la soupe d'avocat est bonne. Perso, la seule fois où on en a fait, j'étais tout petit, yavais mon papa et ma maman qui avaient fait la soupe. Ben personne n'en a mangé. C'était. Vraiment. Pas. Bon. En vrai, rien qu'à l'odeur, on a tous fait des têtes bizarres. Et ensuite ma maman elle a goûté, et ensuite elle nous a défendu d'en prendre. Plus tard, dans ma fratrie, la légende racontait (racon*tait*, hein, parce que bon, maintenant on a grandit, on sait tous que je l'avais inventée juste pour faire mon intéressant, en qu'en vrai c'était juste l'hiver) que, après que les parents l'ai jetée dans le compost, les plantes ont arrêtée de pousser pendant plusieurs mois.
+- **n'avez rien essayé :** j'en déduit que la soupe d'avocat est bonne. Perso, la seule fois où on en a fait, j'étais tout petit, y avait mon papa et ma maman qui avaient fait la soupe. Ben personne n'en a mangé. C'était. Vraiment. Pas. Bon. En vrai, rien qu'à l'odeur, on a tous fait des têtes bizarres. Et ensuite ma maman elle a goûté, et ensuite elle nous a défendu d'en prendre. Plus tard, dans ma fratrie, la légende racontait (racon*tait*, hein, parce que bon, maintenant on a grandit, on sait tous que je l'avais inventée juste pour faire mon intéressant, en qu'en vrai c'était juste l'hiver) que, après que les parents l'ai jetée dans le compost, les plantes ont arrêtée de pousser pendant plusieurs mois.
 - **n'avez rien essayé, mais êtes bien conscient qu'il faut se lancer, mais au font avez trop peur qu'en appuyant sur la mauvaise touche, je sorte de l'écran, bouillant de rage, en hurlant des insanités et en maudissant votre famille sur 29.3 générations :** un indice : avec deux expressions, ça se fait bien.
 - **avez tout essayé, y compris de faire une méta-méta-heuristique qui contrôlait un algo génétique multi-agent qui testait des combinaisons au hasard de lettre pendant plus de 25 ans sur un supercalculateur :** il y a les solutions en bas de page, mais en vrai, c'est d'un séminaire sur le lâché prise dont vous avez besoin.
 
@@ -776,6 +809,7 @@ Un peu de gymnastique intellectuelle est nécessaire quand vous manipulez les co
 elles expriment ce qui doit être faux, pas ce qui doit être vrai.
 
 
+
 ## Insatisfiabilité
 Avec cette histoire de contraintes qui empêchent certains modèles d'exister,
 on est en droit de se poser une question… Et si un problème n'est pas satisfiable,
@@ -806,6 +840,31 @@ Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set,
 
 Un petit mot en passant : si vous avez un jour un problème, que vous arrivez à le modéliser en ASP,
 et que vous obtenez une insatisfiabilité, c'est une preuve que votre problème n'est pas soluble.
+
+
+## Tokens
+Petite partie théorique avant d'attaquer un nouveau morceau conceptuel.
+
+Les tokens sont les *morceaux de texte*, les unités minimales qui peuvent être utilisées pour écrire.
+C'est un concept théorique assez important, car il peut aider à comprendre mieux le langage dans son ensemble.
+
+En ASP, il existe cinq types de tokens:
+
+- les identifiants: par exemple `a`, `hello_world` ou `a_3_on_y_va`, **mais pas** `A`, `_`, `Arachide` ou `_case` (l'expression régulière est donc `[a-z][a-z0-9A-Z_]*`).
+- les variables: un identifiant qui commence par une majuscule ou un underscore (exp. reg: `[A-Z_][a-z0-9A-Z_]*`).
+- les nombres: seuls les nombres entiers sont gérés (expreg: `-?[0-9]+`).
+- les textes: encadrés par des double-guillemets `"`, ils peuvent contenir n'importe quoi, sauf des double guillemets non précédés d'un antislash (sinon, ça termine le texte).
+- les opérateurs: mathématiques (`+ - / * / \ ^ ..`) ou logiques (`; , :- : { }`)
+
+Tout le langage ASP repose sur ces tokens.
+Nous verrons qu'il existe un sur-ensemble du langage plus ou moins spécifique à clingo,
+qui rentre dans la catégorie de la méta-programmation, mais c'est hors contexte pour le moment.
+
+(C'est la méta-programmation qui nous permettra de *tuner* la recherche de la solution,
+par exemple en définissant quels atomes doivent être affichés dans les résultats,
+ou définir les valeurs de constantes)
+
+<!-- TODO: un petit mot de la fin ? -->
 
 
 ## ∃ vs ∀
@@ -851,41 +910,229 @@ séparées par une virgule `,` (et non un point-virgule).
 <!-- TODO: un petit mot de la fin ? -->
 
 
-## Tokens
-Les tokens sont les *morceaux de texte*, les unités minimales qui peuvent être utilisées pour écrire.
-C'est un concept théorique assez important, car il peut aider à comprendre mieux le langage dans son ensemble.
+## Erreurs et warnings
+Dans l'idéal, une partie entière de ce tuto devrait être écrite justement pour traiter des différentes erreurs,
+mais cela requiert un travail supplémentaire qui, selon moi, est très intéressant, ne serais-ce que parce que c'est en général un sujet qui est très peu abordé dans les tutos.
+(Si vous lisez cette ligne et que, dans le sommaire et en scrollant un peu, vous voyez que de nombreux cas d'erreurs sont expliqués et traités,
+c'est que la phrase précédente n'a pas été retirée depuis leur incorporation ; prévenez-moi !)
 
-En ASP, il existe cinq types de tokens:
+### Unsafeness
+En codant, il vous arrivera régulièrement de voir clingo lever une erreur du type :
 
-- les identifiants: par exemple `a`, `hello_world` ou `a_3_on_y_va`, **mais pas** `A`, `_`, `Arachide` ou `_case` (l'expression régulière est donc `[a-z][a-z0-9A-Z_]*`).
-- les variables: un identifiant qui commence par une majuscule ou un underscore (exp. reg: `[A-Z_][a-z0-9A-Z_]*`).
-- les nombres: seuls les nombres entiers sont gérés (expreg: `-?[0-9]+`).
-- les textes: encadrés par des double-guillemets `"`, ils peuvent contenir n'importe quoi, sauf des double guillemets non précédés d'un antislash (sinon, ça termine le texte).
-- les opérateurs: mathématiques (`+ - / * / \ ^ ..`) ou logiques (`; , :- : { }`)
+```asp
+test.lp:19:1-36: error: unsafe variables in:
+  hadoken(Y):-[#inc_base];saiyan(X,Y):gandalf(X).
+test.lp:19:9-10: note: 'Y' is unsafe
+```
 
-Tout le langage ASP repose sur ces tokens.
-Nous verrons qu'il existe un sur-ensemble du langage plus ou moins spécifique à clingo,
-qui rentre dans la catégorie de la méta-programmation, mais c'est hors contexte pour le moment.
+En clair, dans le fichier *test.lp*, ligne *19*, de la colonne *1* à *36*,
+clingo n'arrive pas à décider de la valeur de la variable *Y*.
+C'est la notion même d'*unsafe* : une variable dont la valeur peut virtuellement être n'importe quoi.
 
-(C'est la méta-programmation qui nous permettra de *tuner* la recherche de la solution,
-par exemple en définissant quels atomes doivent être affichés dans les résultats,
-ou définir les valeurs de constantes)
+Hors, vous vous en souvenez, on est sensé durant l'étape de grounding avoir la génération des atomes avec toutes les valeurs possibles.
+Vous vous doutez que si le nombre de valeur possible sur un atome est infini, on a un problème.
 
-<!-- TODO: un petit mot de la fin ? -->
+Eh bien, c'est plus ou moins ce que détecte ici clingo : on ne sait pas quoi mettre en valeur de *Y*.
+
+Dans ce cas là, pas d'inquiétude : il suffit de donner un range de valeur.
+Dans ce cas précis, on avait le code suivant :
+```asp
+hadoken(Y):- saiyan(X,Y): gandalf(X).
+```
+Autrement dit: on a hadoken Y s'il existe un saiyan X Y pour tout gandalf X. Ne cherchez pas la logique dans le lexique, mais plutôt dans la sémantique.
+On définit bien X: il s'agit d'une valeur donnée par l'atome gandalf. Mais Y ?
+Eh bien, imaginons que `saiyan(X,Y)` soit définit tel que X est une valeur donnée par gandalf/1, et Y une valeur donnée par dumbledore/1.
+Dans ce cas, il nous suffit de rajouter une définition pour Y:
+```asp
+hadoken(Y):- saiyan(X,Y): gandalf(X) ; dumbledore(Y).
+```
+Et voilà, l'erreur a disparue.
+
+
+### Syntax error
+Celle-là sont en général assez simple à résoudre : il s'agit d'une mésutilisation de la grammaire du langage.
+
+Souvent, lorsque vous avez une telle erreur, c'est que vous avez oublié un point, une parenthèse,…
+
+Comme clingo vous donne l'endroit où est arrivé un *token* inattendu (comme un identifiant à la place d'un point par exemple),
+il est assez simple de voir d'où viens l'erreur.
+Petit détail : clingo vous donne la localisation du *token* inattendu : cela veut dire que si l'erreur est levée à cause d'un point qui manque,
+c'est le token suivant qui sera ciblé.
+
+Donc le code suivant lève bien une erreur :
+
+```asp
+atome(avec,arguments,mais,sans,point)
+autre_atome(normal,celui,la).
+```
+
+Mais clingo vous dira que l'erreur provient de la seconde ligne. C'est normal : de son point de vue,
+c'est `autre_atome` qui est en faute, puisqu'il s'agit d'un identifiant qui se trouve près un atome complet,
+ce qui n'est pas *attendu* d'après la grammaire du langage ASP.
+
+
+## Exeeeeerciiiiiiice ! Yodel et papier crépon
+Je ne vous le cacherais pas : cet exercice est un poil plus complexe que les précédents, mais ne vous en faites point, vous y arriverez tout pareil.
+
+Voici l'énoncé : on cherche des ensembles de personnes partageant les même goûts,
+sachant que l'on sait qui aime quoi via les atomes `aime/2`, tel que `aime("Gérard","Joueur du Grenier")`
+signifie que Gérard aime l'émission du [Joueur du Grenier](https://fr.wikipedia.org/wiki/Joueur%20du%20Grenier).
+
+Assez simplement, deux personnes partagent les même goûts si elles aiment une chose en commun.
+Il existe au moins deux manières de faire ; voici donc quelques phrases qui pourraient vous aider à trouver
+les différentes manières d'attaquer le problème.
+
+- *Il y a au moins deux personnes, au moins un sujet, et tous les atomes aime/2 nécessaires sont vrais*
+- *Il y a au moins deux personnes, au moins un sujet, et il n'existe pas de paire personne-sujet tel que aime/2 n'existe pas*
+- *Les personnes choisies aiment les sujets choisis, et les sujets choisis sont aimés par les personnes choisies.*
+
+
+### Les données
+```asp
+aime("Gérard",("Joueur du Grenier";"Les pois cassés")).
+aime("Julie",("Les pois cassés";"Star Wars 9: les siths fantôme contre-retournent l'espoir")).
+aime("Marlène",("Les chansons des années 20";"Symballium volume 4";"les roses vertes")).
+aime("Michel",("La grande musique (dans le sens de la longueur)";"Star Wars 9: les siths fantôme contre-retournent l'espoir")).
+aime("Dominique",("La grande musique (dans le sens de la longueur)";"les roses vertes";"Les poids cassés";"Symballium volume 4")).
+```
+
+Avec ces données, vous devriez obtenir 6 modèles. Si vous en obtenez plus, il est possible que certains
+des modèles soient des sous-ensembles d'autres modèles. C'est l'effet de bord d'une des deux solutions.
+
+
+### Aide
+Si au bout de 30 minutes, vous:
+
+- **n'avez rien essayé :** bon, au risque de paraître un tantinet habité d'une quelconque passion à propos d'une soupe où nagerait des atomes d'avocats (au sens philosophique, pas physique), j'aimerais vous raconter une petite anecdote, que je connais d'expérience, et qui est assez représentative de l'expérience générale des enseignants dans mon domaine. Il se trouve que, lorsqu'on enseigne, on s'aperçoit assez vite que pas mal d'étudiants (et il se trouve qu'il s'agit majoritairement de filles, moins souvent des gars ; rapport à l'éducation ?) essayent à peine, ou lorsqu'ils essayent, c'est avec un mélange de timidité et de stress ; si bien que, au bout de longues minutes à s'imaginer être incompétents, ils finissent par appeler l'enseignant pour de l'aide. Enseignant qui ne voit qu'un écran blanc, et n'a comme unique information *j'y arrive pas*. Difficile de faire quoique ce soit dans ce contexte, et même impossible si yavais soupe d'avocat à la cantine. Le truc, c'est que ces étudiants ne se lancent pas, craignent l'idée de ne pas réussir du premier coups. Je sais que c'est un problème très commun en info (ça doit arriver ailleurs, certainement), mais je n'ai aucune espèce de piste pour résoudre le problème, à part travailler, en amont, au niveau de l'éducation elle-même. La conséquence de ça, je pense, c'est que ces étudiants ne collectent aucune expérience qui sera plus tard nécessaire à faire un boulot en info (ou un boulot tout courts). Certains arrivent au bout de plusieurs années d'études, et sont toujours incapable de lire ou écrire un quelconque morceau de code. Je n'ose imaginer ce que ça donne après dans un contexte professionnel. Bref, évitez la soupe à l'avocat.
+- **n'avez rien essayé, mais c'est parce que votre poisson rouge est mort, votre grand-mère s'est remise à l'haltérophilie, votre ordinateur fait des mises à jour, et il est déjà 24h64 à hawaï :** je comprend, ça doit être dur. Un indice : l'ASP c'est tellement haut niveau, il suffit souvent de traduire les phrases pour avoir un résultat.
+- **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. Les solutions sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
+
 
 
 # En pratique !
 Maintenant que l'on a les bases, nous allons (enfin !) pouvoir
 attaquer de vrais problèmes.
 
+Je suis certain que depuis le temps, vous vous êtes demandés
+si tout ceci n'était pas une vaste conspiration pour vous faire perdre votre temps.
+Mais ne vous inquiétez pas : il n'y a nul conspiration.
 
-TODO
+Ici, il ne s'agit pas d'exercice à proprement parler, dans le sens où le but est de lire et comprendre un code existant.
+Néanmoins, la définition du problème sera donnée en amont, et par conséquent, vous permet d'essayer de votre côté
+avant de regarder le code tout fait.
+
+Je vous conseille évidemment de faire les choses ainsi.
+
+Notez également qu'une *directive de méta-programmation* sera utilisée pour éviter de polluer trop la sortie des solutions : `#show`.
+Ne vous inquiétez pas trop à ce propos, il s'agit juste de choisir quels atomes sont affichés en sortie.
+Ignorez-le dans un premier temps, triturez le un peu pour comprendre après (le premier exemple s'y prête bien),
+et éventuellement allez lire [la partie qui y est consacrée](#show).
+
+
+## Du bruit dans la cuisine
+*Un petit exercice qui me vaudra des lettres de menace de la part de mes amis acousticiens.*
+
+En considérant une maison, composée de diverses pièces (genre, la cuisine, le salon, le placard à balai,…),
+dont l'une est la source d'un bruit d'un certain niveau (d'une certaine force, dirons nous).
+
+Question : quelle est le niveau sonore enregistré dans les autres pièces ?
+
+Approximation : disons qu'un niveau sonore est une valeur qui va de 1 à 10,
+pour 1 étant *à peine audible* et 10 étant *j'ai mal aux tympans*, et que le niveau baisse de 1 pour chaque pièce traversée.
+(pour le dire autrement : pas d'échelle logarithmique, pas de calculs pour les phénomènes de réverbérations/amortissement, que sais-je encore)
+
+Intuitivement, le son ne se propage d'une salle à une autre que si elles sont connectées,
+et le niveau sonore enregistré (ce qui nous intéresse) est égal au niveau maximal dans la salle.
+
+### mézon
+Voici une manière d'encoder le plan de la maison :
+
+```asp
+% connected rooms
+next_room(0,9). % la salle 0 est à côté de la salle 9
+next_room(7,(0;1;2;3;8;12;13)).
+next_room(8,(9;11)).
+next_room(10,(9;11)).
+next_room(11,(10;12)).
+next_room(6,(3;13;5)).
+next_room(4,(3;5)).
+```
+
+Et maintenant, on dit qu'il y a un son de niveau 10 dans la salle 4:
+```asp
+sound(4,10).
+```
+
+Logiquement, puisque le niveau sonore ne peut que baisser, la salle 4 possède déjà son niveau sonore enregistré : 10.
+On notera que, par définition, une salle accessible depuis la 4 aura un niveau sonore de 9.
+
+Vous avez largement ce qu'il faut pour décider de votre approche !
+
+
+### Calcul de solutions
+Voici une solution possible
+
+```asp
+% le lien est commutatif : si A est à côté de B, alors B est à côté de A.
+next_room(X,Y):- next_room(Y,X).
+
+% Transmission du niveau sonore, avec un offset de -1.
+sound(X,Level-1):- sound(Y,Level) ; next_room(X,Y) ; Level >= 0.
+
+% On ne considère que le niveau sonore maximal.
+max_sound(X,L):- sound(X,L) ; not sound(X,L2): L2 > L, sound(X,L2).
+
+% N'afficher que les niveaux sonores enregistrés.
+#show.
+#show max_sound/2.
+```
 
 
 
+# Placement de table, première approche
+Lors d'une fête de famille, ils y a deux problèmes majeurs :
+
+- qui apporte le dessert ?
+- qui s'assoie où à table ?
+
+C'est bien entendu le second qui nous intéresse ici.
+
+## Spécification du problème
+L'idée est la suivante : nous avons un ensemble de places numérotées,
+et des relations entre elles. Par exemple : la place 2 est à côté des places 1 et 3, et en face de la place 9.
+
+Nous avons également des personnes, qui doivent toutes être placée sur une place exactement.
+
+Maintenant, il y a des contraintes. Par exemple :
+
+- Justin ne peut pas être à côté ou en face de Karine, ils ne se supportent pas.
+- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de parties de curling.
+- Mamie doit être à côté de la cheminée, mais pas Gérard.
+- Si Pépé est à côté de Jeanine, alors Xavier doit être de l'autre côté de Jeanine.
+- Yolande veut être à la place la plus éloignée de la cuisine, pour éviter d'avoir à y aller.
+
+Bref, le joyeux bordel typique du placement de table d'une réunion de famille.
+Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre famille que désormais c'est vous qui vous en occupez !
+Et ça ne vous prendra pas bien longtemps pour tout encoder parfaitement, et placer les étiquettes indiquant les positionnement des gens.
+Il ne reste donc plus qu'à vous faire mousser pour *ce placement de table par-fait !*
+
+## Objectif
+Avoir pour chaque personne une place qui lui convienne.
+
+Avoir plusieurs modèles/ensembles réponse, chacun décrivant un positionnement possible.
 
 
+## Pourquoi une première approche
+Il est sous-entendu qu'une seconde approche se fera, plus tard.
+Effectivement, cette première approche est naïve : elle considère qu'il existe une solution qui satisfasse toutes les contraintes.
+Si vous avez une famille avec beaucoup de contraintes, il est possible que le problème soit insatisfiable,
+et par conséquent, certaines contraintes doivent être retirées.
 
+Il existe une solution élégante à ce problème, grâce aux directives de méta-programmation, et plus précisément les *optimisations*,
+que nous verrons plus tard.
+
+C'est donc dans la deuxième volée d'applications que nous verrons une approche plus maligne qui nous permettra de gérer les familles trop compliquées.
+Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors tentez malgré tout, vous pourriez être surpris.
 
 
 
@@ -975,11 +1222,12 @@ Maintenant, si j'ajoute `#show.` quelque part…
 
 ```asp
 a.
-#show.
+#show.  % par exemple, ici
 #show 23.
 ```
 
-Paf ! Seul *23* est affiché. Pourquoi ? Parce que *a* n'a pas été explicitement rattaché au show.
+Paf ! Seul *23* est affiché. Pourquoi ? Parce que *a* n'a pas été explicitement rattaché à un show,
+et n'est donc pas affichable.
 
 En général, les directives `#show` se trouvent en fin de fichier (du point de vue de l'humain,
 c'est la dernière chose qui est faite), et le premier *show* est généralement `#show.`.
@@ -1036,11 +1284,20 @@ Par exemple, si vous créez un solveur de puzzle, vous allez vouloir préférer
 les solutions qui utilisent le moins de ressources (nombre de coups, nombre de pièces,
 nombre de je-sais-pas-quoi-que-le-puzzle-utilise-et-qu'on-veut-utiliser-le-moins-ou-le-plus-possible,…).
 
+Dans un autre registre, c'est ce qui nous permettra, dans les prochains exemples,
+de trouver le *meilleur* PC selon des contraintes diverses.
+
+En général, à partir du moment où vous cherchez *le plus bidule* ou *le moins machin*,
+vous avez besoin d'une minimisation ou maximisation.
+(parfois ce ne sera pas nécessaire, mais gardez l'idée à l'esprit)
+
+
+### Considérations techniques
 En soit, ça ne change pas grand chose sur le solving, puisqu'en théorie,
 il suffit de générer toutes les réponses, puis les trier selon leur score.
 
 L'inconvénient, c'est qu'il faut (1) énumérer tous les réponses, ce qui n'est pas forcément pratique
-(essayez donc de générer et sauvegarder les 10 puissance 21 grilles de sudoku possibles pour voir),
+(essayez donc de générer et sauvegarder l'ensemble des grilles de sudoku pour voir),
 et (2), trouver le maximum là-dedans *a posteriori*, c'est-à-dire sans que l'heuristique du solveur n'ait joué de rôle.
 
 Hors, et c'est bien là tout l'intérêt d'une heuristique faite par des experts :
@@ -1049,6 +1306,7 @@ elle s'abstiendrait de générer celles qui sont moins bonnes que celles déjà 
 
 En d'autre terme, donner à l'heuristique nos préférences en matière de modèle lui permet d'élaguer l'espace de recherche
 pour aller plus vite, et se diriger petit à petit vers l'une des meilleure réponse, le *modèle optimal*.
+
 
 ### Syntaxe
 La syntaxe est un poil bizarre au début, mais on s'y fait bien.
@@ -1135,18 +1393,29 @@ TODO
 
 # Real-world application
 
-## Golfing
-Si vous ne connaissez pas [codegolf.stackexchange](https://codegolf.stackexchange.com),
-il s'agit d'une des instances de stackexchange (la plus connue est probablement stackoverflow),
-où les questions sont des challenges de code golf, c'est-à-dire des challenges où le but est de faire les programmes les plus courts possible,
-indépendemment du language. Le score correspond au nombre de caractères dans le code ; le but est donc de minimiser ce score.
 
-Par exemple, [**calculer le score du jeu boggle**](https://codegolf.stackexchange.com/questions/143213/score-a-game-of-boggle).
-Nous allons faire celui-ci, car il est simple et nécessite un peu de python.
+## Placement de table, seconde approche
+Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
+
+
+
+## Golfing
+Le *golfing*, en informatique, est un jeu qui consiste à réaliser une tâche avec le moins de commande possibles.
+Par exemple, le *vim golfing* consiste à changer un texte donné en un autre texte cible (donné également) en utilisant le moins de commande possibles au sein de l'éditeur vim.
+Il existe aussi le *code golf*, qui consiste à faire un programme le plus court possible. C'est ça qui nous intéresse ici.
+
+Si vous ne connaissez pas [codegolf.stackexchange](https://codegolf.stackexchange.com),
+il s'agit d'une des instances de stackexchange (la plus connue étant probablement stackoverflow),
+où les questions sont des challenges de *code golf*, où des centaines de programmeurs s'amusent à imaginer les programmes les plus courts possible,
+dans une multitude de langages différents (parfois créés uniquement pour le *code golf*).
+Le score correspond au nombre de caractères dans le code ; le but étant de faire le programme le plus court possible, il faut donc de minimiser ce score.
+
+Nous allons nous intéresser au [**calcul de score du boggle**](https://codegolf.stackexchange.com/questions/143213/score-a-game-of-boggle),
+car il est simple et nécessite un peu de python. C'est bon pour l'entraînement.
 
 Nous allons voir qu'il est possible d'atteindre un score certes moins bon que
 [python seul](https://codegolf.stackexchange.com/a/143218),
-mais meilleurs que les langages les plus verbeux comme java.
+mais meilleur que les langages les plus verbeux comme java.
 
 ### Principes
 Chaque joueur possède un ensemble de mot uniques d'au moins 3 caractères.
@@ -1256,6 +1525,9 @@ faire un one liner parfait est impossible ici.
 ## Construire un PC
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
+Cela pourrait vous servir un jour, et sinon, c'est toujours rigolo à faire.
+Aussi, nul besoin de vous y connaître en PC, les explications viennent avec.
+
 Ce genre de programme s'organise autour de deux principaux programmes:
 celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
 comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
@@ -1267,7 +1539,7 @@ catégorie. L'interface avec un distributeur de matériel informatique n'est pas
 le sujet de ce tuto, donc on s'arrangera avec quelques données faites à la main.
 
 Mais si un jour quelqu'un veux s'amuser, la première étape est tout à fait automatisable,
-par exemple en tapant dans l'api d'un distributeur qui en propose une.
+par exemple en tapant dans l'API d'un distributeur qui en propose une.
 
 
 ### Spécifications
@@ -1323,11 +1595,11 @@ component(gpu,"embedded graphic chipset",0,4).
 require(gpu,"embedded graphic chipset",cpu,"C").
 ```
 
-Les deux autres gpu étant moins bonnes, leurs notes sont moins hautes (voir nulle pour la *C*, mais il s'agit d'une puce graphique intel, ce n'est donc qu'une solution par défaut).
+Les deux autres GPU étant moins bonnes, leurs prix et notes sont moins hauts (voir nuls pour la *C*, mais il s'agit d'une puce graphique intel, ce n'est donc qu'une solution par défaut).
 
 ##### Dépendances
-Notez l'atome `require/4`  qui nous permet de définir que la puce intégrée
-nécessite le CPU *C*, et par conséquent (et la règle qui s'en assure sera vue plus tard
+Notez l'atome `require/4` qui nous permet de définir que la puce intégrée
+nécessite le CPU *C*, et par conséquent (et la règle qui s'en assure sera vue plus tard)
 que le choix de cette GPU oblige à utiliser le processeur qui l'embarque (c'est assez logique, finalement).
 
 Néanmoins, si on choisi le cpu *C*, nous ne sommes pas obligés de choisir la puce intégrée,
@@ -1388,14 +1660,15 @@ et de sortir les meilleurs *build* au client.
 Et paf, vous vous faites connaître, [r/buildapc](https://www.reddit.com/r/buildapc/)
 devient votre source d'utilisateur principale,
 et vous devenez riche grâce à un système comme [*coinhive*](https://coinhive.com),
-qui bien sûr, dans le futur, est bien plus mature, démocratisé, et contrôlable par l'utilisateur final.
+qui bien sûr, dans le futur, est bien plus mature, éthique, démocratisé,
+et contrôlable par l'utilisateur final.
 
 
 
 ## Résoudre un donjon de The Legend of Zelda
 ### Contexte
 Dans sa franchement intéressante série [*Boss Keys*](https://www.youtube.com/watch?v=ouO1R6vFDBo&list=PLc38fcMFcV_ul4D6OChdWhsNsYY3NA5B2),
-Mark Brown, un designer de jeux vidéos, cherche, épisode par épisode, à comprendre la structure interne et les logiques
+Mark Brown, un designer professionnel dans le milieu du jeu vidéo, cherche, épisode par épisode, à comprendre la structure interne et les logiques
 qui sous-tendent les donjons des jeux de la licence [The Legend of Zelda](https://fr.wikipedia.org/wiki/The%20Legend%20of%20Zelda%20(s%C3%A9rie)).
 
 Si vous aimez cette série de jeu, ou le game design en général,
@@ -1406,9 +1679,9 @@ Lorsqu'on regarde *Boss Keys*, au fur et à mesure des épisodes on s'aperçoit 
 imagine, formalise et améliore, vidéo après vidéo, un langage qui lui permet de définir formellement les donjons des jeux.
 Dans les derniers épisodes, le langage devient vraiment complet et descriptif.
 
-Sans surprise, le langage est un graphe, qui donne des informations précises sur la répartition dans l'espace et le temps
+Sans surprise, le langage est un [graphe](https://fr.wikipedia.org/wiki/Graphe%20orient%C3%A9), qui donne des informations précises sur la répartition dans l'espace et le temps
 des objets et mécanismes qui constituent les donjons, et permet à Mark Brown de délimiter la *solution* du donjon,
-c'est-à-dire la succession d'actions à opérer qui permettent, à la fin, d'ouvrir la porte du *boss* avec la clef dudit *boss*
+c'est-à-dire la succession d'actions à opérer qui permettent, à la fin, d'ouvrir la porte du *boss* avec la clef dédiée
 (d'où le nom de la série, *boss keys*).
 
 
@@ -1425,7 +1698,7 @@ Voici une image piquée de la vidéo [*The Legend of Zelda: A Link Between World
 
 On voit bien le départ, la fin (*boss*, en bas), et les différentes étapes qui mène à la résolution du donjon.
 On comprend bien ici qu'une solution au donjon est un parcours de ce graphe qui part du départ et arrive au boss
-en ne passant par les obstacles que lorsque la clef/l'outils associé(e) est possédé(e).
+en ne passant par les obstacles que lorsque la clef ou l'outils associé est possédé.
 
 
 ### Modélisation
@@ -1474,6 +1747,7 @@ link(b,(e;f)).
 link(f,g;g,stop).
 ```
 
+Et ensuite, la définition de la solution :
 
 ```asp
 % Doors next to open doors are accessible
@@ -1494,7 +1768,6 @@ open(KeyDoor,Key):- accessible(KeyDoor) ; keydoor(KeyDoor) ; open(Key) ; key(Key
 
 % Keep in mind which object opened which door.
 open(Door):- open(Door,_).
-
 
 
 #show.
@@ -1518,15 +1791,41 @@ open(Door):- open(Door,_).
 - If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp%20en.mkd).
 
 
+
+
 # Solutions au exercices
+### Notation
+`k/3`, `coucou/0` et symballium/10.
 ### Tel père, tel fils
 ```
 enfant(Enfant,Papa):- papa(Papa,Enfant).
 ```
+
 ### Mon papa c'est le meilleur
 ```
 papa(P):- papa(P,_).`
 1 { meilleur_papa(P): papa(P) } 1.
+```
+
+### Yodel et papier crépon
+Une première solution, qui génère aussi les sous-ensembles de solutions :
+```asp
+2 {peoples(X): aime(X,_) }.
+2 {subject(Y): aime(_,Y) }.
+:- not aime(X,Y) ; peoples(X) ; subject(Y).
+```
+
+Pour éviter les sous-ensembles, une solution est d'obliger un sujet aimé de toutes les personnes d'être membre de la solution :
+```asp
+subject(Y):- aime(X,Y): peoples(X) ; aime(_,Y).
+```
+
+Vous remarquez que le code ressemble alors à la seconde solution, qui est en fait beaucoup plus simple :
+```asp
+peoples(X):- aime(X,_) ; aime(X,Y): subject(Y).
+subject(Y):- aime(_,Y) ; aime(X,Y): peoples(X).
+:- 2>{peoples(_)}.  % au moins deux personnes
+:- 1>{subject(_)}.  % au moins 1 sujet
 ```
 
 
