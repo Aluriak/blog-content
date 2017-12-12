@@ -33,7 +33,12 @@ mais de développer des programmes qui résolvent des problèmes de la vie réel
 
 Dans une certaine mesure, ce tuto s'adresse aussi à ceux qui n'ont jamais codé ;
 après tout, les langages logiques sont les meilleurs pour commencer :)
-(je fais un effort de simplification durant tout le tuto, justement pour permettre à des personnes n'ayant jamais codé de s'y intéresser néanmoins)
+(je fais un effort de simplification durant tout le tuto,
+justement pour permettre à des personnes n'ayant jamais codé de s'y intéresser)
+
+Aussi, une grosse partie du tuto est théorique. Ce n'est peut-être pas très équilibré, surtout au début.
+Si ça ne vous motive pas, [installez](#compilation) directement,
+et commencez à jouer avec [l'introduction du langage](principes-danswer-set-programming).
 
 
 ## Quelques liens préliminaires
@@ -1169,6 +1174,8 @@ Cela dit, même si votre famille est compliquée, il est possible qu'une solutio
 
 
 # Métaprogrammation
+*Où l'on apprend que bien des choses sont possibles avec juste un petit zest de méta(l)*
+
 Métaprogrammation est un mot qui peut faire peur, un peu comme *nombre complexe* en maths, ou *staphilococus* en cours de phylogénie.
 Mais en vrai, ça va.
 
@@ -1230,7 +1237,7 @@ Cela peut servir pour filtrer précisément les atomes à afficher, ou pour reno
 (ici, on renomme `b/1` en `p/1`).
 
 Notez bien que ces usages de *show* sont *génératifs* : ils ajoutent des atomes dans la réponse,
-sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'est jamais affiché)
+sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'appartient pas à l'answer set, car aucun p/1 ne s'y trouve)
 
 
 ### Le #show impératif
@@ -1375,6 +1382,8 @@ Des fichiers dans des fichiers.
 
 
 # Interface avec Python
+*Où l'on apprend comment interfacer un langage puissant avec un langage puissant pour faire des trucs puissants*
+
 ASP s'interface nativement avec Python et Lua. Je ne traite que de Python ici,
 mais les principes sont exactement les même avec Lua.
 
@@ -1419,11 +1428,124 @@ TODO
 
 
 
+# Conseils de style
+*Où l'on s'imagine tel Gotlib mesurer au pouce cette pomme qu'il ne dessina jamais, mais en fait, non, ça n'a rien à voir*
+
+Cette partie est légère et calme : il s'agit de donner quelques conseils pour écrire de beaux codes.
+Bien sûr, la beauté est subjective, et peut-être ces conseils seront-ils à jeter à la poubelle d'après une autre personne.
+
+Ceci est vrai pour tous les langages en informatique : le style est quelque chose de subjectif.
+Plus encore, c'est quelque chose qui dépend d'avec qui vous travaillez, et aussi du genre de code qui est écrit.
+
+Certains languages ont la chance d'avoir un guide officiel, comme la PEP8 en python, d'autres non.
+Certains languages ont une très forte culture de liberté de style, comme perl, d'autres non.
+
+Bref, c'est au cas par cas. Mais en général, les conseils suivants s'appliquent :
+
+- avoir un style consistant dans une base de code
+- privilégier la lecture à l'écriture
+
+Le premier est simple : il faut conserver la même manière d'écrire les choses (et de les nommer ; ça fait aussi (un peu) partie du style).
+Le second est plus compliqué, mais se retranscrit assez simplement : le nom de variable `i` est nul. Le nom `index` est mieux.
+Sauf quand ça rend le code illisible. Mais là encore c'est subjectif.
+
+
+## Premières lignes
+Une volée de commentaires au début du code, expliquant le pourquoi du code, les entrées, les sorties, le comportement attendu,…
+Ça semble évident, mais souvent «on oublie», parce que c'est chiant.
+
+Pourtant, je ne saurais trop vous conseiller de prendre l'habitude d'écrire ça en premier.
+Savoir *exactement* ce que l'on a et ce que l'on veut, c'est 50% du travail de modélisation.
+Ça fixe les idées et aide à réfléchir.
+
+## Commentaire d'accompagnement
+Avant chaque règle (ou choix, ou contrainte), expliquer en commentaire ce qu'elle fait, à haut-niveau. Pas la peine de répéter le contenu de la règle,
+mais expliquer ce qu'elle fait en gros permet d'avoir sans réfléchir le sens derrière une ligne de code.
+
+```asp
+% Les oiseaux volent.
+fly(X):- bird(X).
+```
+
+## Aération
+Laisser une ligne entre chaque règle (avec le commentaire qui l'accompagne), et laisser deux lignes pour marquer une grosse séparation.
+
+```asp
+% Les oiseaux volent.
+fly(X):- bird(X).
+
+% Le feu ne mouille pas.
+not wet(X):- on_fire(X).
+```
+
+## Ordre logique
+Souvent, les programmes sont divisés en plusieurs sous-parties logique, comme par exemple *données*, *expansion*, *modélisation*, *contraintes* et *affichages*.
+
+A moins qu'elle ne soit placées dans un fichier dédié (ce qui est préférable lorsqu'il y en a beaucoup),
+les données doivent être bien séparées du reste. C'est la partie mouvante du programme, dans le sens où il ne s'agit que d'une *instance* d'un problème général que le programme tente de résoudre.
+Indiquer en commentaire le sens de ces données est également une bonne idée.
+
+L'expension est un ensemble de règles qui permettent d'obtenir des données des informations qui seront nécessaires pour la modélisation. C'est une étape souvent inutile, car les données sont généralement bien faites de base. Mais dans certains cas (que nous rencontrerons après), il peut être intéressant de permettre des écritures simplifiées dans les données, qui seront *expansées* après.
+
+La modélisation est, comme vous vous en doutez, l'ensemble de règles et choix qui implémentent la solution au problème et génèrent les solutions candidates.
+Parfois, les contraintes font parties intégrantes de la modélisation, et ne devraient donc pas en être dissocié.
+En effet, si l'ordre dans lequel les règles sont écrites ne compte pas pour le résultat, il vaut mieux qu'elle soient correctement ordonnée pour le lecteur humain.
+Ainsi, si une contrainte fonctionne de concert avec une règle, il est souvent plus clair de ne pas les séparer.
+
+Les affichages (`#show`) viennent souvent en dernier, car cela est assez logique, mais notez que ce n'est peut-être pas la meilleure solution.
+Une bonne autre position pour les affichages serait… tout au début ! À côté des commentaires en premières lignes, qui indiquent les entrées du programme.
+Avec les `#show` marqués explicitement, la documentation est réellement exhaustive, et ne fait pas doublon avec le code !
+C'est génial de pouvoir placer les lignes où l'on veut !
+
+
+## Des longueurs dans le texte
+Évitez les lignes trop longues : elles sont illisibles, sont cassées par les éditeurs, ou nécessitent de scroller vers la droite : c'est pas un bon deal.
+À la place, cassez vos règles, et usez des sauts de lignes pour étaler vos règles trop longues à la vertical, pas à l'horizontal.
+
+```asp
+je_suis_content :- passe_moi(le_beurre) ; passe_moi(le_sel) ; passe_moi(le_poivre) ; passe_moi(le_pain) ; passe_moi(le_couteau(beurre)) ; passe_moi(le_saussisson) ; passe_moi(le_couteau(saussisson)) ; passe_moi(les_cornichons) ; passe_moi(la_fourchette(cornichons)).
+```
+
+Est plus lisible lorsqu'écrit ainsi :
+
+```asp
+je_suis_content :-
+    passe_moi(le_sel) ; passe_moi(le_poivre) ; passe_moi(le_pain) ;
+    passe_moi(le_beurre) ; passe_moi(le_couteau(beurre)) ;
+    passe_moi(le_saussisson) ; passe_moi(le_couteau(saussisson)) ;
+    passe_moi(les_cornichons) ; passe_moi(la_fourchette(cornichons)).
+```
+
+C'est d'autant plus pratique que l'on peut maintenant commenter chacun des groupes de `passe_moi/1`, plutôt que tout commenter d'un coups avant ou après.
+
+
+
+
 # Real-world application
+*Où, enfdeux, on touche du doigt l'intérêt d'être entré dans le monde merveilleux de l'ASP*
 
 
 ## Placement de table, seconde approche
 Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
+
+Nous avons vu le placement de table bourrin, où l'objectif était de satisfaire toutes les contraintes.
+Ça marche le plus souvent, mais si votre famille est trop compliquée, ça marche plus : le problème est juste insatisfiable.
+
+Maintenant, plutôt que des contraintes, nous pourrions modéliser un *score* à maximiser.
+
+Intuitivement, ce n'est pas tant qu'il *faille* que Tata Christelle et Tonton Robert soient à côté : c'est juste mieux. De fait, une telle combinaison augmenterais le score.
+À l'inverse, mettre les deux frères qui sont en désaccord sur la succession l'un en face de l'autre, ça ne fera que pourrir la soirée, donc on diminue le score.
+
+L'intérêt est double : on va pouvoir hierarchiser les contraintes (toutes n'ont pas la même importance ; et à la limite les plus importantes peuvent rester des contraintes),
+et on va pouvoir gérer des familles très compliquées, tellement compliquées que toutes les contraintes ne sont pas satisfiable simultanément.
+
+### Nuit de folie
+Cette application est directe ; d'autant plus que normalement, la famille ne change pas trop entre deux repas,
+et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
+
+Et pas que avec la famille : il marche également avec les amis, les confrères de secte, les collègues, les voisins, la chorale…
+C'est fou l'informatique.
+
 
 
 
@@ -1547,6 +1669,17 @@ Aussi, la directive de script ignore le reste de sa ligne, par conséquent,
 faire un one liner parfait est impossible ici.
 
 
+### Golf du Mexique
+Évidemment, cet exemple n'est pas là pour servir directement,
+à moins que vous ne jouiez vous-même au boggle.
+
+L'intérêt est qu'il montre que bien des jeux, même ceux avec des règles complexes,
+peuvent être encodés en ASP pour être résolus ou étudiés.
+
+Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf*.
+Amis golfeurs, je vous salut !
+
+
 
 
 
@@ -1554,7 +1687,7 @@ faire un one liner parfait est impossible ici.
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
 Cela pourrait vous servir un jour, et sinon, c'est toujours rigolo à faire.
-Aussi, nul besoin de vous y connaître en PC, les explications viennent avec.
+Aussi, nul besoin de vous y connaître en PC, les explications viennent avec (ce tuto est inter-disciplinaire).
 
 Ce genre de programme s'organise autour de deux principaux programmes:
 celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
@@ -1692,6 +1825,15 @@ qui bien sûr, dans le futur, est bien plus mature, éthique, démocratisé,
 et contrôlable par l'utilisateur final.
 
 
+### PC construit, nuit de folie
+Cet exemple ne sera pas utile tel quel à tout le monde, mais vous comprenez bien que vous pouvez l'adapter un peu pour,
+par exemple, choisir le meilleur portable disponible en fonction des fonctionnalités qu'on vous vend.
+
+J'ajouterais aussi que mettre à plat ce genre de chose aide beaucoup à faire un choix rationnel.
+Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts ! Magique !
+
+
+
 
 ## Résoudre un donjon de The Legend of Zelda
 ### Contexte
@@ -1802,6 +1944,20 @@ open(Door):- open(Door,_).
 #show open/2.
 ```
 
+### Généralisation
+Évidemment, le donjon de zelda, ce n'est qu'un prétexte pour attaquer le principe de planification d'une tâche,
+qui ici n'est pas **du tout** réalisé de manière optimale. Déjà, l'étape suivante, ce serait de passer ça en résolution incrémentale.
+
+Dans la langue de Batman, on parle de [*planning*](https://fr.wikipedia.org/wiki/Planification).
+C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en ASP.
+
+
+
+
+# TCC: The Conclusive Conclusion
+*Où l'on apprend que tout ceci n'était que le début, car en réalité, l'informatique est bien plus qu'un langage qui fait des trucs rigolos*
+
+
 
 
 # Liens
@@ -1822,8 +1978,11 @@ open(Door):- open(Door,_).
 
 
 # Solutions au exercices
+*Où l'on constate qu'effectivement, les exos étaient pas compliqués, mais que la soupe à l'avocat, elle, était horrible*
+
 ### Notation
-`k/3`, `coucou/0` et symballium/10.
+`k/3`, `coucou/0` et `symballium/10`.
+
 ### Tel père, tel fils
 ```
 enfant(Enfant,Papa):- papa(Papa,Enfant).
@@ -1831,8 +1990,8 @@ enfant(Enfant,Papa):- papa(Papa,Enfant).
 
 ### Mon papa c'est le meilleur
 ```
-papa(P):- papa(P,_).`
-1 { meilleur_papa(P): papa(P) } 1.
+papa(P):- papa(P,_).
+1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), ça revient au même
 ```
 
 ### Yodel et papier crépon
@@ -1859,9 +2018,13 @@ subject(Y):- aime(_,Y) ; aime(X,Y): peoples(X).
 
 *[ASP]: Answer Set Programming
 *[answer set]: Un ensemble réponse, un modèle valide contenant un ensemble d'atomes qui sont tous vrais
-*[answer set]: Un ensemble réponse, un modèle valide contenant un ensemble d'atomes qui sont tous vrais
 *[CPU]: Computing Processing Unit, le processeur.
 *[GPU]: Graphical Processing Unit, la carte graphique.
+*[QPU]: Quantum Processing Unit, pour le moment c'est de la SF.
+*[BPU]: Brain Processing Unit, est à l'interface chaise-clavier ce que le CPU est à un ordinateur.
 *[RAM]: Random Access Memory, la mémoire vive.
+*[HDD]: Hard Drive Disk, un disque dur, qui contient le stockage.
+*[SSD]: Solid State Disk, le successeur des disques durs, vachement plus rapides.
 *[POO]: Programmation Orientée Objet, un paradigme où les concepts sont séparés et doivent interagir par envoie de messages
 *[PF]: Programmation Fonctionnelle, un paradigme où les fonctions sont manipulées au même titre que les types de base
+*[la vie réelle]: Un lecteur critique pourrait se demander «la vie réelle de qui ?». Il paraît que je vis dans un autre monde, parfois.
