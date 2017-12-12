@@ -455,12 +455,40 @@ Et ça, c'est un gros bon en avant pour l'exploitation spatiale.
 # Le coût du spatial
 C'est une critique qui revient souvent : quel intérêt de financer l'exploration spatiale, qui coûte *si chère*.
 
-Je vous renvois vers [cette vidéo](https://www.youtube.com/watch?v=fVG3KL3lyEA),
-qui parle de la NASA mais qui s'applique à n'importe quelle agence.
+La critique est inévitable, car les agences ne sont pas très prolixes à ce sujet,
+étant donné puisqu'il est très difficile d'estimer le retour sur investissement d'un organisme de recherche qui fait de la recherche publique,
+puisque la grande majorité des recherches finissent dans le domaine public, et donc sont utilisées partout, mais sans que personne ne soit obligé de l'indiquer.
 
-En gros, les retombées sont énormes.
-Mais comme d'habitude, comme ce n'est pas sous la forme d'un chèque palpable par les journalistes,
-ça n'apparaît pas à la télé, donc on en parle pas.
+## NASA
+Le retour sur investissement du spatial est abordé entre autres dans [cet article](https://www.investopedia.com/financial-edge/0812/the-roi-of-space-exploration.aspx).
+[Celui-ci](https://scepticalprophet.wordpress.com/2012/10/24/why-spend-money-on-science-nasas-contributions-to-society/) décrit l'influence de l'agence sur le monde de tous les jours.
+
+Cette [question sur Quora](https://www.quora.com/Is-space-exploration-a-scam) obtient aussi une réponse très intéressante,
+qui ne s'arrête pas qu'à la question du pognon, mais aussi à la question diplomatique et utile.
+
+
+## ESA
+Pour l'ESA, le budget est de [5.2 milliard d'euros en 2016](http://www.esa.int/spaceinimages/Images/2016/01/ESA%20budget%202016%20by%20domain),
+soit 0.03% du [PIB de l'Union Européenne](http://archive.wikiwix.com/cache/?url=http%3A%2F%2Fwww.imf.org%2Fexternal%2Fpubs%2Fft%2Fweo%2F2012%2F01%2Fweodata%2Fweorept.aspx%3Fpr.x%3D47%26pr.y%3D20%26sy%3D2010%26ey%3D2014%26scsm%3D1%26ssd%3D1%26sort%3Dcountry%26ds%3D.%26br%3D1%26c%3D998%26s%3DNGDP_RPCH%252CNGDPD%252CPPPPC%26grp%3D1%26a%3D1).
+
+Différentes estimations montrent qu'elle est, pour la grande-bretagne, globalement rentable en bénéfices directs (3-4 livres gagnées pour chaque livre investie)
+et très rentable dans le privé (plus de 10 livres gagnée pour chaque livre investie).
+
+Je n'ai rien trouvé pour les autres pays ; ce genre d'étude ne se bouscule pas, ou date beaucoup.
+
+En sus, [une étude](http://gsp.esa.int/documents/10192/43064675/C21809ExS.pdf) de [l'organisme d'étude de l'ESA](https://gsp.esa.int),
+indique, entre autre, que l'agence est aussi [un incubateur à collaborations](http://www.esa.int/Our_Activities/Space_Science/Cassini-Huygens/International_collaboration),
+entre autre dû au fait que la moindre sonde envoyée dans l'espace embarque une grande quantité d'appareils, tous développés dans des pays différents,
+et permettant à [des équipes internationales de publier](https://www.cosmos.esa.int/web/planck).
+
+Personnellement, j'estime que vu les retombées technologiques et les efforts internationaux issus de la recherche dans ce domaine, ça vaudrait le coups de continuer, même si c'était plus cher.
+(après tout, des coopérations entre pays qui ne visent pas à se taper dessus, c'est assez rare pour être noté ; sans compter que ça évite aux pays concernés de chacun chercher de son côté, alors qu'une coopération est possible ; c'est l'un des rôle de l'ESA que d'unifier ainsi la recherche européenne)
+
+Sans compter que ça nous permet de faire une surveillance planétaire, donc de comprendre pas mal de choses sur notre planète et l'environnement en général,
+de [supporter l'éducation](http://www.esa.int/Education/ESA%20at%20the%20forefront%20of%20space%20education),
+de [mettre en place un GPS plus performant](http://www.esa.int/Our_Activities/Navigation/Galileo/What%20is%20Galileo),
+et de comprendre l'univers dans lequel on existe.
+C'est pas trop mal pour 0.03% du PIB européen.
 
 
 
@@ -473,9 +501,10 @@ dans le sens voulu par les organisations détaillées auparavant.
 Notez que je n'aborde des questions que très générales.
 Si vous voulez un détail de l'innovation apportée par la recherche
 dans le spatial, il existe des pages pour ça.
-Par exemple [la page officielle de l'ESA](http://web1.esa.cyso.net/patents),
+Par exemple [la page officielle des brevets de l'ESA](http://web1.esa.cyso.net/patents),
 [celle de la NASA](https://technology.nasa.gov/patents),
-ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent).
+ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent),
+ou tous les liens apportés dans la partie précédente.
 
 Notez également que SpaceX tient une bonne place ici ;
 c'est essentiellement dû à leur (excellente) communication sur ces sujets,
@@ -521,11 +550,28 @@ qui [n'ont pas besoin d'un outillage gourmand ou gigantesque](),
 ou [pour l'éducation](https://janus.cnes.fr/fr/JANUS/Fr/index.htm).
 
 
+## Autres domaines
+Il ne faut pas non plus oublier que bien des trouvailles de la recherche publique ont des effets de bord inattendus,
+par exemple Hubble, qui améliore l'[imagerie](https://en.wikipedia.org/wiki/Drizzle_(image_processing)), et donc les [mammographies](http://www.johnkehoemd.com/breast-cancer-run-october-day-22-digital-mammography-hubble-space-program/) (et pas seulement ; de nombreux domaines utilisent l'imagerie, y compris la recherche en santé en général),
+
+Concernant la NASA, [un pan entier](https://www.nasa.gov/directorates/spacetech/techtransfer) de l'agence est dédiée [au transfert de technologie](https://fr.wikipedia.org/wiki/Transfert%20de%20technologie),
+et débouche donc sur [des technologies utilisées aujourd'hui quotidiennement](https://spinoff.nasa.gov) (un journal paraît tous les ans [ici](https://spinoff.nasa.gov/back%20issues%20archives.html)).
+
+L'ESA travaille quant à elle avec tout [un ensemble de sociétés](http://www.esa.int/Our%20Activities/Space%20Engineering%20Technology/TTP2/Technology%20Transfer%20Network3) de transfert technologique,
+mais la vulgarisation/communication à ce propos est hélas bien moins bonne que celle de la NASA.
+
+
+### informatique
+Sans compter les concepts de priorité de processus, le positionnement via les étoiles ou même la miniaturisation, l'informatique est un gros domaine
+d'application pour le spatial.
+
 
 
 # Continuer l'aventure
 Si vous êtes intéressé par ce sujet, et que vous voulez suivre l'actualité, il y a mieux que suivre les médias habituels
 qui en général ne retranscrivent que des nouvelles souvent déformées de manière grotesque.
+
+(c'est vrai pour tous les domaines, cela étant dit)
 
 
 
@@ -545,6 +591,9 @@ Il y a aussi des organisations, comme [The Mars Society](http://www.marssociety.
 avec sa [chaîne de vidéos](https://www.youtube.com/channel/UC_GWbwWksHZCQozTKjGtm6g) alimentée
 notament pendant ses réunions annuelles
 avec des talks à propos de Mars et de ce qu'on doit y faire, y construire, ou à propos des questions philosophiques que cela pose.
+
+Les comptes sur les réseaux sociaux sont de bon moyens de savoir ce qu'il se passe sur le court-terme,
+par exemple [ici](https://twitter.com/ESA_fr) avec l'ESA, en français.
 
 
 ## Particuliers
@@ -570,7 +619,7 @@ le journal n'a pas besoin de faire dans le sensationnel et gagne à avoir un bon
 
 Si vous avez des questions, [l'instance space de stackexchange](https://space.stackexchange.com/) est bien pourvue et pourra certainement y répondre.
 
-Vous pouvez aussi trouver un fil de news assez complet et général au niveau de [r/space](https://reddit.com/r/space) (avec sa timeline sur le côté qui indique les prochains lancements),
+Vous pouvez aussi trouver un fil de news assez complet et général au niveau de [r/space](https://reddit.com/r/space) (avec une timeline sur le côté qui indique les prochains lancements),
 ou, selon la spécialisation, [r/spacex](https://www.reddit.com/r/spacex), [r/ESA](https://www.reddit.com/r/ESA), [r/arianespace](https://www.reddit.com/r/Arianespace),…
 
 Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran,
