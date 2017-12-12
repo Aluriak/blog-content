@@ -21,7 +21,7 @@ Il y a donc un biais évident de contenu dépendant des moyens de communication 
 
 L'objectif de cet article est de donner à ceux qui n'ont jamais étudié
 la question les principaux concepts qui aujourd'hui constituent
-l'exploration spatiale.
+l'exploitation et l'exploration spatiale.
 
 
 # Contexte
@@ -111,7 +111,7 @@ Il s'agit du plus gros projet international en terme de ressource.
 
 ### ESA (Europe)
 L'European Space Agency, financée par les pays de l'Union
-Européenne, est une formidable agence qui a à son actif [plusieurs missions](http://www.esa.int/ESA/Our%20Missions)
+Européenne, est une formidable agence qui a à son actif [plusieurs missions](http://www.esa.int/ESA/Our_Missions)
 de grande envergure.
 
 C'est aussi un partenaire important de plusieurs organisations du spatial
@@ -422,13 +422,13 @@ Pas d'objectif Mars ici, Ariane 6 est vraiment juste là pour assurer la place d
 
 ## Vector Space System
 Il s'agit d'une firme américaine dont [l'objectif est la mise en orbite simple et peu coûteuse](https://vectorspacesystems.com/)
-de [microsatellites](https://fr.wikipedia.org/wiki/Miniaturisation%20des%20satellites).
+de [microsatellites](https://fr.wikipedia.org/wiki/Miniaturisation%20des%20satellites) (on en parle spécifiquement après).
 
 Je ne la connait pas depuis longtemps, mais il semble qu'elle soit bien avancée, avec un business model très accessible
 à destination des entreprises qui n'ont pas les moyens de se lancer dans la création satellitaire de bout en bout
 avec des contrats avec au moins deux autres entreprises (le lanceur, Arianespace par exemple, et le constructeur, Airbus par exemple).
 Avec Vector Space System, elles n'auront à traiter qu'avec elle, dans un environnement simplifié
-car normalisé grâce à leur système logiciel Galactic Sky présenté après,
+car normalisé grâce à leur système logiciel Galactic Sky (on en parle après),
 et lancé par [les véhicules Vector Space System](https://vectorspacesystems.com/technology/).
 
 Cela peut sembler être une niche, mais cela est prometteur : qui peut imaginer
@@ -447,6 +447,22 @@ Petite overview, traduite de [la page officielle](http://www.galacticsky.net/) :
 Personnellement, rien qu'en lisant ça, je suis enthousiasmé : je veux designer mon satellite !
 Je trouve ça personnellement énorme de vivre à une époque où ce genre d'application tout à fait futuriste arrive.
 
+Pour le dire dans des termes plus formels, cette solution logicielle découple le besoin de la conception bas-niveau.
+Et ça, c'est un gros bon en avant pour l'exploitation spatiale.
+
+
+
+# Le coût du spatial
+C'est une critique qui revient souvent : quel intérêt de financer l'exploration spatiale, qui coûte *si chère*.
+
+Je vous renvois vers [cette vidéo](https://www.youtube.com/watch?v=fVG3KL3lyEA),
+qui parle de la NASA mais qui s'applique à n'importe quelle agence.
+
+En gros, les retombées sont énormes.
+Mais comme d'habitude, comme ce n'est pas sous la forme d'un chèque palpable par les journalistes,
+ça n'apparaît pas à la télé, donc on en parle pas.
+
+
 
 
 # L'innovation
@@ -464,7 +480,9 @@ ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent).
 Notez également que SpaceX tient une bonne place ici ;
 c'est essentiellement dû à leur (excellente) communication sur ces sujets,
 contrairement aux autres organisations (publiques ou privées)
-qui sont en général assez chiches sur la communication des nouveautés.
+qui sont en général assez chiches sur la communication des nouveautés,
+bien qu'elles en produise souvent tout autant.
+
 
 ## Propulsion
 ## Logiciel
@@ -503,6 +521,8 @@ qui [n'ont pas besoin d'un outillage gourmand ou gigantesque](),
 ou [pour l'éducation](https://janus.cnes.fr/fr/JANUS/Fr/index.htm).
 
 
+
+
 # Continuer l'aventure
 Si vous êtes intéressé par ce sujet, et que vous voulez suivre l'actualité, il y a mieux que suivre les médias habituels
 qui en général ne retranscrivent que des nouvelles souvent déformées de manière grotesque.
@@ -516,7 +536,7 @@ ou [la page de ressource extrèmement complète](https://enseignants-mediateurs.
 
 Un conseil au passage : pour trouver ce que vous chercher dans les news récentes sur les pages des agences,
 allez d'abord sur la page *presse* ou *for media*, ou approchant. Ce sont des pages destinées aux journalistes,
-mais elles sont très organisées et très complètes. Par exemple [celle de l'ESA](http://www.esa.int/For_Media).
+mais elles sont très organisées et très complètes. Par exemple [celle de l'ESA](http://www.esa.int/For%20Media).
 
 Notez aussi que ces organisations sont pour la majorité très présentes sur les réseaux sociaux,
 [par exemple twitter](https://twitter.com/esa).
