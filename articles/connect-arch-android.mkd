@@ -1,0 +1,55 @@
+Title: How to connect Archlinux and Android
+Date: 2017-10-28
+Modified: 2017-10-28
+Tags: tuto
+Authors: Lucas Bourneuf
+Summary: Very short memo about how to do something a priori simple
+Slug: arch-android
+lang: english
+translation: false
+status: draft
+
+
+The problems are:
+- how to transfert files between a machine running under Archlinux, and a phone running Android.
+- how to set up [Android Debug Bridge (ADB)](https://developer.android.com/studio/command-line/adb.html).
+
+The first is basically needed to explore the files on your phone/SD card,
+in order to put music in it or retrieve photography/movies.
+
+The second is a communication channel needed by [Anki's Cozmo SDK](https://developer.anki.com/blog/learn/tutorial/getting-started-with-the-cozmo-sdk/).
+
+
+## File transfert
+One very simple way to go is to get [`simple-mtpfs`](https://wiki.archlinux.org/index.php/MTP#simple-mtpfs) from the AUR,
+`yaourt -S simple-mtfs`.
+
+### Everyday use
+I use the following Makefile to mount/umount my phone as needed in my home directory, at `~/android`.
+
+    mount_android:
+            mkdir -p ~/android
+            simple-mtpfs --device 1 ~/android -o enable-move
+    umount_android:
+            fusermount -u ~/android
+            rm -d ~/android
+
+
+## ADB setup
+You basically just have to follow the [Arch tutorial about the detection of your device](https://wiki.archlinux.org/index.php/Android#Android%20Debug%20Bridge%20.28ADB.29).
+
+In short:
+
+- get adb binary `sudo pacman -S android-{udev,tools}`
+- edit `/etc/udev/rules.d/51-android.rules`
+- `sudo adb kill-server`, disconnect, reconnect the phone, `sudo adb devices`
+
+Notes:
+
+- do not forget `sudo`
+- `lsusb` do not necessarily find a description for the phone. Mine was empty, yielding only the Bus and ID parts.
+
+### Everyday use
+Once correctly setup, the only thing you need, next time, is the call `adb devices`.
+You may get an `unauthorized` status, if you do not accept the communication on you phone quickly enough.
+Just ignore this: running the command a second time, after accepting the communication will give you the expected `device`.

@@ -9,6 +9,14 @@ Slug: bad-python
 translation: false
 status: draft
 
+The first part is basically a list of things that sometimes make me wonder
+about the real goodness of Python.
+
+In the second part are aspects i initially found weird,
+and that i now understand, and therefore accept.
+
+Hopefully, all items will soon or later be fixed or moved into the second part.
+
 
 <br/>
 
@@ -19,7 +27,7 @@ status: draft
 
 # In the standard library
 ## global mess
-Just look at collections: `defaultdict` is in snakecase without underscores.
+Just look at `collections` module: `defaultdict` is in snakecase without underscores.
 `ChainMap` and `Counter` are in mixed case.
 And `functools.lru_cache` happens to be in snake case,
 while the full `logging` lib is in camel case
@@ -87,7 +95,7 @@ This third party lib has many flaws, but it's way better than functools and prov
 
 Seriously ? In **python 3.6** ?
 
-This is because islice is coded by CPython in C, directly, without consideration for the Python side. Like `str.split` few versions ago.
+This is because islice is coded by CPython in C, directly, without consideration for the Python side. Like `str.split` few versions ago. And `str.replace`, which is also left unfixed.
 
 And you know what ? As far as i understand the problem, [PEP 362](https://www.python.org/dev/peps/pep-0362/) should have fixed the problem.
 But we still get an error with `islice`, and so you can't set its second
@@ -116,6 +124,7 @@ that we will never be able to.
 
 Frozendict should exists. Because all standard base types have their
 frozen equivalent, except dict.
+
 Symmetry matters.
 
 
@@ -146,13 +155,16 @@ With included grammar to parse python code ?
 Why can't i put bytecode into my Python just as i put assembly into my C ?
 Bytecode should be integrated in the language, allowing microoptimization when necessary.
 
-This feature is made almost useless with the almost not-painful C integration in Python.
-But then, you end up with packaging problems,
-and need external libraries like cffi or swig.
+Yes, the bytecode is implementation-specific, but it's a purely technical choice,
+and exposing a lower-level language should be IMHO a desirable feature in most
+languages with performance concerns.
 
 Bytecode could be even lower level than the one of CPython.
 It could be closer to ASM.
 And it should not complexify the project management.
+
+This feature is made almost useless with the almost not-painful C integration in Python.
+But then, you end up with packaging problems, and need external libraries like cffi or swig.
 
 
 # In the language
@@ -209,10 +221,9 @@ for item in (1, 2, 3, 4) if item not in (2, 4):
 
 ## for-with
 ```
-items = 1, 2, 3, 4
-for item in items with item*2 as post_treated_bigitem:
-    print(post_treated_bigitem)
-
+(treated for untreated in values
+ if treated > 10
+ with computation_to_run_once_per_value(untreated) as treated)
 ```
 
 ## inlined except
@@ -223,6 +234,8 @@ which is prefered over *Look Before You're Leap* in Python, and to avoid the ful
 t = 1, 2, 3
 print(t[4])  except IndexError: print('Nope !')
 ```
+
+Note that this very precise example would be invalidated by a `get` method for indexables.
 
 This was proposed in a [now rejected PEP](https://www.python.org/dev/peps/pep-0463/).
 
@@ -317,4 +330,4 @@ It takes its root in [the holy PEP8](https://www.python.org/dev/peps/pep-0008/#d
 This is followed by few notes giving details ; but, yes, it's not so bad. Once you now the rule,
 you know how to deal with it ; yielding clear benefits.
 That's precisely because of that name collision avoidance solution that
-i finally ended up ¬hating the name mangling.
+i finally ended up ¬hating name mangling.
