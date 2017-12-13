@@ -451,6 +451,19 @@ Pour le dire dans des termes plus formels, cette solution logicielle découple l
 Et ça, c'est un gros bon en avant pour l'exploitation spatiale.
 
 
+## ispace/Hakuto, Lunar XPRIZE
+Firme privée nippone née il y a 7 ans, dont [l'objectif affiché](https://www.cnbc.com/2017/12/12/ispace-announces--series-a-funding.html) est d'atteindre la lune en 2019, via deux missions.
+
+Le business model est simple : embarquer du matos scientifique et faire payer l'accès aux données récoltées,
+et au passage gagner le [google Lunar XPRIZE](https://fr.wikipedia.org/wiki/Google_Lunar_X_Prize),
+qui met en compétitions plusieurs équipes privées indépendantes dans l'objectif d'aller sur la Lune, d'y parcourir 500 mètres et de renvoyer des photos haute-définition.
+
+La firme nipponne semble confiante, malgré les [au moins 11 autres concurrents](https://en.wikipedia.org/wiki/Google_Lunar_X_Prize#Selected_teams)
+qui prévoient un lancement dans les deux prochaines années (l'un des plus proche étant celui de l'ISRO \o/).
+
+On notera que l'Europe n'a pas travaillé d'un seul bloc : seuls l'italie, la roumanie et l'allemagne ont participés, chacun de leur côté, et abandonné. Dommage !
+
+
 
 # Le coût du spatial
 C'est une critique qui revient souvent : quel intérêt de financer l'exploration spatiale, qui coûte *si chère*.
