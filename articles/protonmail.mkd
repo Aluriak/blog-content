@@ -20,7 +20,7 @@ Status: draft
 [Protonmail](https://protonmail.com/) est un serveur et une interface de messagerie électronique, comme gmail ou yahoomail,
 apparu il y a quelques années avec l'objectif affiché de démocratiser le chiffrement.
 L'argument de vente est intéressant, dans un contexte où ce genre de service
-fait exactement l'inverse, justement pour pouvoir étudier les mails des utilisateurs.
+fait habituellement exactement l'inverse, justement pour pouvoir étudier les mails des utilisateurs.
 
 Pour faire cela, Protonmail s'appuie sur un concept majeur : PGP.
 
@@ -31,28 +31,28 @@ Protonmail vous propose donc de générer les clefs PGP, de les stocker, de tout
 à tel point que la seule chose dont vous avez besoin pour chiffrer vos mails… c'est votre mot de passe.
 Pas besoin de connaître quoi que ce soit au système de chiffrement : protonmail s'utilise comme n'importe quel service du même type.
 
-J'ai testé ce service. Il m'a fallut 2h pour comprendre que quelque chose n'allait pas.
+J'ai testé ce service. Il m'a fallu 2h pour comprendre que quelque chose n'allait pas.
 Rien de grave : vous pouvez utiliser Protonmail sans risque.
-Mais ce quelque chose justifie que beaucoup de gens ne soient pas intéressés par l'approche.
+Mais ce quelque-chose justifie que beaucoup de gens ne soient pas intéressés par l'approche.
 
 
 # Détail non significatifs : clef privée sur le serveur
-La clef privée (celle qui ne doit être possédée et connue que d'une personne, et qui est protégée par le mot de passe) est en local sur le serveur.
+La clef privée (celle qui ne doit être possédée et connue que d'une personne, et qui est protégée par le mot de passe) est sur le serveur.
 Cela peut inquiéter, car cela veut dire que Protonmail a un accès à la clef privée.
 
 Mais, et cela est important : l'accès à la clef privée sans la passphrase n'a aucune valeur,
-a moins que la passphrase ne soit elle-même pas sécurisée (donc, aléatoire et longue ; un bon mot de passe, quoi).
+à moins que la passphrase ne soit elle-même pas sécurisée (aléatoire et longue ; un bon mot de passe, quoi).
 
-Le stockage de la clef privée en local n'est pas un problème pour moi. C'est un peu borderline, ça responsabilise l'utilisateur d'autant plus que la passphrase devient sa seule protection, mais pourquoi pas.
+Le stockage de la clef privée à distance n'est pas un problème pour moi. C'est un peu borderline, ça responsabilise l'utilisateur d'autant plus que la passphrase devient sa seule protection, mais pourquoi pas.
 Ce n'est pas ça qui m'embête.
 
 
 # Protonmail ne promeut pas le chiffrement
 Voilà le problème. Dans sa forme actuelle, Protonmail ne promeut pas le chiffrement.
-Le chiffrement en local est une feature. C'est tout. Avec quelques effets de bords sympa sans plus.
+Le chiffrement en local est une feature. C'est tout. Avec quelques effets de bords sympas sans plus.
 
 ## L'utilisateur n'est que la moitié de la clef
-Les données (donc les mails) sur le serveur sont chiffrées : seul une personne possédant
+Les données (donc les mails) sur le serveur sont chiffrées : seule une personne possédant
 la passphrase et la clef privée peut donc y avoir accès.
 Protonmail ne connaît pas la passphrase, donc seul l'utilisateur peut y avoir accès.
 
@@ -60,9 +60,9 @@ Mais ne croyez pas que l'utilisateur ait accès à sa clef privée.
 Ni même qu'il puisse en fournir une à l'inscription (par exemple, celle qu'il possède et utilise depuis plusieurs années, que plein de gens connaissent et en laquelle ils ont confiance).
 
 L'utilisateur n'est que la moitié de la clef :
-il connaît la passphrase, et protonmail connaît la clef. C'est seulement ensembles qu'ils peuvent déchiffrer les données.
+il connaît la passphrase, et protonmail connaît la clef. C'est seulement ensemble qu'ils peuvent déchiffrer les données.
 
-Et c'est un problème majeur qui retentis sur plusieurs niveaux.
+Et c'est un problème majeur qui se répercute sur plusieurs niveaux.
 
 
 ## Au-dehors de Protonmail
@@ -88,9 +88,9 @@ Et ça devient encore plus grave ensuite.
 ## PGP, oui, mais à sens unique
 Lorsque j'écris un mail à quelqu'un qui utilise Protonmail,
 le mail est chiffré, de tel manière que seul le destinataire puisse le lire.
-C'est un grand principe de PGP : chiffrer ses mails permet que seul le destinataire puisse le lire.
+C'est un grand principe de PGP : chiffrer ses mails permet que seul le destinataire puisse les lire.
 C'est génial, c'est grâce au chiffrement asymétrique,
-c'est ce qui permet d'avoir une vie privée sur internet.
+et c'est ce qui permet d'avoir une vie privée sur Internet.
 
 Maintenant, mettons que je veuille écrire à quelqu'un utilisant Protonmail,
 depuis mon adresse standard et avec mes outils de chiffrement standard.
@@ -141,7 +141,7 @@ qui est la gestion de la vie privée et de l'identité numérique.
 
 # Ce que Protonmail peut faire pour résoudre le problème
 Comme les problèmes ne dérivent que d'un choix initial qui est de cacher la complexité apparente
-à l'utilisateur, ils sont facile à corriger.
+à l'utilisateur, ils sont faciles à corriger.
 
 ### Accès, voir import, de la clef privée
 Protonmail ne doit pas être le seul à connaître ma clef privée. J'y ai droit aussi.
@@ -153,8 +153,8 @@ que tout le monde connaît, permettant à n'importe qui de constater que, oui, c
 C'est pour moi le plus important : je me fiche d'avoir une interface web.
 Limite, laissez la en second plan, et encouragez les utilisateurs à utiliser Thunderbird.
 
-Je *veux* continuer à utiliser Thunderbird avec Enigmail. C'est mon truc habituel. Toutes mes adresses mails sont agrégées dessus, j'ai des tonnes de filtres automatique, des modules qui me font gagner du temps, des fonctionnalités qu'aucun webmail n'a jamais implémenté, et j'ai Enigmail, la gestion de mon identité, avec des formats standards et des systèmes standards.
-Je ne veux pas passer par un webmail. Ce serais une régression, une perte de temps, une perte de fonctionnalités.
+Je *veux* continuer à utiliser Thunderbird avec Enigmail. C'est mon truc habituel. Toutes mes adresses mails sont agrégées dessus, j'ai des tonnes de filtres automatiques, des modules qui me font gagner du temps, des fonctionnalités qu'aucun webmail n'a jamais implémenté, et j'ai Enigmail, la gestion de mon identité, avec des formats standards et des systèmes standards.
+Je ne veux pas passer par un webmail. Ce serait une régression, une perte de temps, une perte de fonctionnalités.
 
 Protonmail doit me laisser rapatrier mes mails avec un protocole standard (IMAP FTW),
 et me laisser faire ce que je veux avec mes mails chiffrés.
@@ -177,15 +177,15 @@ puisse choisir tout de même une solution en connaissance de cause.
 Et là-dessus, j'ai fait mon job.
 
 La force de Protonmail devrait être son modèle économique :
-c'est moi qui paye, directement et argent comptant, mais mes données personne n'y touche,
+c'est moi qui paie, directement et argent comptant, mais mes données personne n'y touche,
 et j'en ai une garantie via le chiffrement.
 
-Ce ne devrais pas être un énième service qui veut enfermer ses utilisateurs dans son écosystème.
+Ce ne devrait pas être un énième service qui veut enfermer ses utilisateurs dans son écosystème.
 
 J'adore certaines fonctionnalités de Protonmail. Notamment le fait de pouvoir avoir des adresses avec mon nom de domaine avec très peu de configuration. Moi qui voulait une adresse comme mon-prénom@bourneuf.net, mais qui a peur de devoir maintenir un serveur mail sur mon serveur perso, c'est absolument génial !
 
 Mais zut. Dans l'état actuel, je ne peux pas utiliser Protonmail.
-Je ne peut pas récupérer la clef privée, je ne peux pas l'utiliser depuis Thunderbird, je ne peux pas écrire de mail chiffrés à mes correspondants.
+Je ne peux pas récupérer la clef privée, je ne peux pas l'utiliser depuis Thunderbird, je ne peux pas écrire de mail chiffrés à mes correspondants.
 Et de fait, Protonmail devient un danger pour leur vie privée à eux, qui n'ont rien demandés.
 
 Je suis extrèmement déçu par ce service. D'autant plus par [leur page](https://protonmail.com/support/knowledge-base/sending-a-message-using-pgppgp/) concernant l'interopérabilité avec PGP, qui fleure bon la décision marketing pour calmer la discussion en laissant entrevoir la possibilité qu'un jour peut-être cela arrivera. Je crains fort que cette feature reste dans la TODO list *ad vitam eternam*.
