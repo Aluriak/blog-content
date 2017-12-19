@@ -497,7 +497,8 @@ et permettant à [des équipes internationales de publier](https://www.cosmos.es
 Personnellement, j'estime que vu les retombées technologiques et les efforts internationaux issus de la recherche dans ce domaine, ça vaudrait le coups de continuer, même si c'était plus cher.
 (après tout, des coopérations entre pays qui ne visent pas à se taper dessus, c'est assez rare pour être noté ; sans compter que ça évite aux pays concernés de chacun chercher de son côté, alors qu'une coopération est possible ; c'est l'un des rôle de l'ESA que d'unifier ainsi la recherche européenne)
 
-Sans compter que ça nous permet de faire une surveillance planétaire, donc de comprendre pas mal de choses sur notre planète et l'environnement en général,
+Sans compter que ça nous permet de faire une surveillance planétaire, donc de comprendre pas mal de choses sur notre planète
+et [l'environnement en général](https://cnes.fr/fr/climat-sadapter-aux-changements-grace-au-spatial),
 de [supporter l'éducation](http://www.esa.int/Education/ESA%20at%20the%20forefront%20of%20space%20education),
 de [mettre en place un GPS plus performant](http://www.esa.int/Our_Activities/Navigation/Galileo/What%20is%20Galileo),
 et de comprendre l'univers dans lequel on existe.
