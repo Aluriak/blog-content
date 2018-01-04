@@ -25,7 +25,7 @@ ou PPC (comme java implémente la POO et haskell la PF).
 
 Pour ceux qui connaissent, il fera certainement penser à [Prolog](http://www.learnprolognow.org/),
 puisque ces deux langages reposent sur les même concepts, bien qu'ils ne l'implémentent pas de la même manière.
-Pour les matheux, il fera penser à TLA+, en beaucoup moins puissant, certainement.
+Pour les matheux, il fera penser à TLA+, en beaucoup moins puissant, certainement, sur le côté formalisation matheuse.
 
 L'objectif n'est pas seulement d'apprendre les bases en faisant joujou,
 mais de développer des programmes qui résolvent des problèmes de la vie réelle,
