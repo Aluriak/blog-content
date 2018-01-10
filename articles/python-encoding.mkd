@@ -1,0 +1,138 @@
+Title: L'encodage en python
+Date: 2018-01-10
+Modified: 2017-01-10
+Tags: python, tools, encoding
+Authors: Lucas Bourneuf
+Summary: explications basiques sur l'encoding (en python)
+Slug: encodage-python
+lang: français
+translation: false
+status: draft
+
+
+Quelques aides sur l'encoding en python.
+
+(précision: python 3, pas dinopython, encore que la seule chose qui change, c'est que l'encoding par défaut n'est pas UTF-8 mais ASCII/Latin-1)
+
+
+## Scripts python
+
+Créons un code python avec des accents dans `utf-encoded.py` :
+
+    print("àdokén")
+
+Détail important : enregistrez le en UTF-8.
+Si nous le lançons, il fonctionne normalement. Si il y a une erreur rapport à l'encoding,
+c'est que votre éditeur n'a pas enregistré en UTF-8.
+
+Maintenant, créons `lat-encoded.py`, qui est le même code mais en latin-1 :
+
+    ❯ iconv -t LATIN1 -f UTF-8 utf-encoded.py > lat-encoded.py
+
+Vous pouvez vérifier avec le binaire `file` :
+
+    ❯ file lat-encoded.py
+    lat-encoded.py: ISO-8859 text
+
+`iconv` et `file` sont dispos de base sur les distributions GNU/linux habituelles. Sinon, vous pouvez aussi utiliser votre éditeur pour enregistrer une copie du premier fichier dans le format latin-1, ça marche aussi.
+
+Si nous lançons maintenant python sur lat-encoded.py, nous obtenons une erreur :
+
+    ❯ python lat-encoded.py
+      File "test_lat.py", line 1
+    SyntaxError: Non-UTF-8 code starting with '\xe0' in file test_lat.py on line 1, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details
+
+Bon, en clair, il a pas aimé.
+
+Solution : ajouter l'encoding utilisé en tête de fichier:
+
+    # -*- encoding: latin-1 -*-
+    print("àdokén")
+
+Notez que, l'encoding par défaut de python étant utf-8,
+il n'est pas nécessaire d'avoir la déclaration pour les fichiers en utf-8.
+
+
+## Les fichiers textes
+Les fichiers textes fonctionnent pareil.
+Essayons d'ouvrir `lat-encoded.py` en python, en écrivant et lançant le script `run.py` :
+
+    with open('lat-encoded.py') as fd:
+        print(fd.read())
+
+Eh bien, oui, ça plante :
+
+    ❯ python run.py
+    Traceback (most recent call last):
+      File "run.py", line 7, in <module>
+        print(fd.read())
+      File "/usr/lib64/python3.5/codecs.py", line 321, in decode
+        (result, consumed) = self._buffer_decode(data, self.errors, final)
+    UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe0 in position 7: invalid continuation byte
+
+Parce que, par défaut, python mange de l'utf-8 et on lui a donné un autre format, incompatible.
+Notez que certaines inversions de formats ne sont pas incompatibles, mais rendent le texte moins lisible, notamment au niveau des caractères accentués (par exemple le fameux «*envoyÃ© spÃ©cial sÃ©vit*»). Mais vous pouvez aussi trouver deux encodages tels que un texte écrit avec l'un n'a plus aucun sens lorsqu'il est lu avec l'autre.
+
+Donc, magie des langages de haut-niveau, on peut déclarer l'encoding a utiliser :
+
+    with open('lat-encoded.py', encoding='latin-1') as fd:
+        print(fd.read())
+
+Et, là, pif ça marche.
+Note importante : le texte récupéré depuis le fichier est manipulé comme du texte utf-8. Preuve :
+
+    with open('utf-encoded.py', encoding='utf-8') as fd:
+        utf = fd.read().encode()
+    with open('lat-encoded.py', encoding='latin-1') as fd:
+        lat = fd.read().encode()
+    assert utf == lat
+
+Les deux sont, en binaire manipulé par python, équivalents.
+Par contre, ils sont bien différents dans leurs fichiers d'origine :
+
+    with open('utf-encoded.py', 'rb') as fd:  # on récupère le binaire directement
+        utf = fd.read()
+    with open('lat-encoded.py', 'rb') as fd:
+        lat = fd.read()
+    assert utf != lat
+
+
+## Une fonction qui traduit
+Exercice : sachant un fichier et son encoding, le traduire vers un autre encoding.
+
+Une réponse possible :
+
+    def convert(fname:str, encoding:str, target_encoding:str='utf-8', *, outfile:str=None):
+        if encoding == target_encoding: return  # done ! (that was easy)
+        with open(fname, encoding=encoding) as fd:
+            text = fd.read()
+        with open(outfile or fname, 'w', encoding=target_encoding) as fd:
+            fd.write(text)
+
+Un exemple d'utilisation :
+
+    convert('lat-encoded.py', 'latin-1', oufile='lat2utf.py')
+
+Et, oui, on peut lancer python sur le nouveau fichier `lat2utf.py`, ça fonctionne. On peut même vérifier l'encoding !
+
+    ❯ p done
+    àdokén
+
+    ❯ file done
+    done: UTF-8 Unicode text
+
+Voilà notre convertisseur fonctionnel et pratique !
+(qui pourrait être optimisé quand *outfile* est donné ; ce sera votre devoir maison)
+
+
+# Conclusion
+Finalement, l'encoding c'est comme la physique quantique :
+[personne ne peut dire qu'il le comprend parfaitement](https://www.quora.com/Is-it-true-that-no-one-really-understands-quantum-mechanics).
+
+Mais là, tout de suite, je crois que je comprend l'encoding (pour les 5 prochaines minutes).
+
+
+## Autres liens
+- [l'encoding en python une bonne fois pour toute](http://sametmax.com/lencoding-en-python-une-bonne-fois-pour-toute/) par sam & max
+- [la PEP 263](https://norasandler.com/2017/11/02/Around-the-with-Unicode.html) qui explique tout
+- [Around the 🌎 with Unicode](https://norasandler.com/2017/11/02/Around-the-with-Unicode.html), pour aller plus loin sur UTF-8
