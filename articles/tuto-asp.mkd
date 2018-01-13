@@ -167,8 +167,13 @@ En vérité, les contraintes sont très naturelles dans nos langages naturels.
 
 «*Je ne peux pas mettre plus de deux packs de lait sur le support arrière du caddie*» dis-je pendant mes courses.
 
-Bref, il est souvent plus simple (et moins coûteux) d'exprimer une contrainte plutôt qu'inclure
-cette restriction dans la génération de la réponse elle-même.
+Bref, il est souvent plus simple d'exprimer une contrainte plutôt qu'inclure
+cette restriction dans la génération de la réponse elle-même (*bon, je vais faire les courses en ne mettant pas deux packs de lait à l'arrière du caddie*).
+
+Aussi, la contrainte est parfois moins coûteuse. Par exemple, si je cherche mon caddie dans le magasin,
+je ne cherche pas forcément les points communs avec les souvenirs que j'en ai : *euh, celui-là a un pack de lait à l'arrière, c'est peut-être le miens*.
+Je peux aussi fonctionner avec des contraintes : *non, c'est pas celui-ci, il n'a pas de chocolat à l'avant*. Lorsqu'on cherche quelque chose,
+écarter les mauvaises possibilités en trouvant une seule différence est souvent plus rapide que d'énumérer les points communs.
 
 En général, un langage autorisant la programmation par contrainte pourra être divisé en deux parties :
 
@@ -201,7 +206,7 @@ Plus particulièrement, nous allons utiliser *clingo*.
 
 (si ça vous motive et que vous êtes à l'aise, prenez une autre implémentation ;
 en général les différences conceptuelles du langage
-ne seront pas monstrueuses, mais certaines implémentations proposeront des fonctionalités différentes.
+ne seront pas monstrueuses, mais certaines implémentations fonctionneront différemment.
 
 Cela étant dit, suivre un tuto avec les bons outils, c'est pas plus mal.
 Bref, faites comme vous voulez, mais dans le doute, utilisez clingo et explorez les autres après si l'envie vous en prend)
@@ -220,7 +225,7 @@ Clingo est en fait constitué de deux composantes: *gringo* et *clasp* (que l'on
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
-(dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour CPython c'est le bytecode, et pour C c'est l'assembleur)
+(dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour CPython c'est du bytecode, et pour C c'est de l'assembleur)
 
 Clasp est à ASP ce que l'interpréteur de CPython est à Python :
 un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
@@ -238,6 +243,7 @@ d'un seul coups.
 
 De notre point de vue, c'est ça en moins à gérer, mais c'est important de s'en rendre compte,
 car dans pas mal de cas il peut être intéressant de manipuler les deux indépendemment.
+Mais ce sera l'objet d'un autre tuto.
 
 
 ## Installation
@@ -378,17 +384,19 @@ dans l'entrée standard de clingo (j'aurais aussi pu l'écrire directement dans 
 Du point de vue de clingo, que se passe-t-il ici ?
 
 - d'abord, clingo parse les arguments de la ligne de commande (ici `-n 0` et `program.lp`)
-- il apprend que je veux *touts* les modèles, toutes les réponses possibles (`-n 0`)
+- il apprend que je veux *tous* les modèles, toutes les réponses possibles (`-n 0`)
 - il apprend également que le programme est intégralement contenu dans `program.lp`
-- il lance gringo sur le programme, et obtient le code groundé.
-- il lance clasp sur le code groundé, et m'affiche le résultat
-- j'apprend que mon programme n'a qu'une seule et unique solution (*Answer: 1*), où les atomes a et b sont vrais.
+- il lance gringo sur le programme, et obtient le code compilé (smodels).
+- il lance clasp sur le code compilé, et m'affiche le résultat.
+- j'apprend que mon programme n'a qu'une seule et unique solution (*Answer: 1*), où les atomes *a* et *b* sont vrais.
+- j'apprend que le problème est satisfiable (évidemment, il y a eu une solution)
+- clingo me donne quelques infos statistiques sur l'opération (notamment à propos du temps écoulé)
 
 Notez que la ligne `Reading from program.lp` correspond au grounding, et la suivante, `Solving...`, correspond au solving.
 
 Si clingo semble ne rien faire après avoir écrit la première, c'est que le grounding est long (et le pc ne fait pas *rien* ;
 vous avez probablement un CPU qui tourne à 100% pendant toute la durée du grounding).
-Dans l'autre cas, c'est le solveur qui pédale dans la semoule.
+Dans l'autre cas, c'est le solveur qui pédale dans la semoule : votre problème est très long à traiter.
 
 
 ### help et options diverses
@@ -505,7 +513,7 @@ Ci-après, un autre programme qui génère des atomes
 
 ```asp
 % Les atomes nb(X) sont vrais pour tout X entier de 1 à 100.
-nb(1..99).
+nb(-23..42).
 % Les atomes nb_ex(X) sont vrais pour tout X ∈ [1;4]
 nb_ex(1;2;3;4).
 % On peut aussi combiner les deux:
@@ -775,6 +783,40 @@ Comme expliqué précédemment, les bornes minimales et maximales par défault d
 sont respectivement zéro et l'infini. Autrement dit, `a;b;c` est équivalent à `1{a;b;c}1`.
 
 
+### Respect du choix
+Quels sont les modèles issus de ce programme ?
+
+```asp
+1{a;b;c}1.
+a;b;c.
+```
+
+Et de celui-là ?
+
+```asp
+1{a;b;c}1.
+2{a;b;c}2.
+```
+
+et de celui-ci ?
+
+```asp
+1{a;b;c}1.
+a :- b;c.
+```
+
+Et de celui-lô ?
+
+```asp
+a;b;c.
+a;b;c.
+```
+
+Ces exemples montrent que les choix agissent comme des contraintes :
+on dit qu'ils ne sont pas génératifs. Autrement dit, `a;b.` ne signifie pas que cette règle *ajoute a ou b au modèle*,
+mais bien que *un modèle contient a ou b*.
+
+
 ## Contraintes
 Les contraintes ! On en a souvent parlé,
 et certainement brûlez-vous d'impatience à l'idée de les utiliser !
@@ -787,7 +829,7 @@ tous les modèles avec une valeur qui n'est pas multiple de 3 :
 1 { nb(1..100) } 1.
 
 % On écarte tout modèle dont le nombre choisis n'est pas multiple de 3.
-:- nb(N) ; N \ 3=0.
+:- nb(N) ; (N\3) != 0.
 ```
 
 Premier constat, l'écriture d'une contrainte ressemble à celle d'une règle, à l'exception de la *tête*, qui est vide.
@@ -804,11 +846,12 @@ Il s'agit d'une contradiction fondamentale entre le fait que rien n'est vrai,
 et que le *corps* (et probablement d'autres atomes du programme) est vrai.
 Par conséquent, le modèle est faux, et ne sera pas considéré par le solveur.
 
-Ici `N\3 = 0` n'est vrai que si `N` est un multiple de 3.
+Ici `(N\3) != 0` n'est vrai que si `N` n'est pas un multiple de 3 (N modulo 3, écrit `N\3` en ASP, renvois le reste de la division entière,
+c'est-à-dire zéro quand le nombre divisé est multiple du quotient, ici 3).
 Par conséquent, le *corps* de la contrainte est vrai lorsque nb(X) est vrai avec X un multiple de trois.
 Donc le modèle est invalidé dans ce cas.
-Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 67:
-le nombre de nombres entre 1 et 100 qui ne sont pas multiples de 3.
+Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 33:
+le nombre de nombres entre 1 et 100 qui sont multiples de 3.
 
 Un peu de gymnastique intellectuelle est nécessaire quand vous manipulez les contraintes :
 elles expriment ce qui doit être faux, pas ce qui doit être vrai.
@@ -845,6 +888,7 @@ Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set,
 
 Un petit mot en passant : si vous avez un jour un problème, que vous arrivez à le modéliser en ASP,
 et que vous obtenez une insatisfiabilité, c'est une preuve que votre problème n'est pas soluble.
+Ou alors que vous avez mal encodé votre problème, au choix :)
 
 
 ## Tokens
@@ -879,7 +923,7 @@ Vous connaissez certainement les deux opérateurs mathématiques suivant :
 
 Par exemple *∃ jour de la semaine, je fais la grasse matinée* est vrai : pour moi c'est le dimanche.
 Mais je connais des lève-tôt qui se lèvent tôt tous les jours. Pour eux, il faudrait plutôt dire
-*∀ jour de la semaine, je ne fais pas la grasse matinée*.
+*∀ jour de la semaine, ils ne font pas la grasse matinée*.
 
 En ASP, ces signes cabalistiques n'apparaissent pas explicitement, mais leur sémantique apparaît visiblement.
 Le premier, *il existe*, nous l'avons déjà utilisé : il est implicite dans les *corps* des règles.
@@ -1005,7 +1049,7 @@ ce qui n'est pas *attendu* d'après la grammaire du langage ASP.
 
 
 ## Exeeeeerciiiiiiice ! Yodel et papier crépon
-Je ne vous le cacherais pas : cet exercice est un poil plus complexe que les précédents, mais ne vous en faites point, vous y arriverez tout pareil.
+Je ne vous le cacherais pas : cet exercice est un poil plus complexe que les précédents, mais ne vous en faites pas, vous y arriverez tout pareil.
 
 Voici l'énoncé : on cherche des ensembles de personnes partageant les même goûts,
 sachant que l'on sait qui aime quoi via les atomes `aime/2`, tel que `aime("Gérard","Joueur du Grenier")`
@@ -1036,7 +1080,7 @@ des modèles soient des sous-ensembles d'autres modèles. C'est l'effet de bord 
 ### Aide
 Si au bout de 30 minutes, vous:
 
-- **n'avez rien essayé :** bon, au risque de paraître un tantinet habité d'une quelconque passion à propos d'une soupe où nagerait des atomes d'avocats (au sens philosophique, pas physique), j'aimerais vous raconter une petite anecdote, que je connais d'expérience, et qui est assez représentative de l'expérience générale des enseignants dans mon domaine. Il se trouve que, lorsqu'on enseigne, on s'aperçoit assez vite que pas mal d'étudiants (et il se trouve qu'il s'agit majoritairement de filles, moins souvent des gars ; rapport à l'éducation ?) essayent à peine, ou lorsqu'ils essayent, c'est avec un mélange de timidité et de stress ; si bien que, au bout de longues minutes à s'imaginer être incompétents, ils finissent par appeler l'enseignant pour de l'aide. Enseignant qui ne voit qu'un écran blanc, et n'a comme unique information *j'y arrive pas*. Difficile de faire quoique ce soit dans ce contexte, et même impossible si yavais soupe d'avocat à la cantine. Le truc, c'est que ces étudiants ne se lancent pas, craignent l'idée de ne pas réussir du premier coups. Je sais que c'est un problème très commun en info (ça doit arriver ailleurs, certainement), mais je n'ai aucune espèce de piste pour résoudre le problème, à part travailler, en amont, au niveau de l'éducation elle-même. La conséquence de ça, je pense, c'est que ces étudiants ne collectent aucune expérience qui sera plus tard nécessaire à faire un boulot en info (ou un boulot tout courts). Certains arrivent au bout de plusieurs années d'études, et sont toujours incapable de lire ou écrire un quelconque morceau de code. Je n'ose imaginer ce que ça donne après dans un contexte professionnel. Bref, évitez la soupe à l'avocat.
+- **n'avez rien essayé :** bon, au risque de paraître un tantinet habité d'une quelconque passion à propos d'une soupe où nagerait des atomes d'avocats (au sens philosophique, pas physique), j'aimerais vous raconter une petite anecdote, que je connais d'expérience, et qui est assez représentative de l'expérience générale des enseignants dans mon domaine. Il se trouve que, lorsqu'on enseigne, on s'aperçoit assez vite que pas mal d'étudiants (et il se trouve qu'il s'agit majoritairement de filles, moins souvent des gars ; rapport à l'éducation ?) essayent à peine, ou lorsqu'ils essayent, c'est avec un mélange de timidité et de stress ; si bien que, au bout de longues minutes à s'imaginer être incompétents, ils finissent par appeler l'enseignant pour de l'aide. Enseignant qui ne voit qu'un écran blanc, et n'a comme unique information *j'y arrive pas*. Difficile de faire quoique ce soit dans ce contexte, et même impossible si yavais soupe d'avocat à la cantine. Le truc, c'est que ces étudiants ne se lancent pas, craignent l'idée de ne pas réussir du premier coups (comme si c'était possible, ou même souhaitable). Je sais que c'est un problème très commun en info (ça doit arriver ailleurs, certainement), mais je n'ai aucune espèce de piste pour résoudre le problème, à part travailler, en amont, au niveau de l'éducation elle-même. La conséquence de ça, je pense, c'est que ces étudiants ne collectent aucune expérience qui sera plus tard nécessaire à faire un boulot en info (ou un boulot tout courts). Certains arrivent au bout de plusieurs années d'études, et sont toujours incapable de lire ou écrire un quelconque morceau de code. Je n'ose imaginer ce que ça donne après dans un contexte professionnel. Bref, évitez la soupe à l'avocat.
 - **n'avez rien essayé, mais c'est parce que votre poisson rouge est mort, votre grand-mère s'est remise à l'haltérophilie, votre ordinateur fait des mises à jour, et il est déjà 24h64 à hawaï :** je comprend, ça doit être dur. Un indice : l'ASP c'est tellement haut niveau, il suffit souvent de traduire les phrases pour avoir un résultat.
 - **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. Les solutions sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
 
@@ -1066,7 +1110,7 @@ et éventuellement allez lire [la partie qui y est consacrée](#show).
 *Un petit exercice qui me vaudra des lettres de menace de la part de mes amis acousticiens.*
 
 En considérant une maison, composée de diverses pièces (genre, la cuisine, le salon, le placard à balai,…),
-dont l'une est la source d'un bruit d'un certain niveau (d'une certaine force, dirons nous).
+dont l'une est la source d'un bruit d'un certain niveau (d'une certaine force, dirons nous, afin d'agacer les physiciens).
 
 Question : quelle est le niveau sonore enregistré dans les autres pièces ?
 
@@ -1083,12 +1127,12 @@ Voici une manière d'encoder le plan de la maison :
 ```asp
 % connected rooms
 next_room(0,9). % la salle 0 est à côté de la salle 9
+next_room(4,(3;5)).  % la salle 4, à côté des salles 3 et 5
+next_room(6,(3;13;5)).  % et caetera
 next_room(7,(0;1;2;3;8;12;13)).
 next_room(8,(9;11)).
 next_room(10,(9;11)).
 next_room(11,(10;12)).
-next_room(6,(3;13;5)).
-next_room(4,(3;5)).
 ```
 
 Et maintenant, on dit qu'il y a un son de niveau 10 dans la salle 4:
@@ -1125,7 +1169,7 @@ max_sound(X,L):- sound(X,L) ; not sound(X,L2): L2 > L, sound(X,L2).
 # Placement de table, première approche
 Lors d'une fête de famille, ils y a deux problèmes majeurs :
 
-- qui apporte le dessert ?
+- qui finit les frites ?
 - qui s'assoie où à table ?
 
 C'est bien entendu le second qui nous intéresse ici.
@@ -1139,10 +1183,11 @@ Nous avons également des personnes, qui doivent toutes être placée sur une pl
 Maintenant, il y a des contraintes. Par exemple :
 
 - Justin ne peut pas être à côté ou en face de Karine, ils ne se supportent pas.
-- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de parties de curling.
-- Mamie doit être à côté de la cheminée, mais pas Gérard.
+- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de parties de scuba-curling.
+- Mamie doit être à côté de la cheminée, mais pas Gérard, qui a vite trop chaud.
 - Si Pépé est à côté de Jeanine, alors Xavier doit être de l'autre côté de Jeanine.
 - Yolande veut être à la place la plus éloignée de la cuisine, pour éviter d'avoir à y aller.
+- Si Dominique peut voire Micheline, elle lui fera des remarques bruyantes et désagréables sur sa frange mauve : donc non.
 
 Bref, le joyeux bordel typique du placement de table d'une réunion de famille.
 Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre famille que désormais c'est vous qui vous en occupez !
@@ -1308,8 +1353,14 @@ Ce code génère un answer set d'un atome qui est… `cst(b)`,
 car __*#const* agit sur les valeurs, pas les prédicats.__
 
 
+## pause détente
+Quel est le style de musique préféré des programmeurs lisp ?
+
+Le heavy-méta.
+
+
 ## #minimize et #maximize
-Le nerf de la guerre.
+Le nerf de la guerre dans bien des problèmes dits *d'optimisation*.
 
 Les answer sets trouvés par le solveur ne sont pas toujours égaux :
 souvent, l'objectif est de maximiser ou minimizer un score,
@@ -1337,7 +1388,7 @@ et (2), trouver le maximum là-dedans *a posteriori*, c'est-à-dire sans que l'h
 
 Hors, et c'est bien là tout l'intérêt d'une heuristique faite par des experts :
 si on donnait la mesure du score à l'heuristique, elle ne se contenterait pas d'énumérer les réponses possibles et de les triers par score :
-elle s'abstiendrait de générer celles qui sont moins bonnes que celles déjà générées.
+elle s'abstiendrait de générer celles qui sont moins bonnes que celles déjà générées (on parle *d'élaguage de l'espace de recherche*).
 
 En d'autre terme, donner à l'heuristique nos préférences en matière de modèle lui permet d'élaguer l'espace de recherche
 pour aller plus vite, et se diriger petit à petit vers l'une des meilleure réponse, le *modèle optimal*.
@@ -1347,15 +1398,17 @@ pour aller plus vite, et se diriger petit à petit vers l'une des meilleure rép
 La syntaxe est un poil bizarre au début, mais on s'y fait bien.
 
 ```asp
-1 { nb(1..100) } 2.  % un modèle == un entier
+1 { nb(1..100) } 1.  % un modèle == un entier
 #maximize{N:nb(N)}.  % maximiser l'entier choisi
 ```
 
-Ici, c'est la deuxième ligne qui fait le travail : on dit à clingo de maximiser N,
+Ici, c'est la deuxième ligne qui fait le travail d'optimisation : on dit à clingo de maximiser N,
 pour N le nombre choisi en ligne 1.
 
 Il y a beaucoup de subtilités avec cette syntaxe, essayez par exemple de changer
 la borne supérieure de la disjonction par un 2, ou par rien.
+
+Notez aussi que, pour minimiser, il suffit de remplacer `maximize` par `minimize`.
 
 
 ### Priorité
@@ -1366,6 +1419,20 @@ Parfois, il y a plusieurs paramètres à minimiser/maximiser.
 #minimize{N@2:nb(N)}.  % minimiser l'entier choisi (priorité 2)
 #maximize{N@1:nb(N)}.  % maximiser l'entier choisi (priorité 1)
 ```
+
+### Considérations générales
+Les optimisations, qu'elles soient de maximisation ou minimisation, sont des composantes importantes de l'heuristique :
+non seulement elles permettent d'élaguer l'espace de recherche, mais elles permettent de réellement encoder certains problèmes
+sans avoir à modéliser les relations entre modèles.
+
+Imaginez devoir générer le meilleur remplissage de sac-à-dos sans optimisation : même avec un petit sac,
+il existe une très grande quantité de manière de ranger des objets dans un sac,
+et surtout, beaucoup sont équivalentes.
+Sans optimisations, vous allez vous retrouver avec (1) un très grand nombre de modèles qui (2) sont inintéressants pour 99% d'entre eux.
+
+Avec une optimisation, vous n'avez qu'à compter le nombre d'objets mis dans le sac, et maximiser ce nombre :
+le solver s'occupe seul de ne pas polluer la sortie : le dernier modèle trouvé par le solveur est à tout instant le meilleur qu'il ait trouvé.
+Cela veux même dire que vous pouvez l'arrêter en cours de route, lorsque les modèles qu'il propose sont suffisamment bons.
 
 
 ## #min et #max
@@ -1382,41 +1449,189 @@ Des fichiers dans des fichiers.
 
 
 # Interface avec Python
-*Où l'on apprend comment interfacer un langage puissant avec un langage puissant pour faire des trucs puissants*
+*Où l'on apprend comment interfacer un langage puissant avec un langage puissant pour faire des trucs vachement puissants*
 
 ASP s'interface nativement avec Python et Lua. Je ne traite que de Python ici,
-mais les principes sont exactement les même avec Lua.
+mais les principes sont exactement les mêmes avec Lua : seule la syntaxe change.
 
 ## Embedding dans Python
-Plutôt qu'appeler clingo pour tous nos cas de tests, et vérifier à la main si ils fonctionnent correctement,
+Plutôt qu'appeler clingo pour tous nos cas de tests,
+et vérifier à la main si ils fonctionnent correctement,
 ou juste si on a besoin d'appeler clingo plusieurs fois avec des traitements des résultats,
 il est possible de le faire depuis Python.
 
 
 ### API officielle
-Il existe un module officiel, qui est dans les sources du logiciel et que vous pouvez installer avec un `python setup.py install` standard.
-Je n'utilise pas cette API en règle générale.
+Il existe un module officiel, qui est dans les sources du logiciel et que vous pouvez installer avec un `python setup.py install` standard après compilation de clingo.
+
+Je n'utilise pas cette API en règle générale, puisqu'il faut que le client compile clingo.
 
 
 ### Autres API
+Je vous recommande pour démarrer [clyngor](https://github.com/aluriak/clyngor).
+C'est un module python on ne peux plus standard, disponible sur pypi,
+et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre $PATH.
+
+Et normalement, c'est déjà fait :)
+
 Une alternative est [pyasp](https://github.com/sthiele/pyasp).
 Néanmoins, ce package et ne supporte pas clingo *seul*,
 mais plutôt gringo et clasp comme deux binaires
 séparés appelés séquentiellement.
 Hors, dans les nouvelles versions du solveur, seul clingo est distribué.
-Pyasp n'est donc (pour le moment) pas une alternative viable pour utiliser les versions les plus récentes.
+Pyasp n'est donc (pour le moment) pas une alternative viable pour utiliser
+les versions les plus récentes.
 
-L'autre alternative, que je vous conseille pour démarrer, est [clyngor](https://github.com/aluriak/clyngor).
-C'est un module python on ne peux plus standard, disponible sur pypi,
-et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre $PATH.
 
-Et normalement, c'est déjà fait :)
 
 
 ## Extending avec Python
 Vous avez déjà étendu Python avec du C pour gagner un peu de performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
+
+
+## Propagateurs
+Les propagateurs sont des objets assez connus dans le monde du solving.
+Il s'agit plus ou moins d'un plugin qui va pouvoir suivre et modifier le déroulement de l'heuristique.
+
+Avec Python et un peu de connaissance sur clingo, il est possible d'écrire un propagateur pouvant,
+par exemple, changer la véracité de certains atomes en fonction de celle d'autres atomes.
+
+Notez que l'API officielle de clingo est nécessaire ici. Si vous ne l'avez pas, vous ne pourrez pas exécuter les exemples
+(mais vous pourrez les comprendre quand même ; notre cerveau est bien pratique parfois).
+
+
+### Sous le capot de clingo
+Clingo, en interne, ne s'amuse pas à manipuler les atomes comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`
+sous la forme de chaîne de caractères, ou d'objets plus complexes.
+
+La raison est simple : c'est inefficace, d'autant que clingo se fiche de savoir que tel atome a tel predicat et tel arguments :
+il s'intéresse uniquement aux propagations qu'il peut faire selon les règles qu'on lui a fournis.
+
+Par exemple, `p(5):- p(4).` devient pour clingo quelque chose comme `12 :- 45`. Là, j'ai choisi les entiers au hasard,
+mais clingo, d'après ce que j'ai vu, les numérote à partir de 1, dans l'ordre où il les rencontre.
+C'est donc, de notre point de vue d'utilisateur extérieur, aléatoire.
+
+Donc, clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
+Ces litéraux du solveur ne changent pas durant tout le solving, et ce sont les éléments de base qu'un propagateur va manipuler.
+
+### Les 4 cavaliers
+Un propagateur, en python, est une classe présentant 4 méthodes :
+
+- `init`: appelée une seule fois, en première ; c'est là qu'on prend connaissance des littéraux du solveur choisis pour chaque atome
+- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral
+- `undo`: appelée chaque fois que l'heuristique va retirer une valeur de vérité à un littéral
+- `check`: appelée chaque fois que l'heuristique vérifie le modèle qu'elle possède
+
+#### Vérification de modèle et vérité des litéraux
+Comme nous avons vu au début, un atome est soit vrai, soit faux.
+
+Ceci est faux : un atome peut également être dans un état indéterminé. Si nous ne l'avons jamais vu,
+c'est parce que cet état n'est possible que lorsque l'heuristique cherche pour un modèle valide.
+Pendant cette recherche, l'heuristique va donner des valeurs de vérité (vrai ou faux) aux atomes,
+chacun à leur tour, explorant les différentes possibilités.
+
+Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel où ne sont assignés à une valeur de vérité qu'une partie des atomes),
+il faut décider si le modèle, c'est-à-dire si les valeurs de vérité (ou assignation) est valide.
+
+C'est à ce moment que se joue le jeu des contraintes : montrer que l'assignement total entre en conflit avec une contrainte prouve que le modèle n'est pas valide,
+et donc qu'il n'a pas a être écrit en sortie de programme.
+
+### Exemple de propagateur : dot propagator
+Celui-ci est très simple : il s'agit d'afficher un `.` pour chaque propagation du solveur, et d'en retirer un pour chaque *back-propagation* (ou *undo*).
+Cela résulte en une ligne de point qui progresse et régresse au fil de l'exploration du solveur.
+
+Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple, et permet de toucher du doigt l'intérêt des propagateurs.
+Suis la version annotée des sources.
+
+```python
+% Là on est dans le code ASP
+#script (python)
+# et paf, on est en python maintenant !
+
+from time import sleep  # pour donner une dimension humaine au programme
+
+# La classe qui contient les méthodes. Notez qu'il n'y a évidemment aucune contrainte sur le nom,
+# et surtout que la classe n'hérite de rien. Duck Typing FTW.
+class Propagator:
+
+    # Première méthode : init (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
+    # le premier argument est un objet qui va nous donner des infos sur le solving
+    def init(self, init):
+        for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
+            init.add_watch(init.solver_literal(atom.literal))  # on le surveille
+
+    def propagate(self, ctl, changes):
+        # ctl: c'est le contrôleur du solving ; un objet qui mériterait une section à lui tout seul.
+        # changes: la liste des littéraux qui ont eu une assignation ; c'est eux qui nous intéressent.
+        for l in changes:
+            print('.', flush=True, end='')  # afficher un `.` sans passer à la ligne
+            sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
+
+    def undo(self, solver_id, assign, undo):
+        # undo contient la liste des littéraux dont l'assignation est annulée.
+        # on va donc enlever un '.' pour chacune de ces assignation.
+        for l in undo:
+            print('\b \b', flush=True, end='')  # revenir en arrière, afficher un espace, revenir en arrière
+            sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
+
+# notez que la function main est une convention de l'API de clingo :
+#  si elle existe, elle reçoit le contrôleur du solveur, et nous
+#  permet donc de contrôler le solving.
+def main(prg):
+    # on enregistre une instance de notre propagateur
+    prg.register_propagator(Propagator())
+    # on ground le programme 'base', qui est le programme par défaut
+    prg.ground([("base", [])])
+    # on lance le solving
+    prg.solve()
+    print()  # on écrit une ligne vide après les '.'
+
+#end.
+```
+
+Vous pouvez tester ce code avec n'importe quel programme ASP.
+Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples/clingo/dot-propagator/test.lp) est un bon exemple
+(pas un hasard qu'il soit fourni avec le propagateur ;\) ) car il génère beaucoup de backtracks (de retours en arrière dans la recherche).
+
+Le résultat est, vous vous en doutez, diablement rigolo :
+
+TODO: un gif de la sortie du dot propagator
+
+
+### Exemple de propagateur : color propagator
+Dans la série des visualisations rigolotes, je vous propose… le *color propagator* !
+
+Le principe : afficher les atomes disponibles, et les mettre en couleur
+en fonction de leur valeur d'assignation.
+
+Compliqué ? Non, pas tant que ça :
+
+TODO: propagators/color.py
+
+
+### Exemple de propagateur : graphviz/dot propagator
+Celui-ci est carrément plus haut niveau, non par sa complexité, mais parce qu'il génère un fichier dans un format nommé *dot*.
+Si vous ne connaissez pas le dot, sachez qu'il s'agit d'un format très utilisé pour décrire des graphes, au sens de la théorie des graphes.
+
+La théorie des graphes et le dot sont tout à fait en dehors du scope de ce tuto, mais je vais essayer de faire court :
+- un graphe, c'est un objet mathématique consistant en un ensemble de nœuds éventuellement reliés par des arêtes. C'est la structure de base en informatique, à partir de laquelle on dérive les autres. Les graphes sont utilisés dans tous les domaines : maths, physique, informatique évidemment, biologie, science sociales,… Vous en voyez souvent, sans vous en rendre compte.
+- le dot, c'est une langue écrite, conçue par le projet graphviz, qui est aussi une suite logicielle. Les logiciels de graphviz sont capable de lire un programme en dot, et de générer une image ou d'autres fichiers qui représentent le graphe. C'est très puissant, car cela permet de voir graphiquement un graphe. C'est exactement ce qui nous intéresse.
+
+Pour ce propagateur, nous allons donc exploiter le dot. L'idée est la suivante : un littéral est un nœud du graphe, et l'on trace un arc (une arête orientée, avec une flèche)
+du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignais le littéral 1.
+En d'autres termes, nous voulons visualiser le chemin emprunté par le solveur : dans quel ordre il assigne (et dé-assigne) les atomes/littéraux.
+
+Le résultat est de facto très visuel : on génère des visualisations de graphes avec dot !
+
+#### Le graphviz/dot propagator
+Le code est disponible [sur mon github](https://github.com/aluriak/dot-propagator), et reproduit ci-après avec des annotations supplémentaires :
+```asp
+```
+
+#### Résultats sur cas simple
+#### Résultats sur cas compliqué
 
 
 ### Multi-shot solving
@@ -1429,7 +1644,7 @@ TODO
 
 
 # Conseils de style
-*Où l'on s'imagine tel Gotlib mesurer au pouce cette pomme qu'il ne dessina jamais, mais en fait, non, ça n'a rien à voir*
+*Où l'on s'imagine tel Gotlib mesurer au pouce cette pomme qu'il ne dessina jamais, mais en fait, non, ça n'a que peu à voir*
 
 Cette partie est légère et calme : il s'agit de donner quelques conseils pour écrire de beaux codes.
 Bien sûr, la beauté est subjective, et peut-être ces conseils seront-ils à jeter à la poubelle d'après une autre personne.
@@ -1445,9 +1660,11 @@ Bref, c'est au cas par cas. Mais en général, les conseils suivants s'appliquen
 - avoir un style consistant dans une base de code
 - privilégier la lecture à l'écriture
 
-Le premier est simple : il faut conserver la même manière d'écrire les choses (et de les nommer ; ça fait aussi (un peu) partie du style).
+Le premier est simple : il faut conserver la même manière d'écrire les choses (et de les nommer ; ça fait aussi partie du style).
 Le second est plus compliqué, mais se retranscrit assez simplement : le nom de variable `i` est nul. Le nom `index` est mieux.
 Sauf quand ça rend le code illisible. Mais là encore c'est subjectif.
+
+Suivent donc quelques conseils de style pour les codes ASP.
 
 
 ## Premières lignes
@@ -1481,7 +1698,7 @@ not wet(X):- on_fire(X).
 ## Ordre logique
 Souvent, les programmes sont divisés en plusieurs sous-parties logique, comme par exemple *données*, *expansion*, *modélisation*, *contraintes* et *affichages*.
 
-A moins qu'elle ne soit placées dans un fichier dédié (ce qui est préférable lorsqu'il y en a beaucoup),
+A moins qu'elle ne soit placées dans un fichier dédié (ce qui est généralement préférable),
 les données doivent être bien séparées du reste. C'est la partie mouvante du programme, dans le sens où il ne s'agit que d'une *instance* d'un problème général que le programme tente de résoudre.
 Indiquer en commentaire le sens de ces données est également une bonne idée.
 
@@ -1519,6 +1736,28 @@ je_suis_content :-
 C'est d'autant plus pratique que l'on peut maintenant commenter chacun des groupes de `passe_moi/1`, plutôt que tout commenter d'un coups avant ou après.
 
 
+## Point-virgule et virgule
+Ces deux caractères indiquent la même chose : le *et* logique.
+Cependant, ils n'ont pas la même priorité.
+
+`a:- b, c.` et `a:- b ; c.` sont strictement équivalents.
+Mais, préférez le ; pour une raison simple :
+
+`a(X):- val(X) ; b(X): c(X), d(X).` n'a pas du tout le même sens que
+`a(X):- val(X) ; b(X): c(X) ; d(X).` !
+
+Essayez avec les données `val(1..9).b(1;2).c(1;2).d(1).`.
+
+Dans le premier cas, `d(X)` appartient à l'expression `b(X): c(X), d(X)`, qui est toujours vraie (`b(X)` est vrai lorsqu'on a `c(X)` et `d(X)`).
+Dans le second, il n'y appartient pas, et est donc une condition supplémentaire, qui n'est vraie que pour `d(1)`.
+
+Donc, mon conseil : utilisez toujours le point-virgule,
+sauf lorsque vous devez utiliser une virgule.
+Ça vous évitera d'avoir à retaper toutes vos virgules si l'un des terme d'une condition
+devient une expression *pour tout* (`∀`).
+
+
+
 
 
 # Real-world application
@@ -1534,17 +1773,22 @@ Nous avons vu le placement de table bourrin, où l'objectif était de satisfaire
 Maintenant, plutôt que des contraintes, nous pourrions modéliser un *score* à maximiser.
 
 Intuitivement, ce n'est pas tant qu'il *faille* que Tata Christelle et Tonton Robert soient à côté : c'est juste mieux. De fait, une telle combinaison augmenterais le score.
-À l'inverse, mettre les deux frères qui sont en désaccord sur la succession l'un en face de l'autre, ça ne fera que pourrir la soirée, donc on diminue le score.
+À l'inverse, mettre Gérard le Normand et Michel le Breton l'un en face de l'autre,
+ça ne fera que pourrir la soirée, donc on diminue le score.
 
 L'intérêt est double : on va pouvoir hierarchiser les contraintes (toutes n'ont pas la même importance ; et à la limite les plus importantes peuvent rester des contraintes),
 et on va pouvoir gérer des familles très compliquées, tellement compliquées que toutes les contraintes ne sont pas satisfiable simultanément.
 
+<!-- Autre effet kiss-cool : clingo va chercher à maximiser le score, et chaque fois qu'il trouve une solution meilleure que la précédente, il l'affichera. On peut donc le laisser chercher jusqu'au bout, ou interrompre la recherche une fois que le temps est écoulé ou que la solution est suffisamment bonne -->
+
 ### Nuit de folie
-Cette application est directe ; d'autant plus que normalement, la famille ne change pas trop entre deux repas,
+Cette application est directe ; d'autant plus que normalement,
+la famille ne change pas trop entre deux repas,
 et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
 
-Et pas que avec la famille : il marche également avec les amis, les confrères de secte, les collègues, les voisins, la chorale…
+Et pas que avec les repas de famille : il marche également avec les soirées entre amis, les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
 C'est fou l'informatique.
+
 
 
 
@@ -1586,7 +1830,9 @@ player(2,("bird";"dog";"coyote")).  % score: 3
 player(3,("dog";"mouse")).  % score: 2
 ```
 
-Calculons ensembles le score du joueur 1: *cat* donne 1 point, *dog* et *bird* ont été trouvés par d'autres joueurs et donnent donc 0 point, et *elephant* donne 11, soit un total de 12 points pour le premier joueur. De notre point de vue, cela veux dire que nous devons générer `score(1,12)`.
+Calculons ensembles le score du joueur 1: *cat* donne 1 point, *dog* et *bird* ont été trouvés
+par d'autres joueurs et donnent donc 0 point, et *elephant* donne 11, soit un total de 12 points
+pour le premier joueur. De notre point de vue, cela veux dire que nous devons générer `score(1,12)`.
 
 ### Méthodologie
 
@@ -1657,7 +1903,9 @@ def value(word):
 Wow ! On obtient bien les bons scores pour chaque joueurs :
 `score(1,12)`, `score(2,3)` et `score(3,2)`.
 
-Maintenant que le programme fonctionne, il ne reste plus qu'à le *golfer*, et à compter les caractères. Voici donc notre script final, atteignant un score de 137 caractères, ce qui le place avant-avant dernier (devant PHP et Java) au moment où j'ai écrit ce programme :
+Maintenant que le programme fonctionne, il ne reste plus qu'à le *golfer*, et à compter les caractères.
+Voici donc notre script final, atteignant un score de 137 caractères,
+ce qui le place avant-avant dernier (devant PHP et Java) au moment où j'ai écrit ce programme :
 
 ```asp
 u(P,W):-1{p(_,W)}1;p(P,W).s(P,S):-S=#sum{@v(W):u(P,W)};p(P,_).#script(python)
@@ -1689,7 +1937,7 @@ Ici, on va s'intéresser à un jeu de lego : construire une machine.
 Cela pourrait vous servir un jour, et sinon, c'est toujours rigolo à faire.
 Aussi, nul besoin de vous y connaître en PC, les explications viennent avec (ce tuto est inter-disciplinaire).
 
-Ce genre de programme s'organise autour de deux principaux programmes:
+Ce genre de programme s'organise autour de deux principaux programmes :
 celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
 comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
 et celui qui construit le pc à partir des pièces récupérées, c'est-à-dire
@@ -1830,7 +2078,7 @@ Cet exemple ne sera pas utile tel quel à tout le monde, mais vous comprenez bie
 par exemple, choisir le meilleur portable disponible en fonction des fonctionnalités qu'on vous vend.
 
 J'ajouterais aussi que mettre à plat ce genre de chose aide beaucoup à faire un choix rationnel.
-Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts ! Magique !
+Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts ! Magique ? Non, informatique !
 
 
 
@@ -1977,19 +2225,19 @@ C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en A
 
 
 
-# Solutions au exercices
+# Solutions aux exercices
 *Où l'on constate qu'effectivement, les exos étaient pas compliqués, mais que la soupe à l'avocat, elle, était horrible*
 
 ### Notation
 `k/3`, `coucou/0` et `symballium/10`.
 
 ### Tel père, tel fils
-```
+```asp
 enfant(Enfant,Papa):- papa(Papa,Enfant).
 ```
 
 ### Mon papa c'est le meilleur
-```
+```asp
 papa(P):- papa(P,_).
 1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), ça revient au même
 ```
