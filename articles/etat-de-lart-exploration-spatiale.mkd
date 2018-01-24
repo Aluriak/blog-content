@@ -47,7 +47,7 @@ sont les deux noms qui me viennent en premier.
 Le business de ces firmes (privées) est simple : envoyer des charges
 utiles en orbite, ou plus généralement dans l'espace.
 Par charges utiles, j'entends des appareils tels que des
-satellites artificiels.
+satellites artificiels ou des sondes scientifiques.
 
 C'est le développement de cette industrie de l'espace qui a permis
 à l'Europe de lancer le projet [Galileo](https://fr.wikipedia.org/wiki/Galileo%20(syst%C3%A8me%20de%20positionnement) (concurrent du GPS),
@@ -69,10 +69,14 @@ Par exemple, Ariane 5 propose d'envoyer 10 tonnes de charge utile
 en orbite géostationnaire, soit deux satellites de télécom standard de 5 tonnes chacun,
 coûte 60 millions de dollars à chacun des deux clients.
 De plus, avec une centaine de satellite lancés par an, Arianespace s'assure
-de conserver une liste d'attente relativement courte, et donc une disponibilité élevée.
+de conserver une liste d'attente relativement courte (mais toujours pleine),
+et donc une disponibilité élevée.
+La disponibilité, c'est très important : vous ne construisez pas un satellite sans savoir quelle fusée va le lancer.
+Et si aucune fenêtre de lancement n'est disponible avant plusieurs années, votre satellite vous n'allez pas le construire tout de suite non plus :
+autant changer de contracteur pour le lancement.
 
-Les concurrents d'Arianespace misent souvent sur des charges utiles plus faibles (donc, des satellites moins gros),
-mais avec des prix plus abordables.
+Les concurrents d'Arianespace misent plutôt sur des charges utiles plus faibles (donc, des satellites moins gros),
+mais avec des prix plus abordables : ils n'ont donc pas la même clientèle.
 
 Nous verrons qu'avec l'arrivée de nouveaux acteurs, la position dominante
 d'Arianespace est mise à mal,
@@ -104,15 +108,18 @@ font aussi de [la recherche fondamentale](https://microscope.cnes.fr/fr/MICROSCO
 
 ### International
 D'abord, au niveau des programmes internationaux, on trouve la très célèbre
-Station Spatiale Internationale.
+[Station Spatiale Internationale](https://fr.wikipedia.org/wiki/Station_spatiale_internationale) (ISS).
 
 Il s'agit du plus gros projet international en terme de ressource.
+Pour rappel, l'ISS, c'est une gigantesque poutre sur laquelle sont attachés les panneaux solaires, deux modules principaux américains et russes, des laboratoires japonais, européen, russes et américains, avec quatre bras mécaniques canadien, russes, japonais et européens qui permettent d'affréter des capsules, envoyées en alternance par les russes, les américains ou une société privée.
+
+On y trouve un robot contrôlable en réalité virtuelle, une cinquantaine de racks standard pour des expériences contrôlées et surveillées par les [3 à 6 astronautes](https://www.howmanypeopleareinspacerightnow.com/) qui s'y trouvent en permanence, un aquarium, un incubateur, des apareils d'étude de physiologie, le [spectromètre magnétique alpha](https://fr.wikipedia.org/wiki/Spectrom%C3%A8tre_magn%C3%A9tique_Alpha),…
 
 
 ### ESA (Europe)
 L'European Space Agency, financée par les pays de l'Union
-Européenne, est une formidable agence qui a à son actif [plusieurs missions](http://www.esa.int/ESA/Our_Missions)
-de grande envergure.
+Européenne, est une formidable agence qui a à son actif
+[plusieurs missions](http://www.esa.int/ESA/Our_Missions) de grande envergure.
 
 C'est aussi un partenaire important de plusieurs organisations du spatial
 en Europe, comme le CNES ou Arianespace.
@@ -124,6 +131,8 @@ dû à un mauvais positionnement.
 
 Les données sont encore à l'étude, mais ont déjà eu un certain retentissement scientifique puisqu'elles
 semblent renforcer la thèse de la panspermie, théorie selon laquelle la vie viendrait de l'essaimage des comètes.
+
+Des nouvelles concernant les données collectées sortent régulièrement ; [Hervé Cottin](https://twitter.com/hcottin) en parle régulièrement.
 
 D'autres missions très connues sont [Hershel](http://www.esa.int/Our_Activities/Space_Science/Herschel/Herschel_at_a_glance),
 [Planck](http://www.esa.int/Our_Activities/Space_Science/Planck),
@@ -141,7 +150,7 @@ pour les prochaines années.
 
 Ainsi, après les [explorations extrèmement réussies de la planète rouge](https://fr.wikipedia.org/wiki/Exploration%20de%20Mars),
 le survol de [Pluton et Charon](https://fr.wikipedia.org/wiki/New%20Horizons) et l'exploration du [système Jovien](https://fr.wikipedia.org/wiki/Syst%C3%A8me_jovien),
-les prochaines pistes de la NASA sont [les océans](https://solarsystem.nasa.gov/europa/overview.cfm)
+les prochaines pistes de la NASA semblent être [les océans](https://solarsystem.nasa.gov/europa/overview.cfm)
 d'[Europe](https://fr.wikipedia.org/wiki/Europe%20(lune)) et d'[Encelade](https://fr.wikipedia.org/wiki/Encelade%20(lune)).
 
 
@@ -168,11 +177,23 @@ L'[Organisation Indienne pour la Recheche Spatiale](https://fr.wikipedia.org/wik
 s'est, en seulement quelques années, taillée un chemin impressionnant
 dans le spatial.
 
-Avec un budget très faible comparé aux autres agences (1 milliard, soit N× moins que l'ESA, M× moins que la NASA), l'ISRO a mis en place et
+Avec un budget assez faible comparé aux autres agences (1 milliard, soit 5× moins que l'ESA, 15× moins que la NASA), l'ISRO a mis en place et
 dirigé de bout en bout des missions scientifiques,
 tel que le téléscope spatial [Astrosat](https://fr.wikipedia.org/wiki/Astrosat)
 ou les sondes lunaires et martiennes [Chandrayaan-1](https://fr.wikipedia.org/wiki/Chandrayaan-1) et
-[Mangalyaan](https://fr.wikipedia.org/wiki/Mars_Orbiter_Mission).
+[Mangalyaan](https://fr.wikipedia.org/wiki/Mars_Orbiter_Mission),
+avec son propre lanceur, le Polar Satellite Launch Vehicle,
+qui aujourd'hui est exploité à plein régime et
+place en orbite des dizaines de microsatellites.
+
+En 1980, l'ISRO envoyait son premier satellite. En janvier 2018, elle envoyait le centième, dont un bon tiers indien.
+
+Impressionnant !
+
+
+### JAXA (Japon)
+[TODO](https://fr.wikipedia.org/wiki/Agence_d%27exploration_a%C3%A9rospatiale_japonaise)
+
 
 
 ### CSA (Canada)
@@ -195,14 +216,14 @@ et a envoyé [17 astronautes dans l'espace](https://fr.wikipedia.org/wiki/Agence
 
 # L'arrivée du privé
 Il y a quelques années, l'exploitation spatiale a été secouée
-avec l'arrivée d'une firme privée : SpaceX.
+avec l'arrivée des firmes privées, notamment SpaceX.
 Avec ses prix hyper-compétitif, et ses promesses de le devenir encore plus,
 SpaceX a été pour l'Europe la principale motivation d'une alliance Airbus/Safran
 pour le développement d'Ariane 6.
 
 Dans le même temps, SpaceX annonce assurer le transport aller-retour
 entre Mars et la Terre d'ici les années 2022-2025,
-alimentant de ce fait les questions relatives à l'exploration spatial.
+alimentant de ce fait les questions relatives à l'exploration spatial et la colonisation inter-planétaire.
 
 Pour moi, que les deux domaines du spatial se retrouvent ainsi chamboulés
 est un symptôme d'un changement majeur dans le spatial :
@@ -213,9 +234,9 @@ Il n'y a qu'à voir les liens extrèmement étroits qu'entretiennent Arianespace
 pour s'en convaincre.
 
 Mais, depuis quelques années, des sociétés privées, au sens de non-affiliées
-au public ou à un gouvernement, sont apparues et ont prospéré.
+au public ou à un gouvernement, sont apparues et ont prospéré, souvent via des appels d'offres du public.
 
-Leurs objectifs ont d'abord été le tourisme :
+Leurs objectifs annoncés ont d'abord été le tourisme :
 envoyer des civils non-formés dans l'espace,
 pour des durées plus ou moins longue, dans un but récréatif (expérimentation de l'apesanteur, observation de la Terre depuis l'espace).
 
@@ -234,7 +255,7 @@ Ces firmes, néanmoins, n'étaient pas tant versées dans l'exploration
 spatiale que dans son exploitation : ces firmes proposent avant tout
 un service de mise en orbite de satellite (communication, militaire,
 recherche ou civil), et ne travaille pas sur l'exploration en tant que tel
-(même si elles sont le support de lancement pour des missions d'exploration).
+(elles sont au mieux le support de lancement pour des missions d'exploration).
 
 Elles sont de plus liées à un corps gouvernemental,
 et aux recherches, développements et projets qui s'y rapportent.
@@ -252,8 +273,7 @@ SpaceX devait, en quelques années, développer un système de mise en orbite
 et sur le long terme, permettre la colonisation de Mars.
 
 Le 29 septembre 2008, SpaceX réussissait son premier lancé de fusée.
-Aujourd'hui, c'est SpaceX qui assure [une partie du fret](https://fr.wikipedia.org/wiki/SpaceX_Dragon) en direction
-de la Station Spatiale Internationale.
+Aujourd'hui, c'est SpaceX qui assure [une partie du fret](https://fr.wikipedia.org/wiki/SpaceX_Dragon) en direction de la Station Spatiale Internationale.
 (fun fact: le seul but de SpaceX est la colonisation, mais pour être rentable suffisemment vite (car Elon Musk ne pouvais pas tout financer),
 SpaceX a dû prendre le temps de développer ce service pour avoir un contrat qui remplisse les caisses. Et pour l'expérience aussi)
 
@@ -451,6 +471,24 @@ Pour le dire dans des termes plus formels, cette solution logicielle découple l
 Et ça, c'est un gros bon en avant pour l'exploitation spatiale.
 
 
+## Rocket Lab
+[Rocket Lab](http://www.rocketlabusa.com/) est une firme privée, américaine également, d'origine néo-zélandaise,
+qui a [récemment réussi](https://www.planet.com/pulse/rocket-lab-successfully-carries-dove-pioneer-to-orbit)
+son premier lancement test en orbite, plaçant un cubesat de [Planet](https://www.planet.com/), une société d'étude et surveillance de terrain, en orbite héliosynchrone (c'est-à-dire toujours à la même place relative au soleil : très utile pour étudier la planète toujours au même moment de la journée).
+
+La devise de Rocket Lab : *Space is open for business*.
+
+Comme Vector Space System, leur créneau se situe sur les petits satellites, avec un argument de vente intéressant : la flexibilité.
+Leurs fusées *electron* se construisent rapidement et se lancent dans la foulée ; certaines parties sont même imprimées par des imprimantes 3D !
+Cette flexibilité est un très bon argument de vente, car comme on en a déjà parlé, un nerf de la guerre dans le lancement de satellite est la disponibilité :
+vous pouvez avoir le meilleur rapport poids/prix et la meilleure assurance qualité, si vous ne pouvez envoyer qu'une fusée par an, vous n'avez qu'un client par an.
+
+Et cela pour un prix ridicule de 5 millions de dollars : nul doute que Rocket Lab a trouvé un bon créneau d'exploitation !
+
+C'est super, car ça permet à des firmes qu'on imagine pas encore d'exister.
+Qui aurait crû un jour qu'on pouvait vendre des infos sur des terrains vus de l'espace ?
+
+
 ## ispace/Hakuto, Lunar XPRIZE
 Firme privée nippone née il y a 7 ans, dont [l'objectif affiché](https://www.cnbc.com/2017/12/12/ispace-announces--series-a-funding.html) est d'atteindre la lune en 2019, via deux missions.
 
@@ -459,18 +497,32 @@ et au passage gagner le [google Lunar XPRIZE](https://fr.wikipedia.org/wiki/Goog
 qui met en compétitions plusieurs équipes privées indépendantes dans l'objectif d'aller sur la Lune, d'y parcourir 500 mètres et de renvoyer des photos haute-définition.
 
 La firme nipponne semble confiante, malgré les [au moins 11 autres concurrents](https://en.wikipedia.org/wiki/Google_Lunar_X_Prize#Selected_teams)
-qui prévoient un lancement dans les deux prochaines années (l'un des plus proche étant celui de l'ISRO \o/).
+qui prévoient un lancement dans les deux prochaines années (l'un des plus proche étant celui de l'ISRO \o/),
 
-On notera que l'Europe n'a pas travaillé d'un seul bloc : seuls l'italie, la roumanie et l'allemagne ont participés, chacun de leur côté, et abandonné. Dommage !
+Notez que, malgré [le retrait du prix en lui-même](https://www.cnbc.com/2018/01/22/google-will-not-extend-lunar-xprize-deadline.html),
+les sociétés créées par ce prix sont probablement les sociétés qui exploiteront l'espace demain. Le prix n'a pas été décerné, mais ses effets sont déjà présents.
+
+On notera que l'Europe n'a pas travaillé d'un seul bloc pour ce prix : seuls l'italie, la roumanie et l'allemagne ont participés,
+chacun de leur côté, et finalement abandonné. Dommage !
+
 
 
 
 # Le coût du spatial
-C'est une critique qui revient souvent : quel intérêt de financer l'exploration spatiale, qui coûte *si chère*.
+C'est une critique qui revient souvent : quel intérêt de financer l'exploration spatiale, qui coûte *si chère* ?
 
 La critique est inévitable, car les agences ne sont pas très prolixes à ce sujet,
 étant donné puisqu'il est très difficile d'estimer le retour sur investissement d'un organisme de recherche qui fait de la recherche publique,
 puisque la grande majorité des recherches finissent dans le domaine public, et donc sont utilisées partout, mais sans que personne ne soit obligé de l'indiquer.
+
+C'est le même problème avec tous les organismes de recherche fondamentale, comme le [LHC]() par exemple.
+La grosse différence, c'est que leurs résultats sont très spécialisés, et qu'il n'y a rien de grandiloquant à filmer,
+contrairement au spatial ou l'on peut voir les dizaines de millier d'euros brûler et partir en fumée depuis le moteur qui décolle vers l'espace pour ne souvent jamais revenir.
+Dans les deux cas (spatial et physique), les résultats sont globalement peu tangibles, mis à part quelques annonces qu'il est possible de vulgariser (comme l'observation d'eau sur Mars ou du boson de Higgs).
+
+Pourtant, la recherche fondamentale est (comme son nom l'indique bien qu'il s'agisse là de polysémie) fondamentale. Ce que nous oublions facilement quand nous survivons
+à un accident grâce à une ceinture de sécurité ou participons à une IRM.
+
 
 ## NASA
 Le retour sur investissement du spatial est abordé entre autres dans [cet article](https://www.investopedia.com/financial-edge/0812/the-roi-of-space-exploration.aspx).
@@ -502,8 +554,8 @@ et [l'environnement en général](https://cnes.fr/fr/climat-sadapter-aux-changem
 de [supporter l'éducation](http://www.esa.int/Education/ESA%20at%20the%20forefront%20of%20space%20education),
 de [mettre en place un GPS plus performant](http://www.esa.int/Our_Activities/Navigation/Galileo/What%20is%20Galileo),
 et de comprendre l'univers dans lequel on existe.
-C'est pas trop mal pour 0.03% du PIB européen.
 
+C'est pas trop mal pour 0.03% du PIB européen.
 
 
 
@@ -529,14 +581,16 @@ bien qu'elles en produise souvent tout autant.
 
 ## Propulsion
 ## Logiciel
-Retour sur [Vector Space System](https://vectorspacesystems.com/), qui a développé [Galactic Sky](http://www.galacticsky.net/)
+Retour sur [Vector Space System](https://vectorspacesystems.com/), qui a développé [Galactic Sky](http://www.galacticsky.net/) :
+ce n'est qu'un exemple de logiciel développé par une entreprise privée pour vendre un service.
+
 ## Carburant
 
 ## Réutilisation
 Les nouvelles firmes du spatial s'attaquent à ce problème de plusieurs manières,
 dépendant fortement de leurs objectifs :
 Virgin Galactic a un avion qui décolle et attérit d'un bloc
-(il ne s'agit pas d'un SSTO, mais leur système est intégralement réutilisable),
+(il ne s'agit pas d'un SSTO, car il n'atteint pas l'orbite, mais leur système est intégralement réutilisable),
 Blue Origin étaient les premiers à récupérer leur lanceur proprement,…
 
 Comme montré dans [ce talk](https://www.youtube.com/watch?v=tdUX3ypDVwI),
@@ -560,7 +614,7 @@ Il existe plusieurs manières de construire un petit satellite.
 
 Ces satellites sont particulièrement intéressants, car, de par leur petite taille,
 leur coût au lancement est minimal, ce qui les rends intéressant pour des applications de recherche
-qui [n'ont pas besoin d'un outillage gourmand ou gigantesque](),
+qui n'ont pas besoin d'un outillage gourmand ou gigantesque,
 ou [pour l'éducation](https://janus.cnes.fr/fr/JANUS/Fr/index.htm).
 
 
@@ -570,15 +624,19 @@ par exemple Hubble, qui améliore l'[imagerie](https://en.wikipedia.org/wiki/Dri
 
 Concernant la NASA, [un pan entier](https://www.nasa.gov/directorates/spacetech/techtransfer) de l'agence est dédiée [au transfert de technologie](https://fr.wikipedia.org/wiki/Transfert%20de%20technologie),
 et débouche donc sur [des technologies utilisées aujourd'hui quotidiennement](https://spinoff.nasa.gov) (un journal paraît tous les ans [ici](https://spinoff.nasa.gov/back%20issues%20archives.html)).
+L'un des nombreux exemples est [l'étude des machines à laver les vêtements](https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20150003039.pdf), qui doivent se passer au maximum d'eau et autres produits, et prendre en compte l'absence de gravité. [Voilà](https://www.space.com/13798-space-laundry-machine-microwaves.html) un article de vulgarisation sur le sujet.
 
 L'ESA travaille quant à elle avec tout [un ensemble de sociétés](http://www.esa.int/Our%20Activities/Space%20Engineering%20Technology/TTP2/Technology%20Transfer%20Network3) de transfert technologique,
-mais la vulgarisation/communication à ce propos est hélas bien moins bonne que celle de la NASA.
+mais la vulgarisation/communication à ce propos est hélas bien moins bonne que celle de la NASA (mais ça s'améliore !).
 
 
 ### informatique
 Sans compter les concepts de priorité de processus, le positionnement via les étoiles ou même la miniaturisation, l'informatique est un gros domaine
-d'application pour le spatial.
-
+d'application pour le spatial ; je vous conseille, pour avoir une idée de l'épopée qu'à été le spatial du point de vue de l'informatique,
+de voir [l'épisode 3 de l'excellent documentaire Moon Machines](https://www.youtube.com/watch?v=xQ1O0XR_cA0).
+On y parle des évolutions qui ont été nécessaires pour gérer les fusées et les ordinateurs de bords,
+ainsi que de [Margaret Hamilton](https://en.wikipedia.org/wiki/Margaret_Hamilton%20(scientist)),
+première personne à parler «d'ingénieurie logicielle» et l'une des directrice de projet pour l'ordinateur de bord du projet Apollo.
 
 
 # Continuer l'aventure
@@ -636,8 +694,23 @@ Si vous avez des questions, [l'instance space de stackexchange](https://space.st
 Vous pouvez aussi trouver un fil de news assez complet et général au niveau de [r/space](https://reddit.com/r/space) (avec une timeline sur le côté qui indique les prochains lancements),
 ou, selon la spécialisation, [r/spacex](https://www.reddit.com/r/spacex), [r/ESA](https://www.reddit.com/r/ESA), [r/arianespace](https://www.reddit.com/r/Arianespace),…
 
-Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran,
-je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn/).
+Au niveau vidéo, SpaceX fait [des récapitulatifs mensuels avec des stats à la fin](https://www.youtube.com/watch?v=Yo8AQVMQLp4), SpaceNow, live feed ISS, TODO.
+Il existe aussi de nombreux créateurs de contenus sur youtube, qui attaquent de nombreux sujets.
+Par exemple :
+- [Le Sense Of Wonder](https://www.youtube.com/channel/UCjsHDXUU3BjBCG7OaCbNDyQ), de la vulgarisation de phénomènes astrophysiques.
+- [La Folle Histoire de L'Univers](https://www.youtube.com/watch?v=mMssesTi7ys&list=PLGTCVNuFdipqOTZJ-yVx0AhFgVIDxtATF), à propos d'actualité estampillées «espace». C'est très riche, et assez régulier.
+- [Everyday Astronaute](https://www.youtube.com/channel/UC6uKrU_WqJ1R2HMTY3LIx5Q), de la vulgarisation de divers sujets en anglais, allant du [vocabulaire](https://www.youtube.com/watch?v=52uikGLvKqA) à des [explications complètes](https://www.youtube.com/watch?v=OAXELmvb30E). Attention : essentiellement orienté SpaceX.
+
+Il y a aussi de nombreux documentaires.
+Je vous recommande [Moon Machines](https://www.youtube.com/watch?v=o39UlJlMce8), qui parle des ingénieurs du programme Apollo. Excellent, bien écrit, intéressant et enrichissant.
+
+Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran, je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn), ou [r/spaceengine](https://www.reddit.com/r/spaceengine).
 
 
-*[SSTO]: Single Stage To Orbit
+## Autres liens
+- [interview](https://www.youtube.com/watch?v=N4glvduGG_U) d'un ingénieur de SpaceX à propos de la firme
+- [article *corporate* de Thalès](http://events.thalesgroup.com/parisairshow/fr/article/822046/Imagine-a-world-without-Earth-observation-satellites) sur un monde sans satellites artificiels.
+
+
+
+*[SSTO]: Single Stage To Orbit, un véhicule qui atteint l'orbite en un seul bloc.
