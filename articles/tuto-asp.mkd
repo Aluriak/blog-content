@@ -1924,7 +1924,8 @@ faire un one liner parfait est impossible ici.
 L'intérêt est qu'il montre que bien des jeux, même ceux avec des règles complexes,
 peuvent être encodés en ASP pour être résolus ou étudiés.
 
-Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf*.
+Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf* (et des fois, [non](https://codegolf.stackexchange.com/questions/44485/score-a-game-of-kingdom-builder/51777#51777)).
+
 Amis golfeurs, je vous salut !
 
 
@@ -1987,7 +1988,8 @@ C'est ici que nous trouverons les contraintes et les directives de maximisation.
 
 #### Données
 Tout d'abord, nous déclarons les données que nous allons utiliser,
-c'est-à-dire les pièces disponibles, pour chaque catégories, avec leur nom et leur score (qui représente à quel point la pièce nous intéresse).
+c'est-à-dire les pièces disponibles, pour chaque catégories,
+avec leur nom et leur score (qui représente à quel point la pièce nous intéresse).
 
 ```asp
 component(gpu,"A",330,10).
@@ -2008,12 +2010,12 @@ Les deux autres GPU étant moins bonnes, leurs prix et notes sont moins hauts (v
 
 ##### Dépendances
 Notez l'atome `require/4` qui nous permet de définir que la puce intégrée
-nécessite le CPU *C*, et par conséquent (et la règle qui s'en assure sera vue plus tard)
+nécessite le CPU *C*, et par conséquent (la règle qui s'en assure sera vue plus tard)
 que le choix de cette GPU oblige à utiliser le processeur qui l'embarque (c'est assez logique, finalement).
 
 Néanmoins, si on choisi le cpu *C*, nous ne sommes pas obligés de choisir la puce intégrée,
 laissant le champs libre pour une autre carte graphique plus puissante.
-(la logique étant que la puce intégrée ne prend pas l'emplacement de la carte graphique, c'est juste un module du processeur ; personnellement mon processeur possède une puce intégrée, mais je ne l'ai jamais utilisée, j'ai une vrai carte graphique à la place)
+(la logique étant que la puce intégrée ne prend pas l'emplacement de la carte graphique, c'est juste un module du processeur ; personnellement mon processeur possède une puce intégrée, mais je ne l'ai jamais utilisée, j'ai une vraie carte graphique à côté que j'utilise à la place)
 
 ##### Les autres composants
 CPU, RAM, SSD, HDD,… Tous vont passer dans la grande moulinette de l'ASP.
@@ -2031,11 +2033,31 @@ De l'interface haut niveau aux atomes pour la couche d'en dessous.
 #### Modèle
 C'est ici que le principal se passe.
 
+Maintenant que toutes les préférences
+
 
 
 ### Aller plus loin
+#### Réflexion de fond d'informaticien
+Vous noterez que nous avons définis des couches successives d'abstractions : par exemple, nous utilisons `require/4` au lieu d'écrire une contrainte,
+laissant une règle dan l'expansion des données s'occuper de créer la contrainte associée.
+
+Ce principe rapellera à certain les *Domain Specific Language* (DSL), des languages utilisés dans un projet pour décrire un modèle de donnée.
+Ces DSL ont beaucoup d'applications, et vous voyez que dans une certaine mesure, ASP permet d'en créer. Ici, nous avons créé un DSL
+pour décrire les pièces d'ordinateur et leurs relations.
+
+Là où c'est plus fort, c'est que vous pouvez aller plus loin : permettre à l'utilisateur de décrire les tâches qu'il veut faire avec son PC
+(les logiciels qu'il utilise, notamment, comme les jeux ou la bureautique qu'il veut faire tourner),
+et en déduire plus de contraintes sur le PC final : pas la peine d'avoir plus de 2GB de RAM
+si l'utilisateur final veut juste lire ses mails ou se connecter aux réseaux sociaux (4GB pour l'OS Windows),
+et à l'inverse, une puissance minimale de GPU peut être nécessaire pour certains jeux.
+
+Vous pouvez facilement imaginer ASP comme un générateur de DSL : c'est ce que je fait avec [Biseau](https://gitlab.inria.fr/lbourneu/biseau).
+
+
 #### Attrapez les toutes
-Déjà, une première étape, c'est effectivement de récupérer les données.
+Déjà, une première étape, c'est effectivement de récupérer les données, i.e. les pièces disponibles et leurs relations.
+
 Évidemment, récupérer TOUTES les pièces possibles est un peu long,
 alors avoir des informations en amont, notamment les prix minimaux et maximaux (globaux, et par catégorie)
 permet déjà d'élaguer. En général, toute limitation est bonne à prendre : taille de la RAM, du stockage, nombre de cœurs…
@@ -2049,8 +2071,8 @@ ou [partpicker](https://pcpartpicker.com/).
 
 
 #### Dans le ¬Sephiroth
-Une fois que les deux premières parties sont mises en place et travaillent ensembles,
-vient l'étape de distribution.
+Une fois que les deux premières parties sont mises en place et travaillent ensemble,
+vient l'étape de distribution de votre projet révolutionnaire : d'autres personnes pourraient en bénéficier.
 
 Une manière de faire, c'est une interface web, où les utilisateurs peuvent checker
 les pièces disponibles qui les intéressent, éventuellement faire un peu d'apprentissage pour proposer
@@ -2075,10 +2097,14 @@ et contrôlable par l'utilisateur final.
 
 ### PC construit, nuit de folie
 Cet exemple ne sera pas utile tel quel à tout le monde, mais vous comprenez bien que vous pouvez l'adapter un peu pour,
-par exemple, choisir le meilleur portable disponible en fonction des fonctionnalités qu'on vous vend.
+par exemple, choisir le meilleur portable disponible en fonction des fonctionnalités qu'on vous vend,
+faire les sandwichs pour la randonnée de demain en fonction de ce qu'il y a dans le frigo,
+ou plus généralement de décider comment faire quelque chose en fonction des limites.
 
 J'ajouterais aussi que mettre à plat ce genre de chose aide beaucoup à faire un choix rationnel.
-Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts ! Magique ? Non, informatique !
+Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts !
+
+Magique ? Non, informatique !
 
 
 
