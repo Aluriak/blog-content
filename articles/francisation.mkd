@@ -1,0 +1,169 @@
+Title: Vive la francisation !
+Date: 2018-01-11
+Modified: 2018-01-11
+Tags: français, opinion
+Authors: Lucas Bourneuf
+Summary: Sérieusement, j'avais besoin d'écrire ce billet, car j'aime beaucoup ce qu'ils font. Ou plutôt, je réagis beaucoup à ce qu'ils font.
+Slug: francisation
+lang: fr
+translation: false
+status: draft
+
+
+De temps à autre, des instances officielles nous montrent que le français n'est pas une langue morte,
+et qu'elle aussi, possède des mots pour décrire des trucs qu'on avait pas avant.
+
+Ce post est une petite liste de termes sacralisés officiellement qui m'ont fait réagir.
+
+En bien ou en mal, notez, je ne vais quand même pas avoir un avis général
+sur une institution dont je ne connais que le nom et un des rôles.
+
+
+
+# Critique linguistique
+Je connais des linguistes, du coups je pose ça là :
+
+oui, ahlala c'est terrible, une administration française qui officialise des mots,
+comme si une institution devait être l'instance de décision pour le sens et l'usage des mots,
+d'autant plus que c'est une institution française au sens du pays français,
+qui n'est pas le seul pays à parler français, c'est quoi cette mentalité impérialiste de vouloir modifier la langue pour tout le monde bla bla bla.
+
+Ahlala c'est terrible. Vite, fermons cet onglet avant que nous ne soyons contaminés par des idées contre-nature.
+
+
+# Motivations et sources
+Cet article n'existe que pour deux raisons :
+
+- parce que j'ai toujours pensé que c'était l'académie française derrière ces nouveaux mots, souvents ridicules : en fait, non, ce sont juste des fausses informations, des hoax balancés par on sait pas qui.
+- parce que tout le monde ne se rend pas compte du boulot qu'il y a derrière, et que ça vaut le coups de s'y intéresser
+
+En commençant cet article, j'ai donc mené quelques recherches, pour finalement apprendre que si l'académie française
+a bien proposé le mot *bloc-note* pour l'anglais *blog* ,
+ce n'est pas réellement elle qui est à l'origine de françisations officielles du vocabulaire informatique.
+
+En fait, il s'agit de [la comission d'enrichissement de la langue française](http://www.culturecommunication.gouv.fr/Thematiques/Langue-francaise-et-langues-de-France),
+qui publie régulièrement des textes officiels présentant les équivalents français à des mots parfois très pointus issus du jargon informatique, à la base essentiellement anglais.
+
+Le site de legifrance est vraiment mal fichu : je ne peux pas mettre un lien vers le résultat de la recherche qui m'a permis de récupérer tous les textes qui nous intéressent ici.
+Cependant, je peux vous expliquer la démarche : il faut aller [sur la recherche experte](https://www.legifrance.gouv.fr/initRechExpTexteJorf.do)
+au [JORF](https://fr.wikipedia.org/wiki/Journal_officiel_de_la_R%C3%A9publique_fran%C3%A7aise), et mettre dans le champs de recherche textuel
+*Vocabulaire de l'informatique et de l'internet*. Et paf, vous avez la liste des quelques documents sortis là dessus (j'en ai 7 personnellement, mais qui dit qu'ils ont tous le même nom ?).
+
+Vous avez le droit d'être émerveillés par cette mise en page qui réussit l'exploit d'être à la fois illisible et imparsable : oui, aucun saut de ligne,
+c'est vraiment difficile de lire un quelconque mot de vocabulaire…
+
+Pour chaque mot que je discute ci-après sera stipulé, lorsque cela est possible, un lien vers l'article qui le définit.
+
+
+
+# Des mots !
+Voilà quelques mots qui m'ont fait réagir, et que j'ai pu commenter.
+
+
+
+## Ordiphone
+[lien vers le texte définissant *ordiphone*](https://www.legifrance.gouv.fr/affichTexte.do;jsessionid=99681469CA8BC42018BE96280FAC35E1.tpdjo03v_2?cidTexte=JORFTEXT000021530617&dateTexte=&oldAction=rechJO&categorieLien=id)
+
+De tous les mots trouvés pour le moment par une quelconque instance, il est mon préféré.
+Pour de multiple raisons.
+
+Ce terme est génial, d'abord parce qu'il est bien meilleur que l'anglais *smartphone*.
+
+Non, vos *smartphone* ne sont pas *smart*. Ils sont toujours cons comme leurs pieds, comme avant.
+Ils sont *phone*, c'est vrai, d'ailleurs c'est la seule partie du mot conservée.
+
+Ce qui est nouveau, c'est ce côté *ordi*, c'est-à-dire cette unité de calcul généraliste et programmable, dont vous utilisez les capacités tous les jours,
+via des applis développées par des programmeurs qui ne sont pas rattaché au constructeur de votre téléphone, mais qui ont compilé leur code pour qu'il tourne sur votre machine, et distribué via un système de gestion de paquets.
+
+**Ordi**phone. Merde, c'est génial !
+
+De la même manière que nous avons remplacé nos voitures par des ordinateurs sur roues et nos avions par des ordinateurs ailés,
+nous n'avons plus de téléphone dans nos poches, mais des ordinateurs avec une fonction téléphone.
+
+Cette trouvaille est géniale. Je milite pour ordiphone, parce qu'il est juste et qu'il apporte une super discussion avec les gens ;
+ça permet de leur montrer à quel point ils sont entourés par l'informatique et l'électronique. À quel point les ordinateurs nous sont précieux, voire essentiels.
+Et à quel point on ne s'en rend pas compte.
+(et après, une petite couche sur le transhumanisme induit par cette omniprésence, et paf, ça fait la soirée, et papy est super content d'être un cyborg)
+
+Seul bémol : il fait tiquer, au début. C'est assez peu naturel comme mot. Peut-être est-ce juste l'effet d'un mot nouveau ?
+C'est toujours mieux que *terminal de poche*, le synonyme qui fait un peu années 80.
+
+
+## Blogue
+[lien vers le texte définissant *blogue*](https://www.legifrance.gouv.fr/affichTexte.do;jsessionid=99681469CA8BC42018BE96280FAC35E1.tpdjo03v_2?cidTexte=JORFTEXT000021530617&dateTexte=&oldAction=rechJO&categorieLien=id)
+
+Il s'agit évidemment de l'équivalent à l'anglais *blog*, qui reprend la même technique que *bogue*, l'équivalent de l'anglais *bug* : donner une touche française au mot d'origine.
+
+Mais si je vous parle de blogue, c'est surtout une excuse pour parler de l'autre appellation : *bloc-note*,
+qui elle avait été proposée et enterrinée en 2005.
+
+### L'alternative …
+Celui-là est estampillé «académie française», et fût d'ailleurs un excellent moyen de déclencher l'hilarité générale lors de discussions mondaines.
+Si vous ne connaissiez pas, il y a peu de chance que vous ayez trouvé sans aide : c'est totalement à côté de la plaque.
+Et d'ailleurs, l'appellation *blogue* la remplace depuis septemble 2014 (c'est marqué dans le journal officiel).
+
+Notez cependant qu'il est toujours utilisé sur [le site de l'académie française](http://www.academie-francaise.fr/dire-ne-pas-dire/bloc-notes) :
+certains académiciens ont leur fil de publication sous l'intitulé «bloc-note».
+Notez également que dans les publications au JORF, c'est l'appellation bloc-note qui est utilisée… pour parler des sites en général. Par exemple, *rétrolien* se voit affublé de la définition suivante : *Système de liaison hypertextuelle fonctionnant de manière que, si l'auteur d'un bloc-notes relie son texte à un article connexe d'un autre bloc-notes, un lien est automatiquement créé depuis cet article vers le texte d'origine.*
+Il n'est donc pas possible de faire un backtrack sur un autre support qu'un blog, d'après le journal officiel. Encore un retard technologique pour la France.
+
+### … ratée
+Mais, plutôt que juste cracher dessus, essayons de comprendre pourquoi l'appellation *bloc-note* est mauvaise.
+
+D'abord, à la notion de bloc-note est attaché la notion de petite quantité de *notes*,
+c'est-à-dire d'ensembles de petits textes écrits plus ou moins rapidement, et plus ou moins indépendants, ordonnés dans le temps. L'image des brouillons fait à l'arrache pendant le cours de math est assez présente.
+
+A priori, ce n'est pas fou comme association : bien des blogues consistent en un ensemble de petits textes foisonnant.
+
+Le problème est que cette vision est partielle. Bien des blogues ont des textes qui ne sont pas courts (bon, certes, par rapport à un livre, si, mais par rapport à un bloc-note…),
+certains sont même très longs (j'ai un tuto de plus de 1500 lignes sur le feu…), et bien des blogs ont des textes très travaillés, par exemple les blogues d'écrivains.
+De plus bien des blogs n'ont pas réellement besoin de l'ordonnancement temporel : il n'est là que pour des raisons de référencement.
+
+Là encore je vous renvois vers les blogs technique (ou même le miens) : en général, les informations qui y sont présentées sont intemporelles, et loin d'êtres de courtes notes de service.
+
+Le mot blog ne se réfère pas à un style de site, mais à une méthode de publication : linéaire. Prenez n'importe quel site qui publie des informations de manière linéaire, c'est un blog.
+On parle bien de microblogage pour twitter, où chaque utilisateur publie des tweets de manière linéaire
+(les commentaires à la suite d'un tweet, formant une structure en arbre, sont-ils encore du micro-blogging ? Vous avez deux heures et droit à votre cours sur la linéarisation d'arbres).
+
+Une meilleure traduction de blogue, quitte à abandonner le terme, serait «file d'information», parce que c'est exactement ce qu'un blog est.
+
+
+## Égographie
+Celui-là est drôle, très drôle. Et pour ne rien gâcher, il est beau.
+
+D'expérience, soit on trouve tout de suite, soit ça prend un temps monstre : c'est le *selfie*.
+
+**Égo**graphie.
+Très bien trouvé, très élégant, quoique proche d'échographie et donc potentiellement trompeur
+(*- tu veux voir les échographies du bébé ? - euh, c'est pas un peu tôt pour un ordiphone ?*).
+
+Le gros point noir : ce mot est politique, il juge la pratique. La preuve, les fans de selfies se sentent insultés par une telle appellation,
+*nan mais t'façon j'dis selfies pas besoin de l'académie française pour parler*.
+
+De fait, je doute que l'appellation soit conservée par les générations à venir.
+
+Personnellement, autant j'adore le mot que je trouve pertinent et joli (peut-être parce que je ne fait pas de selfie), autant une appelation plus longue,
+mais plus ancrée dans la culture aurait pu être meilleure, comme *autoportrait contextuel*, ou *portrextuel*, qui sonne un peu bizzare, le selfie n'étant,
+il me semble, pas seulement un autoportrait, mais aussi la volonté de mettre le sujet dans un contexte
+(bon, à voir. Après, ça peut pas être plus con que bloc-note).
+
+### Source
+Alors là, c'est le mystère complet : il me semblait avoir lu que ça venait de l'académie française, mais il n'y a aucune trace sur internet.
+
+Cependant, en cherchant sur [le grand dictionnaire de l'office Québéquois de la langue française](http://www.granddictionnaire.com/),
+je trouve [*égoportrait*](http://www.granddictionnaire.com/ficheOqlf.aspx?Id_Fiche=26527058),
+qui a probablement été à l'origine d'égographie et de sa propagation dans les réseaux.
+Good enough.
+
+
+
+
+# Des liens !
+Bon, ici c'est fini, mais il y a plus !
+
+Outre les différentes publications sur le JORF, vous pouvez explorer :
+
+- [le grand dictionnaire de l'office Québéquois de la langue française](http://www.granddictionnaire.com/), et voir les différences de traduction entre le québec et la france concernant certains termes (backlinks, par exemple).
+- [bitoduc.fr](http://bitoduc.fr/), un site non officiel mais très fournis de traductions de beaucoup de vocabulaire de l'informatique. Certains termes sont un peu tristes (*malinphone*… argh), mais c'est essentiellement à but humoristique. Il y a néanmoins de bonnes idées (TL;PL pour TL;DR, volubile pour verbose), et quelques mots déjà utilisés (illectronisme, logiciel de gestion de version, internet des objets).
+- [l'épopée d'une fusio-demande](https://vimeo.com/album/4668845/video/224467972), un talk de quelques minutes où des mots issus de bitoduc.fr et du projet [OS souverain](http://www.01net.com/actualites/le-projet-d-un-os-souverain-provoque-l-hilarite-sur-twitter-943802.html) (désolé, pas de meilleur lien pour ça… [Le compte twitter parodique officiel](https://twitter.com/ossouverain) n'est pas très docte à son propre sujet)
+- délire de programmeur : un port français de docker appelé [*marcel*](https://github.com/brouberol/marcel).
