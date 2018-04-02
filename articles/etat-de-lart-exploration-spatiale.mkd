@@ -17,7 +17,8 @@ que j'ai pu glaner pendant 2 ans de suivis de l'actualité spatiale,
 c'est-à-dire essentiellement dirigé par les communications
 officielles des différents organismes du domaine.
 
-Il y a donc un biais évident de contenu dépendant des moyens de communication des agences et sociétés impliquées.
+Il y a donc un biais évident de contenu dépendant des moyens
+de communication des agences et sociétés impliquées.
 
 L'objectif de cet article est de donner à ceux qui n'ont jamais étudié
 la question les principaux concepts qui aujourd'hui constituent
@@ -452,7 +453,7 @@ car normalisé grâce à leur système logiciel Galactic Sky (on en parle après
 et lancé par [les véhicules Vector Space System](https://vectorspacesystems.com/technology/).
 
 Cela peut sembler être une niche, mais cela est prometteur : qui peut imaginer
-tout ce qu'il sera possible de faire avec des ordinateurs aussi facilement placable en orbite ?
+tout ce qu'il sera possible de faire avec des ordinateurs aussi facilement placables en orbite ?
 
 
 ### Galactic Sky
@@ -461,25 +462,26 @@ Petite overview, traduite de [la page officielle](http://www.galacticsky.net/) :
 
 - design de satellite
 - gestion du cycle de vie
-- SDK et API pour le développement (notes aux non programmeurs: ça, c'est un truc qui rend les programmeurs heureux, car c'est ça qui permet de travailler plus sur la logique métier, et moins sur la technique (ce qui est justement coûteux))
+- SDK et API pour le développement (notes aux non programmeurs: ça, ce sont des trucs qui rendent les programmeurs heureux, car ils permettent de travailler plus sur la logique métier, et moins sur la technique (ce qui est justement coûteux))
 - virtualisation, pour tester le satellite avant qu'il ne soit effectivement lancé
 
 Personnellement, rien qu'en lisant ça, je suis enthousiasmé : je veux designer mon satellite !
 Je trouve ça personnellement énorme de vivre à une époque où ce genre d'application tout à fait futuriste arrive.
 
 Pour le dire dans des termes plus formels, cette solution logicielle découple le besoin de la conception bas-niveau.
-Et ça, c'est un gros bon en avant pour l'exploitation spatiale.
+Et ça, c'est un gros bon en avant pour l'exploitation spatiale,
+et ça évite aux entreprises de devoir mettre en place une collaboration longue et complexe avec une société tierce (airbus, boeing, thalès,…) pour concevoir le satellite. Avec Vector Space System, il n'y a plus que deux intervenants : le client et VSS.
 
 
 ## Rocket Lab
-[Rocket Lab](http://www.rocketlabusa.com/) est une firme privée, américaine également, d'origine néo-zélandaise,
+[Rocket Lab](http://www.rocketlabusa.com/) est une firme privée, américaine également, avec une base de lancement en nouvelle-zélande,
 qui a [récemment réussi](https://www.planet.com/pulse/rocket-lab-successfully-carries-dove-pioneer-to-orbit)
 son premier lancement test en orbite, plaçant un cubesat de [Planet](https://www.planet.com/), une société d'étude et surveillance de terrain, en orbite héliosynchrone (c'est-à-dire toujours à la même place relative au soleil : très utile pour étudier la planète toujours au même moment de la journée).
 
 La devise de Rocket Lab : *Space is open for business*.
 
 Comme Vector Space System, leur créneau se situe sur les petits satellites, avec un argument de vente intéressant : la flexibilité.
-Leurs fusées *electron* se construisent rapidement et se lancent dans la foulée ; certaines parties sont même imprimées par des imprimantes 3D !
+Leurs fusées *electron* se construisent rapidement et se lancent dans la foulée ; certaines parties (les moteurs, notamment) sont même imprimées par des imprimantes 3D !
 Cette flexibilité est un très bon argument de vente, car comme on en a déjà parlé, un nerf de la guerre dans le lancement de satellite est la disponibilité :
 vous pouvez avoir le meilleur rapport poids/prix et la meilleure assurance qualité, si vous ne pouvez envoyer qu'une fusée par an, vous n'avez qu'un client par an.
 
@@ -487,6 +489,9 @@ Et cela pour un prix ridicule de 5 millions de dollars : nul doute que Rocket La
 
 C'est super, car ça permet à des firmes qu'on imagine pas encore d'exister.
 Qui aurait crû un jour qu'on pouvait vendre des infos sur des terrains vus de l'espace ?
+
+Si vous voulez plus d'infos sur la fusée Électron, je vous conseille 
+[les explications de Scott Manley](https://www.youtube.com/watch?v=U5k1mlu6A7I)
 
 
 ## ispace/Hakuto, Lunar XPRIZE
@@ -531,6 +536,9 @@ Le retour sur investissement du spatial est abordé entre autres dans [cet artic
 Cette [question sur Quora](https://www.quora.com/Is-space-exploration-a-scam) obtient aussi une réponse très intéressante,
 qui ne s'arrête pas qu'à la question du pognon, mais aussi à la question diplomatique et utile.
 
+Et si vous n'êtes pas convaincus par un bloc de texte avec des sources,
+peut-être que [cette vidéo](https://www.youtube.com/watch?v=lARpY0nIQx0) réussira ?
+
 
 ## ESA
 Pour l'ESA, le budget est de [5.2 milliard d'euros en 2016](http://www.esa.int/spaceinimages/Images/2016/01/ESA%20budget%202016%20by%20domain),
@@ -544,9 +552,13 @@ Je n'ai rien trouvé pour les autres pays ; ce genre d'étude ne se bouscule pas
 En sus, [une étude](http://gsp.esa.int/documents/10192/43064675/C21809ExS.pdf) de [l'organisme d'étude de l'ESA](https://gsp.esa.int),
 indique, entre autre, que l'agence est aussi [un incubateur à collaborations](http://www.esa.int/Our_Activities/Space_Science/Cassini-Huygens/International_collaboration),
 entre autre dû au fait que la moindre sonde envoyée dans l'espace embarque une grande quantité d'appareils, tous développés dans des pays différents,
-et permettant à [des équipes internationales de publier](https://www.cosmos.esa.int/web/planck).
+et permettant à [des équipes internationales de publier](https://www.cosmos.esa.int/web/planck). Sans compter que la conception des charges utiles
+sont faites par des entreprises de l'aéronautique, comme Safran et Airbus.
 
-Personnellement, j'estime que vu les retombées technologiques et les efforts internationaux issus de la recherche dans ce domaine, ça vaudrait le coups de continuer, même si c'était plus cher.
+L'ESA est aussi à la base du développement initial d'Arianespace, pendant des décennies le leader privé de la mise en orbite de charges utiles.
+
+Personnellement, j'estime que vu les retombées technologiques et les efforts internationaux issus de la recherche dans ce domaine,
+ça vaudrait le coups de continuer, même si c'était plus cher.
 (après tout, des coopérations entre pays qui ne visent pas à se taper dessus, c'est assez rare pour être noté ; sans compter que ça évite aux pays concernés de chacun chercher de son côté, alors qu'une coopération est possible ; c'est l'un des rôle de l'ESA que d'unifier ainsi la recherche européenne)
 
 Sans compter que ça nous permet de faire une surveillance planétaire, donc de comprendre pas mal de choses sur notre planète
@@ -556,6 +568,9 @@ de [mettre en place un GPS plus performant](http://www.esa.int/Our_Activities/Na
 et de comprendre l'univers dans lequel on existe.
 
 C'est pas trop mal pour 0.03% du PIB européen.
+
+Et ce serais trop cool que les 99.97% restant aient un retour sur investissement aussi haut (tant économiquement que socialement), non ?
+
 
 
 
@@ -571,6 +586,11 @@ Par exemple [la page officielle des brevets de l'ESA](http://web1.esa.cyso.net/p
 [celle de la NASA](https://technology.nasa.gov/patents),
 ou [celle de l'ISRO](http://www.isro.gov.in/isro-technology-transfer/patent),
 ou tous les liens apportés dans la partie précédente.
+
+Si vous lisez de la littérature blanche (des papiers de scientifique, donc),
+vous remarquerez que certains domaines pullules de papiers publiés par des gens
+qui bossent dans des agences spatiales. L'aéronautique est un domaine évident. L'informatique, dans certains milieux,
+avance aussi beaucoup grâce à ça.
 
 Notez également que SpaceX tient une bonne place ici ;
 c'est essentiellement dû à leur (excellente) communication sur ces sujets,
@@ -668,14 +688,8 @@ Les comptes sur les réseaux sociaux sont de bon moyens de savoir ce qu'il se pa
 par exemple [ici](https://twitter.com/ESA_fr) avec l'ESA, en français.
 
 
-## Particuliers
-Il y a beaucoup de particuliers qui font de la vulgarisation et des news,
-par exemple Florence Porcel, avec notamment sa chronique [*la folle histoire de l'univers*](https://www.youtube.com/watch?v=FfR7lHqKdGM&list=PLGTCVNuFdipqOTZJ-yVx0AhFgVIDxtATF).
-Il y a aussi le compte twitter de l'astrochimiste [Hervé Cottin](https://twitter.com/hcottin).
-
 
 ## Communautés & médias spécialisés
-exploration spatiale
 [Sciencedaily](https://www.sciencedaily.com/news/space_time/nasa/) est plutôt bon niveau news, et ne fait pas dans le sensationnel,
 et cite ses sources.
 [Space.com](https://www.space.com/) semble également sérieux.
@@ -694,22 +708,48 @@ Si vous avez des questions, [l'instance space de stackexchange](https://space.st
 Vous pouvez aussi trouver un fil de news assez complet et général au niveau de [r/space](https://reddit.com/r/space) (avec une timeline sur le côté qui indique les prochains lancements),
 ou, selon la spécialisation, [r/spacex](https://www.reddit.com/r/spacex), [r/ESA](https://www.reddit.com/r/ESA), [r/arianespace](https://www.reddit.com/r/Arianespace),…
 
-Au niveau vidéo, SpaceX fait [des récapitulatifs mensuels avec des stats à la fin](https://www.youtube.com/watch?v=Yo8AQVMQLp4), SpaceNow, live feed ISS, TODO.
-Il existe aussi de nombreux créateurs de contenus sur youtube, qui attaquent de nombreux sujets.
-Par exemple :
+Au niveau vidéo, SpaceX fait [des récapitulatifs mensuels avec des stats à la fin](https://www.youtube.com/watch?v=Yo8AQVMQLp4),
+[SpaceNow](TODO), [live feed ISS](TODO), TODO.
+
+## Particuliers
+Il existe aussi de nombreux créateurs de contenus qui attaquent de nombreux sujets, allant des news à la vulgarisation.
+Une liste non exhaustive :
+
 - [Le Sense Of Wonder](https://www.youtube.com/channel/UCjsHDXUU3BjBCG7OaCbNDyQ), de la vulgarisation de phénomènes astrophysiques.
+- [Hugo Lisoir](https://www.youtube.com/channel/UCDC6DBi0kRp6Jk21xqfvFLA) parle depuis sa chaîne de l'actualité du spatial en générial. C'est très bien remplis, très optimiste !
 - [La Folle Histoire de L'Univers](https://www.youtube.com/watch?v=mMssesTi7ys&list=PLGTCVNuFdipqOTZJ-yVx0AhFgVIDxtATF), à propos d'actualité estampillées «espace». C'est très riche, et assez régulier.
-- [Everyday Astronaute](https://www.youtube.com/channel/UC6uKrU_WqJ1R2HMTY3LIx5Q), de la vulgarisation de divers sujets en anglais, allant du [vocabulaire](https://www.youtube.com/watch?v=52uikGLvKqA) à des [explications complètes](https://www.youtube.com/watch?v=OAXELmvb30E). Attention : essentiellement orienté SpaceX.
+- [le compte twitter de l'astrochimiste Hervé Cottin](https://twitter.com/hcottin), qui parle beaucoup des données de la sonde rosetta en ce moment.
+- [Everyday Astronaute](https://www.youtube.com/channel/UC6uKrU_WqJ1R2HMTY3LIx5Q), de la vulgarisation de divers sujets en anglais, allant du [vocabulaire](https://www.youtube.com/watch?v=52uikGLvKqA) à des [explications complètes](https://www.youtube.com/watch?v=OAXELmvb30E), en passant par [des analyses de sujets de discussion](https://www.youtube.com/watch?v=PlwA40tIKr8). C'est très orienté SpaceX (encore une fois, c'est biaisé car SpaceX communique beaucoup).
+- [Scott Manley](https://www.youtube.com/channel/UCxzC4EngIsMrPmbm6Nxvb-A), avec une chaîne très diversifiée. Il y a notamment des vidéos de jeux vidéos estampillés spatial, qui sont utilisés comme prétextes pour aborder des concepts physiques et scientifiques comme [le carburant des fusées](https://www.youtube.com/watch?v=jI8TuufCp0M), les [cyclers](https://www.youtube.com/watch?v=-lW1LiIcT28), et des vidéos directement en rapport avec l'actualité comme [l'explosion d'une fusée sur son pas de tir](https://www.youtube.com/watch?v=mBcoTqhAM_g), ou des vulgarisations de phénomènes et notions complexes, comme [l'ISP](https://www.youtube.com/watch?v=nnisTeYLLgs) ou [la plomberie des moteurs](https://www.youtube.com/watch?v=4QXZ2RzN_Oo).
 
-Il y a aussi de nombreux documentaires.
-Je vous recommande [Moon Machines](https://www.youtube.com/watch?v=o39UlJlMce8), qui parle des ingénieurs du programme Apollo. Excellent, bien écrit, intéressant et enrichissant.
+## Documentaires
+Il y en a beaucoup, évidemment.
+Je vous recommande particulièrement [Moon Machines](https://www.youtube.com/watch?v=o39UlJlMce8), qui parle des ingénieurs du programme Apollo.
+Bien écrit, pas survendeur, intéressant et enrichissant. Bref, excellent !
+D'autres documentaires existent :
 
-Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran, je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn), ou [r/spaceengine](https://www.reddit.com/r/spaceengine).
+- [BBC Space Race](https://www.youtube.com/watch?v=xcLphSY8PX0) : raconte l'intégration du génie aéronautique allemand par les superpuissance pendant la guerre froide. C'est un documentaire avec reconstitution/fiction.
+- [In The Shadow Of The Moon](https://www.youtube.com/watch?v=Osl9sDYDPqs) : à propos d'apollo, surtout les missions 8, 11 et 13, au travers d'interview des astronautes qui ont marché sur la lune. Bien des passages sont magnifiques, imposants.
+- [9 minutes before space](https://www.youtube.com/watch?v=uJPB-F8C168), de Roscosmos, à propos des vols habités russes. C'est un point de vue trop rarement étudié dans les documentaires occidentaux, et pourtant, c'est tout aussi intéressant.
+
+Enfin, si vous cherchez plutôt à vous émerveiller ou a peupler vos fonds d'écran,
+je vous conseille [r/spaceporn](https://www.reddit.com/r/spaceporn), ou [r/spaceengine](https://www.reddit.com/r/spaceengine).
+
+Il y a tant à apprendre !
+(et pour reprendre l'idée de la chaîne du Sens of Wonder : émerveillez-vous, bordel de merde !)
 
 
 ## Autres liens
-- [interview](https://www.youtube.com/watch?v=N4glvduGG_U) d'un ingénieur de SpaceX à propos de la firme
+- [interview](https://www.youtube.com/watch?v=N4glvduGG_U) d'un (ancien) ingénieur de SpaceX à propos de la firme
 - [article *corporate* de Thalès](http://events.thalesgroup.com/parisairshow/fr/article/822046/Imagine-a-world-without-Earth-observation-satellites) sur un monde sans satellites artificiels.
+- [les kits de presse d'Arianespace pour les lancements](http://www.arianespace.com/press-kits/) sont des documents complets qui expliquent chaque mission.
+- [condor scan](http://www.universcience.tv/video-condor-scan-et-l-imagerie-dentaire-16410.html), permettant aux dentistes de construire un modèle 3D des dents de leur patients, est une application directe de recherches menées par le CNES pour étudier la surface de la Terre.
+- On en a pas trop parlé, mais l'astrobiologie est une discipline scientifique qui a le vent en poupe en ce moment. [Voilà une interview d'un astrophysicien à ce sujet](https://www.youtube.com/watch?v=1kYRv63pRrE)
+- Ça arrive en réalité assez souvent : [un astéroïde qui passe pas loin de la Terre](https://www.youtube.com/watch?v=u_faNY70L78).
+- [un TED](https://www.ted.com/talks/danielle_wood_how_we_can_use_space_technology_to_improve_life_on_earth) d'une scientifique du MIT qui bosse sur le transfert technologique.
+- [Isaac Arthur](http://www.isaacarthur.net/) propose une très grande quantitité de vidéos sur de très nombreux sujets.
+- [Un documentaire](https://www.youtube.com/watch?v=dalKynWWKT0) sur l'arrivée sur Terre de [Scott Kelly](https://fr.wikipedia.org/wiki/Scott_Kelly) et
+[Mikhail Kornienko](https://fr.wikipedia.org/wiki/Mikhaïl_Kornienko), premiers astronautes à avoir passé une année entière dans l'espace. C'est grâce à cette mission (et au frère jumeau de Scott Kelly, resté sur terre pendant ce temps), que des études sur l'effet de la gravité zéro sur les humains commencent à voir le jour. C'est réellement génial de voir les astronautes russes et américains se parler dans leurs langues natales, et voir le comité d'accueil tout aussi mélangé les suivre et les récupérer.
 
 
 
