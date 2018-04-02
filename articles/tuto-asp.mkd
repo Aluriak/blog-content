@@ -849,28 +849,72 @@ Par conséquent, le modèle est faux, et ne sera pas considéré par le solveur.
 Ici `(N\3) != 0` n'est vrai que si `N` n'est pas un multiple de 3 (N modulo 3, écrit `N\3` en ASP, renvois le reste de la division entière,
 c'est-à-dire zéro quand le nombre divisé est multiple du quotient, ici 3).
 Par conséquent, le *corps* de la contrainte est vrai lorsque nb(X) est vrai avec X un multiple de trois.
-Donc le modèle est invalidé dans ce cas.
-Donc, sur les 100 modèles précédemment générés, il n'en reste plus que 33:
-le nombre de nombres entre 1 et 100 qui sont multiples de 3.
+Le modèle est donc invalidé dans ce cas.
+À l'inverse, lorsque X n'est pas un multiple de trois, le corps de la contrainte est faux, donc ladite contrainte n'invalide pas le modèle.
+
+Ainsi, sur les 100 modèles précédemment générés, il n'en reste plus que 33:
+les nombres entre 1 et 100 qui sont multiples de 3.
 
 Un peu de gymnastique intellectuelle est nécessaire quand vous manipulez les contraintes :
 elles expriment ce qui doit être faux, pas ce qui doit être vrai.
 
 
+## Négation dichotomique
+Il s'agit d'une forme de négation explicite sur un atome,
+qui ressemblent, dans leurs effets, à des contraintes.
+
+D'abord, considérons le programme suivant :
+
+    {b;a}.
+
+Il génère quatre ensembles-réponse : l'ensemble vide, a, b et ab.
+Si nous ajoutons la règle suivante :
+
+    a :- b.
+
+Alors il n'y a plus que trois modèles : le modèle contenant uniquement b n'est pas possible, car a est une conséquence de b.
+Jusqu'ici, rien de nouveau sous le soleil.
+
+Maintenant, considérons ce programme :
+
+    {b;a}.
+    -a :- b.
+
+La seule différence vient de l'atome a, préfixé d'un `-` dans la seconde règle.
+Ce trait d'union est la marque explicite de la *négation dichotomique*.
+
+Les answer-sets de ce modèle sont l'ensemble vide, a et b. Il n'y a pas a et b en même temps.
+
+Pourquoi ?
+Parce que `-a` signifie exactement *que l'atome a est faux*.
+Or, lorsque l'on choisi à la fois a et b dans la première ligne, a et b sont vrais. Mais cela entre en conflit avec la seconde règle, qui stipule que *si b est vrai, alors a doit être faux*.
+
+Une autre manière de l'écrire serais la suivante, indiquant que *a et b ne peuvent être vrais en même temps* :
+
+    {b;a}.
+    :- b ; a.
+
+Bien qu'elles aient ici un effet identique, il existe entre ces deux écritures une différence logique.
+Gardez-la donc en tête : parfois la négation dichotomique est plus simple ou lisible qu'une contrainte.
+
+
 
 ## Insatisfiabilité
+*s'il n'y a pas de solution à un problème, c'est qu'il n'y a pas de problème*
+
 Avec cette histoire de contraintes qui empêchent certains modèles d'exister,
 on est en droit de se poser une question… Et si un problème n'est pas satisfiable,
-c'est à dire qu'il n'existe pas de réponse ?
+c'est-à-dire qu'il n'existe pas de réponse ? Que se passe-t-il ?
 
 Et bien, accrochez vous à vos ceinture, c'est tout à fait possible:
 
 ```asp
 a.  % a est vrai
-:- a.  % a ne peut pas être vrai
+-a.  % a est faux (ici équivalent à `:- a.`)
 ```
 
-Ceci est la contradiction la plus simple imaginable. C'est la quintessence même du ridicule, on en viendrait à rire, autant que si les poules avaient des dents, en plus de leur bec !
+Ceci est la contradiction la plus simple imaginable. C'est la quintessence même du ridicule,
+on en viendrait à rire, autant que si les poules avaient des dents, en plus de leur bec !
 
 De son côté, clingo réagit exactement comme il faut:
 
@@ -884,11 +928,12 @@ De son côté, clingo réagit exactement comme il faut:
     Time         : 5.189s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
     CPU Time     : 0.000s
 
-Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set, aucune réponse possible.
+Le problème est bien **insatisfiable**, autrement dit, il n'a aucun answer set, aucun modèle, aucun ensemble-réponse possible.
 
 Un petit mot en passant : si vous avez un jour un problème, que vous arrivez à le modéliser en ASP,
-et que vous obtenez une insatisfiabilité, c'est une preuve que votre problème n'est pas soluble.
-Ou alors que vous avez mal encodé votre problème, au choix :)
+et que vous obtenez une insatisfiabilité, c'est une preuve que votre problème n'est pas soluble (dans ce cas, est-ce encore un problème ?).
+
+Ou alors que vous avez mal encodé votre problème :)
 
 
 ## Tokens
@@ -941,22 +986,33 @@ le *pour tout* avec un exemple complet :
 % J'ai 3 copains dans ma classe
 copain(1..3).
 % Parfois certains ne viennent pas à la récré
-{ en_recre(1..3) } 3.
-% On joue au ballon quand on est tous les quatre
-on_joue_au_ballon:- en_recre(C): copain(C).
+{ en_recre(1..3) }.
+% On joue au tarot quand on est tous les quatre
+on_joue_au_tarot:- en_recre(C): copain(C).
 ```
 
-Cet exemple génère 8 answer sets, dont un seul contient `on_joue_au_ballon`.
+Cet exemple génère 8 answer sets, dont un seul contient `on_joue_au_tarot`.
 
 Ici, le corps de la dernière règle implémente
 la condition *en_recre(C) doit être vrai __pour tout__ les copains C.*
 Autrement dit, si il existe un copain C tel que `en_recre(C)` est faux, alors la condition est brisée,
-et le corps de la règle est faux, et par conséquent, on ne joue pas au ballon.
+et le corps de la règle est faux, et par conséquent, on ne joue pas au tarot.
 
 Il est possible d'avoir plusieurs conditions à droite du `:`, et elles doivent être
 séparées par une virgule `,` (et non un point-virgule).
 
 <!-- TODO: un petit mot de la fin ? -->
+
+## Exeeeeerciiiiiiice ! Garde contre et roi de trèfle
+Ajouter au programme précédent la ou les règles nécessaire pour que l'atome `on_joue_au_ballon` soit vrai lorsque l'on ne joue pas au tarot
+(donc, lorsque qu'un copain n'est pas là pour la récré).
+
+### Aide
+Si au bout de 10 minutes, vous:
+
+- **n'avez rien essayé :** faites une pause plutôt qu'attendre que ça se passe : chantez les plus grands tubes de la compagnie créole, ça détends.
+- **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie.
+- **avez trouvé comment faire, mais seulement dans le vide et avec des copains sphériques :** je suis content de voir que mon tuto est utile aux physiciens ! La solution est en fin de tuto.
 
 
 ## Erreurs et warnings
@@ -2266,6 +2322,13 @@ enfant(Enfant,Papa):- papa(Papa,Enfant).
 ```asp
 papa(P):- papa(P,_).
 1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), ça revient au même
+```
+
+### Garde contre et roi de trèfle
+Les deux règles suivantes sont équivalentes dans ce contexte :
+```asp
+on_joue_au_ballon:- -on_joue_au_tarot.
+on_joue_au_ballon:- copain(C) ; not en_recre(C).
 ```
 
 ### Yodel et papier crépon
