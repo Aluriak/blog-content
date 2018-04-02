@@ -833,7 +833,7 @@ tous les modèles avec une valeur qui n'est pas multiple de 3 :
 ```
 
 Premier constat, l'écriture d'une contrainte ressemble à celle d'une règle, à l'exception de la *tête*, qui est vide.
-C'est exacement la description d'une contrainte dans la grammaire d'ASP: une règle sans tête.
+C'est exactement la description d'une contrainte dans la grammaire d'ASP: une règle sans tête.
 
 Cela, logiquement, à un sens : la contrainte est une règle.
 Hors, dans une règle, rappelez-vous : lorsque le *corps* est vrai, la *tête* est vraie.
