@@ -1,0 +1,143 @@
+Title: Écologie et équations non-linéaires en python
+Date: 2017-04-02
+Modified: 2018-04-02
+Tags: python, tuto
+Authors: Lucas Bourneuf
+Summary: la résolution d'équations différentielles non-linéaire avec les mains
+Slug: prey-pred-py
+Lang: fr
+Translation: false
+Status: draft
+
+
+Comment faire un modèle proie-prédateur en python ?
+(c'est-à-dire modéliser le nombre de proies et de prédateurs dans un écosystème)
+
+Question a priori complexe, jusqu'au moment où l'on trouve sur
+[la page wikipédia des équation de Lotka-Volterra](https://fr.wikipedia.org/wiki/%C3%89quations_de_pr%C3%A9dation_de_Lotka-Volterra)
+les deux équations qui donnent en fonction des populations de proies et de prédateurs leurs variations.
+
+La solution simple consiste en la reproduction des équations qui permettent
+de calculer à un instant t la population à un instant t+1 :
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
+PREY, PRED = 1.9, 1.8
+PREY_REPRO_RATE, PREY_DEATH_RATE = 2/3, 3/3
+PRED_REPRO_RATE, PRED_DEATH_RATE = 1, 1
+TERM_WIDTH = 80
+
+
+def next_pop(prey:float, pred:float) -> (float, float):
+    """Return next amount of preys and predators"""
+    dprey = prey * 0.1 * (PREY_REPRO_RATE - pred * PREY_DEATH_RATE)
+    dpred = pred * 0.1 * (prey * PRED_REPRO_RATE - PRED_DEATH_RATE)
+    return prey + dprey, pred + dpred
+
+
+def run_model(steps:int=1000) -> [(float, float)]:
+    """compute population evolution for given steps"""
+    pop = PREY, PRED
+    results = []  # or make this yield the pops
+    for step in range(steps):
+        results.append(next_pop(*pop))
+    return results
+
+
+def vizualize(pops:[(float, float)]):
+    """Build and save graphics of given populations"""
+    df = pd.DataFrame(pops, columns=('prey', 'pred'))
+    df.to_csv('out.csv')
+    plot = df.plot()
+    plot.grid()
+    plot.set_xlabel('time')
+    plot.set_ylabel('population')
+    plot.set_title('Evolution of populations')
+    plt.savefig('out.png', dpi=400)
+    plt.show()
+
+
+vizualize(run_model())
+```
+
+
+Grâce à un peu de pandas, on trouve le graphe suivant :
+
+<center>{% img {filename}/images/python/prey-pred-model-simple.png 700 "Results with basic implementation" %}</center>
+
+Et là, surprise : on obtient pas la même chose que sur wikipédia. Au lieu des jolies courbes, on a un truc qui part en cacahuète dés 3 oscillations.
+En jouant un peu sur les paramètres, on arrive parfois à des résultats un poil meilleurs, mais à un moment ou un autre,
+les oscillations cessent pour laisser la place à une augmentation exponentielle des proies et des prédateurs, ou à la stagnation des populations avec des nombres proches de zéro.
+
+Ça laisse penser à un problème de nombres flottants, hein ?
+
+Eh bien, oui, c'est à peu près ça : les équations différentielles de ce modèle sont non-linéaires, i.e. elles sont chaotiques,
+ainsi la moindre erreur d'arrondis dû à la finitude de nos ordinateurs pollue complètement le système.
+
+C'est ce que l'on observe, et ce dont on ne veut pas.
+La solution ? Ici, on a utilisé la méthode d'Euler pour la résolution d'équation différentielles.
+C'est simple, mais trop simple. En général, cette méthode n'est pas utilisée, car ses résultats, même dans le cas d'équations linéaires, sont pas géniaux.
+
+D'où l'existence de modèle de résolution un poil plus complexe, mais beaucoup plus puissants,
+notamment la généralisation de la méthode d'Euler, [Runge-Kutta](https://fr.wikipedia.org/wiki/M%C3%A9thodes_de_Runge-Kutta).
+Nous allons donc profiter de cette nouvelle méthode, et surtout de l'implémentation en python proposée par scipy pour gérer la crise:
+
+```python
+import numpy as np
+import pandas as pd
+from scipy import integrate  # il n'y a pas Runge-Kutta dans le nom, mais c'est bien elle
+import matplotlib.pyplot as plt
+
+# Parameters
+PREY_REPRO_RATE, PREY_DEATH_RATE = 1.5, 0.75
+PRED_REPRO_RATE, PRED_DEATH_RATE = 1., 0.1
+PREY, PRED = 10, 5
+
+
+def next_pop(pops, t):
+    """Return populations growth"""
+    prey, pred = pops
+    return np.array([ prey * (PREY_REPRO_RATE - PREY_DEATH_RATE*pred),
+                      pred * (PRED_DEATH_RATE*prey - PRED_REPRO_RATE)])
+
+
+def vizualize(pops:[(float, float)]):
+    """Build and save graphics of given populations"""
+    df = pd.DataFrame(pops, columns=('prey', 'pred'))
+    df.to_csv('out.csv')
+    plot = df.plot()
+    plot.grid()
+    plot.set_xlabel('time')
+    plot.set_ylabel('population')
+    plot.set_title('Evolution of populations')
+    plt.savefig('out.png', dpi=400)
+    plt.show()
+
+
+populations = integrate.odeint(next_pop, [PREY, PRED], np.arange(0, 30, 0.1))
+vizualize(populations)
+```
+
+Et là, magie, on obtient:
+
+<center>{% img {filename}/images/python/prey-pred-model-scipy.png 700 "Results with scipy implementation" %}</center>
+
+La différence, c'est principalement l'appel à `scipy.integrate.odeint` qui prend en argument la fonction de calcul de l'étape suivante, les populations initiales,
+et l'intervalle de temps sur lequel travailler. C'est-à-dire le minimum syndical pour calculer ce que l'on veut afficher : les quantités de proies et de prédateurs à chaque étape.
+
+Notez que la fonction `vizualize` n'a pas changée d'un char, puisque l'entrée n'a pas changée non plus, et `next_pop` est restée globalement la même
+mis à part l'usage de numpy et l'argument t qui donne le step (permettant d'avoir des paramètres dépendant du temps… ça donne des idées).
+
+C'est donc bien `run_model` qui est intégralement remplacée par scipy, et qui se charge, seule, de boucler sur des appels successifs de `next_pop`,
+et fait ses petits calculs pour obtenir des valeurs de population plus réalistes que ceux que l'on a eu plus tôt avec la méthode d'Euler.
+
+Les petits calculs en question, ce sont principalement de multiples appels à `next_pop` avec des valeurs autour de celle attendue pour comprendre
+comment se comporte réellement la fonction, et donc prédire avec une meilleure précision l'évolution réelle des populations.
+
+
+Sinon, l'autre solution pour simuler un système proie-prédateur, c'est encore [un automate cellulaire](http://www.ahahah.eu/trucs/pp/).
+Pas de maths, pas de scipy, juste des boucles, des if, du random et un rendu graphique.
