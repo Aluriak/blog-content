@@ -1690,6 +1690,12 @@ Le code est disponible [sur mon github](https://github.com/aluriak/dot-propagato
 #### Résultats sur cas compliqué
 
 
+### Tips
+`#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
+
+
+
+
 ### Multi-shot solving
 TODO
 
