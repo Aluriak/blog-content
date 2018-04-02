@@ -28,7 +28,9 @@ comme si une institution devait être l'instance de décision pour le sens et l'
 d'autant plus que c'est une institution française au sens du pays français,
 qui n'est pas le seul pays à parler français, c'est quoi cette mentalité impérialiste de vouloir modifier la langue pour tout le monde bla bla bla.
 
-Ahlala c'est terrible. Vite, fermons cet onglet avant que nous ne soyons contaminés par des idées contre-nature.
+Ahlala c'est terrible. Vite, linguistes ! Fermez cet onglet avant d'être contaminés par des idées contre-nature !
+
+<!-- Cette partie est humoristique, hein. C'est juste pour tacler un peu les remarques desdits linguistes qui adooooorent remarquer ce genre de chose. -->
 
 
 # Motivations et sources
@@ -38,7 +40,7 @@ Cet article n'existe que pour deux raisons :
 - parce que tout le monde ne se rend pas compte du boulot qu'il y a derrière, et que ça vaut le coups de s'y intéresser
 
 En commençant cet article, j'ai donc mené quelques recherches, pour finalement apprendre que si l'académie française
-a bien proposé le mot *bloc-note* pour l'anglais *blog* ,
+a bien proposé le mot *bloc-note* pour l'anglais *blog*,
 ce n'est pas réellement elle qui est à l'origine de françisations officielles du vocabulaire informatique.
 
 En fait, il s'agit de [la comission d'enrichissement de la langue française](http://www.culturecommunication.gouv.fr/Thematiques/Langue-francaise-et-langues-de-France),
@@ -111,7 +113,8 @@ Il n'est donc pas possible de faire un backtrack sur un autre support qu'un blog
 Mais, plutôt que juste cracher dessus, essayons de comprendre pourquoi l'appellation *bloc-note* est mauvaise.
 
 D'abord, à la notion de bloc-note est attaché la notion de petite quantité de *notes*,
-c'est-à-dire d'ensembles de petits textes écrits plus ou moins rapidement, et plus ou moins indépendants, ordonnés dans le temps. L'image des brouillons fait à l'arrache pendant le cours de math est assez présente.
+c'est-à-dire d'ensembles de petits textes écrits plus ou moins rapidement, et plus ou moins indépendants,
+ordonnés dans le temps. L'image des brouillons fait à l'arrache pendant le cours de math est assez présente.
 
 A priori, ce n'est pas fou comme association : bien des blogues consistent en un ensemble de petits textes foisonnant.
 
@@ -164,6 +167,6 @@ Bon, ici c'est fini, mais il y a plus !
 Outre les différentes publications sur le JORF, vous pouvez explorer :
 
 - [le grand dictionnaire de l'office Québéquois de la langue française](http://www.granddictionnaire.com/), et voir les différences de traduction entre le québec et la france concernant certains termes (backlinks, par exemple).
-- [bitoduc.fr](http://bitoduc.fr/), un site non officiel mais très fournis de traductions de beaucoup de vocabulaire de l'informatique. Certains termes sont un peu tristes (*malinphone*… argh), mais c'est essentiellement à but humoristique. Il y a néanmoins de bonnes idées (TL;PL pour TL;DR, volubile pour verbose), et quelques mots déjà utilisés (illectronisme, logiciel de gestion de version, internet des objets).
+- [bitoduc.fr](http://bitoduc.fr/), un site non officiel mais très fournis de traductions de beaucoup de vocabulaire de l'informatique. Certains termes sont un peu tristes (*malinphone*… argh), mais c'est essentiellement à but humoristique. Il y a néanmoins de bonnes idées (TV;PL pour TL;DR, volubile pour verbose), et quelques mots déjà utilisés (illectronisme, logiciel de gestion de version, internet des objets).
 - [l'épopée d'une fusio-demande](https://vimeo.com/album/4668845/video/224467972), un talk de quelques minutes où des mots issus de bitoduc.fr et du projet [OS souverain](http://www.01net.com/actualites/le-projet-d-un-os-souverain-provoque-l-hilarite-sur-twitter-943802.html) (désolé, pas de meilleur lien pour ça… [Le compte twitter parodique officiel](https://twitter.com/ossouverain) n'est pas très docte à son propre sujet)
-- délire de programmeur : un port français de docker appelé [*marcel*](https://github.com/brouberol/marcel).
+- humour de programmeur : un port français de docker appelé [*marcel*](https://github.com/brouberol/marcel).
