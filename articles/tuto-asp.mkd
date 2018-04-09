@@ -1222,7 +1222,7 @@ max_sound(X,L):- sound(X,L) ; not sound(X,L2): L2 > L, sound(X,L2).
 
 
 
-# Placement de table, première approche
+## Placement de table, première approche
 Lors d'une fête de famille, ils y a deux problèmes majeurs :
 
 - qui finit les frites ?
@@ -1230,7 +1230,7 @@ Lors d'une fête de famille, ils y a deux problèmes majeurs :
 
 C'est bien entendu le second qui nous intéresse ici.
 
-## Spécification du problème
+### Spécification du problème
 L'idée est la suivante : nous avons un ensemble de places numérotées,
 et des relations entre elles. Par exemple : la place 2 est à côté des places 1 et 3, et en face de la place 9.
 
@@ -1250,13 +1250,13 @@ Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre fam
 Et ça ne vous prendra pas bien longtemps pour tout encoder parfaitement, et placer les étiquettes indiquant les positionnement des gens.
 Il ne reste donc plus qu'à vous faire mousser pour *ce placement de table par-fait !*
 
-## Objectif
+### Objectif
 Avoir pour chaque personne une place qui lui convienne.
 
 Avoir plusieurs modèles/ensembles réponse, chacun décrivant un positionnement possible.
 
 
-## Pourquoi une première approche
+### Pourquoi une première approche
 Il est sous-entendu qu'une seconde approche se fera, plus tard.
 Effectivement, cette première approche est naïve : elle considère qu'il existe une solution qui satisfasse toutes les contraintes.
 Si vous avez une famille avec beaucoup de contraintes, il est possible que le problème soit insatisfiable,
@@ -1269,6 +1269,50 @@ C'est donc dans la deuxième volée d'applications que nous verrons une approche
 Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors tentez malgré tout, vous pourriez être surpris.
 
 
+
+## Résoudre une énigme du livre jaune des devinettes
+Le livre jaune des devinettes est un texte qui se trouve dans le jeu Skyrim,
+dans lequel on trouve quelques devinettes. L'une d'entre elle nous intéresse tout particulièrement,
+car elle tombe pile dans le cadre de la logique. En voici l'énoncé :
+
+> Un Bosmer à été tué.
+> L'Altomer affirme que le Dummer est coupable.
+> Le Dummer accuse le Khajiit.
+> L'Orque jure qu'il n'a pas tué le Bosmer.
+> Le Khajiit dit que le Dummer ment.
+> Si un seul de ces messieurs dit la vérité, qui a tué le Bosmer ?
+
+Les noms propres sont propres à l'univers du jeu The Elder Scrolls, et n'a aucun impact sur la résolution.
+Si cela vous gêne, remplacez Bosmer, Altomer, Dummer, Orque et Khajiit par Gérard, Gontran, Michel, Eugène et Siméon.
+
+
+### Réponse
+Le code ASP est étonnement proche de l'énoncé.
+Notez que les deux premières expressions sont données implicitement dans le problème. Notre ordinateur n'étant pas une intelligence forte,
+nous devons même si cela tombe sous le sens lui donner explicitement l'informations qu'il y a un coupable, et qu'il s'agit de l'un des quatre suspect.
+
+```asp
+% Un des quatre suspect est coupable.
+ppl(altomer;dummer;khajiit;orque).
+1{guilty(X): ppl(X)}1.
+
+% L'Altomer affirme que le Dummer est coupable.
+right(altomer):- guilty(dummer).
+% Le Dummer accuse le Khajiit.
+right(dummer):- guilty(khajiit).
+% L'Orque jure qu'il n'a pas tué le Bosmer.
+right(orque):- not guilty(orque).
+% Le Khajiit dit que le Dummer ment.
+right(khajiit):- not guilty(khajiit).
+% Un seul de ces messieurs dit la vérité.
+1{right(X): ppl(X)}1.
+```
+
+L'unique answer set reçu est `ppl(altomer) ppl(dummer) ppl(khajiit) ppl(orque) guilty(orque) right(khajiit)`, qui contient notamment `guilty(orque)`.
+C'est bien, d'après le livre jaune des devinettes, la réponse attendue !
+
+Grâce à ce code ASP, on peut jouer au détective : que se passe-t-il si 1 ou 2 personnes disent la vérité ? Et si une complicité entre deux suspects est possible ?
+Dans ces cas là, notez la place particulière de l'Orque.
 
 
 
