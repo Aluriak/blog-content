@@ -25,8 +25,8 @@ import numpy as np
 import pandas as pd
 
 
-PREY, PRED = 1.9, 1.8
-PREY_REPRO_RATE, PREY_DEATH_RATE = 2/3, 3/3
+PREY, PRED = 1.9, 1.9
+PREY_REPRO_RATE, PREY_DEATH_RATE = 4/3, 2/3
 PRED_REPRO_RATE, PRED_DEATH_RATE = 1, 1
 TERM_WIDTH = 80
 
@@ -38,11 +38,12 @@ def next_pop(prey:float, pred:float) -> (float, float):
     return prey + dprey, pred + dpred
 
 
-def run_model(steps:int=1000) -> [(float, float)]:
+def run_model(steps:int=500) -> [(float, float)]:
     """compute population evolution for given steps"""
     pop = PREY, PRED
     results = []  # or make this yield the pops
     for step in range(steps):
+        pop = next_pop(*pop)
         results.append(next_pop(*pop))
     return results
 
@@ -66,7 +67,7 @@ vizualize(run_model())
 
 Grâce à un peu de pandas, on trouve le graphe suivant :
 
-<center>{% img {filename}/images/python/prey-pred-model-simple.png 700 "Results with basic implementation" %}</center>
+<center>{% img {filename}/images/python/prey-pred-euler.png 700 "Results with Euler method" %}</center>
 
 Et là, surprise : on obtient pas la même chose que sur wikipédia. Au lieu des jolies courbes, on a un truc qui part en cacahuète dés 3 oscillations.
 En jouant un peu sur les paramètres, on arrive parfois à des résultats un poil meilleurs, mais à un moment ou un autre,
@@ -124,13 +125,13 @@ vizualize(populations)
 
 Et là, magie, on obtient:
 
-<center>{% img {filename}/images/python/prey-pred-model-scipy.png 700 "Results with scipy implementation" %}</center>
+<center>{% img {filename}/images/python/prey-pred-rk4.png 700 "Results with Runge-Kutta method" %}</center>
 
 La différence, c'est principalement l'appel à `scipy.integrate.odeint` qui prend en argument la fonction de calcul de l'étape suivante, les populations initiales,
 et l'intervalle de temps sur lequel travailler. C'est-à-dire le minimum syndical pour calculer ce que l'on veut afficher : les quantités de proies et de prédateurs à chaque étape.
 
 Notez que la fonction `vizualize` n'a pas changée d'un char, puisque l'entrée n'a pas changée non plus, et `next_pop` est restée globalement la même
-mis à part l'usage de numpy et l'argument t qui donne le step (permettant d'avoir des paramètres dépendant du temps… ça donne des idées).
+mis à part l'usage de numpy et l'argument t qui donne le step (permettant d'avoir des paramètres dépendant du temps… Ça donne des idées… hivernales).
 
 C'est donc bien `run_model` qui est **intégralement remplacée par scipy.integrate**, et qui se charge, seule, de boucler sur des appels successifs de `next_pop`,
 et fait ses petits calculs pour obtenir des valeurs de population plus réalistes que ceux que l'on a eu plus tôt avec la méthode d'Euler.
@@ -164,7 +165,8 @@ populations = integrate.odeint(next_pop, [PREY, PRED], np.arange(0, 0.2, 0.1))
 ```
 
 
-Et là, on obtient la liste d'appel (monstrueuse) suivante :
+Et là, on obtient la liste des 31 appels réalisés par l'implémentation de Runge-Kutta :
+
 ```
 CALL: 10.0 5.0
 CALL: 9.999730912906742 5.0
