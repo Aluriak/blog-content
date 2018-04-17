@@ -1,0 +1,291 @@
+Title: A language for SpaceEngine Modding
+Date: 2018-04-14
+Modified: 2016-04-14
+Tags: space engine, python
+Authors: Lucas Bourneuf
+Summary: 
+Slug: 1
+lang: en
+translation: false
+status: draft
+
+
+After [the reproduction of Sean Raymond's Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd),
+others works of the same author were considered, notably [his though about Isaac Asimov's Kalgash system](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/).
+The problem is : i don't want to write a python script for each problem.
+
+So, let's dive into [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
+or [JSON](https://en.wikipedia.org/wiki/JSON)-based DSL to describe a system in SpaceEngine,
+with the associated python compiler.
+
+
+
+# The need
+It's quite simple : i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
+Also, i want to be able to encode future works, notably the Ultimate Engineered Solar System.
+
+Few necessary features:
+- define objects to put into the system, their childs, for any nested level (e.g. a moon of a moon of a moon of a giant of a star of a black hole)
+- define meta-objects, like rings of objects, and their prograde direction
+- compilation toward SpaceEngine's modding interface.
+- language extension: i want to be able to add easily new terms and routines, to simplify my life (e.g. shortcuts to earth, blue giants and black holes).
+
+
+# ASP-based language
+## Answer Set Programming
+I will not talk too much about it. It's a logic programming language, like prolog, but even more logical. I am currently writing a french tutorial for this language.
+We will not use the full capabilities of the language ; in fact, we will stick to a lisp-like syntax, ignoring much of the language interest and features.
+
+If you are familiar with ASP, you will probably get the interest of using it.
+
+## Kalgash systems encoding — a first take
+The kalgash system 4 is quite straightforward:
+
+- a black hole, orbited by, in order
+- a ring of 8 suns (1 AU)
+- a planet (2.5 AU)
+- a ring of 8 suns  (5 AU)
+
+A simple way to explain that would be:
+
+```
+system(black_hole, "Kalgash")
+orbit(black_hole, ring(8, sun), 1).
+orbit(black_hole, earch, "2.5").
+orbit(black_hole, ring(8, sun), 5).
+```
+
+
+## The ASP to SE compiler
+I code in python the CLI around the compiler and the compiler itself. The compiler,
+if told so, will put the wanted systems into SpaceEngine installation directory as expected by the software.
+
+In the end, all you have to do is to write the system encoding, run the compiler, and launch SpaceEngine.
+
+
+
+# JSON-based language
+A more standard language is JSON. It can also be used to implement what we need.
+Bonus: no external ASP solver needed, python's stdlib contains an (unforgiving) parser for JSON.
+However, JSON is just a text format, so you have to say goodbye to all ASP capabilities regarding variables, answer set and logical relations.
+
+
+## The JSON to SE compiler
+The JSON compiler is not really different from the ASP one… just two functions, to extract the data, really changes.
+
+
+## Kalgash systems encoding — with JSON
+The Kalgash 4 system is quite easy to define.
+
+```json
+{
+    "name": "Kalgash",
+    "UID": "UID42",
+    "type": "black hole",
+    "childs": [
+	{
+	    "type": ["ring", 8, "sun"],
+	    "retrograde": true,
+	    "distance": 1,
+	},
+	{
+	    "type": "earth",
+	    "distance": 2.5
+	},
+	{
+	    "type": ["ring", 8, "sun"],
+	    "distance": 5
+	}
+    ]
+}
+```
+
+As you can see, JSON is much more verbose and structured than ASP.
+
+There is a feature of JSON-based language that is not available for the ASP-based one:
+If the root object of JSON file is a list, each dict element of that list is understood as a single system.
+It is possible to emulate that in ASP, but it quickly become cumbersome for really different systems.
+However, the ASP way would allow one to define a squeletton system, and the differences among the multiple instances.
+
+
+
+# The 5 Kalgash systems
+All encodings are available on the [github repository](https://github.com/aluriak/se-lang)
+
+
+## Kalgash 2
+In ASP:
+```asp
+root(black_hole,"Kalgash2").
+orbit(black_hole,ring(sun,8),20).
+orbit(black_hole,orbit(red_dwarf,earth,"0.2"),10).
+```
+In JSON:
+```json
+{
+    "name": "Kalgash 2",
+    "UID": "Kalgash",
+    "type": "black hole",
+    "childs": [
+        {
+                "type": "red dwarf",
+                "distance": 10,
+                "child": {
+                    "type": "earth",
+                    "distance": 0.2
+                }
+        },
+        {
+                "type": ["ring", 8, "sun"],
+                "distance": 20
+        }
+    ]
+}
+```
+
+
+## Kalgash 3
+In ASP:
+```asp
+root(black_hole,"Kalgash3").
+orbit(black_hole,ring(sun,12,orbit(1,earth,1)),20).
+```
+In JSON:
+```json
+{
+    "name": "Kalgash 3",
+    "UID": "Kalgash",
+    "type": "black hole",
+    "childs": {
+            "type": ["ring", 12, "sun"],
+            "distance": 20,
+            "childof": {
+                "1": {
+                    "type": "earth",
+                    "distance": 1
+                }
+            }
+        }
+}
+```
+
+
+## Kalgash 4
+In ASP:
+```asp
+root(black_hole,"Kalgash4").
+orbit(black_hole,ring(sun,8),1,retrograde).
+orbit(black_hole,earth,"2.5").
+orbit(black_hole,ring(sun,8),"4").
+```
+In JSON:
+```json
+{
+    "name": "Kalgash 4",
+    "UID": "Kalgash",
+    "type": "black hole",
+    "childs": [
+        {
+            "type": ["ring", 8, "sun"],
+            "retrograde": true,
+            "distance": 1
+        },
+        {
+            "type": "earth",
+            "distance": 2.5
+        },
+        {
+            "type": ["ring", 8, "sun"],
+            "distance": 5
+        }
+    ]
+}
+```
+
+
+## Kalgash 5
+In ASP:
+```asp
+root(black_hole,"Kalgash5").
+orbit(black_hole,ring(sun,8),1,retrograde).
+orbit(black_hole,earth,"2.5").
+orbit(black_hole,ring(blue_giant,8),20).
+```
+In JSON:
+```json
+{
+    "name": "Kalgash 5",
+    "UID": "Kalgash",
+    "type": "black hole",
+    "childs": [
+        {
+            "type": ["ring", 8, "sun"],
+            "retrograde": true,
+            "distance": 1,
+            "childof": {
+                "1": {
+                    "type": "earth",
+                    "distance": 0.2
+                }
+            }
+        },
+        {
+            "type": "earth",
+            "distance": 2.5
+        },
+        {
+            "type": ["ring", 8, "blue_giant"],
+            "distance": 20
+        }
+    ]
+}
+```
+
+
+## The Ultimate Engineered Solar System
+In its simplest form, UESS is made of 6 rings of 42 Earth-like. Let 0.02 be the distance between them:
+
+```asp
+root(sun,"UESS","UESS").
+value(1,r;"1.02",p;"1.04",r;"1.06",p;"1.08",r;"1.10",p;"1.12",r).
+shortcut(r,retrograde).
+shortcut(p,prograde).
+orbit(sun,ring(earth,42),D,P):- value(D,S) ; shortcut(S,P).
+```
+
+ASP interest here is to allow some kind of automation: in JSON, we would have to write all relations.
+Note however that ASP do not handle well the floats values, and consequently
+the dumb enumeration of distances is necessary… unless you put some python in your ASP.
+Which is a feature of the [Potassco ASP implementation](https://potassco.org/).
+
+```asp
+#script(python)
+import numpy
+import itertools
+def values():
+    return [
+        (str(value), 'retrograde' if retro else 'prograde')
+        for value, retro in zip(numpy.linspace(1, 1.12, num=6), itertools.cycle((True, False)))
+    ]
+#end.
+values(D,P):- (D,P)=@values().
+```
+
+Well, it's a bit overkill, but it works.
+
+
+
+# Conclusions
+Concerning the ASP-based language: ASP is not an ideal language for DSLs, for various reasons, but it's fun and powerful, at least for me.
+There is however some drawbacks that makes it not suitable for a systematic use.
+If you are interested into ASP, dive into [my ASP tutorial](lucas.bourneuf.net/blog/tuto-asp.html) (in french). If you are interested into ASP for DSLs,
+look up one of my last project, [biseau](https://gitlab.inria.fr/lbourneu/biseau),
+which is using ASP as a DSL to draw graphs (that's very cool).
+
+Concerning the JSON-based language, it's much more verbose than ASP, but is also much more standard and easy to setup (you just need the python standard library).
+It is also more readable.
+
+For future work, see the [README](). There is a consequent amount of work to be done. I will do it, one step at a time.
+
+In the end, we have now two ways to express complex systems in Space Engine.
+Now, let's start the modding race !
