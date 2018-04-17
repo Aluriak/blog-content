@@ -1239,7 +1239,7 @@ Nous avons également des personnes, qui doivent toutes être placée sur une pl
 Maintenant, il y a des contraintes. Par exemple :
 
 - Justin ne peut pas être à côté ou en face de Karine, ils ne se supportent pas.
-- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de parties de scuba-curling.
+- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de championnat de scuba-curling.
 - Mamie doit être à côté de la cheminée, mais pas Gérard, qui a vite trop chaud.
 - Si Pépé est à côté de Jeanine, alors Xavier doit être de l'autre côté de Jeanine.
 - Yolande veut être à la place la plus éloignée de la cuisine, pour éviter d'avoir à y aller.
@@ -1891,7 +1891,8 @@ Cette application est directe ; d'autant plus que normalement,
 la famille ne change pas trop entre deux repas,
 et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
 
-Et pas que avec les repas de famille : il marche également avec les soirées entre amis, les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
+Et pas que avec les repas de famille : il marche également avec [les places au cinéma](https://xkcd.com/173/), les soirées entre amis,
+les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
 C'est fou l'informatique.
 
 
