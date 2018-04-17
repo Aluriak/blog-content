@@ -3,7 +3,7 @@ Date: 2018-04-14
 Modified: 2016-04-14
 Tags: space engine, python
 Authors: Lucas Bourneuf
-Summary: 
+Summary: presentation for ASP and JSON based abstraction of SpaceEngine modding language
 Slug: 1
 lang: en
 translation: false
@@ -12,7 +12,7 @@ status: draft
 
 After [the reproduction of Sean Raymond's Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd),
 others works of the same author were considered, notably [his though about Isaac Asimov's Kalgash system](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/).
-The problem is : i don't want to write a python script for each problem.
+The problem is: i don't want to write a python script for each problem.
 
 So, let's dive into [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
 or [JSON](https://en.wikipedia.org/wiki/JSON)-based DSL to describe a system in SpaceEngine,
@@ -242,50 +242,54 @@ In JSON:
 ```
 
 
+
 ## The Ultimate Engineered Solar System
-In its simplest form, UESS is made of 6 rings of 42 Earth-like. Let 0.02 be the distance between them:
+In its simplest form, UESS is made of 6 rings of 42 Earth-like. Let 0.02 AU be the distance between them:
 
 ```asp
 root(sun,"UESS","UESS").
-value(1,r;"1.02",p;"1.04",r;"1.06",p;"1.08",r;"1.10",p;"1.12",r).
+value(1,r;"1.02",p;"1.04",r;"1.06",p;"1.08",r;"1.10",p).
 shortcut(r,retrograde).
 shortcut(p,prograde).
 orbit(sun,ring(earth,42),D,P):- value(D,S) ; shortcut(S,P).
 ```
 
 ASP interest here is to allow some kind of automation: in JSON, we would have to write all relations.
-Note however that ASP do not handle well the floats values, and consequently
+Note however that ASP do not handle well the floats values, nor ordering, and consequently
 the dumb enumeration of distances is necessary… unless you put some python in your ASP.
 Which is a feature of the [Potassco ASP implementation](https://potassco.org/).
 
 ```asp
 #script(python)
-import numpy
 import itertools
 def values():
     return [
-        (str(value), 'retrograde' if retro else 'prograde')
-        for value, retro in zip(numpy.linspace(1, 1.12, num=6), itertools.cycle((True, False)))
+        (str(value / 100), 'retrograde' if retro else 'prograde')
+        for value, retro in zip(range(100, 112, 2), itertools.cycle((True, False)))
     ]
 #end.
 values(D,P):- (D,P)=@values().
 ```
 
-Well, it's a bit overkill, but it works.
+(i have to recognize: this is typically a bad use-case of both ASP and python, since python do not have a simple range for floats and ASP do not handle them…
+I could have cheated a little by choosing a ring gap of 1 AU to hide this corner cases)
 
 
 
 # Conclusions
-Concerning the ASP-based language: ASP is not an ideal language for DSLs, for various reasons, but it's fun and powerful, at least for me.
+Concerning the ASP-based language: ASP is not an ideal language for DSLs, for various reasons, but it's fun (at least for me) and powerful (at least some times).
 There is however some drawbacks that makes it not suitable for a systematic use.
 If you are interested into ASP, dive into [my ASP tutorial](lucas.bourneuf.net/blog/tuto-asp.html) (in french). If you are interested into ASP for DSLs,
 look up one of my last project, [biseau](https://gitlab.inria.fr/lbourneu/biseau),
 which is using ASP as a DSL to draw graphs (that's very cool).
 
-Concerning the JSON-based language, it's much more verbose than ASP, but is also much more standard and easy to setup (you just need the python standard library).
+Concerning the JSON-based language, it's much more verbose than ASP, but is also much more standard
+and easy to setup (you just need the python standard library).
 It is also more readable.
 
-For future work, see the [README](). There is a consequent amount of work to be done. I will do it, one step at a time.
+For future work, see the [README](https://github.com/Aluriak/se-lang/blob/master/README.mkd).
+There is a consequent amount of work to be done (one of them is to restart completely the code, and maybe to handle it in lisp, for both code and input language).
+I will do it, one step at a time.
 
 In the end, we have now two ways to express complex systems in Space Engine.
 Now, let's start the modding race !
