@@ -14,7 +14,7 @@ After [the reproduction of Sean Raymond's Ultimate Engineered Solar System]({fil
 others works of the same author were considered, notably [his though about Isaac Asimov's Kalgash system](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/).
 The problem is: i don't want to write a python script for each problem.
 
-So, let's dive into [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
+So, let's dive into my last project, [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
 or [JSON](https://en.wikipedia.org/wiki/JSON)-based DSL to describe a system in SpaceEngine,
 with the associated python compiler.
 
@@ -22,13 +22,42 @@ with the associated python compiler.
 
 # The need
 It's quite simple : i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
-Also, i want to be able to encode future works, notably the Ultimate Engineered Solar System.
+Also, i want to be able to encode past (and future !) works, notably the Ultimate Engineered Solar System.
 
 Few necessary features:
 - define objects to put into the system, their childs, for any nested level (e.g. a moon of a moon of a moon of a giant of a star of a black hole)
 - define meta-objects, like rings of objects, and their prograde direction
-- compilation toward SpaceEngine's modding interface.
+- compilation toward SpaceEngine's modding language.
 - language extension: i want to be able to add easily new terms and routines, to simplify my life (e.g. shortcuts to earth, blue giants and black holes).
+
+
+# Internal model
+The model is basically the way the data is represented in the core of selang (in fact, there is some postprocessing that is done, notably for special objects like rings).
+It's quite simple, and form the base of the API. Follows an example that reproduce a sun-earth-moon system.
+
+```python
+from selang import ref, orbit, Model, model_to_se
+
+model = Model(
+    'My little system',
+    {  # structure of the system
+        'sun': (1, orbit(1, eccentricity=0.04)),
+        1: ('moon', orbit(0.05)),
+    },
+    {  # non explicit objects
+        1: ref('earth', earth_mass=1.2),  # super earth
+    }
+)
+
+model_to_se(model, '~/games/SpaceEngine/')
+```
+
+Note that this code, once ran (you need to install selang first),
+will push into the given directory the SpaceEngine scripts necessary to see the system appears in-game.
+
+The internal model interface is not the only way to achieve our goals.
+Two other languages can also be targeted.
+
 
 
 # ASP-based language
@@ -62,6 +91,7 @@ if told so, will put the wanted systems into SpaceEngine installation directory 
 
 In the end, all you have to do is to write the system encoding, run the compiler, and launch SpaceEngine.
 
+Everything is explained in the [README](https://github.com/Aluriak/se-lang/blob/master/README.mkd).
 
 
 # JSON-based language
@@ -111,12 +141,13 @@ However, the ASP way would allow one to define a squeletton system, and the diff
 
 # The 5 Kalgash systems
 All encodings are available on the [github repository](https://github.com/aluriak/se-lang)
+in both ASP and JSON formats.
 
 
 ## Kalgash 2
 In ASP:
 ```asp
-root(black_hole,"Kalgash2").
+system(black_hole,"Kalgash2").
 orbit(black_hole,ring(sun,8),20).
 orbit(black_hole,orbit(red_dwarf,earth,"0.2"),10).
 ```
@@ -147,7 +178,7 @@ In JSON:
 ## Kalgash 3
 In ASP:
 ```asp
-root(black_hole,"Kalgash3").
+system(black_hole,"Kalgash3").
 orbit(black_hole,ring(sun,12,orbit(1,earth,1)),20).
 ```
 In JSON:
@@ -173,7 +204,7 @@ In JSON:
 ## Kalgash 4
 In ASP:
 ```asp
-root(black_hole,"Kalgash4").
+system(black_hole,"Kalgash4").
 orbit(black_hole,ring(sun,8),1,retrograde).
 orbit(black_hole,earth,"2.5").
 orbit(black_hole,ring(sun,8),"4").
@@ -206,7 +237,7 @@ In JSON:
 ## Kalgash 5
 In ASP:
 ```asp
-root(black_hole,"Kalgash5").
+system(black_hole,"Kalgash5").
 orbit(black_hole,ring(sun,8),1,retrograde).
 orbit(black_hole,earth,"2.5").
 orbit(black_hole,ring(blue_giant,8),20).
@@ -247,7 +278,7 @@ In JSON:
 In its simplest form, UESS is made of 6 rings of 42 Earth-like. Let 0.02 AU be the distance between them:
 
 ```asp
-root(sun,"UESS","UESS").
+system(sun,"UESS","UESS").
 value(1,r;"1.02",p;"1.04",r;"1.06",p;"1.08",r;"1.10",p).
 shortcut(r,retrograde).
 shortcut(p,prograde).
@@ -274,6 +305,32 @@ values(D,P):- (D,P)=@values().
 (i have to recognize: this is typically a bad use-case of both ASP and python, since python do not have a simple range for floats and ASP do not handle them…
 I could have cheated a little by choosing a ring gap of 1 AU to hide this corner cases)
 
+Finally, for this precise case, using the API is much more easier,
+and enables much more trivial extensions:
+
+```python
+import itertools
+from selang import ref, orbit, ring, model, model_to_se, as_model
+
+def orbits():
+    return (
+        (str(value / 100), retro, 42, 'earth')
+        for value, retro in zip(range(100, 112, 2), itertools.cycle((True, False)))
+    )
+
+hierarchy = (
+    (1, ring(nb_earth, earth_type), orbit(dist, retrograde=retro))
+    for dist, retro, nb_earth, earth_type in orbits()
+)
+objects = {
+    1: 'sun'
+}
+
+
+model = as_model('The Ultimate Engineered Solar System', hierarchy, objects)
+model_to_se(model, '~/games/space_engine/SpaceEngine/')
+```
+
 
 
 # Conclusions
@@ -287,8 +344,11 @@ Concerning the JSON-based language, it's much more verbose than ASP, but is also
 and easy to setup (you just need the python standard library).
 It is also more readable.
 
+Finally, the best language for complex jobs is probably using the API that enable
+the model writing in Python, but for most tasks, ASP and JSON are enough.
+
 For future work, see the [README](https://github.com/Aluriak/se-lang/blob/master/README.mkd).
-There is a consequent amount of work to be done (one of them is to restart completely the code, and maybe to handle it in lisp, for both code and input language).
+There is a consequent amount of work to be done.
 I will do it, one step at a time.
 
 In the end, we have now two ways to express complex systems in Space Engine.
