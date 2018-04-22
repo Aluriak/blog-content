@@ -1586,9 +1586,11 @@ les versions les plus récentes.
 
 
 ## Extending avec Python: Propagateurs
-Vous avez déjà étendu Python avec du C pour gagner un peu de performances ?
+Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
+C'est ce qu'on nomme embedding, ou extending selon le point de vue.
+Ici, nous allons voir comment embed du Python dans ASP, ou, c'est équivalent, extend ASP avec Python.
 
 Les propagateurs sont des objets assez connus dans le monde du solving.
 Il s'agit plus ou moins d'un plugin qui va pouvoir suivre et modifier le déroulement de l'heuristique.
@@ -1614,12 +1616,21 @@ C'est donc, de notre point de vue d'utilisateur extérieur, aléatoire.
 
 Donc, clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
 Ces litéraux du solveur ne changent pas durant tout le solving, et ce sont les éléments de base qu'un propagateur va manipuler.
+Le solveur associe à ces littéraux une des trois valeurs de vérité suivante : vrai, faux, non valide.
+Au tout départ, tous les atomes sont non valides, sauf ceux dont vous indiquez la véracité par défaut, par exemple avec l'expression `a.`: l'atome `a` ne sera jamais faux.
+Puis, en respectant les règles comme `p(X):- q(X) ; r(X).`, le solveur va pas à pas changer les valeurs de vérité des atomes.
+Si à un moment il s'aperçoit que ce qu'il fait est impossible, il *backtrack*, c'est-à-dire qu'il va revenir en arrière, pour essayer d'autres combinaisons.
+
+Et si à un moment tous les atomes ont une valeur de vérité vraie ou fausse, et qu'aucune contrainte n'est violée, alors le solveur sait qu'il s'agit d'un ensemble réponse :
+il affiche alors tous les atomes ayant une valeur de vérité vraie.
+
+Un propagateur va pouvoir agir à différents moments : au début, lorsque le solveur découvre les atomes, lorsque le solveur propose une valeur de vérité pour un atome (on dit alors qu'il *propage*), lorsqu'il *backtrack*, ou lorsqu'il a dans les mains un answer-set valide.
 
 ### Les 4 cavaliers
-Un propagateur, en python, est une classe présentant 4 méthodes :
+Un propagateur, en python, est une classe présentant au moins une de ces 4 méthodes :
 
 - `init`: appelée une seule fois, en première ; c'est là qu'on prend connaissance des littéraux du solveur choisis pour chaque atome
-- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral
+- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral (dire qu'un atome est vrai ou faux)
 - `undo`: appelée chaque fois que l'heuristique va retirer une valeur de vérité à un littéral
 - `check`: appelée chaque fois que l'heuristique vérifie le modèle qu'elle possède
 
@@ -1631,17 +1642,19 @@ c'est parce que cet état n'est possible que lorsque l'heuristique cherche pour 
 Pendant cette recherche, l'heuristique va donner des valeurs de vérité (vrai ou faux) aux atomes,
 chacun à leur tour, explorant les différentes possibilités.
 
-Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel où ne sont assignés à une valeur de vérité qu'une partie des atomes),
+Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel
+où ne sont assignés à une valeur de vérité qu'une partie des atomes),
 il faut décider si le modèle, c'est-à-dire si les valeurs de vérité (ou assignation) est valide.
 
-C'est à ce moment que se joue le jeu des contraintes : montrer que l'assignement total entre en conflit avec une contrainte prouve que le modèle n'est pas valide,
+C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
 et donc qu'il n'a pas a être écrit en sortie de programme.
 
 ### Exemple de propagateur : dot propagator
 Celui-ci est très simple : il s'agit d'afficher un `.` pour chaque propagation du solveur, et d'en retirer un pour chaque *back-propagation* (ou *undo*).
 Cela résulte en une ligne de point qui progresse et régresse au fil de l'exploration du solveur.
 
-Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple, et permet de toucher du doigt l'intérêt des propagateurs.
+Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple,
+et permet de toucher du doigt l'intérêt des propagateurs.
 Suis la version annotée des sources.
 
 ```python
@@ -1656,22 +1669,23 @@ from time import sleep  # pour donner une dimension humaine au programme
 class Propagator:
 
     # Première méthode : init (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
-    # le premier argument est un objet qui va nous donner des infos sur le solving
     def init(self, init):
+        # init: un objet qui va nous donner des infos sur le solving
         for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
             init.add_watch(init.solver_literal(atom.literal))  # on le surveille
 
     def propagate(self, ctl, changes):
         # ctl: c'est le contrôleur du solving ; un objet qui mériterait une section à lui tout seul.
         # changes: la liste des littéraux qui ont eu une assignation ; c'est eux qui nous intéressent.
-        for l in changes:
+        for _ in changes:  # la valeur exacte ne nous intéresse pas
             print('.', flush=True, end='')  # afficher un `.` sans passer à la ligne
             sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
+        # À essayer de votre côté: afficher changes à la place des points. Ça permet de voir en quoi consiste le backtrack.
 
     def undo(self, solver_id, assign, undo):
         # undo contient la liste des littéraux dont l'assignation est annulée.
         # on va donc enlever un '.' pour chacune de ces assignation.
-        for l in undo:
+        for _ in undo:  # la valeur exacte ne nous intéresse pas
             print('\b \b', flush=True, end='')  # revenir en arrière, afficher un espace, revenir en arrière
             sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
 
@@ -1679,6 +1693,7 @@ class Propagator:
 #  si elle existe, elle reçoit le contrôleur du solveur, et nous
 #  permet donc de contrôler le solving.
 def main(prg):
+    # prg: un contrôleur du solveur. C'est lui qu'on va utiliser pour faire ce qu'on veut
     # on enregistre une instance de notre propagateur
     prg.register_propagator(Propagator())
     # on ground le programme 'base', qui est le programme par défaut
@@ -1707,7 +1722,113 @@ en fonction de leur valeur d'assignation.
 
 Compliqué ? Non, pas tant que ça :
 
-TODO: propagators/color.py
+```python
+#script (python)
+
+# de nombreux imports sont nécessaires
+import os  # pour nettoyer l'écran
+import shutil  # pour avoir la taille du terminal
+import textwrap  # pour afficher joliement les atomes
+from time import sleep  # pour que ça aille pas trop vite
+
+import colorama  # des couleurs dans le terminal ! (pip install colorama)
+from colorama import Fore, Back
+colorama.init()  # nécessaire pour windows
+
+
+# quelques constantes utiles
+SPEED = 0.5
+TERM_WIDTH = shutil.get_terminal_size().columns
+def clear(): os.system('cls' if os.name == 'nt' else 'clear')  # oui, c'est sale
+
+
+# ça, ça va être notre classe propagateur. Notez que pour éviter de dupliquer
+#  du code, on a écrit une méthode `print_atoms` qui s'occupe
+#  d'afficher les atomes en couleur.
+class ColorPropagator:
+    # appelée une fois au début: on va dire qu'on va observer tous les atomes du programme
+    def init(self, init):
+        self.sleep = SPEED
+        # On fait un dictionnaire pour se souvenir de la tête qu'à un atome,
+        #  connaissant le littéral.
+        # Notez que les atomes qui sont soumis aux exactes même règles
+        #  (et donc qui sont vrais ou faux en même temps) ont le même litéral.
+        # C'est pourquoi à un littéral (clef) on associe plusieurs valeurs
+        #   (set d'atomes).
+        self.__symbols = {}  # litéral du solveur -> set d'atomes
+        for atom in init.symbolic_atoms:
+            lit = init.solver_literal(atom.literal)  # on récupère le litéral
+            init.add_watch(lit)  # on veut être prévenu lorsque sa valeur de vérité change
+            if lit in self.__symbols:  # on l'ajoute au dictionnaire
+                self.__symbols[lit].add(atom.symbol)
+            else:
+                self.__symbols[lit] = {atom.symbol}
+
+    # la fonction appelée quand un litéral surveillé change de valeur.
+    def propagate(self, ctl, changes):
+        # ctl: le contrôleur
+        # changes: la liste des litéraux qui ont changé de valeur
+        # C'est assez simple: on dit à print_atoms d'afficher tout ça
+        self.print_atoms(ctl.assignment, changes=changes)
+
+    def undo(self, solver_id, assign, undo):
+        # c'est globalement la même chose que propagate, juste avec un argument
+        #  en plus qu'on utilise pas: solver_id.
+        self.print_atoms(assign, changes=undo)
+
+    # La fonction la plus complexe, qui n'a rien à voir avec les propagateurs
+    #  en général.
+    def print_atoms(self, assignment, changes):
+        # assignment: objet qui peut donner pour chaque 
+        clear()  # on nettoie l'écran
+        to_print = ''
+        # là, on boucle sur chaque littéral et atomes associés
+        for idx, (lit, atoms) in enumerate(self.__symbols.items(), start=1):
+            # quand un litéral est associé à plusieurs atomes,
+            #  on les affiche tous, séparés par un point-virgule
+            atom = ';'.join(map(str, atoms))
+            fore, back = Fore.WHITE, Back.BLACK  # couleurs par défaut
+            # assignment.value renvoie, pour un littéral donné:
+            #  - True si le littéral est vrai
+            #  - False si le littéral est faux
+            #  - None si le littéral n'a pas de valeur de vérité
+            if assignment.value(lit) is not None:  # donc, là, il a une valeur de vérité
+                # s'il est vrai, on le met en vert (GREEN), sinon en rouge (RED)
+                fore = Fore.GREEN if assignment.is_true(lit) else Fore.RED
+                # si l'atome vient justement d'être changé, on le surligne en blanc
+                if lit in changes: back = Back.WHITE
+            elif lit in changes:  # C'est un undo
+                # Effectivement, undo veut dire «enlever sa valeur de vérité à un atome»,
+                #  donc, il ne passe pas la première condition. Mais il fait
+                #  bien partie des atomes changé, donc on va le surligner aussi,
+                #  mais en en bleu pour montrer que c'est un backtrack.
+                back = Back.BLUE
+            else:  # et sinon, il n'a pas de valeur et n'a pas été changé
+                # on le laisse en couleur par défaut
+                pass
+            # maintenant on se prépare à l'afficher avec les couleurs sélectionnées
+            to_print += fore + back + atom + Fore.RESET + Back.RESET + '  '
+        # boucle terminée: on a généré toute la chaîne à afficher.
+        #  pour rendre ça beau, on utilise textwrap et la taille de l'écran
+        #  pour découper proprement les lignes.
+        print('\n\n' + '\n'.join(textwrap.wrap(to_print, width=TERM_WIDTH)))
+        # et on attend un poil, sinon on va rien voir.
+        sleep(self.sleep)
+
+
+# Et voilà notre main, qui ressemble à un main des plus standards.
+#  Pas grand chose à dire dessus.
+def main(prg):
+    prg.register_propagator(ColorPropagator())  # on y met notre propagateur
+    prg.ground([("base", [])])  # on grounde le programme de base
+    prg.solve()  # et on résoud le problème !
+
+# fin du python:
+#end.
+```
+
+Le code réel est [ici](https://github.com/aluriak/learning-ASP/blob/master/propagators/color.py).
+Il n'est pas très différent, mais largement moins annoté.
 
 
 ### Exemple de propagateur : graphviz/dot propagator
@@ -1719,17 +1840,124 @@ La théorie des graphes et le dot sont tout à fait en dehors du scope de ce tut
 - le dot, c'est une langue écrite, conçue par le projet graphviz, qui est aussi une suite logicielle. Les logiciels de graphviz sont capable de lire un programme en dot, et de générer une image ou d'autres fichiers qui représentent le graphe. C'est très puissant, car cela permet de voir graphiquement un graphe. C'est exactement ce qui nous intéresse.
 
 Pour ce propagateur, nous allons donc exploiter le dot. L'idée est la suivante : un littéral est un nœud du graphe, et l'on trace un arc (une arête orientée, avec une flèche)
-du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignais le littéral 1.
+du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignait le littéral 1.
 En d'autres termes, nous voulons visualiser le chemin emprunté par le solveur : dans quel ordre il assigne (et dé-assigne) les atomes/littéraux.
 
 Le résultat est de facto très visuel : on génère des visualisations de graphes avec dot !
 
 #### Le graphviz/dot propagator
 Le code est disponible [sur mon github](https://github.com/aluriak/dot-propagator), et reproduit ci-après avec des annotations supplémentaires :
+
 ```asp
+#script(python)
+class DotPropagator:
+    """A non-literal *dot* propagator"""
+
+    # Cette fois-ci, notre classe est un poil plus complexe.
+    #  Elle a un __init__, qu'on utilise pour préparer les conteneurs et le fichier dot
+    def __init__(self, dotfiledesc:str):
+        # dotfiledesc -- un descripteur de fichier dans lequel on peut écrire
+        self.__dotfiledesc = dotfiledesc
+        self.__stack = ['Start']  # c'est une pile de nœuds
+        self.__step = 0  # pour pouvoir annoter les arcs
+        self.__stable_nodes = set()  # tous les nœuds stables
+        self.write_header()  # on commence par écrire des lignes obligatoires
+        # C'est bon ! l'objet est prêt à faire propagateur !
+
+    def init(self, init):
+        # exactement comme pour notre premier propagateur: on suit tous les atomes
+        self.__symbols = {}  # littéral -> set d'atomes
+        for atom in init.symbolic_atoms:
+            lit = init.solver_literal(atom.literal)
+            init.add_watch(lit)
+            if lit in self.__symbols:  # on l'ajoute au dictionnaire
+                self.__symbols[lit].add(atom.symbol)
+            else:
+                self.__symbols[lit] = {atom.symbol}
+
+    def propagate(self, ctl, changes):
+        # ctl: l'objet de contrôle du solveur
+        # changes: les littéraux qui ont reçu une valeur
+        level = ctl.assignment.decision_level
+        self.__step += 1
+        # pour chaque changement, on va écrire dans le fichiers dot.
+        for lit in changes:
+            self.write('\t{} -> {} [label="{}"];'.format(self.last_node, lit, self.__step))
+            self.push_node(lit)  # et on ajoute le litéral dans la pile
+
+    def undo(self, sid, assign, undo):
+        # sid: on s'en fiche
+        # assign: ce sont les assignations de valeurs de vérité, on s'en fiche aussi
+        # undo: les litéraux qui ont été changés
+        while undo:  # tant qu'il y a un nœud dans les undo
+            prev_node = self.pull_node()  # on récupère le sommet de la pile
+            assert prev_node in undo  # par construction, il appartient aux nœuds qui sont retirés
+            # on affiche le backtrack en dot avec une flèche en pointillé qui retourne sur le nœud actuel (la tête de pile).
+            self.write('\t{} -> {} [style=dotted label={}];'.format(prev_node, self.last_node, self.__step))
+            undo.remove(prev_node)  # on enlève le littéral de la liste des undo
+
+    def check(self, ctl):
+        # le solveur trouve que l'assignation est totale et valide : il s'apprête à générer l'answer set !
+        # que faisons-nous ? On marque le nœud courant comme tel.
+        self.__stable_nodes.add(self.last_node)
+
+
+    # méthodes pour modifier le nœud courant (le sommet de la pile)
+    def pull_node(self):  # le nœud courant devient le précédent
+        *self.__stack, ret = self.__stack
+        return ret
+    def push_node(self, uid):  # nouveau nœud courant !
+        self.__stack.append(uid)
+
+    @property
+    def last_node(self):  # juste un raccourcis pour le nœud courant
+        return self.__stack[-1]
+
+    def write(self, line):  # pour écrire du dot
+        self.__dotfiledesc.write(line.rstrip() + '\n')
+
+    def write_nodes(self):  # pour écrire les nœuds
+        for uid, atoms in self.__symbols.items():
+            self.write('\t{} [label="{}"{}];'.format(
+                uid, ' '.join(str(atom.symbol) for atom in atoms),
+                ' fillcolor="green"' if uid in self.__stable_nodes else ''
+            ))
+
+    # Deux méthodes pour les premières et dernières lignes du dot, qui sont toujours les mêmes
+    def write_header(self):
+        self.write('digraph solving {')
+        self.write('\tnode [style=filled];')
+    def finalize(self):
+        self.write_nodes()
+        self.write('}')
+
+
+# Le main est assez standard également,
+#  sauf le fait que l'on fait tout le solving avec un fichier ouvert,
+#  que l'on donne à notre propagateur.
+def main(prg):
+    with open('out/out.dot', 'w') as fd:
+        propagator = DotPropagator(fd)  # c'est notre propagateur !
+        prg.register_propagator(propagator)  # on l'enregistre
+        prg.ground([("base", [])])  # on ground
+        prg.solve()  # on solve
+        propagator.finalize()  # et on termine d'écrire le dot
+#end.
 ```
 
+
 #### Résultats sur cas simple
+Voici un cas simple:
+```asp
+1{a;b}1.
+1{c;d}1:-a.
+1{e;f}1:-b.
+```
+Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas de regarder tous les answer-set.
+
+<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "DotPropagator result for the simple case" %}</center>
+
+
 #### Résultats sur cas compliqué
 
 
