@@ -12,7 +12,7 @@ status: draft
 
 After [the reproduction of Sean Raymond's Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd),
 others works of the same author were considered, notably [his though about Isaac Asimov's Kalgash system](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/).
-The problem is : i don't want to write a python script for each problem.
+The problem is: i don't want to write a python script for each problem.
 
 So, let's dive into [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
 or [JSON](https://en.wikipedia.org/wiki/JSON)-based DSL to describe a system in SpaceEngine,
@@ -21,7 +21,7 @@ with the associated python compiler.
 
 
 # The need
-It's quite simple : i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
+It's quite simple: i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
 Also, i want to be able to encode future works, notably the Ultimate Engineered Solar System.
 
 Few necessary features:
