@@ -8,12 +8,13 @@ Lang: fr
 Translation: false
 Status: published
 
+<center>*Want to read this in english ? [Look here !]({filename}/articles/deponia-asp_en.mkd)*</center>
 
 <center>{% img {filename}/images/deponia/deponia-asp-logo.png 670 "Mélange entre le logo du jeu Deponia et celui de Potassco Labs, qui fournit une implémentation d'ASP" "" %}</center>
 
 <br>
 
-[Deponia](https://en.wikipedia.org/wiki/Deponia_(video_game)), vous connaissez ? Un point'n click plutôt connu, et que je trouve personnellement super sympa.
+[Deponia](https://en.wikipedia.org/wiki/Deponia_(video_game)), vous connaissez ? Un point'n click plutôt connu, et que je trouve super sympa.
 
 Ce qui nous intéresse ici, c'est que de temps en temps, il y a ce que le développeur appelle des «mini-jeux»,
 c'est-à-dire des puzzles intégrés dans l'univers, avec leur propre logique, et qui doivent être résolus
@@ -75,6 +76,7 @@ La difficulté vient évidemment du fait que l'on change __toutes__ les fourches
 ## portes
 Une difficulté supplémentaire vient s'ajouter au problème : les deux portes, notées P1 et P2.
 Lorsque le chariot passe sur l'une d'elle, les fourches d'une certaine couleur changent d'état.
+La couleur est fixée à l'aide de boutons situés à côté des leviers, et par défaut, les deux portes sont associées au jaune.
 
 ## déterminisme
 Petit détail important : le jeu est déterministe.
@@ -167,7 +169,7 @@ Par exemple, pour la porte P1, appellons les deux nœuds P1G (G pour gauche) et 
 
 - lorsqu'une fourche débouche sur P1 par la droite, le nœud associé sera relié à P1D.
 - vice-versa avec gauche et P1G.
-- on relie P1D avec la fourche rencontrée lorsque l'on sort par la gauche de la porte, avec un arc libellé de «1» et «2», car une fourche ne change rien.
+- on relie P1D avec la fourche rencontrée lorsque l'on sort par la gauche de la porte, avec un arc libellé de «1» et «2», car une porte n'a qu'une seule destination dans un sens donné.
 - vice-versa pour P1G.
 
 Avec cette solution, tout d'un coups, tout devient simple : on va mettre un arc libellé de «1» et «2» qui ira de P1D à H,
@@ -211,7 +213,7 @@ Bref, une demi-heure de fun absolu, une autre demi-heure de vérification, et vo
 J'ai extrait à la main (j'aurais bien fait une détection automatique avec de l'OCR ou des réseaux de neurones, mais ça fait beaucoup (et surtout un autre article) et j'ai que deux jours par weekend)
 les informations importantes qui permettent de faire le graphe.
 
-En gros, je les ai extraites en ASP (fichier complet [ici]({filename}/images/deponia/graph.lp)), parce que c'est avec ce language qu'on va jouer dans cet article, et ça donne des lignes comme ça :
+En gros, je les ai extraites en ASP (fichier complet [ici](https://raw.githubusercontent.com/Aluriak/blog-content/master/images/deponia/graph.lp)), parce que c'est avec ce language qu'on va jouer dans cet article, et ça donne des lignes comme ça :
 
 ```asp
 nodecolor(c,rouge).  % la fourche C est rouge
@@ -255,7 +257,7 @@ C'est nul. Bou. Mauvais.
 
 Bon, en réalité il y a plusieurs manières de les gérer. Mais avant, on peut se poser la question : *existe-t-il une solution qui ne passe pas par une porte ?*
 
-Et la réponse, on peut facilement [la déterminer avec ASP]({filename}/images/deponia/no-porte.lp):
+Et la réponse, on peut facilement [la déterminer avec ASP](https://raw.githubusercontent.com/Aluriak/blog-content/master/images/deponia/no-porte.lp):
 
 ```asp
 % Recherche d'une solution sans passer par les portes !
@@ -339,7 +341,7 @@ Anecdote : la configuration 111 est à la fois la configuration de départ dans 
 Bon, on a compris : sans les portes, c'est nul. Quelle idée aussi d'implémenter l'énigme qu'à moitié !
 
 Pour gérer les portes, une solution simple consiste à considérer les états des fourches comme dynamiques, c'est-à-dire changeant à la manière du numéro d'étape (le premier argument de path/2).
-Voici donc [`dy-porte.lp`]({filename}/images/deponia/dy-porte.lp), une implémentation qui utilise les atomes path/3 pour encoder les chemins (ça commence à être de l'ASP un peu velu):
+Voici donc [dy-porte.lp](https://raw.githubusercontent.com/Aluriak/blog-content/master/images/deponia/dy-porte.lp), une implémentation qui utilise les atomes path/3 pour encoder les chemins (ça commence à être de l'ASP un peu velu):
 
 ```asp
 % Recherche d'une solution avec les couleurs en état dynamique !
@@ -438,13 +440,13 @@ Quelques observations en vrac avant de couper avec une transition grave et séri
 - on se trimballe quand même avec un état supplémentaire (le RJV), qu'on modifie lorsqu'on passe une porte. C'est chiant, c'est moche, et c'est pas un graphe. Moi j'aime les graphes.
 
 
-Relisez bien cette dernière phrase, parce qu'elle motive toute la dernière partie : avec notre état intermédiaire,
+Relisez bien cette dernière phrase, parce qu'elle motive toute la dernière partie : avec notre état dynamique,
 on gère bien la crise, sans trop se prendre la tête, et de manière assez efficace.
 Mais les graphes, c'est tellement beau qu'on en met partout.
 
 
 # Modélisation complète avec expansion du graphe
-Est-il possible de modéliser complètement le problème avec uniquement un graphe orienté ? Sans état global modifié durant l'exécution ? __Oui !__
+Est-il possible de modéliser complètement le problème avec uniquement un graphe orienté ? Sans état global modifié durant l'exécution ? Sans état global tout court ? __OUI !__
 
 La solution est en fait assez standard.
 
@@ -456,7 +458,7 @@ Par exemple, si la configuration initiale fixe le vert à l'état 1, alors on po
 En fait, on pourrait, plutôt qu'un seul graphe avec tous les arcs, avoir un graphe pour chaque configuration, avec uniquement les arrêtes que l'on peut emprunter.
 Par exemple, le graphe pour la configuration 111 aurait le lien de A vers B, mais pas celui de A vers F. À l'inverse des graphes pour les configurations 112, 122, 212, et 222.
 
-Les conséquences sont intéressantes:
+Les conséquences sont intéressantes :
 
 - on génère 8 graphes, un pour chaque configuration.
 - __il n'y a plus qu'un arc sortant par nœud__, puisque la configuration ne change pas.
@@ -466,13 +468,13 @@ Les conséquences sont intéressantes:
 
 Juste, le fait qu'une fois arrivé sur un nœud, on ait qu'un seul et unique choix… C'est bouleversant !
 
-Voici par exemple le graphe expansé pour la configuration 111, avec uniquement les nœuds atteignables depuis le départ ou une porte:
+Voici par exemple le graphe expansé pour la configuration 111, avec uniquement les nœuds atteignables depuis le départ ou une porte :
 
-<center>{% img {filename}/images/deponia/graph-expanded-111-first.png 170 "graphe vachement simplifié" %}</center>
+<center>{% img {filename}/images/deponia/graph-expanded-111-first.png 170 "Graphe expansé pour la configuration 111" %}</center>
 
 Idem pour la configuration 211:
 
-<center>{% img {filename}/images/deponia/graph-expanded-211.png 170 "graphe vachement simplifié" %}</center>
+<center>{% img {filename}/images/deponia/graph-expanded-211.png 170 "Graphe expansé pour la configuration 211" %}</center>
 
 Bon, ok, mais nous ne gèrons pas les portes. Et elles commencent à nous ennuyer avec leur changement de configuration.
 Sauf que, nous allons le voir, notre modèle de graphe expansé fonctionne très bien. Il nous faut juste 66 graphes supplémentaires.
@@ -524,7 +526,7 @@ Notez cependant qu'ici, on n'a que 4 des 72 configurations. Le graphe expansé e
 Cette méthode est géniale : il n'y a plus qu'un graphe orienté à gérer, et notre problème se réduit à chercher un chemin entre les starts et le terminal !
 
 Mieux ! Vous vous souvenez de ce jeu dans les magazines de coloriage pour enfants ?
-Où il faut trouver un chemin parmis plusieurs qui arrive jusqu'à un objectif (un exemple [là](http://www.momes.net/Jeux/Jeux-a-imprimer/Labyrinthes/Labyrinthes-et-circuits2)).
+Où il faut trouver un chemin parmis plusieurs qui arrive jusqu'à un objectif (un exemple [là](https://media.istockphoto.com/vectors/path-maze-with-insects-and-flowers-color-book-vector-id924953652)).
 
 La technique que tout le monde applique très vite, c'est, plutôt que d'essayer chaque chemin individuellement jusqu'à trouver le bon (c'est du brute-force),
 de commencer par la fin… et de remonter jusqu'au début du chemin qui est, de facto, le bon.
@@ -594,8 +596,8 @@ Un programe qui pourrait aussi faire de la génération de puzzle :
 
 ### Génération de puzzles
 Est-il possible de construire un programme qui génèrerait des puzzles ?
-En soit, oui : génèrer un graphe aléatoirement, avec les propriétés qui m'intéressent concernant les degrés sortants des nœuds,
-et faire tourner les codes vus dans cet article pour déterminer si:
+En soi, oui : génèrer un graphe aléatoirement, avec les propriétés qui m'intéressent concernant les degrés sortants des nœuds,
+et faire tourner les codes vus dans cet article pour déterminer si :
 
 - il y a au moins une solution (au moins une réponse avec «win»)
 - il y a pas trop de solution (pas plus de quelques réponses avec «win»)
@@ -607,12 +609,12 @@ Probablement longtemps.
 
 La solution : être capable de transformer un graphe inintéressant en graphe intéressant.
 Le truc vital, c'est déjà d'être capable de modifier le graphe généré pour virer les cycles. Ça peut se faire de manière heuristique,
-en détectant les nœuds impliqués dans le cycle, et changer un de ses successeurs. Au risque de créer un nouveau cycle.
+mais encore une fois, sans garantie de performance.
 
 Peut-être est-il possible de formaliser exactement les propriétés d'un graphe «intéressant», ou en tout cas d'un sous-ensemble ?
 Ce serait sympa d'y réfléchir, car il y a de l'auto génération de puzzle à la clef.
 
-### Autres puzzles
+## Autres puzzles
 Il y a bien d'autres puzzles dans Deponia, ainsi que dans d'autres jeux. Bien des tâches peuvent être abstraites et traitées formellement ainsi.
 Celui-ci était assez évident : dans le jeu même, on voit un graphe dessiné.
 
@@ -628,9 +630,9 @@ Sans surprise, la durée de vie des jeux (et l'intérêt qu'on peut y porter) au
 
 
 ## mot de la fin
-J'ai passé 12h non-stop sur une énigme de Deponia, plus 6 autres heures pour fignoler.
+J'ai passé 12h non-stop sur une énigme de Deponia, plus 6 autres heures pour fignoler et [traduire]({filename}/articles/deponia-asp_en.mkd).
 
 Sur ce, je vous laisse, je vais configurer mon dragster des mines.
 
 
-<center>{% img {filename}/images/deponia/ending.png 670 "Capture d'écran du jeu, chariot configuré et prêt à partir" %}</center>
+<center>{% img {filename}/images/deponia/ending.png 670 "" "Capture d'écran du jeu, chariot configuré et prêt à partir" %}</center>
