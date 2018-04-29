@@ -67,7 +67,7 @@ vizualize(run_model())
 
 Grâce à un peu de pandas, on trouve le graphe suivant :
 
-<center>{% img {filename}/images/python/prey-pred-euler.png 670 "Results with Euler method" %}</center>
+<center>{% img {filename}/images/python/prey-pred-euler.png 670 "Results with Euler method" "" %}</center>
 
 Et là, surprise : on obtient pas la même chose que sur wikipédia. Au lieu des jolies courbes, on a un truc qui part en cacahuète dés 3 oscillations.
 En jouant un peu sur les paramètres, on arrive parfois à des résultats un poil meilleurs, mais à un moment ou un autre,
@@ -125,7 +125,7 @@ vizualize(populations)
 
 Et là, magie, on obtient:
 
-<center>{% img {filename}/images/python/prey-pred-rk4.png 670 "Results with Runge-Kutta method" %}</center>
+<center>{% img {filename}/images/python/prey-pred-rk4.png 670 "Results with Runge-Kutta method" "" %}</center>
 
 La différence, c'est principalement l'appel à `scipy.integrate.odeint` qui prend en argument la fonction de calcul de l'étape suivante, les populations initiales,
 et l'intervalle de temps sur lequel travailler. C'est-à-dire le minimum syndical pour calculer ce que l'on veut afficher : les quantités de proies et de prédateurs à chaque étape.

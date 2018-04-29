@@ -47,7 +47,7 @@ On obtient les images suivantes (avant/après ajout de filtres) :
      onmouseout="this.src='images/constellations/se_arcturus_polaris_noatm.png';"
      onmouseover="this.src='images/constellations/se_arcturus_polaris.png';"
      width=700
-     alt="Space Engine Arcturus and Polaris"
+     title="Space Engine Arcturus and Polaris"
      />
 
 Il est intéressant de voir que des motifs plus ou moins connus apparaissent déjà, même sans filtre (la grande ourse se voit bien).
