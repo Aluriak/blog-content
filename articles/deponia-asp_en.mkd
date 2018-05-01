@@ -66,7 +66,7 @@ wants to pass through montains. Mines are a real maze, but fortunately, there is
 Here is it, bigger, when we can see the forks/points, each time colored in green, red or yellow, along with an arrow indicating which direction will be took by the trolley.
 We start on the upper left, and the goal is to go to the lower right.
 
-<center>{% img {filename}/images/deponia/plan-reduced.png 670 "Game screenshot, focus on the mine layout/plan" "" %}</center>
+<center>{% img {filename}/images/deponia/plan-reduced.png 670 "Game screenshot, focus on the mine layout" "" %}</center>
 
 The player may act on three levers, one for each color, to modify the points of the said color.
 Since there is two possible paths for each fork, the lever has two possible positions.
@@ -118,7 +118,7 @@ Graph theory is awesome \[\[citation needed\]\], and for that precise problem, i
 
 First thing first, let's give a name to all forks (we keep P1 and P2 for the gates), and to the start (S) and the end (T):
 
-<center>{% img {filename}/images/deponia/plan-annotated-reduced.png 670 "Annotated mine plan with names on the points/forks" %}</center>
+<center>{% img {filename}/images/deponia/plan-annotated-reduced.png 670 "Annotated mine plan with names on the points" %}</center>
 
 Now we can observ an interesting property of the graph: if a take for instance the point A,
 and i say i come to it by the left. Question : where will i going next ?
