@@ -94,6 +94,7 @@ quelle *configuration* initiale dois-je choisir pour arriver en bas à droite, i
 
 # Arithmétique des configurations
 Donc, une *configuration*, c'est 5 choses :
+
 - l'état de la couleur rouge (1 ou 2)
 - l'état de la couleur jaune (1 ou 2)
 - l'état de la couleur verte (1 ou 2)

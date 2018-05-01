@@ -92,6 +92,7 @@ which initial *configuration* should i choose to reach the goal, i.e. the lower 
 
 # Configurations arithmetic
 A *configuration* is five things:
+
 - state of the red color (1 or 2)
 - state of the green color (1 or 2)
 - state of the yellow color (1 or 2)
