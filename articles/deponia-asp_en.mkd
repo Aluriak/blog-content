@@ -77,7 +77,7 @@ The second difficulty comes from gates, named P1 and P2.
 When the trolley go over one of them, the forks of a given color change their state, as if the lever state was changed.
 Each gate is associated with one color, and by default both are associated to yellow.
 
-## déterminism
+## determinism
 Small important detail : the puzzle is deterministic.
 That means that if i try two times the same configuration, the trolley will follow the __exact__ same path,
 and i will end up with the exact same outcome.
@@ -102,7 +102,7 @@ There is therefore 2 * 2 * 2 * 3 * 3 = 8 * 9 = 72 different initial configuratio
 
 We can note that it's a small amount. With 20 seconds to test a configuration, we would need in the worse case less than a half-hour to brute force the problem.
 
-## description d'une configuration
+## configuration description
 Let's agree on a writing convention. A configuration will be written for instance `122JR`, to describe a configuration
 where red forks/points are in state 1, the yellow ones at 2, the green ones at 2, the first gate in yellow and the second gate in red.
 When gate colors will not have any importance, i will just write down the three first figures.
@@ -172,7 +172,7 @@ but we will see how to handle it… step by step.
 ## Example of final model
 This is an example with only the edges going from A, B, D and F:
 
-<center>{% img {filename}/images/deponia/graph-simple-example.png 220 "Exemple de graphe qui modélise le problème" %}</center>
+<center>{% img {filename}/images/deponia/graph-simple-example.png 220 "Subset of the graph describing the puzzle instance" %}</center>
 
 Go ahead, verifiy by looking on the plan.
 Will we have the real graph ? Sure, but we first have to… retrieve it.
@@ -322,7 +322,7 @@ Anecdote : configuration 111 is both the starting configuration in the game, and
 We got it : without the gates, no solutions. To who's idea to implement only a half of the puzzle ?
 
 To manage the doors, a very simple solution consist into look at the states of forks as dynamic, i.e. changing like the step number (first arg of path/2 atoms in the previous section).
-Here is [`dy-porte.lp`](https://raw.githubusercontent.com/Aluriak/blog-content/master/images/deponia/dy-porte.lp), an implémentation who use atoms path/3 to encode paths (the code grows in complexity):
+Here is [`dy-porte.lp`](https://raw.githubusercontent.com/Aluriak/blog-content/master/images/deponia/dy-porte.lp), an implementation who use atoms path/3 to encode paths (the code grows in complexity):
 
 ```asp
 % Search for a solution with the color configuration as dynamical state.
