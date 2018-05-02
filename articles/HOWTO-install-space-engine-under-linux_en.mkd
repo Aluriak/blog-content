@@ -36,7 +36,7 @@ You also have to download SpaceEngine's [installer binary](http://spaceengine.or
 # Run and configure
 This is the hard part. Run playonlinux, and the opening GUI should looks like this:
 
-<center>{% img {filename}/images/playonlinux/mainMenu.png 700 "main menu" %}</center>
+<center>{% img {filename}/images/playonlinux/mainMenu.png 700 "main menu" "" %}</center>
 
 Since Space Engine is not in the list of default programs of PlayOnLinux, we will have to install it manually.
 Click on the install button, and, in the opening window, look for *install a game not in the list*.
@@ -53,7 +53,7 @@ Just perform a regular install, do not change the intallation directory, and do 
 
 Now, we will be prompted about the icons/shortcuts to add to PlayOnLinux:
 
-<center>{% img {filename}/images/playonlinux/chooseIcons.png 700 "choose icons" %}</center>
+<center>{% img {filename}/images/playonlinux/chooseIcons.png 700 "choose icons" "" %}</center>
 
 In order to simplify our future life, we will add one icon to launch Space Engine. To do that, just select *SpaceEngine.exe* in the list,
 click *Next* two times (you can change the shortcut name between the two *Next*),
@@ -73,7 +73,7 @@ and in the new window add this version to the left block.
 Note: since we have installed Space Engine as 32 bits application,
 we have to install 32 bits versions of Wine. Make sure to install the x86 version of Wine (first tab), and not the amd64 (second tab).
 
-<center>{% img {filename}/images/playonlinux/chooseWineVersion.png 700 "choose wine version" %}</center>
+<center>{% img {filename}/images/playonlinux/chooseWineVersion.png 700 "choose wine version" "" %}</center>
 
 Now quit the window, and select in the drop-down list the version you just installed.
 
