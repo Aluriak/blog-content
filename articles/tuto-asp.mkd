@@ -63,6 +63,13 @@ où beaucoup de questions intéressantes sont posées.
 pour les annonces des développeurs, typiquement les nouvelles versions)
 
 
+## Prérequis
+Un peu de logique. Booléenne, c'est encore mieux.
+
+Non, sérieusement, on va parler de programmation logique ; savoir ce qu'on appelle la logique booléenne et ses principaux opérateurs me semble nécessaire.
+
+Néanmoins, pas besoin d'une grosse connaissance : juste savoir ce que veulent dire «et» et «ou» en logique.
+
 # Concepts généraux
 *Où l'on découvre à quelle sauce nous allons être mangés*
 
