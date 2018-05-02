@@ -1,22 +1,21 @@
-Title: A language for SpaceEngine Modding
-Date: 2018-04-14
-Modified: 2016-04-14
+Title: se-lang: a 3-in-1 language to abstract SpaceEngine Modding
+Date: 2018-05-03
 Tags: space engine, python
 Authors: Lucas Bourneuf
 Summary: presentation for ASP and JSON based abstraction of SpaceEngine modding language
-Slug: 1
+Slug: se-lang
 lang: en
-translation: false
-status: draft
+Translation: false
+Status: published
 
 
 After [the reproduction of Sean Raymond's Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd),
 others works of the same author were considered, notably [his though about Isaac Asimov's Kalgash system](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/).
 The problem is: i don't want to write a python script for each problem.
 
-So, let's dive into my last project, [*selang*](https://github.com/aluriak/spaceengine), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
+So, let's dive into a shiny new project, [*se-lang*](https://github.com/aluriak/se-lang), an [ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
 or [JSON](https://en.wikipedia.org/wiki/JSON)-based DSL to describe a system in SpaceEngine,
-with the associated python compiler.
+with the associated python model and compiler.
 
 
 
@@ -25,10 +24,14 @@ It's quite simple : i want to reproduce the [four Kalgash systems](https://plane
 Also, i want to be able to encode past (and future !) works, notably the Ultimate Engineered Solar System.
 
 Few necessary features:
+
 - define objects to put into the system, their childs, for any nested level (e.g. a moon of a moon of a moon of a giant of a star of a black hole)
 - define meta-objects, like rings of objects, and their prograde direction
 - compilation toward SpaceEngine's modding language.
 - language extension: i want to be able to add easily new terms and routines, to simplify my life (e.g. shortcuts to earth, blue giants and black holes).
+
+
+<center>{% img {filename}/images/se/kalgash2.png 670 "The Kalgash 2 system, with a ring of suns orbiting a black hole, and a red dwarf between them. The Kalgash planet is orbiting the red dwarf" "" %}</center>
 
 
 # Internal model
@@ -62,7 +65,7 @@ Two other languages can also be targeted.
 
 # ASP-based language
 ## Answer Set Programming
-I will not talk too much about it. It's a logic programming language, like prolog, but even more logical. I am currently writing a french tutorial for this language.
+I will not talk too much about it. It's a logic programming language, like prolog, but even more logical.
 We will not use the full capabilities of the language ; in fact, we will stick to a lisp-like syntax, ignoring much of the language interest and features.
 
 If you are familiar with ASP, you will probably get the interest of using it.
@@ -113,19 +116,19 @@ The Kalgash 4 system is quite easy to define.
     "UID": "UID42",
     "type": "black hole",
     "childs": [
-	{
-	    "type": ["ring", 8, "sun"],
-	    "retrograde": true,
-	    "distance": 1,
-	},
-	{
-	    "type": "earth",
-	    "distance": 2.5
-	},
-	{
-	    "type": ["ring", 8, "sun"],
-	    "distance": 5
-	}
+        {
+            "type": ["ring", 8, "sun"],
+            "retrograde": true,
+            "distance": 1,
+        },
+        {
+            "type": "earth",
+            "distance": 2.5
+        },
+        {
+            "type": ["ring", 8, "sun"],
+            "distance": 5
+        }
     ]
 }
 ```
@@ -233,6 +236,7 @@ In JSON:
 }
 ```
 
+<center>{% img {filename}/images/se/kalgash4.png 670 "The Kalgash 4 system, with two rings of suns orbiting a black hole, and the Kalgash planet between them." "" %}</center>
 
 ## Kalgash 5
 In ASP:
@@ -272,6 +276,7 @@ In JSON:
 }
 ```
 
+<center>{% img {filename}/images/se/kalgash5-ground.png 670 "The Kalgash 5 system, as seen from the ground, with stars raising above a volcano." "" %}</center>
 
 
 ## The Ultimate Engineered Solar System
@@ -334,9 +339,22 @@ model_to_se(model, '~/games/space_engine/SpaceEngine/')
 
 
 # Conclusions
+## For Kalgash
+The Kalgash system under SpaceEngine is a mitigated success. I didn't show it much,
+but unfortunately the lighting is buggy in that kind of system: the rings do not do their job when too far away, even those made of giant blue.
+It's sometimes ridiculous, because when on ground, you see directly 3 stars, each of them being more shiny than the sun alone, but the direct environment is plunged in the dark.
+Consequence is: we got some night, on every system. But to me it clearly seems like a SpaceEngine-related bug rather than anything else.
+
+The good news is: the next version of SpaceEngine, 0.9.9.0, [will change that](http://forum.spaceengine.org/viewtopic.php?f=6&t=31).
+At least, we can hope so, since the complete lighting system will be rewritten.
+
+
+## For SE
+Concerning se-lang by itself, it's a great success: i was able to modelize of lot of different systems, and i end up with a complete 3-languages support for SpaceEngine system generation, each of the languages having its interests and downsides.
+
 Concerning the ASP-based language: ASP is not an ideal language for DSLs, for various reasons, but it's fun (at least for me) and powerful (at least some times).
 There is however some drawbacks that makes it not suitable for a systematic use.
-If you are interested into ASP, dive into [my ASP tutorial](lucas.bourneuf.net/blog/tuto-asp.html) (in french). If you are interested into ASP for DSLs,
+If you are interested into ASP, dive into [this puzzles solving]({filename}/articles/deponia-asp_en.mkd) (and wait for my tutorial, in french). If you are interested into ASP for DSLs,
 look up one of my last project, [biseau](https://gitlab.inria.fr/lbourneu/biseau),
 which is using ASP as a DSL to draw graphs (that's very cool).
 
@@ -351,5 +369,5 @@ For future work, see the [README](https://github.com/Aluriak/se-lang/blob/master
 There is a consequent amount of work to be done.
 I will do it, one step at a time.
 
-In the end, we have now two ways to express complex systems in Space Engine.
-Now, let's start the modding race !
+In the end, we have now three ways to express complex systems in Space Engine.
+Let's start the modding party !
