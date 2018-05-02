@@ -62,6 +62,18 @@ où beaucoup de questions intéressantes sont posées.
 (il y a [une autre mailing list](https://lists.sourceforge.net/lists/listinfo/potassco-announce)
 pour les annonces des développeurs, typiquement les nouvelles versions)
 
+Notez également que ce blog a déjà parlé d'ASP :
+
+- [Deponia et ASP]({filename}/articles/deponia-asp.mkd) : résoudre un puzzle avec ASP
+<!-- - [se-lang]({filename}/articles/se-lang.mkd) : définir des systèmes astrophysiques avec ASP -->
+<!-- - [biseau]({filename}/articles/seb-biseau.mkd) : utiliser ASP comme DSL pour dessiner des graphes -->
+
+
+## Prérequis
+Un peu de logique. Booléenne, c'est encore mieux.
+Non, sérieusement, on va parler de programmation logique ; savoir ce qu'on appelle la logique booléenne et ses principaux opérateurs est un plus.
+Néanmoins, pas besoin d'une grosse connaissance : juste savoir ce que veulent dire «et» et «ou» en logique.
+En clair, avoir lu les exemples introductifs de [la page wikipédia](https://fr.wikipedia.org/wiki/Alg%C3%A8bre%20de%20Boole%20(logique)), ou ceux-là qui [sont franchement pas mal](http://www.courstechinfo.be/MathInfo/FctLogiques1.html).
 
 # Concepts généraux
 *Où l'on découvre à quelle sauce nous allons être mangés*
@@ -98,7 +110,7 @@ vous ne pouvez plus compter uniquement sur le HTML.
 C'est généralement là qu'interviennent des langages *impératifs* (Javascript, PHP, Python, Java,…)
 qui permettent de générer du HTML à partir de templates et des paramètres extérieurs.
 
-Sans ces languages, il faudrait avoir en mémoire toutes les solutions possibles,
+Sans ces languages, il faudrait avoir en mémoire toutes les pages web possibles,
 ce qui n'est pas possible pour une grande partie des sites web, et difficilement maintenable.
 
 
@@ -136,7 +148,7 @@ l'équipe de chercheur en langage naturel qui va avec).
 Donc, essayons maintenant de faire un language que nos petits ordinateurs puisse comprendre :
 
 ```
-x tel que : x est un entier, 1 < x < 100, x est un multiple de 3.
+afficher x tel que : x est un entier, 1 < x < 100, x est un multiple de 3.
 ```
 
 C'est compréhensible, simple et efficace ; c'est de la programmation logique !
@@ -171,9 +183,12 @@ Bref, il est souvent plus simple d'exprimer une contrainte plutôt qu'inclure
 cette restriction dans la génération de la réponse elle-même (*bon, je vais faire les courses en ne mettant pas deux packs de lait à l'arrière du caddie*).
 
 Aussi, la contrainte est parfois moins coûteuse. Par exemple, si je cherche mon caddie dans le magasin,
-je ne cherche pas forcément les points communs avec les souvenirs que j'en ai : *euh, celui-là a un pack de lait à l'arrière, c'est peut-être le miens*.
-Je peux aussi fonctionner avec des contraintes : *non, c'est pas celui-ci, il n'a pas de chocolat à l'avant*. Lorsqu'on cherche quelque chose,
-écarter les mauvaises possibilités en trouvant une seule différence est souvent plus rapide que d'énumérer les points communs.
+je compare ceux que je vois avec les souvenirs que j'en ai : *euh, celui-là a un pack de lait à l'arrière, c'est peut-être le miens*.
+Mais plus rarement, je m'amuse à inventorier ces points commun : *ya bien une conserve de ravioli, un pack de brosse à dent,…*
+À la place, je fonctionne plutôt avec des contraintes : *non, c'est pas celui-ci, il n'a pas de chocolat à l'avant*.
+
+En bref, lorsqu'on cherche quelque chose, écarter les mauvaises possibilités en trouvant une seule différence
+est souvent plus rapide que d'énumérer les points communs.
 
 En général, un langage autorisant la programmation par contrainte pourra être divisé en deux parties :
 
@@ -213,7 +228,7 @@ Bref, faites comme vous voulez, mais dans le doute, utilisez clingo et explorez 
 
 
 ## Clingo, en deux (cents) mots et deux parties
-Si vous ne comprenez rien au charabia de cette, pas d'inquiétude : c'est juste pour fixer les idées des informaticiens.
+Si vous ne comprenez rien au charabia de cette section, pas d'inquiétude : c'est juste pour fixer les idées des informaticiens.
 Lisez tout de même, je met quelques simplifications au milieu.
 
 Clingo est à ASP ce que CPython est à Python:
@@ -260,7 +275,7 @@ et que vous vous sentez de faire deux clics gauche et un clic droit,
 Clingo est disponible sur le [dépôt github](https://github.com/potassco/clingo/releases).
 Le site de référence étant [le site de Potassco lui-même](https://potassco.org/doc/start/).
 
-À l'écriture de ce tuto, la version de clingo la plus récente est la 5.2.3.
+À l'écriture de ce tuto, la version de clingo la plus récente est la 5.2.2.
 
 
 ### Installation manuelle
@@ -379,13 +394,13 @@ dans l'entrée standard de clingo (j'aurais aussi pu l'écrire directement dans 
     Time         : 0.000s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
     CPU Time     : 0.000s
 
-(pour ceux qui sont dans l'interface web, juste ajoutez `a. b.` dans le champs de texte, et appuyez sur run)
+(pour ceux qui sont dans l'interface web, écrivez juste `a. b.` dans le champs de texte, et appuyez sur run)
 
 Du point de vue de clingo, que se passe-t-il ici ?
 
 - d'abord, clingo parse les arguments de la ligne de commande (ici `-n 0` et `program.lp`)
 - il apprend que je veux *tous* les modèles, toutes les réponses possibles (`-n 0`)
-- il apprend également que le programme est intégralement contenu dans `program.lp`
+- il apprend également qu'il doit considérer le programme dans le fichier `program.lp`
 - il lance gringo sur le programme, et obtient le code compilé (smodels).
 - il lance clasp sur le code compilé, et m'affiche le résultat.
 - j'apprend que mon programme n'a qu'une seule et unique solution (*Answer: 1*), où les atomes *a* et *b* sont vrais.
@@ -465,7 +480,7 @@ nous ne trouverons qu'un seul et unique modèle (ou (ensemble-)réponse) : celui
 
 Le point `.` est un peu comme le point-virgule en C,
 ou le saut de ligne en Python : il termine chaque règle et atome du programme.
-Si vous oubliez un point, vous aurez droit à une erreur de type `unexpected machin-bidule bla bla bla`.
+Si vous oubliez un point, vous aurez droit à une erreur de type `unexpected machin-bidule bla bla bla ASP pas content`.
 
 ```asp
 a(4).
@@ -502,7 +517,7 @@ De la même manière, `ha(do,pi)` et `ha(do,ken)` appartiennent tout deux à l'e
 
 Questions (sans piège) : comment décrire l'atome `k(2,"mille",v(2))` ?
 `coucou` ?
-Et `symballium(v,o,l,u,m,e," ",I,V,"<3")` ?
+Et `symballium(v,o,l,u,m,e," ",i,v,"<3")` ?
 
 (si vous n'êtes pas sûr de vos réponses, allez voir la fin de page)
 
@@ -614,7 +629,7 @@ Si au bout de 20 minutes vous :
 - **toujours pas trouvé, malgré bien des tentatives :** en bas de page, ya les solutions.
 
 ### Bonus
-Un atome `moi/1` permet d'indiquer qui je suis. Si mon père est Dark Vador, alors l'atome `nooooooooooon` doit être vrai.
+Un atome `moi/1` permet d'indiquer qui je suis. Si mon père est Dark Vador ou l'infâme Zurg, alors l'atome `nooooooooooon` doit être vrai.
 
 
 ## Négation
@@ -1011,15 +1026,16 @@ Ajouter au programme précédent la ou les règles nécessaire pour que l'atome 
 Si au bout de 10 minutes, vous:
 
 - **n'avez rien essayé :** faites une pause plutôt qu'attendre que ça se passe : chantez les plus grands tubes de la compagnie créole, ça détends.
-- **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie.
+- **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie. Ou négation.
 - **avez trouvé comment faire, mais seulement dans le vide et avec des copains sphériques :** je suis content de voir que mon tuto est utile aux physiciens ! La solution est en fin de tuto.
 
 
 ## Erreurs et warnings
-Dans l'idéal, une partie entière de ce tuto devrait être écrite justement pour traiter des différentes erreurs,
-mais cela requiert un travail supplémentaire qui, selon moi, est très intéressant, ne serais-ce que parce que c'est en général un sujet qui est très peu abordé dans les tutos.
-(Si vous lisez cette ligne et que, dans le sommaire et en scrollant un peu, vous voyez que de nombreux cas d'erreurs sont expliqués et traités,
-c'est que la phrase précédente n'a pas été retirée depuis leur incorporation ; prévenez-moi !)
+Une partie que je vois rarement dans les tutos pour un language, c'est celle dédiée aux erreurs.
+L'intérêt, c'est de pousser les gens à ne pas paniquer en voyant un message d'erreur qui sort de leur code,
+et d'apprendre à comprendre la méthodologie pour y répondre.
+
+En vrai, la méthodologie elle est assez universelle : il faut lire, comprendre, réfléchir, corriger, réessayer.
 
 ### Unsafeness
 En codant, il vous arrivera régulièrement de voir clingo lever une erreur du type :
@@ -1030,8 +1046,8 @@ test.lp:19:1-24: error: unsafe variables in:
 test.lp:19:9-10: note: 'Y' is unsafe
 ```
 
-En clair, dans le fichier *test.lp*, ligne *19*, de la colonne *1* à *36*,
-clingo n'arrive pas à décider de la valeur de la variable *Y*.
+En clair, dans le fichier *test.lp*, ligne *19*, de la colonne *1* à *24*,
+clingo n'arrive pas à décider de la valeur de la variable *Y*, utilisée dans le fichier *test.lp*, ligne *19*, de la colonne *9* à *10*.
 C'est la notion même d'*unsafe* : une variable dont la valeur peut virtuellement être n'importe quoi.
 
 Hors, vous vous en souvenez, on est sensé durant l'étape de grounding avoir la génération des atomes avec toutes les valeurs possibles.
@@ -1103,6 +1119,8 @@ Mais clingo vous dira que l'erreur provient de la seconde ligne. C'est normal : 
 c'est `autre_atome` qui est en faute, puisqu'il s'agit d'un identifiant qui se trouve près un atome complet,
 ce qui n'est pas *attendu* d'après la grammaire du langage ASP.
 
+Ce détail est très important, et quand on débute en informatique, on a tendance à regarder uniquement la ligne d'où vient l'erreur.
+
 
 ## Exeeeeerciiiiiiice ! Yodel et papier crépon
 Je ne vous le cacherais pas : cet exercice est un poil plus complexe que les précédents, mais ne vous en faites pas, vous y arriverez tout pareil.
@@ -1138,7 +1156,7 @@ Si au bout de 30 minutes, vous:
 
 - **n'avez rien essayé :** bon, au risque de paraître un tantinet habité d'une quelconque passion à propos d'une soupe où nagerait des atomes d'avocats (au sens philosophique, pas physique), j'aimerais vous raconter une petite anecdote, que je connais d'expérience, et qui est assez représentative de l'expérience générale des enseignants dans mon domaine. Il se trouve que, lorsqu'on enseigne, on s'aperçoit assez vite que pas mal d'étudiants (et il se trouve qu'il s'agit majoritairement de filles, moins souvent des gars ; rapport à l'éducation ?) essayent à peine, ou lorsqu'ils essayent, c'est avec un mélange de timidité et de stress ; si bien que, au bout de longues minutes à s'imaginer être incompétents, ils finissent par appeler l'enseignant pour de l'aide. Enseignant qui ne voit qu'un écran blanc, et n'a comme unique information *j'y arrive pas*. Difficile de faire quoique ce soit dans ce contexte, et même impossible si yavais soupe d'avocat à la cantine. Le truc, c'est que ces étudiants ne se lancent pas, craignent l'idée de ne pas réussir du premier coups (comme si c'était possible, ou même souhaitable). Je sais que c'est un problème très commun en info (ça doit arriver ailleurs, certainement), mais je n'ai aucune espèce de piste pour résoudre le problème, à part travailler, en amont, au niveau de l'éducation elle-même. La conséquence de ça, je pense, c'est que ces étudiants ne collectent aucune expérience qui sera plus tard nécessaire à faire un boulot en info (ou un boulot tout courts). Certains arrivent au bout de plusieurs années d'études, et sont toujours incapable de lire ou écrire un quelconque morceau de code. Je n'ose imaginer ce que ça donne après dans un contexte professionnel. Bref, évitez la soupe à l'avocat.
 - **n'avez rien essayé, mais c'est parce que votre poisson rouge est mort, votre grand-mère s'est remise à l'haltérophilie, votre ordinateur fait des mises à jour, et il est déjà 24h64 à hawaï :** je comprend, ça doit être dur. Un indice : l'ASP c'est tellement haut niveau, il suffit souvent de traduire les phrases pour avoir un résultat.
-- **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. Les solutions sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
+- **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage et à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. Les solutions sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
 
 
 
@@ -1239,11 +1257,11 @@ Nous avons également des personnes, qui doivent toutes être placée sur une pl
 Maintenant, il y a des contraintes. Par exemple :
 
 - Justin ne peut pas être à côté ou en face de Karine, ils ne se supportent pas.
-- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de parties de scuba-curling.
+- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de championnat de scuba-curling.
 - Mamie doit être à côté de la cheminée, mais pas Gérard, qui a vite trop chaud.
 - Si Pépé est à côté de Jeanine, alors Xavier doit être de l'autre côté de Jeanine.
 - Yolande veut être à la place la plus éloignée de la cuisine, pour éviter d'avoir à y aller.
-- Si Dominique peut voire Micheline, elle lui fera des remarques bruyantes et désagréables sur sa frange mauve : donc non.
+- Si Micheline peut voir Dominique, elle lui fera des remarques bruyantes et désagréables sur sa frange mauve : donc non.
 
 Bref, le joyeux bordel typique du placement de table d'une réunion de famille.
 Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre famille que désormais c'est vous qui vous en occupez !
@@ -1272,10 +1290,10 @@ Cela dit, même si votre famille est compliquée, il est possible qu'une solutio
 
 ## Résoudre une énigme du livre jaune des devinettes
 Le livre jaune des devinettes est un texte qui se trouve dans le jeu Skyrim,
-dans lequel on trouve quelques devinettes. L'une d'entre elle nous intéresse tout particulièrement,
+dans lequel on trouve quelques énigmes écrites. L'une d'entre elle nous intéresse tout particulièrement,
 car elle tombe pile dans le cadre de la logique. En voici l'énoncé :
 
-> Un Bosmer à été tué.
+> Un Bosmer a été tué.
 > L'Altomer affirme que le Dummer est coupable.
 > Le Dummer accuse le Khajiit.
 > L'Orque jure qu'il n'a pas tué le Bosmer.
@@ -1363,6 +1381,18 @@ c'est juste qu'avec la dernière ligne, seuls 3 sont affichés (ceux ayant `b` c
 Notez la manière dont on renseigne *l'ensemble des atomes de prédicat `b`*: en utilisant une notation très courante dans le monde de la programmation logique: `<prédicat>/<arité>`.
 Si vous remplacez le 1 par un 2, clingo n'affichera rien : il va en effet afficher uniquement les atomes de prédicat `b` avec deux arguments, c'est-à-dire, dans ce cas précis, aucun.
 
+### Un truc rigolo
+*Regardez, ce programme fait bugger clingo ! Il lui fait afficher 3 fois la même réponse ! Alors que normalement c'est pas possible, on l'a vu dans une section précédente !*
+
+```asp
+a(1;2;3).
+b:- a(X).
+#show b/0.
+```
+
+Bon, vu que vous avez lu le paragraphe sur `#show`, vous ne vous êtes pas fait avoir :
+ce n'est pas trois answer set équivalents, mais 3 différents qui sont affichés pareil.
+
 
 ### Le côté obscur de #show
 Le programme suivant affiche 4 atomes, et aucun d'entre eux ne fait réellement partis du modèle trouvé par le solveur.
@@ -1382,8 +1412,10 @@ Cela peut servir pour filtrer précisément les atomes à afficher, ou pour reno
 (ici, on renomme `b/1` en `p/1`).
 
 Notez bien que ces usages de *show* sont *génératifs* : ils ajoutent des atomes dans la réponse,
-sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'appartient pas à l'answer set, car aucun p/1 ne s'y trouve)
+sans les ajouter dans le solving lui-même (essayez en ajoutant `c(X):- p(X).`, vous verrez que c/1 n'appartient pas à l'answer set, car aucun p/1 ne s'y trouve).
 
+Notez également que, contrairement à l'usage précédent, le *show* ici n'a pas empêché les autres atomes du programme d'être affichés, car `b(1)` est bien affiché par clingo.
+C'est parce que tous les shows du programmes sont *génératifs*. Rajoutez en un seul qui ne le soit pas, et vous perdez `b(1)`.
 
 ### Le #show impératif
 Il existe une dernière forme pour cette directive : `#show.`.
@@ -1412,6 +1444,9 @@ et n'est donc pas affichable.
 En général, les directives `#show` se trouvent en fin de fichier (du point de vue de l'humain,
 c'est la dernière chose qui est faite), et le premier *show* est généralement `#show.`.
 C'est une habitude qu'on retrouve dans beaucoup de codes ASP.
+
+Cependant, ils se retrouvent parfois au tout début, pour que le lecteur
+sache tout de suite quelles sont les outputs. Malin !
 
 
 ## #const
@@ -1530,7 +1565,7 @@ il existe une très grande quantité de manière de ranger des objets dans un sa
 et surtout, beaucoup sont équivalentes.
 Sans optimisations, vous allez vous retrouver avec (1) un très grand nombre de modèles qui (2) sont inintéressants pour 99% d'entre eux.
 
-Avec une optimisation, vous n'avez qu'à compter le nombre d'objets mis dans le sac, et maximiser ce nombre :
+Avec une optimisation, vous n'avez qu'à compter la place restante dans le sac, et minimiser ce nombre :
 le solver s'occupe seul de ne pas polluer la sortie : le dernier modèle trouvé par le solveur est à tout instant le meilleur qu'il ait trouvé.
 Cela veux même dire que vous pouvez l'arrêter en cours de route, lorsque les modèles qu'il propose sont suffisamment bons.
 
@@ -1553,6 +1588,10 @@ Des fichiers dans des fichiers.
 
 ASP s'interface nativement avec Python et Lua. Je ne traite que de Python ici,
 mais les principes sont exactement les mêmes avec Lua : seule la syntaxe change.
+
+Si vous ne connaissez pas python, ignorez cette section. Il me faudrait 5000 lignes supplémentaires pour expliquer les concepts que j'utilise ici,
+et du coups ce tuto deviendrait un énième [tuto pour python](https://python.developpez.com/cours/TutoSwinnen/).
+Si c'est juste les concepts de POO qui vous manquent, allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/). Si vous connaissez déjà python et que vous voulez progresser, allez voir [sametmax](http://sametmax.com/cours-et-tutos/).
 
 ## Embedding dans Python
 Plutôt qu'appeler clingo pour tous nos cas de tests,
@@ -1585,15 +1624,16 @@ les versions les plus récentes.
 
 
 
-## Extending avec Python
-Vous avez déjà étendu Python avec du C pour gagner un peu de performances ?
+## Extending avec Python: Propagateurs
+Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
+C'est ce qu'on nomme embedding, ou extending selon le point de vue.
+Ici, nous allons voir comment embed du Python dans ASP, ou, c'est équivalent, extend ASP avec Python.
 
-
-## Propagateurs
 Les propagateurs sont des objets assez connus dans le monde du solving.
 Il s'agit plus ou moins d'un plugin qui va pouvoir suivre et modifier le déroulement de l'heuristique.
+Pour être encore plus pédagogue : un propagateur permet d'écrire des contraintes en python plutôt qu'en ASP.
 
 Avec Python et un peu de connaissance sur clingo, il est possible d'écrire un propagateur pouvant,
 par exemple, changer la véracité de certains atomes en fonction de celle d'autres atomes.
@@ -1615,12 +1655,21 @@ C'est donc, de notre point de vue d'utilisateur extérieur, aléatoire.
 
 Donc, clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
 Ces litéraux du solveur ne changent pas durant tout le solving, et ce sont les éléments de base qu'un propagateur va manipuler.
+Le solveur associe à ces littéraux une des trois valeurs de vérité suivante : vrai, faux, non valide.
+Au tout départ, tous les atomes sont non valides, sauf ceux dont vous indiquez la véracité par défaut, par exemple avec l'expression `a.`: l'atome `a` ne sera jamais faux.
+Puis, en respectant les règles comme `p(X):- q(X) ; r(X).`, le solveur va pas à pas changer les valeurs de vérité des atomes.
+Si à un moment il s'aperçoit que ce qu'il fait est impossible, il *backtrack*, c'est-à-dire qu'il va revenir en arrière, pour essayer d'autres combinaisons.
+
+Et si à un moment tous les atomes ont une valeur de vérité vraie ou fausse, et qu'aucune contrainte n'est violée, alors le solveur sait qu'il s'agit d'un ensemble réponse :
+il affiche alors tous les atomes ayant une valeur de vérité vraie.
+
+Un propagateur va pouvoir agir à différents moments : au début, lorsque le solveur découvre les atomes, lorsque le solveur propose une valeur de vérité pour un atome (on dit alors qu'il *propage*), lorsqu'il *backtrack*, ou lorsqu'il a dans les mains un answer-set valide.
 
 ### Les 4 cavaliers
-Un propagateur, en python, est une classe présentant 4 méthodes :
+Un propagateur, en python, est une classe présentant au moins une de ces 4 méthodes :
 
 - `init`: appelée une seule fois, en première ; c'est là qu'on prend connaissance des littéraux du solveur choisis pour chaque atome
-- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral
+- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral (dire qu'un atome est vrai ou faux)
 - `undo`: appelée chaque fois que l'heuristique va retirer une valeur de vérité à un littéral
 - `check`: appelée chaque fois que l'heuristique vérifie le modèle qu'elle possède
 
@@ -1632,17 +1681,19 @@ c'est parce que cet état n'est possible que lorsque l'heuristique cherche pour 
 Pendant cette recherche, l'heuristique va donner des valeurs de vérité (vrai ou faux) aux atomes,
 chacun à leur tour, explorant les différentes possibilités.
 
-Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel où ne sont assignés à une valeur de vérité qu'une partie des atomes),
+Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel
+où ne sont assignés à une valeur de vérité qu'une partie des atomes),
 il faut décider si le modèle, c'est-à-dire si les valeurs de vérité (ou assignation) est valide.
 
-C'est à ce moment que se joue le jeu des contraintes : montrer que l'assignement total entre en conflit avec une contrainte prouve que le modèle n'est pas valide,
+C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
 et donc qu'il n'a pas a être écrit en sortie de programme.
 
 ### Exemple de propagateur : dot propagator
 Celui-ci est très simple : il s'agit d'afficher un `.` pour chaque propagation du solveur, et d'en retirer un pour chaque *back-propagation* (ou *undo*).
 Cela résulte en une ligne de point qui progresse et régresse au fil de l'exploration du solveur.
 
-Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple, et permet de toucher du doigt l'intérêt des propagateurs.
+Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple,
+et permet de toucher du doigt l'intérêt des propagateurs.
 Suis la version annotée des sources.
 
 ```python
@@ -1657,22 +1708,23 @@ from time import sleep  # pour donner une dimension humaine au programme
 class Propagator:
 
     # Première méthode : init (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
-    # le premier argument est un objet qui va nous donner des infos sur le solving
     def init(self, init):
+        # init: un objet qui va nous donner des infos sur le solving
         for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
             init.add_watch(init.solver_literal(atom.literal))  # on le surveille
 
     def propagate(self, ctl, changes):
         # ctl: c'est le contrôleur du solving ; un objet qui mériterait une section à lui tout seul.
         # changes: la liste des littéraux qui ont eu une assignation ; c'est eux qui nous intéressent.
-        for l in changes:
+        for _ in changes:  # la valeur exacte ne nous intéresse pas
             print('.', flush=True, end='')  # afficher un `.` sans passer à la ligne
             sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
+        # À essayer de votre côté: afficher changes à la place des points. Ça permet de voir en quoi consiste le backtrack.
 
     def undo(self, solver_id, assign, undo):
         # undo contient la liste des littéraux dont l'assignation est annulée.
         # on va donc enlever un '.' pour chacune de ces assignation.
-        for l in undo:
+        for _ in undo:  # la valeur exacte ne nous intéresse pas
             print('\b \b', flush=True, end='')  # revenir en arrière, afficher un espace, revenir en arrière
             sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
 
@@ -1680,6 +1732,7 @@ class Propagator:
 #  si elle existe, elle reçoit le contrôleur du solveur, et nous
 #  permet donc de contrôler le solving.
 def main(prg):
+    # prg: un contrôleur du solveur. C'est lui qu'on va utiliser pour faire ce qu'on veut
     # on enregistre une instance de notre propagateur
     prg.register_propagator(Propagator())
     # on ground le programme 'base', qui est le programme par défaut
@@ -1708,7 +1761,113 @@ en fonction de leur valeur d'assignation.
 
 Compliqué ? Non, pas tant que ça :
 
-TODO: propagators/color.py
+```python
+#script (python)
+
+# de nombreux imports sont nécessaires
+import os  # pour nettoyer l'écran
+import shutil  # pour avoir la taille du terminal
+import textwrap  # pour afficher joliement les atomes
+from time import sleep  # pour que ça aille pas trop vite
+
+import colorama  # des couleurs dans le terminal ! (pip install colorama)
+from colorama import Fore, Back
+colorama.init()  # nécessaire pour windows
+
+
+# quelques constantes utiles
+SPEED = 0.5
+TERM_WIDTH = shutil.get_terminal_size().columns
+def clear(): os.system('cls' if os.name == 'nt' else 'clear')  # oui, c'est sale
+
+
+# ça, ça va être notre classe propagateur. Notez que pour éviter de dupliquer
+#  du code, on a écrit une méthode `print_atoms` qui s'occupe
+#  d'afficher les atomes en couleur.
+class ColorPropagator:
+    # appelée une fois au début: on va dire qu'on va observer tous les atomes du programme
+    def init(self, init):
+        self.sleep = SPEED
+        # On fait un dictionnaire pour se souvenir de la tête qu'à un atome,
+        #  connaissant le littéral.
+        # Notez que les atomes qui sont soumis aux exactes même règles
+        #  (et donc qui sont vrais ou faux en même temps) ont le même litéral.
+        # C'est pourquoi à un littéral (clef) on associe plusieurs valeurs
+        #   (set d'atomes).
+        self.__symbols = {}  # litéral du solveur -> set d'atomes
+        for atom in init.symbolic_atoms:
+            lit = init.solver_literal(atom.literal)  # on récupère le litéral
+            init.add_watch(lit)  # on veut être prévenu lorsque sa valeur de vérité change
+            if lit in self.__symbols:  # on l'ajoute au dictionnaire
+                self.__symbols[lit].add(atom.symbol)
+            else:
+                self.__symbols[lit] = {atom.symbol}
+
+    # la fonction appelée quand un litéral surveillé change de valeur.
+    def propagate(self, ctl, changes):
+        # ctl: le contrôleur
+        # changes: la liste des litéraux qui ont changé de valeur
+        # C'est assez simple: on dit à print_atoms d'afficher tout ça
+        self.print_atoms(ctl.assignment, changes=changes)
+
+    def undo(self, solver_id, assign, undo):
+        # c'est globalement la même chose que propagate, juste avec un argument
+        #  en plus qu'on utilise pas: solver_id.
+        self.print_atoms(assign, changes=undo)
+
+    # La fonction la plus complexe, qui n'a rien à voir avec les propagateurs
+    #  en général.
+    def print_atoms(self, assignment, changes):
+        # assignment: objet qui peut donner pour chaque 
+        clear()  # on nettoie l'écran
+        to_print = ''
+        # là, on boucle sur chaque littéral et atomes associés
+        for idx, (lit, atoms) in enumerate(self.__symbols.items(), start=1):
+            # quand un litéral est associé à plusieurs atomes,
+            #  on les affiche tous, séparés par un point-virgule
+            atom = ';'.join(map(str, atoms))
+            fore, back = Fore.WHITE, Back.BLACK  # couleurs par défaut
+            # assignment.value renvoie, pour un littéral donné:
+            #  - True si le littéral est vrai
+            #  - False si le littéral est faux
+            #  - None si le littéral n'a pas de valeur de vérité
+            if assignment.value(lit) is not None:  # donc, là, il a une valeur de vérité
+                # s'il est vrai, on le met en vert (GREEN), sinon en rouge (RED)
+                fore = Fore.GREEN if assignment.is_true(lit) else Fore.RED
+                # si l'atome vient justement d'être changé, on le surligne en blanc
+                if lit in changes: back = Back.WHITE
+            elif lit in changes:  # C'est un undo
+                # Effectivement, undo veut dire «enlever sa valeur de vérité à un atome»,
+                #  donc, il ne passe pas la première condition. Mais il fait
+                #  bien partie des atomes changé, donc on va le surligner aussi,
+                #  mais en en bleu pour montrer que c'est un backtrack.
+                back = Back.BLUE
+            else:  # et sinon, il n'a pas de valeur et n'a pas été changé
+                # on le laisse en couleur par défaut
+                pass
+            # maintenant on se prépare à l'afficher avec les couleurs sélectionnées
+            to_print += fore + back + atom + Fore.RESET + Back.RESET + '  '
+        # boucle terminée: on a généré toute la chaîne à afficher.
+        #  pour rendre ça beau, on utilise textwrap et la taille de l'écran
+        #  pour découper proprement les lignes.
+        print('\n\n' + '\n'.join(textwrap.wrap(to_print, width=TERM_WIDTH)))
+        # et on attend un poil, sinon on va rien voir.
+        sleep(self.sleep)
+
+
+# Et voilà notre main, qui ressemble à un main des plus standards.
+#  Pas grand chose à dire dessus.
+def main(prg):
+    prg.register_propagator(ColorPropagator())  # on y met notre propagateur
+    prg.ground([("base", [])])  # on grounde le programme de base
+    prg.solve()  # et on résoud le problème !
+
+# fin du python:
+#end.
+```
+
+Le code réel est [ici](https://github.com/aluriak/learning-ASP/blob/master/propagators/color.py).
+Il n'est pas très différent, mais largement moins annoté.
 
 
 ### Exemple de propagateur : graphviz/dot propagator
@@ -1720,17 +1879,124 @@ La théorie des graphes et le dot sont tout à fait en dehors du scope de ce tut
 - le dot, c'est une langue écrite, conçue par le projet graphviz, qui est aussi une suite logicielle. Les logiciels de graphviz sont capable de lire un programme en dot, et de générer une image ou d'autres fichiers qui représentent le graphe. C'est très puissant, car cela permet de voir graphiquement un graphe. C'est exactement ce qui nous intéresse.
 
 Pour ce propagateur, nous allons donc exploiter le dot. L'idée est la suivante : un littéral est un nœud du graphe, et l'on trace un arc (une arête orientée, avec une flèche)
-du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignais le littéral 1.
+du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignait le littéral 1.
 En d'autres termes, nous voulons visualiser le chemin emprunté par le solveur : dans quel ordre il assigne (et dé-assigne) les atomes/littéraux.
 
 Le résultat est de facto très visuel : on génère des visualisations de graphes avec dot !
 
 #### Le graphviz/dot propagator
 Le code est disponible [sur mon github](https://github.com/aluriak/dot-propagator), et reproduit ci-après avec des annotations supplémentaires :
+
 ```asp
+#script(python)
+class DotPropagator:
+    """A non-literal *dot* propagator"""
+
+    # Cette fois-ci, notre classe est un poil plus complexe.
+    #  Elle a un __init__, qu'on utilise pour préparer les conteneurs et le fichier dot
+    def __init__(self, dotfiledesc:str):
+        # dotfiledesc -- un descripteur de fichier dans lequel on peut écrire
+        self.__dotfiledesc = dotfiledesc
+        self.__stack = ['Start']  # c'est une pile de nœuds
+        self.__step = 0  # pour pouvoir annoter les arcs
+        self.__stable_nodes = set()  # tous les nœuds stables
+        self.write_header()  # on commence par écrire des lignes obligatoires
+        # C'est bon ! l'objet est prêt à faire propagateur !
+
+    def init(self, init):
+        # exactement comme pour notre premier propagateur: on suit tous les atomes
+        self.__symbols = {}  # littéral -> set d'atomes
+        for atom in init.symbolic_atoms:
+            lit = init.solver_literal(atom.literal)
+            init.add_watch(lit)
+            if lit in self.__symbols:  # on l'ajoute au dictionnaire
+                self.__symbols[lit].add(atom.symbol)
+            else:
+                self.__symbols[lit] = {atom.symbol}
+
+    def propagate(self, ctl, changes):
+        # ctl: l'objet de contrôle du solveur
+        # changes: les littéraux qui ont reçu une valeur
+        level = ctl.assignment.decision_level
+        self.__step += 1
+        # pour chaque changement, on va écrire dans le fichiers dot.
+        for lit in changes:
+            self.write('\t{} -> {} [label="{}"];'.format(self.last_node, lit, self.__step))
+            self.push_node(lit)  # et on ajoute le litéral dans la pile
+
+    def undo(self, sid, assign, undo):
+        # sid: on s'en fiche
+        # assign: ce sont les assignations de valeurs de vérité, on s'en fiche aussi
+        # undo: les litéraux qui ont été changés
+        while undo:  # tant qu'il y a un nœud dans les undo
+            prev_node = self.pull_node()  # on récupère le sommet de la pile
+            assert prev_node in undo  # par construction, il appartient aux nœuds qui sont retirés
+            # on affiche le backtrack en dot avec une flèche en pointillé qui retourne sur le nœud actuel (la tête de pile).
+            self.write('\t{} -> {} [style=dotted label={}];'.format(prev_node, self.last_node, self.__step))
+            undo.remove(prev_node)  # on enlève le littéral de la liste des undo
+
+    def check(self, ctl):
+        # le solveur trouve que l'assignation est totale et valide : il s'apprête à générer l'answer set !
+        # que faisons-nous ? On marque le nœud courant comme tel.
+        self.__stable_nodes.add(self.last_node)
+
+
+    # méthodes pour modifier le nœud courant (le sommet de la pile)
+    def pull_node(self):  # le nœud courant devient le précédent
+        *self.__stack, ret = self.__stack
+        return ret
+    def push_node(self, uid):  # nouveau nœud courant !
+        self.__stack.append(uid)
+
+    @property
+    def last_node(self):  # juste un raccourcis pour le nœud courant
+        return self.__stack[-1]
+
+    def write(self, line):  # pour écrire du dot
+        self.__dotfiledesc.write(line.rstrip() + '\n')
+
+    def write_nodes(self):  # pour écrire les nœuds
+        for uid, atoms in self.__symbols.items():
+            self.write('\t{} [label="{}"{}];'.format(
+                uid, ' '.join(str(atom.symbol) for atom in atoms),
+                ' fillcolor="green"' if uid in self.__stable_nodes else ''
+            ))
+
+    # Deux méthodes pour les premières et dernières lignes du dot, qui sont toujours les mêmes
+    def write_header(self):
+        self.write('digraph solving {')
+        self.write('\tnode [style=filled];')
+    def finalize(self):
+        self.write_nodes()
+        self.write('}')
+
+
+# Le main est assez standard également,
+#  sauf le fait que l'on fait tout le solving avec un fichier ouvert,
+#  que l'on donne à notre propagateur.
+def main(prg):
+    with open('out/out.dot', 'w') as fd:
+        propagator = DotPropagator(fd)  # c'est notre propagateur !
+        prg.register_propagator(propagator)  # on l'enregistre
+        prg.ground([("base", [])])  # on ground
+        prg.solve()  # on solve
+        propagator.finalize()  # et on termine d'écrire le dot
+#end.
 ```
 
+
 #### Résultats sur cas simple
+Voici un cas simple:
+```asp
+1{a;b}1.
+1{c;d}1:-a.
+1{e;f}1:-b.
+```
+Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas de regarder tous les answer-set.
+
+<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "DotPropagator result for the simple case" %}</center>
+
+
 #### Résultats sur cas compliqué
 
 
@@ -1870,17 +2136,38 @@ devient une expression *pour tout* (`∀`).
 *Où, enfdeux, on touche du doigt l'intérêt d'être entré dans le monde merveilleux de l'ASP*
 
 
+## Choisir l'itinéraire d'un réveil coureur
+Un réveil coureur, c'est un réveil qui se met à courir partout lorsqu'il se met à sonner.
+Intérêt principal : vous devez l'attraper avant de pouvoir l'éteindre. Autant vous dire que c'est efficace pour vous empêcher de vous recoucher,
+surtout après un coups de tête dans le lavabo et un doigt de pied dans la porte.
+
+Sauf que, aujourd'hui, les réveils coureurs ne sont pas très intelligents : ils courent au hasard,
+et les développeurs espèrent juste qu'ils s'écrasera pas contre un mur.
+
+Pour cet exemple, nous allons imaginer avoir un robot capable de se représenter dans l'espace en 2 dimensions
+(c'est déjà de la science-fiction à ce niveau, mais passons). Notre objectif : faire le code qui permettra au robot de savoir où aller,
+sachant qu'il doit aller réveiller tout le monde dans la maison, et ne s'arrêter qu'au fond du frigo, en étant passé par la cave avant.
+
+Bref, il s'agit d'un parcours de graphe d'un point de départ au point d'arrivée, avec des jalons sur lesquels le chemin doit passer.
+Notez que le contexte de l'exercice est assez ridicule, mais en vrai, parcourir l'espace et passer par des endroits particulier,
+c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exemple.
+
+[Solution](https://github.com/Aluriak/learning-ASP/blob/master/path-search.lp).
+
+
+
+
 ## Placement de table, seconde approche
 Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
 
-Nous avons vu le placement de table bourrin, où l'objectif était de satisfaire toutes les contraintes.
+Nous avons vu le placement bourrin de table, où l'objectif était de satisfaire toutes les contraintes.
 Ça marche le plus souvent, mais si votre famille est trop compliquée, ça marche plus : le problème est juste insatisfiable.
 
 Maintenant, plutôt que des contraintes, nous pourrions modéliser un *score* à maximiser.
 
 Intuitivement, ce n'est pas tant qu'il *faille* que Tata Christelle et Tonton Robert soient à côté : c'est juste mieux. De fait, une telle combinaison augmenterais le score.
 À l'inverse, mettre Gérard le Normand et Michel le Breton l'un en face de l'autre,
-ça ne fera que pourrir la soirée, donc on diminue le score.
+c'est lourd, mais c'est pas non plus une catastophe, donc on diminue le score.
 
 L'intérêt est double : on va pouvoir hierarchiser les contraintes (toutes n'ont pas la même importance ; et à la limite les plus importantes peuvent rester des contraintes),
 et on va pouvoir gérer des familles très compliquées, tellement compliquées que toutes les contraintes ne sont pas satisfiable simultanément.
@@ -1892,7 +2179,8 @@ Cette application est directe ; d'autant plus que normalement,
 la famille ne change pas trop entre deux repas,
 et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
 
-Et pas que avec les repas de famille : il marche également avec les soirées entre amis, les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
+Et pas que avec les repas de famille : il marche également avec [les places au cinéma](https://xkcd.com/173/), les soirées entre amis,
+les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
 C'est fou l'informatique.
 
 
@@ -1905,7 +2193,7 @@ Par exemple, le *vim golfing* consiste à changer un texte donné en un autre te
 Il existe aussi le *code golf*, qui consiste à faire un programme le plus court possible. C'est ça qui nous intéresse ici.
 
 Si vous ne connaissez pas [codegolf.stackexchange](https://codegolf.stackexchange.com),
-il s'agit d'une des instances de stackexchange (la plus connue étant probablement stackoverflow),
+il s'agit d'une des instances de stackexchange (la plus connue d'entre elles étant probablement stackoverflow),
 où les questions sont des challenges de *code golf*, où des centaines de programmeurs s'amusent à imaginer les programmes les plus courts possible,
 dans une multitude de langages différents (parfois créés uniquement pour le *code golf*).
 Le score correspond au nombre de caractères dans le code ; le but étant de faire le programme le plus court possible, il faut donc de minimiser ce score.
@@ -1948,10 +2236,11 @@ L'autre solution est que, sachant un joueur l'ayant trouvé, tous les autres ne 
 
 ```asp
 unique(P,W):- 1 { player(_,W) } 1 ; player(P,W).
+% ou, c'est équivalent :
 unique(P,W):- player(P,W) ; not player(P2,W): player(P2,_) P2!=P.
 ```
 
-Maintenant que l'on sait quel mots doivent être comptés dans le score pour chaque joueur,
+Maintenant que l'on sait quels mots doivent être comptés dans le score pour chaque joueur,
 il est temps de se poser la question du score lui-même :
 
 ```asp
@@ -2214,6 +2503,85 @@ Magique ? Non, informatique !
 
 
 
+## Clustering conceptuel
+Ne prenez pas peur en lisant cette expression : c'est en fait assez simple.
+
+Notez que cet exemple se base en grande partie sur les propagateurs.
+
+### Clustering
+Le clustering, c'est une opération visant à séparer en groupes un ensemble d'éléments.
+Dans la vie de tous les jours, on en fait beaucoup : notre cerveau est même spécialement entraîné à ce genre de tâche.
+
+Quand j'essuie la vaisselle, il faut savoir où mettre quels ustensiles : les fourchettes dans le bac à fourchettes, les assiettes sur la pile d'assiette (de même couleur).
+C'est du clustering : on range des éléments (les ustensiles) dans des groupes spécifiques (pile à assiette, bac à fourchette)
+en se basant sur les propriétés de l'objet (une fourchette, ça ressemble à une fourchette, donc ça va dans le bac à fourchette).
+
+De manière intéressante, ce clustering apparemment trivial se complexifie dés lors que vous avez des ustensiles qui ne tombent dans aucune catégorie, comme la [cuiller-fourchette](https://fr.wikipedia.org/wiki/Cuill%C3%A8re-fourchette) (ou *spork*, en anglais).
+Où mettre ces ustensiles qui appartiennent à plusieurs catégories ? Selon les personnes, le choix peut se faire de manière rationnelle, en ajoutant une propriété sur un groupe donné
+(*le bac à fourchette* devenant par exemple *le bac à tout ce qui a 2, 3 ou 4 pics métalliques allongés*). D'autres le feront au hasard, ou d'autres choisirons sur d'autres critères (on a moins de cuiller, donc le bac à cuiller a de la place pour la cuiller-fourchette dedans).
+
+Concernant les objets qui ne rentrent dans aucune catégorie, c'est exactement le problème que résouds *le plat qui est dans l'entrée* :
+un dépotoir où l'on met tous les objets que l'on ne sait pas ranger dans les groupes existants.
+
+Bref, du clustering, c'est très naturel comme opération. En mathématiques, évidemment, la chose est attaquée avec plus d'abstraction.
+
+### Clustering conceptuel
+Le clustering conceptuel est en réalité plus proche encore de notre manière de fonctionner : cela consiste à avoir,
+pendant le clustering même, un avis critique sur les groupes constitués.
+
+Par exemple, lorsque l'on remplis des cartons pour un déménagement, on essaye d'avoir une cohérence de contenu : un carton doit contenir un type d'objet
+(il y a donc, selon le théorème du plat dans l'entrée, un carton *de bordel* qui contient ce que l'on ne sait pas grouper).
+
+Le clustering parfait, ce serait d'avoir un minimum de cartons, remplis avec le même type d'objets,
+tous de même taille et masse qu'un humain peut porter facilement.
+
+Cependant, contrairement à l'exemple de la vaisselle où l'on a une bonne connaissance des objets qui sont clusterisés (on sait ce qu'on a comme vaisselle, et a peu près combien, et que l'on a tous les conteneurs adaptés),
+faire ses cartons vient avec la difficulté que l'on ne se rend pas compte de tous ce qu'on a accumulé, et que les cartons sont en nombre choisis a priori
+(a moins que vous n'ayez fait une simulation de déménagement avant qui vous aurais permis de déterminer le volume exact nécessaire à contenir vos possessions).
+
+Donc, pendant la mise en carton des objets à déménager, on fait un clustering conceptuel : on prend un objet, on cherche le meilleur carton pour le contenir,
+et si d'instinct on sens que cet objet n'est pas le seul de son type, on ouvre un nouveau carton pour l'y mettre.
+Au bout de quelques heures, on vide un carton qui n'était pas si remplis, pour y vider la moitié d'un carton trop lourd,
+et on dispatch les objets vidés dans d'autres cartons en fonction d'autres critères.
+
+(Évidemment, on travaille généralement de manière plus intelligente : pendant que gégé met les livres dans un carton (qui sera trop lourd, de fait), dom' met les assiettes dans un autre. Mais au delà de ces cas précis… il y a souvent du bordel à trier, et à un moment, des cartons à refaire)
+
+C'est cela le clustering conceptuel : prendre les objets un par un, et sans connaissance des prochains objets, faire un clustering.
+Ce clustering va évoluer au fur et à mesure des objets ajoutés, et parfois être complètement modifié suite à l'arrivée d'un objet qui change tout.
+
+### Le problème à résoudre
+L'énoncé est le suivant : nous avons 10 valeurs, qui peuvent donc être groupées dans au maximum 10 groupes, et au minimum, un seul.
+
+
+### Programme ASP
+Le programme ASP suivant s'occupe de la partie clustering : génération des données, et choix de groupements.
+
+Comme ce qui nous intéresse, c'est les groupes de valeur et non pas l'identifiant du groupe, on use de `#project` pour éviter de générer des clustering équivalents
+(par exemple, mettre une valeur toute seule dans le cluster 1 ou 2, ça revient au même : ce qui compte, c'est que la valeur est seule).
+
+```asp
+value(1..3).
+cluster(1..3).
+
+% 0 ou plus valeur dans chaque cluster.
+0 {cluster(C,V): value(V)} :- cluster(C).
+
+% Une valeur ne doit appartenir qu'à un seul cluster.
+1 {cluster(_,V)} 1 :- value(V).
+
+% Le numéro de cluster n'est pas pertinent.
+same_group(A,B):- cluster(C,A) ; cluster(C,B).
+#project same_group/2.
+```
+
+Vous pouvez tester ce programme : chaque modèle est une solution de clustering différente. Oui, il y en a plus de 100000.
+Non, j'ai pas eu la patience d'attendre qu'ils soient tous écoulés.
+
+Et oui, avec un clustering conceptuel, on peut éviter la génération de bien des modèles.
+
+### Squelette du propagateur
+
+
 
 ## Résoudre un donjon de The Legend of Zelda
 ### Contexte
@@ -2345,6 +2713,8 @@ C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en A
 - [ASP for FCA](https://github.com/Aluriak/ASP-for-FCA) un ensemble de programmes qui utilisent ASP pour exprimer des concepts (*pun intended*) de l'[Analyse de Concepts Formels](https://fr.wikipedia.org/wiki/Analyse%20de%20concepts%20formels).
 - [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications.
 - Au sein [du projet pygarden](https://github.com/IndexErrorCoders/pygarden), [solasp](https://github.com/IndexErrorCoders/pygarden#solasp) est un code ASP qui permet d'optimiser le placement de plantes dans le jardin sachant leurs préférences de voisinage.
+- [pytest-asptest](https://github.com/aluriak/pytest-asptest) : un plugin pytest pour faire des tests unitaires sur des codes ASP.
+- [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python
 
 
 ## And now, for something totally different
@@ -2368,16 +2738,23 @@ C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en A
 enfant(Enfant,Papa):- papa(Papa,Enfant).
 ```
 
+Pour le bonus :
+```asp
+mechant(dark_vador;zurg).
+nooooooooooon:- moi(E) ; papa(P,E) ; mechant(P).
+```
+
 ### Mon papa c'est le meilleur
 ```asp
 papa(P):- papa(P,_).
-1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), ça revient au même
+1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), mais sans la règle précédente ça revient au même
 ```
 
 ### Garde contre et roi de trèfle
 Les deux règles suivantes sont équivalentes dans ce contexte :
 ```asp
 on_joue_au_ballon:- -on_joue_au_tarot.
+% équivalente à :
 on_joue_au_ballon:- copain(C) ; not en_recre(C).
 ```
 
@@ -2412,6 +2789,6 @@ subject(Y):- aime(_,Y) ; aime(X,Y): peoples(X).
 *[RAM]: Random Access Memory, la mémoire vive.
 *[HDD]: Hard Drive Disk, un disque dur, qui contient le stockage.
 *[SSD]: Solid State Disk, le successeur des disques durs, vachement plus rapides.
-*[POO]: Programmation Orientée Objet, un paradigme où les concepts sont séparés et doivent interagir par envoie de messages
+*[POO]: Programmation Orientée Objet, un paradigme où les concepts sont séparés et doivent interagir par envoi de messages
 *[PF]: Programmation Fonctionnelle, un paradigme où les fonctions sont manipulées au même titre que les types de base
 *[la vie réelle]: Un lecteur critique pourrait se demander «la vie réelle de qui ?». Il paraît que je vis dans un autre monde, parfois.

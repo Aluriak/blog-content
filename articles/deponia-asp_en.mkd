@@ -60,7 +60,7 @@ This is the situation :
 
 <center>{% img {filename}/images/deponia/plan.png 670 "Game screenshot, we see the mine plan in the underground" "" %}</center>
 
-Our character, sitting on its mines dragster/trolley (and accompanied by another character, more or less in a rest process),
+Our character, sitting on its mines dragster/trolley (and accompanied by another character, taking a nap, more or less),
 wants to pass through montains. Mines are a real maze, but fortunately, there is a plan of the railway network !
 
 Here is it, bigger, when we can see the forks/points, each time colored in green, red or yellow, along with an arrow indicating which direction will be took by the trolley.

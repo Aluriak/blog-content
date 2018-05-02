@@ -212,8 +212,31 @@ So much for the simplicity.
 Edit: good news: [PEP 563](https://www.python.org/dev/peps/pep-0563) fixes the problem.
 
 
-## generalized intension syntax
+## or if
+```python
+if a:
+    A
+or if b:
+    B
+else:
+    C
 ```
+Would give the following relations:
+
+       a -> A
+       b -> B
+    a, b -> A, B
+         -> C
+
+If instead of the `or if` we had a regular `elif`:
+
+       a -> A
+       b -> B
+    a, b -> A
+         -> C
+
+## generalized intension syntax
+```python
 for item in (1, 2, 3, 4) if item not in (2, 4):
     print(item)
 ```
@@ -225,6 +248,9 @@ for item in (1, 2, 3, 4) if item not in (2, 4):
  if treated > 10
  with computation_to_run_once_per_value(untreated) as treated)
 ```
+This is a common need.
+
+Edit: good news: [PEP572](https://www.python.org/dev/peps/pep-0572/#this-could-be-used-to-create-ugly-code) is making progress toward that construct !
 
 ## inlined except
 In the continuity of the [*Easier to Ask Forgiveness than Permission* philosophy](https://docs.python.org/3/glossary.html#term-eafp),

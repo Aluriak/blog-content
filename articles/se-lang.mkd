@@ -20,7 +20,7 @@ with the associated python model and compiler.
 
 
 # The need
-It's quite simple : i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
+It's quite simple: i want to reproduce the [four Kalgash systems](https://planetplanet.net/2018/03/21/asimov-kalgash-take2/) described by Sean Raymond.
 Also, i want to be able to encode past (and future !) works, notably the Ultimate Engineered Solar System.
 
 Few necessary features:
