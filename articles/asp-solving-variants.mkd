@@ -1,0 +1,20 @@
+Title: Answer Set Programming — Variantes de solving
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-variantes-solving
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+s'intéressant aux variantes d'utilisation du solver, des approches alternatives utiles pour certaines tâches.
+
+Comme pour les propagateurs, cet aspect d'ASP est dirigé par l'interface avec les langages python et lua.
+C'est le premier qui est utilisé ici.
+
+
+# Multi-shot solving
+
+# Iterative solving

@@ -1,0 +1,319 @@
+Title: Answer Set Programming — Efficacité des encodings
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-encodings
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une (quête) annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+s'intéressant aux différences de performances entre différents encodings
+qui répondent à la même question.
+
+On commence par une réflexion sur la notion d'espace de recherche, histoire d'être au clair dessus,
+puis on attaque les vrais morceaux qui eux parlent vraiment d'ASP dans la pratique.
+
+
+# Notions d'espace de recherche
+Qu'est-ce qu'un espace de recherche ? C'est tout simplement l'espace dans lequel on cherche les solutions à un problème.
+Si la définition de l'espace de recherche est valide, toutes les solutions vont s'y trouver.
+Si au contraire elle est fausse, une partie des solutions (ou toutes) ne s'y trouvera pas. Généralement dans ce case, On dit qu'il y a un *bug* dans la définition, et on la modifie pour la rendre valide.
+
+Maintenant, une définition peut être valide, mais complètement inutile : l'espace de recherche contient bien toutes les solutions, mais il est tellement grand qu'il est très long de toutes les récupérer.
+
+## Métaphore des clefs
+Je cherche les trousseaux de clefs que j'avais dans la poche il y a cinq minutes.
+
+Exemples d'espaces de recherche :
+
+- ma maison
+- ma maison et le jardin
+- ma maison, le jardin et le garage
+- la ville entière
+- la Terre
+
+La première et la seconde sont très précises, mais hélas pour moi, peut-être non valides :
+les trousseaux pourraient être dans ma voiture.
+
+Les deux derniers modèles gèrent ce cas particulier, et sont parfaitement valides,
+mais si je me met à fouiller la ville en commençant par le nord-ouest, et en suivant les longitudes,
+je risque de passer un sacré moment de ma vie à chercher pour mes clefs.
+C'est encore pire pour une fouille complète de la Terre.
+
+Bref, le bon espace de recherche, c'est maison-jardin-garage :
+Mes clefs ne peuvent pas être ailleurs, et il est suffisamment petit pour être exploré en pratique.
+
+Notez que, pour être exact, l'espace de recherche valide minimal *assuré* est la sphère centrée sur moi d'un rayon de 5 minutes lumière. Mais, en posant l'hypothèse que ni moi ni mes clefs n'avons voyagé à la vitesse de la lumière ces cinq dernières minutes, on peut restreindre cet espace.
+D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter à mon terrain.
+
+En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (ou du moins l'heuristique).
+
+## Retour à ASP
+On comprend maintenant que pour un problème donné, on peut définir différemment l'espace de recherche, et que si on le modélise trop grand, le solveur va passer inutilement beaucoup de temps à l'explorer.
+
+Donc, intuitivement, on veut couper, ou *élaguer*, l'espace de recherche.
+
+Reprenons l'exemple volontairement trivial du fil rouge du tuto principal (*trouver les entiers positifs multiple de 3 et inférieurs à 100*), et regardons comment nous pouvons obtenir un espace de recherche résolument grandiose :
+
+```asp
+% On prend un sous-ensemble des 100 valeurs candidates.
+{candidat(1..100)}.
+
+% Le score est la somme des candidats, tel que :
+%  Un candidat qui est un multiple de 3 compte pour 1
+%  Sinon il compte pour -1
+score(N):- N=#sum{1,X: candidat(X), X\3=0 ; -1,X: candidat(X), X\3>0}.
+
+% On veut le modèle avec le plus grand score.
+#maximize{N@1: score(N)}.
+```
+
+Lancez clingo dessus, et vous constaterez qu'il vous faut plusieurs minutes pour obtenir la solution optimale : toutes les valeurs candidates multiples de trois.
+
+L'espace de recherche ici est gigantesque : il y a $2^100$ combinaisons possibles, soit 1267650600228229401496703205376 modèles à comparer.
+Autant de combinaisons auxquelles le solver va devoir associer un score, en énumérant les composantes de la solution. Donc, en plus, donner un score à une solution, c'est assez lourd. (pour référence : ça fait plus de modèles que de grain de sable sur Terre. C'est donc un nombre qu'on peut qualifier de «conséquent»)
+
+Maintenant que nous avons identifié les points coûteux, nous allons pouvoir les améliorer.
+
+## Élaguage du fil rouge
+Tout d'abord, notons que, plutôt que choisir un sous-ensemble des nombres de 1 à 100,
+nous pourrions déjà faire en sorte de ne choisir que parmis les valeurs qui nous intéressent, c'est-à-dire les multiples de 3 :
+
+```asp
+% On prend un sous-ensemble des multiples de 3.
+{candidat(X): X=1..100, X\3=0}.
+```
+
+Déjà, on constate qu'il n'y a plus que $2^33$, soit 8589934592 modèles à comparer.
+Autrement dit, nous avons diminué notre espace de recherche de 99.999999999999999999% environ.
+
+C'est bien, mais pas top : on passe toujours des plombes à attendre que le solveur nous indique l'évidence : il faut tous les prendre.
+
+Notre problème, c'est que beaucoup de solutions sont, par définitions, peu intéressantes : celles qui n'impliquent pas beaucoup de solution/1 atteignent des scores assez petit.
+
+C'est à ce moment qu'on la joue fine : on appelle Gérard, notre ami mathématicien,
+on lui explique le problème, et, après avoir hoché la tête gravement,
+il écrit au tableau un théorème (avec une démonstration incompréhensible) :
+*tout modèle impliquant strictement moins de 33 valeurs candidates n'est pas optimal*.
+
+C'est super : Gérard vient de montrer que notre espace de recherche peut être coupé
+de fort belle manière. En effet, nous pouvons restreindre les modèles possibles
+à ceux contenant 33 candidats ou plus.
+Allons-y, modifions notre règle de génération :
+
+```asp
+% On prend un sous-ensemble des multiples de 3, avec au moins 33 éléments [Gérard et al. 2018].
+33{candidat(X): X=1..100, X\3=0}.
+```
+
+Et là, on lance… Et bim ! le solveur trouve la solution optimale en un centième de seconde !
+Merci Gérard !
+
+Et pourquoi ? Simple calcul : il n'y a qu'un seul modèle de 33 candidats ! Pour le solveur, c'est super rapide à gérer.
+(on a atteint une réduction de l'espace de recherche de 99.999999999999999999999999999999%, c'est fou !)
+
+## En bref
+Faites attention à la modélisation de votre problème. Évidemment, celui présenté ici était complètement ridicule : aucun choix n'est nécessaire, et en réalité il se résouds en deux lignes.
+
+Mais l'idée est là : la formalisation propre et nette d'un problème permet de mieux le cerner,
+et de trouver des «trucs» pour couper/élaguer l'espace de recherche.
+
+On va continuer sur ce thème, mais cette fois-ci, plus ancré dans le langage et la pratique
+que sur la théorie.
+
+
+
+
+
+
+# Équilibre génération-contrainte : N-dames
+*La génération et les contraintes sont deux méthodes différentes pour faire la même chose. Et comme toutes méthodes qui coexistent, elles coexistent parce qu'elles ont chacunes leurs avantages et inconvénients.*
+
+Dés le début, les développeurs ASP s'en rendent compte : des modifications mineures dans le code
+peuvent améliorer ou dégrader sérieusement les performances de grounding ou de solving, même si les résultats finaux (les answer-sets) ne changent pas.
+
+Un exemple donné dans [les sources de clingo](https://github.com/potassco/clingo/tree/master/examples/gringo/queens) est le problème des N dames :
+comment placer N dames sur un plateau d'échec de taille N×N de manière à ce qu'aucune ne soit menacée par une autre.
+Le 1-dame est simple : vous devez placer 1 dame sur un échiquier de 1×1 case ; c'est facile, ya qu'un choix et il est bon. Le 2-dame est impossible : deux dames sur un échiquier de 2×2 cases sont forcément menacées.
+En fait, le puzzle devient sympa à partir du [8-dames](https://fr.wikipedia.org/wiki/Probl%C3%A8me%20des%20huit%20dames), où 92 solutions existes.
+
+La question est : comment encoder (et donc résoudre) ce problème en ASP ? Je donne la valeur de N (par exemple 10), et ASP me donne tous les positionnement de dames sur l'échiquier qui sont solution.
+
+Un premier encoding du problème pourrait être :
+
+```asp
+#const n=10.
+
+% échiquier de n×n cases.
+pos(1..n).
+
+% n dames à placer.
+n{dame(X,Y): pos(X), pos(Y)}n.
+
+:- dame(X,Y1) ; dame(X,Y2) ; Y1!=Y2.  % pas sur la même ligne
+:- dame(X1,Y) ; dame(X2,Y) ; X1!=X2.  % pas sur la même colonne
+
+% Et pas sur la même diagonale
+:- dame(X,Y), dame(U,V), X-Y == U-V, (X,Y) < (U,V).
+:- dame(X,Y), dame(U,V), X+Y == U+V, (X,Y) < (U,V).
+
+#show dame/2.
+```
+
+Le problème de cet encoding, c'est qu'il met 30 secondes pour explorer l'espace des solutions. C'est assez énorme. D'autres encodings sont possible, certains un poil plus malin.
+
+Par exemple, plutôt que vérifier *a posteriori* qu'aucune dame n'est sur la même ligne qu'une autre, on pourrait juste les générer de manière à avoir une dame par ligne.
+Pareil pour les colonnes.
+C'est le principe de l'encoding suivant :
+
+```asp
+#const n=10.
+
+% échiquier de n×n cases.
+pos(1..n).
+
+% 1 dames à placer pour chaque ligne/colonne.
+1{dame(X,Y): pos(Y)}1:- pos(X).
+1{dame(X,Y): pos(X)}1:- pos(Y).
+
+% Mais pas sur la même diagonale
+:- dame(X,Y), dame(U,V), X-Y == U-V, (X,Y) < (U,V).
+:- dame(X,Y), dame(U,V), X+Y == U+V, (X,Y) < (U,V).
+
+#show dame/2.
+```
+
+Cet encoding est résolu en moins d'un demi-dizième de seconde !
+
+Le seul changement, c'est l'inclusion de contraintes de placement dans la génération : en d'autres termes, le solveur génère des modèles à la base plus proche de la réalité (il en génère en fait moins), pour un coût quasi-nul (il doit juste trouver des paires de position). Hors, comme on a enlevé des contraintes en même temps (puisqu'elles sont redondantes avec les règles de génération), il a moins de travail à faire pour tester un modèle donné.
+
+Bref, dans ce cas, la génération fait le job des contraintes pour moins cher, en proposant un espace de recherche plus petit, et un moindre travail de vérification à réaliser sur chaque modèle.
+
+Par conséquent : gain de temps.
+
+En général, gardez un œil sur l'équilibre en génération et contraintes :
+s'il est souvent préférable d'utiliser les contraintes (ne serais-ce que parce que c'est plus simple et lisible),
+parfois on met sous contrainte des propriétés qui sont pourtant très simples à mettre dans la génération.
+
+L'équilibre entre génération et contraintes est donc un levier important à surveiller lorsque l'on travaille avec les langages logiques.
+
+
+
+
+
+# Délégation du grounder au solver : Comptages
+*Deux encodings différents mais répondant au même problème peuvent n'avoir des performances différentes que parce que l'un est groundé en quelques kilobytes, et l'autre en plusieurs megabytes.*
+
+Vous connaissez [`#count`, ou son alternative `{}`]({filename}/articles/asp-metaprogramming.mkd#count).
+Cette directive, quoique très utile, est dans certains cas très, _très_ coûteuse.
+
+Par exemple, regardons le programme suivant :
+
+```asp
+val(1..3000).
+two(X,Y):- val(X) ; val(Y) ; X+Y=120.
+
+count(N):- N={two(_,_)}.  % essayer avec et sans cette ligne
+
+#show two/2.
+#show count/1.
+```
+
+Cet encoding génère 1 answer set, avec toutes les paires d'entiers de 1 à 3000
+dont la somme est égale à 1200.
+C'est la ligne 4 qui nous intéresse particulièrement : elle compte les atomes two/2.
+
+Notez que les performances sont peu ou prou les mêmes avec ou sans cette ligne 4.
+Maintenant, rajoutons un choix, qui nous empêche de deviner la quantité d'atomes two/2 au grounding :
+
+```asp
+val(1..3000).
+1{multiplier(1..10)}1.
+two(X,Y):- val(X) ; val(Y) ; X+Y=120*M ; multiplier(M).
+count(N):- N={two(_,_)}.  % essayer avec et sans cette ligne
+
+#show two/2.
+#show count/1.
+```
+
+Et là, c'est le drame : la ligne 4, selon si elle est là ou non,
+génère des changements importants de performance. Quid ?
+
+La clef du truc, c'est de bien comprendre ce que fait le grounding : il enlève les variables, et copie-colle la règle autant de fois que nécessaire, avec chaque valeur possible.
+Mais pas seulement : le grounding, c'est aussi l'occasion de faire des traitements simples.
+Par exemple, si une règle/contrainte ne dépend d'aucun choix, elle peut être utilisée pendant le grounding pour compléter ou diminuer le grounding final.
+
+L'autre truc qui se passe pendant le grounding, c'est les comptages… si c'est possible. Et c'est là où ça coince. Dans le premier code, le nombre d'atomes two/2 est connu au grounding : le grounder connaît toutes les valeurs de `val/1`, et il sait faire des maths de base, donc il peut générer sans se tromper tous les atomes `two/2` valides. Et lorsqu'il rencontre la ligne 4, il substitue le `N={two(_,_)}.` par `N=XXX` avec XXX le nombre d'atomes two/2 qu'il a généré, et en déduis l'atome count/1 à rendre vrai.
+Vous voulez vous en convaincre ? Utilisez l'option `--text` de clingo sur le premier programme pour voir ce qui est généré : la liste des atomes valides. Par exemple, voilà les dernières lignes du grounding que j'obtient :
+
+    two(4,116).
+    two(3,117).
+    two(2,118).
+    two(1,119).
+    count(119).
+    #show count/1.
+    #show two/2.
+
+En fait, le programme est tellement direct (*straightforward* dans la langue de Batman), que le grounder le résoud tout seul : le solver n'a qu'à se baisser.
+
+Maintenant, regardons le second programme : le grounder peut-il deviner à l'avance combien d'atomes two/2 vont être vrais ? Oui, mais non.
+En fait, ça dépasse les attributions du grounder. La conséquence ? Le code groundé ne contient plus, comme avant, juste les atomes vrais, mais plutôt les atomes à valider en fonction de multiplier/1.
+En soit, rien d'anormal, avec l'option `--text` on obtient ce genre de ligne :
+
+    […]
+    two(4,116):-multiplier(1).
+    two(3,117):-multiplier(1).
+    two(2,118):-multiplier(1).
+    two(1,119):-multiplier(1).
+    […]
+    two(3,237):-multiplier(2).
+    […]
+
+Indiquant entre autre que la paire (3, 237) est vraie pour le multiplier 2. C'est assez simple, et difficilement compressible.
+
+Sauf que, maintenant, pour count/1, l'histoire est différente, même carrément flippante : plutôt que juste indiquer quelque chose du style `count(243):-multiplier(2)`, on a ça :
+
+    count(243):-#count{0,two(119,1):two(119,1);0,two(118,2):two(118,2);0,two(117,3):two(117,3);[…];0,two(1,239):two(1,239)}=358.
+
+Oui, le milieu est tronqué. Parce qu'il y a près d'un million de caractères par ligne. Et il y a dix lignes, car il y a 10 modèles.
+
+Vous comprenez ce qui se passe ? C'est monstrueux : le grounder n'est pas capable de résoudre ce problème de comptage, donc il le laisse au solveur, avec toutes les infos dont il a besoin :
+c'est-à-dire, pour chaque atome qui *pourrait* être impliqué dans le comptage,
+l'expression `0,two(119,1):two(119,1);`, qui indique au solveur de prendre en compte
+l'atome `two(119,1)` s'il est vrai. Pour __tous les atomes__.
+
+C'est là qu'est l'os : le solveur se retrouve à devoir parser et traiter ces gigantesques
+listes lui-même, une par une, et ensuite atome par atome, à devoir vérifier leur véracité, pour les compter et les comparer au nombre d'occurence attendues, pour finalement déterminer si la ligne qu'il a regardée est bien celle parmis les 10 qui donne le nombre qu'il veut. Sinon, il recommence avec une autre ligne.
+
+C'est pas étonnant que le temps de calcul explose dans ces conditions.
+
+Et c'est pourquoi, cher lecteur, vous ne devriez pas utiliser `#count` sur des atomes indécidables par le grounder.
+
+Fourbe, n'est-ce pas ?
+
+
+### Attends ! Pourquoi ce WTF ?
+Ah, oui, bonne question. Comment ça se fait que le grounder n'est pas capable de résoudre cette affaire de comptage qui semble si triviale ?
+
+En fait, si vous regardez bien, le comptage est déjà réalisé : la valeur de count/1 est donnée. Le problème, c'est qu'elle est donnée, non pas en fonction du multiplier, mais des atomes qui doivent être vrais pour valider l'approche.
+C'est bien ça qui coûte cher, et pour éviter ça, il faudrait définir le comptage autrement (la question qui suit c'est *comment ?*. C'est une très bonne question, ça mériterait d'y réfléchir).
+
+De plus, il n'est pas impossible qu'il s'agisse d'un cas simple dégénéré.
+Le comptage doit savoir gérer des cas bien plus retords, avec des atomes différents
+aux origines très diverses. Et ce cas que nous venons de voir n'étant qu'un cas particulier,
+les développeurs n'ont pas (encore) eu le temps de l'optimiser.
+Peut-être dans une prochaine version ?
+
+### Diverses conséquences
+En fait, #count n'est pas le seul à être concerné. #min, #max, #minimize, #maximize,… Toutes ces directives de métaprogrammation peuvent être sources de ralentissements assez importants.
+Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, c'est dur. Et parfois, c'est juste impossible, et il faut faire avec.
+
+
+# Conclusions
+Comme toujours en optimisation, il n'y a pas de solution universelle : chaque cas est particulier.
+
+Cela étant dit, une bonne connaissance des outils utilisés et des problèmes traités est primordiale pour savoir quoi mesurer, sur quels leviers agir, et finalement comment se dépatouiller avec les gros problèmes.
+
+Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution. C'est juste un moyen de retarder les ralentissements.

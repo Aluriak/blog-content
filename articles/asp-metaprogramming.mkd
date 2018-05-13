@@ -1,0 +1,51 @@
+Title: Answer Set Programming — Métaprogrammation
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-metaprogrammation
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+s'intéressant aux directives de métaprogrammation qui n'y ont [pas été présentées]({filename}/articles/tuto-asp.mkd#Mtaprogrammation).
+
+
+# #min et #max
+Utiles.
+
+
+
+
+# #count
+Utile.
+
+Mais #count a un côté obscur : voir [la quête annexe sur l'encoding]({filename}/articles/asp-encodings.mkd#count).
+
+## Version abrégée
+
+
+## Usage comme condition
+Déjà présenté dans le tuto, je le rappelle ici pour la convénience ;
+le comptage d'atomes peut être utilisé dans le *corps* des règles, comme condition :
+
+```asp
+p :- 2{q(a,_)}2.
+```
+
+Ici, `p` ne sera vrai que si exactement deux atomes q/2 avec `a` comme premier argument sont vrais.
+
+
+
+
+# #project
+Un détail avec de l'importance.
+
+
+
+
+# #program
+Des fichiers dans des fichiers.
+Présenté rapidement ici, la directive #program n'est utile que lorsque utilisée avec un langage de script pour manipuler le grounding/solving.
+Voir l'annexe sur [les variantes de solving]({filename}/articles/asp-solving-variants.mkd).

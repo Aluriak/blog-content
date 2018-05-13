@@ -25,7 +25,6 @@ ou PPC (comme java implémente la POO et haskell la PF).
 
 Pour ceux qui connaissent, il fera certainement penser à [Prolog](http://www.learnprolognow.org/),
 puisque ces deux langages reposent sur les même concepts, bien qu'ils ne l'implémentent pas de la même manière.
-Pour les matheux, il fera penser à TLA+, en beaucoup moins puissant, certainement, sur le côté formalisation matheuse.
 
 L'objectif n'est pas seulement d'apprendre les bases en faisant joujou,
 mais de développer des programmes qui résolvent des problèmes de la vie réelle,
@@ -40,9 +39,28 @@ Aussi, une grosse partie du tuto est théorique. Ce n'est peut-être pas très �
 Si ça ne vous motive pas, [installez](#compilation) directement,
 et commencez à jouer avec [l'introduction du langage](principes-danswer-set-programming).
 
+## Quêtes annexes
+D'autres articles de ce blog à propos d'ASP s'intègrerons bientôt dans ce tuto, sous la forme de lien à cliquer.
+Il s'agit, par référence aux jeux vidéos, de *quêtes annexes* optionnelles et indépendantes du reste.
+
+Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page web ;)
+
+<!-- D'autres articles de ce blog à propos d'ASP s'intègrent dans ce tuto. Il s'agit, par référence aux jeux vidéos, de *quêtes annexes* optionnelles et indépendantes du reste. -->
+<!-- Une compréhension de base du langage est parfois nécessaire, donc n'allez sur les quêtes annexes qu'après avoir avancé un peu sur la quête principale (le présent tuto, donc). -->
+
+<!-- - [Observateurs]({filename}/articles/asp-observateurs.mkd), un moyen pour suivre, gérer et étendre le grounding -->
+<!-- - [Propagateurs]({filename}/articles/asp-propagateurs.mkd), un moyen pour suivre, gérer et étendre le solving -->
+<!-- - [Clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd), un moyen pour suivre, gérer et étendre le solving -->
+<!-- - [Métaprogrammation]({filename}/articles/asp-metaprogrammation.mkd), un follow-up de la section [Métaprogrammation](#mtaprogrammation) -->
+<!-- - [Theory Atoms]({filename}/articles/asp-theory-atoms.mkd), pour manipulation avancée de l'heuristique -->
+<!-- - [Variantes de solving]({filename}/articles/asp-variantes-solving.mkd), où l'on parle de multi-shot et iterative solving -->
+<!-- - [Jeux de logique]({filename}/articles/asp-jeux-logique.mkd), résolution d'énigmes logiques trouvées sur internet -->
+<!-- - [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle des coûts induits par certains encodings -->
+<!-- TODO: search for /asp- to find inline references to sidequests -->
+
 
 ## Quelques liens préliminaires
-*Où l'on se demande pourquoi faire un tuto si c'est pour renvoyer tout le monde voir ailleurs*
+*Où l'on se demande pourquoi faire un tuto si c'est pour envoyer tout le monde voir ailleurs*
 
 Je conseille volontier la lecture parallèle d'un tuto existant ; ça aide toujours d'avoir
 plusieurs sources pour comprendre un concept.
@@ -60,12 +78,12 @@ d'un [nombre impressionnant d'exemples de tous types dans ses sources](https://g
 et [d'une mailing list active](https://sourceforge.net/p/potassco/mailman/potassco-users/)
 où beaucoup de questions intéressantes sont posées.
 (il y a [une autre mailing list](https://lists.sourceforge.net/lists/listinfo/potassco-announce)
-pour les annonces des développeurs, typiquement les nouvelles versions)
+pour les annonces des développeurs, typiquement les nouvelles versions du solveur)
 
 Notez également que ce blog a déjà parlé d'ASP :
 
 - [Deponia et ASP]({filename}/articles/deponia-asp.mkd) : résoudre un puzzle avec ASP
-<!-- - [se-lang]({filename}/articles/se-lang.mkd) : définir des systèmes astrophysiques avec ASP -->
+- [se-lang]({filename}/articles/se-lang.mkd) : définir des systèmes astrophysiques avec ASP
 <!-- - [biseau]({filename}/articles/seb-biseau.mkd) : utiliser ASP comme DSL pour dessiner des graphes -->
 
 
@@ -73,7 +91,7 @@ Notez également que ce blog a déjà parlé d'ASP :
 Un peu de logique. Booléenne, c'est encore mieux.
 Non, sérieusement, on va parler de programmation logique ; savoir ce qu'on appelle la logique booléenne et ses principaux opérateurs est un plus.
 Néanmoins, pas besoin d'une grosse connaissance : juste savoir ce que veulent dire «et» et «ou» en logique.
-En clair, avoir lu les exemples introductifs de [la page wikipédia](https://fr.wikipedia.org/wiki/Alg%C3%A8bre%20de%20Boole%20(logique)), ou ceux-là qui [sont franchement pas mal](http://www.courstechinfo.be/MathInfo/FctLogiques1.html).
+En clair, avoir lu les exemples introductifs de [la page wikipédia](https://fr.wikipedia.org/wiki/Alg%C3%A8bre%20de%20Boole%20(logique)), ou ceux-là qui [sont franchement pas mal](http://www.courstechinfo.be/MathInfo/FctLogiques1.html) mais un poil bourrin, ou [ce cours](https://openclassrooms.com/courses/introduction-a-la-logique-mathematique) qui attaque beaucoup de choses très utiles (quantificateurs, notamment, qu'on utilisera bientôt).
 
 # Concepts généraux
 *Où l'on découvre à quelle sauce nous allons être mangés*
@@ -83,7 +101,7 @@ Comment collecter tous les entiers positifs inférieurs à 100 et multiples de 3
 En python, une manière de faire est la suivante (à droite, après le `#`, il s'agit de commentaires qui ne sont pas interprétés par la machine, qui sont là juste pour l'humain) :
 
 ```python
-for nb in range(0, 100):  # pour chacun des nombres de 1 à 100
+for nb in range(1, 100):  # pour chacun des nombres de 1 à 100
     if nb % 3 == 0:       # si le nombre est un multiple de 3
         print(nb)         # afficher le nombre à l'écran
 ```
@@ -100,12 +118,12 @@ et c'est un gros problème dans l'enseignement en informatique.
 La programmation déclarative aborde le problème d'un angle différent :
 l'humain ne doit plus expliquer **comment** atteindre la solution,
 mais plutôt la **décrire**,
-c'est à dire répondre au **quoi**, ce qui est beaucoup plus naturel pour un humain.
+c'est-à-dire répondre au **quoi**, ce qui est beaucoup plus naturel pour un humain.
 Le paradigme *déclaratif* consiste en l'explication du **quoi**.
 
 HTML est un bon exemple de langage déclaratif: on décrit bien la solution (la structure finale de la page web).
 Le HTML n'est pas un langage impératif ; d'ailleurs,
-si la page finale dépend de paramètres extérieurs (compte enregistré par exemple),
+si la page finale dépend de paramètres extérieurs (compte utilisateur par exemple, pour afficher l'avatar en haut à droite de la page),
 vous ne pouvez plus compter uniquement sur le HTML.
 C'est généralement là qu'interviennent des langages *impératifs* (Javascript, PHP, Python, Java,…)
 qui permettent de générer du HTML à partir de templates et des paramètres extérieurs.
@@ -119,7 +137,7 @@ Le paradigme logique est un sous-ensemble du paradigme déclaratif.
 Autrement dit, un langage *logique* est un langage *déclaratif*.
 À l'inverse, un langage *déclaratif* n'est pas nécessairement *logique* (le HTML, par exemple, n'est pas logique).
 
-Le paradigme logique repose sur les méthodes formelles issues des maths et de la théorie de la logique
+Le paradigme logique repose sur les méthodes formelles issues des maths et de la théorie de la logique.
 C'est avec ces outils que la description de la solution (la réponse au **quoi**) est formulée.
 
 C'est précisément à cette catégorie de langage qu'ASP appartient.
@@ -134,7 +152,7 @@ entre 1 et 100. Et puis, «nombre» oui, mais pas ceux à virgule, hein.
 Ouais, décimaux, c'est ça.
 ```
 
-Ce langage possède deux propriétés attractives :
+Ce langage, le français, possède deux propriétés attractives :
 la majorité des francophones le comprendrais, ET ils seraient capable de
 le réutiliser pour exprimer le même problème, ou une variation
 (les multiples de 4, ou les nombres de 1 à 200,… Essayez chez vous, vous verrez, c'est facile).
@@ -152,8 +170,8 @@ afficher x tel que : x est un entier, 1 < x < 100, x est un multiple de 3.
 ```
 
 C'est compréhensible, simple et efficace ; c'est de la programmation logique !
-Ce langage précis n'est pas implémenté (et ASP est un peu moins haut niveau (i.e. proche du langage naturel) que cela),
-certes, mais il s'agit d'un exemple d'approche d'un langage expressif.
+Ce langage précis n'est pas implémenté, certes (et ASP est un peu moins haut niveau (i.e. proche du langage naturel) que cela),
+mais il s'agit d'un exemple d'approche d'un langage expressif.
 On remarque bien ici qu'il ne s'agit finalement que de *décrire* la solution.
 
 La [page wikipédia française sur la programmation déclarative](https://fr.wikipedia.org/wiki/Programmation%20d%C3%A9clarative)
@@ -192,8 +210,8 @@ est souvent plus rapide que d'énumérer les points communs.
 
 En général, un langage autorisant la programmation par contrainte pourra être divisé en deux parties :
 
-1. définir les possibles solutions (modélisation de l'espace de recherche)
-2. interdire les résultats qui ne nous intéressent pas (contraintes)
+1. définir les possibles solutions (la modélisation de l'espace de recherche)
+2. interdire les résultats qui ne nous intéressent pas (les contraintes)
 
 La première partie, c'est la *génération*, où l'on génère les candidats pour la solution.
 Comme en général ces candidats ne sont pas tous bons, on besoin de les filtrer,
@@ -207,9 +225,20 @@ Néanmoins, la dichotomie entre génération et contraintes se voit dans beaucou
 car les développeurs ont intuitivement ce découpage dans leur réflexions.
 
 
+## Exemple de code ASP
+Reprenons notre problème initial : afficher à l'écran tous les multiples positifs de 3 inférieurs à 100.
+En ASP, nous pourrions résoudre ce problème ainsi (les caractères qui suivent les `%` sont des commentaires) :
+
+```asp
+#show solution(X): X=1..100, X\3=0.
+```
+
+À la fin de ce tuto, vous serez capable de comprendre parfaitement ce code, et d'imaginer d'autres manières de le résoudre.
+
+
 
 # Outillage
-*Où l'on va enfin faire quelque chose ; dommage que ce soit pas très intéressant*
+*Où l'on va enfin faire quelque chose ; mais pas du code*
 
 Il existe [de nombreuses implémentations d'ASP](https://en.wikipedia.org/wiki/Answer%20set%20programming#Comparison%20of%20implementations),
 chacunes avec des approches uniques
@@ -294,9 +323,9 @@ mes binaires clingo:
 
 ```
 ❯ ls -lA ~/bin | cut -c 50- | grep clingo
-clingo521
+clingo522
 clingo454
-clingo -> clingo521
+clingo -> clingo522
 ```
 
 (clingo est un lien symbolique vers l'une des versions installée… généralement la plus récente)
@@ -338,10 +367,10 @@ tests préliminaires pour étudier un peu l'environnement.
 Pour avoir la versions de clingo, il suffit de demander: `clingo --version`.
 Vous verrez quelque chose du style:
 
-    clingo version 5.2.1
+    clingo version 5.2.2
     Address model: 64-bit
 
-    libgringo version 5.2.1
+    libgringo version 5.2.2
     Configuration: with Python 3.6.2, with Lua 5.3.4
 
     libclasp version 3.3.2 (libpotassco version 1.0.0)
@@ -576,16 +605,18 @@ ok(X) :- a(X).
 ```
 
 Avec ce programme, si `a(2)` est vrai, alors `ok(2)` le sera également.
-Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000`, `"i have υτφ-8 characters"` ou `a(b(c(d,d(3),e(f,g(a(b,8)),0))),k20,flip,flop(py(disk)),"hello, world!")`.
+Même chose pour n'importe quelle valeur de X, de `1` à `a` en passant par `-42000`, `"i have υτφ-8 characters"` ou `b(c(d,d(3),e(f,g(a(b,8)),0)),k20,flip,flop(py(disk),"hello, world!"))`.
 
 Exemples de règles avec des variables :
 
 ```asp
 % L'atome nb_3(X) est vrai pour tout X positif inférieur à 100 et multiple de 3.
-nb_3(X) :- 0 < X ; X < 100 ; X \ 3 = 0.  % le '\' c'est pour le modulo, ou "division entière"
+nb_3(X) :- 0<X ; X<100 ; X\3=0.  % le '\' c'est pour le modulo, ou "division entière"
 % l'atome entoure(X-1,X,X+1) est vrai si l'atome a(X) est vrai
 entoure(X-1,X,X+1):- a(X).  % par exemple, avec a(2), ça donne entoure(1,2,3)
 ```
+
+([à propos de modulo/division entière](http://www.france-ioi.org/algo/course.php?idChapter=650&idCourse=0&iOrder=22))
 
 ### Variable muette
 La variable muette, c'est une manière de dire explicitement : *cette valeur ne m'intéresse pas*.
@@ -663,10 +694,15 @@ Le choix consiste en un… choix. C'est dur à expliquer autrement.
 Voici un exemple simple, avec le résultat donné par clingo,
 qui consiste en un choix de exactement 1 parmis 3 atomes :
 
+```asp
+1 { a ; b ; c } 1.
+```
+
+Notez qu'il s'agit d'une règle sans *corps*, donc avec uniquement une *tête*.
+Le résultat donné par clingo est le suivant :
 
 ```
-❯ echo "1 { a ; b ; c } 1." | clingo -n 0
-clingo version 5.2.1
+clingo version 5.2.2
 Reading from stdin
 Solving...
 Answer: 1
@@ -702,8 +738,8 @@ C'est vrai ça ! Pourquoi on pourrait pas avoir *a* et *b* en même temps par ex
 
 Résonnons par l'absurde : si on a *a* et *b* en même temps, cela veut dire que a et b sont vrais dans le même modèle.
 
-Or, dans le programme, il est dit `1 { a ; b ; c } 1.`, c'est-à-dire qu'au moins une et qu'aau plus une
-des trois valeurs entre accolades est vrai.
+Or, dans le programme, il est dit `1 { a ; b ; c } 1.`, c'est-à-dire qu'au moins une et qu'au plus un
+des trois atomes entre accolades est vrai.
 Si *a* et *b* sont vrais, alors il y a deux valeurs vraies parmis les valeurs entre accolades,
 ce qui n'est pas possible, puisqu'il doit n'y en avoir qu'une !
 
@@ -774,6 +810,31 @@ Si au bout de 20 minutes, vous:
 - **n'avez rien essayé :** j'en déduit que la soupe d'avocat est bonne. Perso, la seule fois où on en a fait, j'étais tout petit, y avait mon papa et ma maman qui avaient fait la soupe. Ben personne n'en a mangé. C'était. Vraiment. Pas. Bon. En vrai, rien qu'à l'odeur, on a tous fait des têtes bizarres. Et ensuite ma maman elle a goûté, et ensuite elle nous a défendu d'en prendre. Plus tard, dans ma fratrie, la légende racontait (racon*tait*, hein, parce que bon, maintenant on a grandit, on sait tous que je l'avais inventée juste pour faire mon intéressant, alors qu'en vrai c'était juste l'hiver) que, après que les parents l'ai jetée dans le compost, les plantes ont arrêtée de pousser pendant plusieurs mois.
 - **n'avez rien essayé, mais êtes bien conscient qu'il faut se lancer, mais au font avez trop peur qu'en appuyant sur la mauvaise touche, je sorte de l'écran, bouillant de rage, en hurlant des insanités et en maudissant votre famille sur 29.3 générations :** un indice : avec deux expressions, ça se fait bien.
 - **avez tout essayé, y compris de faire une méta-méta-heuristique qui contrôlait un algo génétique multi-agent qui testait des combinaisons au hasard de lettre pendant plus de 25 ans sur un supercalculateur :** il y a les solutions en bas de page, mais en vrai, c'est d'un séminaire sur le lâché prise dont vous avez besoin.
+
+
+
+## Le comptage comme une condition
+Nous avons vu que le choix/la disjonction s'effectue en utilisant la notation avec les accolades dans la *tête* d'une règle.
+Que se passe-t-il si on met ça dans le *corps* ? Eh bien, ça devient une condition :
+
+```asp
+{a;b;c}.  % choix d'un sous-ensemble
+ok(N):- 2{a;b;c}3.  % ok si 2 ou 3 éléments dans le sous-ensemble
+```
+
+L'atome `ok` sera vrai si 2 ou 3 atomes parmis a, b et c sont vrais.
+
+### Le comptages comme une donnée
+Un autre usage de cette syntaxe est celui-ci :
+```asp
+{a;b;c}.
+nb(N):- N={a;b;c}.  % compte le nombre d'éléments
+```
+
+Il s'agit d'une simplification d'écriture (un *sucre syntaxique*)
+pour la directive de métaprogrammation #count, qui n'est pas vue dans ce tuto.
+<!-- pour la directive de métaprogrammation [#count]({filename}/articles/asp-metaprogramming.mkd#count). -->
+
 
 
 ## Disjonction simple
@@ -1528,6 +1589,8 @@ elle s'abstiendrait de générer celles qui sont moins bonnes que celles déjà 
 En d'autre terme, donner à l'heuristique nos préférences en matière de modèle lui permet d'élaguer l'espace de recherche
 pour aller plus vite, et se diriger petit à petit vers l'une des meilleure réponse, le *modèle optimal*.
 
+<!-- Pour une explication de ce qu'est un *espace de recherche*, voir la quête annexe [sur l'encoding]({filename}/articles/asp-encodings.mkd#Notions-despace-de-recherche). -->
+
 
 ### Syntaxe
 La syntaxe est un poil bizarre au début, mais on s'y fait bien.
@@ -1570,15 +1633,58 @@ le solver s'occupe seul de ne pas polluer la sortie : le dernier modèle trouvé
 Cela veux même dire que vous pouvez l'arrêter en cours de route, lorsque les modèles qu'il propose sont suffisamment bons.
 
 
-## #min et #max
-Utiles.
-## #count
-Utile.
-## #project
-Un détail avec de l'importance.
-## #program
-Des fichiers dans des fichiers.
+Dernier mot pour cette section : il existe bien d'autres directives de métaprogrammation.
+<!-- [Une quête annexe]({filename}/articles/asp-metaprogramming.mkd) vous permet de vous y intéresser. -->
 
+
+## #sum
+Dans la série des directives utiles, #sum a une place de choix : elle permet d'additionner. Pourquoi aurait-on besoin d'une telle directive alors qu'on a déjà l'opérateur `+` ?
+Cas typique : vous voulez ajouter les valeurs contenues dans le premier argument des atomes val/1.
+Comment vous faites avec un + ? Ben, vous faites pas. ou alors, de manière très compliquée:
+
+```asp
+% les valeurs à additionner
+val(1;3;18;23;42;67;72).
+
+% On prend le plus petit d'abord.
+first(X):- val(X) ; not val(Y): val(Y), Y<X.
+% On détermine le suivant, celui qui est juste supérieur.
+next(X,Y):- val(X) ; val(Y) ; X<Y ; not val(Z): val(Z), X<Z, Z<Y.
+% Maintenant, on parcours la liste, et on additionne au fur et à mesure.
+sum(1,F,F):- first(F).  % à l'étape 1, la valeur est celle du premier
+sum(N+1,W,T+W):- sum(N,V,T) ; next(V,W).  % à l'étape n, la valeur est celle de l'étape n-1 plus la valeur de l'étape n
+step(S):- sum(S,_,_).
+% Et la somme, c'est la dernière somme réalisée.
+sum(S):- sum(N,_,S) ; not sum(M,_,_): step(M), N<M.
+#show sum/1.  % on est fier de notre résultat !
+```
+
+C'est un poil complexe, et surtout ça pollue pas mal le code avec des noms d'atomes généraux. Pas super, donc.
+
+C'est là où `#sum` entre en jeu ! Voyez plutôt :
+
+```asp
+% les même données initiales
+val(1;3;18;23;42;67;72).
+
+% On additionne !
+sum(S):- S=#sum{V: val(V)}.
+#show sum/1.  % on est fier de notre résultat !
+```
+
+Et évidemment, ça vient avec la flexibilité d'ASP :
+
+```asp
+% les données, cette fois-ci réparties en deux groupes
+val(a,1;b,3;a,18;b,23;a,42;b,67;a,72).
+
+% récupération des groupes
+group(G):- val(G,_).
+
+% On additionne pour chaque groupe, indépendamment.
+sum(G,S):- S=#sum{V: val(G,V)} ; group(G).
+#show sum/2.  % on est fier de nos résultats !
+```
 
 
 
@@ -1608,13 +1714,13 @@ Je n'utilise pas cette API en règle générale, puisqu'il faut que le client co
 
 ### Autres API
 Je vous recommande pour démarrer [clyngor](https://github.com/aluriak/clyngor).
-C'est un module python on ne peux plus standard, disponible sur pypi,
-et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre $PATH.
+C'est un module python on ne peut plus standard, disponible sur pypi,
+et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre PATH.
 
 Et normalement, c'est déjà fait :)
 
 Une alternative est [pyasp](https://github.com/sthiele/pyasp).
-Néanmoins, ce package et ne supporte pas clingo *seul*,
+Néanmoins, ce package ne supporte pas clingo *seul*,
 mais plutôt gringo et clasp comme deux binaires
 séparés appelés séquentiellement.
 Hors, dans les nouvelles versions du solveur, seul clingo est distribué.
@@ -2006,13 +2112,6 @@ Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas
 
 
 
-### Multi-shot solving
-TODO
-
-### Iterative solving
-TODO
-
-
 
 
 # Conseils de style
@@ -2057,7 +2156,7 @@ fly(X):- bird(X).
 ```
 
 ## Aération
-Laisser une ligne entre chaque règle (avec le commentaire qui l'accompagne), et laisser deux lignes pour marquer une grosse séparation.
+Laisser une ligne entre chaque règle (avec le commentaire qui l'accompagne), et laisser deux lignes pour marquer une grosse séparation, typiquement entre deux parties qui n'ont rien à voir.
 
 ```asp
 % Les oiseaux volent.
@@ -2065,6 +2164,10 @@ fly(X):- bird(X).
 
 % Le feu ne mouille pas.
 not wet(X):- on_fire(X).
+
+
+% Je m'appelle Jean-Christophe.
+name(me,"Jean-Christophe").
 ```
 
 ## Ordre logique
@@ -2077,14 +2180,14 @@ Indiquer en commentaire le sens de ces données est également une bonne idée.
 L'expension est un ensemble de règles qui permettent d'obtenir des données des informations qui seront nécessaires pour la modélisation. C'est une étape souvent inutile, car les données sont généralement bien faites de base. Mais dans certains cas (que nous rencontrerons après), il peut être intéressant de permettre des écritures simplifiées dans les données, qui seront *expansées* après.
 
 La modélisation est, comme vous vous en doutez, l'ensemble de règles et choix qui implémentent la solution au problème et génèrent les solutions candidates.
-Parfois, les contraintes font parties intégrantes de la modélisation, et ne devraient donc pas en être dissocié.
+Parfois, les contraintes font parties intégrantes de la modélisation, et ne devraient donc pas en être dissociées.
 En effet, si l'ordre dans lequel les règles sont écrites ne compte pas pour le résultat, il vaut mieux qu'elle soient correctement ordonnée pour le lecteur humain.
 Ainsi, si une contrainte fonctionne de concert avec une règle, il est souvent plus clair de ne pas les séparer.
 
 Les affichages (`#show`) viennent souvent en dernier, car cela est assez logique, mais notez que ce n'est peut-être pas la meilleure solution.
 Une bonne autre position pour les affichages serait… tout au début ! À côté des commentaires en premières lignes, qui indiquent les entrées du programme.
 Avec les `#show` marqués explicitement, la documentation est réellement exhaustive, et ne fait pas doublon avec le code !
-C'est génial de pouvoir placer les lignes où l'on veut !
+Merci ASP : c'est génial de pouvoir placer les lignes où l'on veut !
 
 
 ## Des longueurs dans le texte
@@ -2126,7 +2229,8 @@ Dans le second, il n'y appartient pas, et est donc une condition supplémentaire
 Donc, mon conseil : utilisez toujours le point-virgule,
 sauf lorsque vous devez utiliser une virgule.
 Ça vous évitera d'avoir à retaper toutes vos virgules si l'un des terme d'une condition
-devient une expression *pour tout* (`∀`).
+devient une expression *pour tout* (`∀`), et en plus, ça permet une *cohérence* générale,
+qui souvenez-vous est l'une des deux règles fondamentales du style.
 
 
 
@@ -2150,7 +2254,7 @@ sachant qu'il doit aller réveiller tout le monde dans la maison, et ne s'arrêt
 
 Bref, il s'agit d'un parcours de graphe d'un point de départ au point d'arrivée, avec des jalons sur lesquels le chemin doit passer.
 Notez que le contexte de l'exercice est assez ridicule, mais en vrai, parcourir l'espace et passer par des endroits particulier,
-c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exemple.
+c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exemple, ou encore la robotique (robot nettoyeur, drone,…).
 
 [Solution](https://github.com/Aluriak/learning-ASP/blob/master/path-search.lp).
 
@@ -2161,7 +2265,8 @@ c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exe
 Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
 
 Nous avons vu le placement bourrin de table, où l'objectif était de satisfaire toutes les contraintes.
-Ça marche le plus souvent, mais si votre famille est trop compliquée, ça marche plus : le problème est juste insatisfiable.
+Ça marche le plus souvent, mais si votre famille est trop compliquée, ça marche plus : le problème est juste insatisfiable,
+il n'y a aucun moyen d'atteindre un placement idéal.
 
 Maintenant, plutôt que des contraintes, nous pourrions modéliser un *score* à maximiser.
 
@@ -2196,7 +2301,7 @@ Si vous ne connaissez pas [codegolf.stackexchange](https://codegolf.stackexchang
 il s'agit d'une des instances de stackexchange (la plus connue d'entre elles étant probablement stackoverflow),
 où les questions sont des challenges de *code golf*, où des centaines de programmeurs s'amusent à imaginer les programmes les plus courts possible,
 dans une multitude de langages différents (parfois créés uniquement pour le *code golf*).
-Le score correspond au nombre de caractères dans le code ; le but étant de faire le programme le plus court possible, il faut donc de minimiser ce score.
+Le score correspond au nombre de caractères dans le code ; le but étant de faire le programme le plus court possible, il faut donc minimiser ce score.
 
 Nous allons nous intéresser au [**calcul de score du boggle**](https://codegolf.stackexchange.com/questions/143213/score-a-game-of-boggle),
 car il est simple et nécessite un peu de python. C'est bon pour l'entraînement.
@@ -2226,7 +2331,7 @@ player(3,("dog";"mouse")).  % score: 2
 
 Calculons ensembles le score du joueur 1: *cat* donne 1 point, *dog* et *bird* ont été trouvés
 par d'autres joueurs et donnent donc 0 point, et *elephant* donne 11, soit un total de 12 points
-pour le premier joueur. De notre point de vue, cela veux dire que nous devons générer `score(1,12)`.
+pour le premier joueur. De notre point de vue, cela veux dire que nous devons rendre vrai l'atome `score(1,12)`.
 
 ### Méthodologie
 
@@ -2235,9 +2340,9 @@ Une première solution est de dire que 1 et 1 seul joueur à trouvé le mot.
 L'autre solution est que, sachant un joueur l'ayant trouvé, tous les autres ne l'on pas trouvé.
 
 ```asp
-unique(P,W):- 1 { player(_,W) } 1 ; player(P,W).
+unique(P,W):- 1 { player(_,W) } 1 ; player(P,W).  % 1 seul joueur l'a trouvé
 % ou, c'est équivalent :
-unique(P,W):- player(P,W) ; not player(P2,W): player(P2,_) P2!=P.
+unique(P,W):- player(P,W) ; not player(P2,W): player(P2,_), P2!=P.  % aucun autre joueur ne l'a trouvé
 ```
 
 Maintenant que l'on sait quels mots doivent être comptés dans le score pour chaque joueur,
@@ -2316,7 +2421,7 @@ faire un one liner parfait est impossible ici.
 Évidemment, cet exemple n'est pas là pour servir directement,
 à moins que vous ne jouiez vous-même au boggle.
 
-L'intérêt est qu'il montre que bien des jeux, même ceux avec des règles complexes,
+L'intérêt est qu'il montre que [bien des jeux](https://github.com/Aluriak/learning-ASP/blob/master/sevenwonders.lp), même ceux avec des règles complexes,
 peuvent être encodés en ASP pour être résolus ou étudiés.
 
 Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf* (et des fois, [non](https://codegolf.stackexchange.com/questions/44485/score-a-game-of-kingdom-builder/51777#51777)).
@@ -2331,9 +2436,9 @@ Amis golfeurs, je vous salut !
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
 Cela pourrait vous servir un jour, et sinon, c'est toujours rigolo à faire.
-Aussi, nul besoin de vous y connaître en PC, les explications viennent avec (ce tuto est inter-disciplinaire).
+Aussi, nul besoin de vous y connaître en PC, les explications viennent avec (ce tuto est inter-disciplinaire :p).
 
-Ce genre de programme s'organise autour de deux principaux programmes :
+Ce genre de programme s'organise autour de deux principaux sous-programmes :
 celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
 comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
 et celui qui construit le pc à partir des pièces récupérées, c'est-à-dire
@@ -2405,7 +2510,7 @@ Les deux autres GPU étant moins bonnes, leurs prix et notes sont moins hauts (v
 
 ##### Dépendances
 Notez l'atome `require/4` qui nous permet de définir que la puce intégrée
-nécessite le CPU *C*, et par conséquent (la règle qui s'en assure sera vue plus tard)
+nécessite le CPU *C*, et par conséquent (la règle qui s'en assure sera vue plus tard, elle appartient à la *modélisation*)
 que le choix de cette GPU oblige à utiliser le processeur qui l'embarque (c'est assez logique, finalement).
 
 Néanmoins, si on choisi le cpu *C*, nous ne sommes pas obligés de choisir la puce intégrée,
@@ -2413,8 +2518,8 @@ laissant le champs libre pour une autre carte graphique plus puissante.
 (la logique étant que la puce intégrée ne prend pas l'emplacement de la carte graphique, c'est juste un module du processeur ; personnellement mon processeur possède une puce intégrée, mais je ne l'ai jamais utilisée, j'ai une vraie carte graphique à côté que j'utilise à la place)
 
 ##### Les autres composants
-CPU, RAM, SSD, HDD,… Tous vont passer dans la grande moulinette de l'ASP.
-Je vous invite à regarder le code pour avoir une idée de toutes les pièces qui seront utilisées.
+CPU, RAM, SSD, HDD,… Tous vont passer dans la grande moulinette de l'ASP, avec toujours les même informations : un type, un nom, une note, et parfois un require/4.
+Je vous invite à regarder le code pour avoir une idée de toutes les pièces qui seront utilisées dans cet exemple.
 
 
 
@@ -2435,9 +2540,9 @@ Maintenant que toutes les préférences
 ### Aller plus loin
 #### Réflexion de fond d'informaticien
 Vous noterez que nous avons définis des couches successives d'abstractions : par exemple, nous utilisons `require/4` au lieu d'écrire une contrainte,
-laissant une règle dan l'expansion des données s'occuper de créer la contrainte associée.
+laissant une règle dans l'expansion des données s'occuper de créer la contrainte associée.
 
-Ce principe rapellera à certain les *Domain Specific Language* (DSL), des languages utilisés dans un projet pour décrire un modèle de donnée.
+Ce principe rapellera à certains les *Domain Specific Languages* (DSL), des languages utilisés dans un projet pour décrire un modèle de donnée.
 Ces DSL ont beaucoup d'applications, et vous voyez que dans une certaine mesure, ASP permet d'en créer. Ici, nous avons créé un DSL
 pour décrire les pièces d'ordinateur et leurs relations.
 
@@ -2447,7 +2552,7 @@ et en déduire plus de contraintes sur le PC final : pas la peine d'avoir plus d
 si l'utilisateur final veut juste lire ses mails ou se connecter aux réseaux sociaux (4GB pour l'OS Windows),
 et à l'inverse, une puissance minimale de GPU peut être nécessaire pour certains jeux.
 
-Vous pouvez facilement imaginer ASP comme un générateur de DSL : c'est ce que je fait avec [Biseau](https://gitlab.inria.fr/lbourneu/biseau).
+Vous pouvez facilement imaginer ASP comme un générateur de DSL : c'est ce que je fait avec [Biseau](https://gitlab.inria.fr/lbourneu/biseau) et [se-lang]({filename}/articles/se-lang.mkd).
 
 
 #### Attrapez les toutes
@@ -2464,9 +2569,12 @@ Une solution pourrait être de parser ou chopper l'API d'un site de vente
 de matériel, par exemple [LDLC](https://www.ldlc.com/configurateur-pc/)
 ou [partpicker](https://pcpartpicker.com/).
 
+Cet hypothétique programme consiste simplement en l'extraction d'info de ces sites,
+et l'écriture de règles ASP à mettre dans les données. Pas une tâche monstrueuse, donc.
+
 
 #### Dans le ¬Sephiroth
-Une fois que les deux premières parties sont mises en place et travaillent ensemble,
+Une fois que les deux premières parties sont mises en place et travaillent ensembles,
 vient l'étape de distribution de votre projet révolutionnaire : d'autres personnes pourraient en bénéficier.
 
 Une manière de faire, c'est une interface web, où les utilisateurs peuvent checker
@@ -2586,7 +2694,7 @@ Et oui, avec un clustering conceptuel, on peut éviter la génération de bien d
 ## Résoudre un donjon de The Legend of Zelda
 ### Contexte
 Dans sa franchement intéressante série [*Boss Keys*](https://www.youtube.com/watch?v=ouO1R6vFDBo&list=PLc38fcMFcV_ul4D6OChdWhsNsYY3NA5B2),
-Mark Brown, un designer professionnel dans le milieu du jeu vidéo, cherche, épisode par épisode, à comprendre la structure interne et les logiques
+Mark Brown, un designer professionnel du milieu du jeu vidéo, cherche, épisode par épisode, à comprendre la structure interne et les logiques
 qui sous-tendent les donjons des jeux de la licence [The Legend of Zelda](https://fr.wikipedia.org/wiki/The%20Legend%20of%20Zelda%20(s%C3%A9rie)).
 
 Si vous aimez cette série de jeu, ou le game design en général,
@@ -2606,11 +2714,11 @@ c'est-à-dire la succession d'actions à opérer qui permettent, à la fin, d'ou
 ### Notre boulot
 En lisant les lignes précédentes, une idée vous est venue : si nous avons accès à une représentation formelle des donjons du jeu,
 et que nous pouvons formellement décrire les actions et les buts, alors il serait possible d'écrire un programme qui,
-comprenant le langage de description de Mark Brown, serais capable de décider d'une solution au donjon.
+comprenant le langage de description de Mark Brown, serait capable de décider d'une solution au donjon.
 
 Bien sûr, vous vous doutez que si j'en parle ici, c'est parce que nous allons nous y intéresser avec ASP.
 
-Voici une image piquée de la vidéo [*The Legend of Zelda: A Link Between Worlds' dungeon design | Boss Keys*](https://www.youtube.com/watch?v=E7sm-0nGV34) :
+Voici une image piquée à la vidéo [*The Legend of Zelda: A Link Between Worlds' dungeon design | Boss Keys*](https://www.youtube.com/watch?v=E7sm-0nGV34) :
 
 <center>{% img {filename}/images/asp/zelda_mark_brown_dungeon.png 700 "Zelda dungeon representation by Mark Brown" %}</center>
 
@@ -2706,6 +2814,11 @@ C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en A
 *Où l'on apprend que tout ceci n'était que le début, car en réalité, l'informatique est bien plus qu'un langage qui fait des trucs rigolos*
 
 
+## Exeeeeerciiiiiiice ! Fil rouge en trois actes
+Vous souvenez-vous de l'introduction ? On parlait du code ASP qui génèrais les multiples positifs de 3 inférieurs à 100, et du fait qu'il vous serait possible d'imaginer d'autres solutions que celle proposée. *Maintenant* semble être un bon moment pour y réfléchir.
+
+Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions différentes du langage : les contraintes, les choix, les négations dichotomiques,…
+
 
 
 # Liens
@@ -2778,6 +2891,42 @@ subject(Y):- aime(_,Y) ; aime(X,Y): peoples(X).
 :- 2>{peoples(_)}.  % au moins deux personnes
 :- 1>{subject(_)}.  % au moins 1 sujet
 ```
+
+### Fil rouge en 3 actes
+Une première solution, qui génère un answer set pour chaque solution :
+```asp
+candidats(1..100).  % les valeurs candidates
+solution(X): candidats(X), X\3=0.  % un candidat est solution s'il est divisible par 3.
+#show solution/1.  % affiche la solution
+```
+
+Une seconde, qui utilise la négation dichotomique :
+```asp
+1{candidat(1..100)}1.  % choisi un candidat
+-candidat(X):- candidat(X) ; X\3>0.
+```
+
+Une troisième, avec un choix explicite et une contrainte :
+```asp
+1{candidat(1..100)}1.  % choisi un candidat
+:- candidat(X) ; X\3!=0.
+```
+
+Et enfin, l'encoding bonus : ASP doit maximiser un score qui dépends du sous-ensemble de candidat choisi :
+```asp
+% On prend un sous-ensemble des 100 valeurs.
+{solution(1..100)}.
+
+% Le score est la somme des valeurs des solutions.
+%  Une solution divisible par 3 compte pour 1
+%  Une solution qui n'est pas multiple de 3 compte pour -1
+score(N):- N=#sum{1,X: solution(X), X\3=0 ; -1,X: solution(X), X\3>0}.
+
+% On veut le modèle avec le plus grand score.
+#maximize{N@1: score(N)}.
+```
+
+Cette dernière solution, avec le multithreading et un bon processeur, met plus de 1 minute à être résolue.
 
 
 *[ASP]: Answer Set Programming

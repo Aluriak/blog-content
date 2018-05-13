@@ -1,0 +1,13 @@
+Title: Answer Set Programming — Le clustering conceptuel
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-clustering-conceptuel
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+et la suite de la quête annexe sur [les propagateurs]({filename}/articles/asp-propagators.mkd).
+Il s'intéresse à l'usage de ces objets pour réaliser une tâche de clustering conceptuel.

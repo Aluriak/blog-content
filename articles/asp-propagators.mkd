@@ -1,0 +1,20 @@
+Title: Answer Set Programming — Les propagateurs
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-propagateurs
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qui permettent de suivre l'évolution du solving en temps réel, pour le regarder, l'aider, et même le modifier.
+
+TODO
+
+# Conclusions
+Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
+Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
+
+Enfin, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-conceptual-clustering.mkd).

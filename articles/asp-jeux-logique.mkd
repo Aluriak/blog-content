@@ -1,0 +1,14 @@
+Title: Answer Set Programming — Jeux de logique
+Date: 2018-04-13
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-jeux-logique
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+s'intéressant à la modélisation et résolution de problème de logique, sous la forme d'une volée de cas pratiques.
+
+[Sources des codes](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%20warmup)
