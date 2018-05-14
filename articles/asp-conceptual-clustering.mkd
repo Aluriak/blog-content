@@ -11,3 +11,85 @@ Status: draft
 Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 et la suite de la quête annexe sur [les propagateurs]({filename}/articles/asp-propagators.mkd).
 Il s'intéresse à l'usage de ces objets pour réaliser une tâche de clustering conceptuel.
+
+
+
+# Clustering conceptuel
+Ne prenez pas peur en lisant cette expression : c'est en fait assez simple.
+
+Notez que cet exemple se base en grande partie sur les propagateurs.
+
+## Clustering
+Le clustering, c'est une opération visant à séparer en groupes un ensemble d'éléments.
+Dans la vie de tous les jours, on en fait beaucoup : notre cerveau est même spécialement entraîné à ce genre de tâche.
+
+Quand j'essuie la vaisselle, il faut savoir où mettre quels ustensiles : les fourchettes dans le bac à fourchettes, les assiettes sur la pile d'assiette (de même couleur).
+C'est du clustering : on range des éléments (les ustensiles) dans des groupes spécifiques (pile à assiette, bac à fourchette)
+en se basant sur les propriétés de l'objet (une fourchette, ça ressemble à une fourchette, donc ça va dans le bac à fourchette).
+
+De manière intéressante, ce clustering apparemment trivial se complexifie dés lors que vous avez des ustensiles qui ne tombent dans aucune catégorie, comme la [cuiller-fourchette](https://fr.wikipedia.org/wiki/Cuill%C3%A8re-fourchette) (ou *spork*, en anglais).
+Où mettre ces ustensiles qui appartiennent à plusieurs catégories ? Selon les personnes, le choix peut se faire de manière rationnelle, en ajoutant une propriété sur un groupe donné
+(*le bac à fourchette* devenant par exemple *le bac à tout ce qui a 2, 3 ou 4 pics métalliques allongés*). D'autres le feront au hasard, ou d'autres choisirons sur d'autres critères (on a moins de cuiller, donc le bac à cuiller a de la place pour la cuiller-fourchette dedans).
+
+Concernant les objets qui ne rentrent dans aucune catégorie, c'est exactement le problème que résouds *le plat qui est dans l'entrée* :
+un dépotoir où l'on met tous les objets que l'on ne sait pas ranger dans les groupes existants.
+
+Bref, du clustering, c'est très naturel comme opération. En mathématiques, évidemment, la chose est attaquée avec plus d'abstraction.
+
+## Clustering conceptuel
+Le clustering conceptuel est en réalité plus proche encore de notre manière de fonctionner : cela consiste à avoir,
+pendant le clustering même, un avis critique sur les groupes constitués.
+
+Par exemple, lorsque l'on remplis des cartons pour un déménagement, on essaye d'avoir une cohérence de contenu : un carton doit contenir un type d'objet
+(il y a donc, selon le théorème du plat dans l'entrée, un carton *de bordel* qui contient ce que l'on ne sait pas grouper).
+
+Le clustering parfait, ce serait d'avoir un minimum de cartons, remplis avec le même type d'objets,
+tous de même taille et masse qu'un humain peut porter facilement.
+
+Cependant, contrairement à l'exemple de la vaisselle où l'on a une bonne connaissance des objets qui sont clusterisés (on sait ce qu'on a comme vaisselle, et a peu près combien, et que l'on a tous les conteneurs adaptés),
+faire ses cartons vient avec la difficulté que l'on ne se rend pas compte de tous ce qu'on a accumulé, et que les cartons sont en nombre choisis a priori
+(a moins que vous n'ayez fait une simulation de déménagement avant qui vous aurais permis de déterminer le volume exact nécessaire à contenir vos possessions).
+
+Donc, pendant la mise en carton des objets à déménager, on fait un clustering conceptuel : on prend un objet, on cherche le meilleur carton pour le contenir,
+et si d'instinct on sens que cet objet n'est pas le seul de son type, on ouvre un nouveau carton pour l'y mettre.
+Au bout de quelques heures, on vide un carton qui n'était pas si remplis, pour y vider la moitié d'un carton trop lourd,
+et on dispatch les objets vidés dans d'autres cartons en fonction d'autres critères.
+
+(Évidemment, on travaille généralement de manière plus intelligente : pendant que gégé met les livres dans un carton (qui sera trop lourd, de fait), dom' met les assiettes dans un autre. Mais au delà de ces cas précis… il y a souvent du bordel à trier, et à un moment, des cartons à refaire)
+
+C'est cela le clustering conceptuel : prendre les objets un par un, et sans connaissance des prochains objets, faire un clustering.
+Ce clustering va évoluer au fur et à mesure des objets ajoutés, et parfois être complètement modifié suite à l'arrivée d'un objet qui change tout.
+
+## Le problème à résoudre
+L'énoncé est le suivant : nous avons 10 valeurs, qui peuvent donc être groupées dans au maximum 10 groupes, et au minimum, un seul.
+
+
+## Programme ASP
+Le programme ASP suivant s'occupe de la partie clustering : génération des données, et choix de groupements.
+
+Comme ce qui nous intéresse, c'est les groupes de valeur et non pas l'identifiant du groupe, on use de `#project` pour éviter de générer des clustering équivalents
+(par exemple, mettre une valeur toute seule dans le cluster 1 ou 2, ça revient au même : ce qui compte, c'est que la valeur est seule).
+
+```asp
+value(1..3).
+cluster(1..3).
+
+% 0 ou plus valeur dans chaque cluster.
+0 {cluster(C,V): value(V)} :- cluster(C).
+
+% Une valeur ne doit appartenir qu'à un seul cluster.
+1 {cluster(_,V)} 1 :- value(V).
+
+% Le numéro de cluster n'est pas pertinent.
+same_group(A,B):- cluster(C,A) ; cluster(C,B).
+#project same_group/2.
+```
+
+Vous pouvez tester ce programme : chaque modèle est une solution de clustering différente. Oui, il y en a plus de 100000.
+Non, j'ai pas eu la patience d'attendre qu'ils soient tous écoulés.
+
+Et oui, avec un clustering conceptuel, on peut éviter la génération de bien des modèles.
+
+## Squelette du propagateur
+
+

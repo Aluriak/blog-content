@@ -58,7 +58,6 @@ Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page w
 <!-- - [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle des coûts induits par certains encodings -->
 <!-- TODO: search for /asp- to find inline references to sidequests -->
 
-
 ## Quelques liens préliminaires
 *Où l'on se demande pourquoi faire un tuto si c'est pour envoyer tout le monde voir ailleurs*
 
@@ -1070,25 +1069,27 @@ on_joue_au_tarot:- en_recre(C): copain(C).
 Cet exemple génère 8 answer sets, dont un seul contient `on_joue_au_tarot`.
 
 Ici, le corps de la dernière règle implémente
-la condition *en_recre(C) doit être vrai __pour tout__ les copains C.*
+la condition *en_recre(C) doit être vrai pour tout les copains C.*
 Autrement dit, si il existe un copain C tel que `en_recre(C)` est faux, alors la condition est brisée,
 et le corps de la règle est faux, et par conséquent, on ne joue pas au tarot.
 
 Il est possible d'avoir plusieurs conditions à droite du `:`, et elles doivent être
 séparées par une virgule `,` (et non un point-virgule).
 
-<!-- TODO: un petit mot de la fin ? -->
+Ce second opérateur mathématique est très important. C'est lui qui nous permettra d'encoder des relations telles que
+*la clef ne doit pas avoir été utilisée*, ou *le mot n'a été trouvé par personne*.
 
 ## Exeeeeerciiiiiiice ! Garde contre et roi de trèfle
-Ajouter au programme précédent la ou les règles nécessaire pour que l'atome `on_joue_au_ballon` soit vrai lorsque l'on ne joue pas au tarot
+Ajouter au programme précédent la ou les règles nécessaires pour que l'atome `on_joue_au_ballon` soit vrai lorsque l'on ne joue pas au tarot
 (donc, lorsque qu'un copain n'est pas là pour la récré).
 
 ### Aide
 Si au bout de 10 minutes, vous:
 
 - **n'avez rien essayé :** faites une pause plutôt qu'attendre que ça se passe : chantez les plus grands tubes de la compagnie créole, ça détends.
-- **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie. Ou négation.
+- **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie. Ou négation. Ou choix. Ou les deux ?
 - **avez trouvé comment faire, mais seulement dans le vide et avec des copains sphériques :** je suis content de voir que mon tuto est utile aux physiciens ! La solution est en fin de tuto.
+
 
 
 ## Erreurs et warnings
@@ -1237,8 +1238,59 @@ Je vous conseille évidemment de faire les choses ainsi.
 
 Notez également qu'une *directive de méta-programmation* sera utilisée pour éviter de polluer trop la sortie des solutions : `#show`.
 Ne vous inquiétez pas trop à ce propos, il s'agit juste de choisir quels atomes sont affichés en sortie.
-Ignorez-le dans un premier temps, triturez le un peu pour comprendre après (le premier exemple s'y prête bien),
+Il n'a pas d'effet sur le programme, donc ignorez-le ou triturez-le un peu pour comprendre après (le second exemple s'y prête bien),
 et éventuellement allez lire [la partie qui y est consacrée](#show).
+
+
+
+## Résoudre une énigme du livre jaune des devinettes
+Le livre jaune des devinettes est un texte qui se trouve dans le jeu Skyrim,
+dans lequel on trouve quelques énigmes écrites. L'une d'entre elle nous intéresse tout particulièrement,
+car elle tombe pile dans le cadre de la logique. En voici l'énoncé :
+
+> Un Bosmer a été tué.
+> L'Altomer affirme que le Dummer est coupable.
+> Le Dummer accuse le Khajiit.
+> L'Orque jure qu'il n'a pas tué le Bosmer.
+> Le Khajiit dit que le Dummer ment.
+> Si un seul de ces messieurs dit la vérité, qui a tué le Bosmer ?
+
+Les noms sont propres à l'univers du jeu The Elder Scrolls, et n'a aucun impact sur la résolution.
+Si cela vous gêne, remplacez Bosmer, Altomer, Dummer, Orque et Khajiit par Gérard, Gontran, Michel, Eugène et Siméon.
+
+
+### Réponse
+Le code ASP est étonnement proche de l'énoncé.
+Notez que les deux premières expressions sont données implicitement dans le problème. Notre ordinateur n'étant pas une intelligence forte,
+nous devons même si cela tombe sous le sens lui donner explicitement l'informations qu'il y a un coupable, et qu'il s'agit de l'un des quatre suspect.
+
+```asp
+% Un des quatre suspect est coupable.
+ppl(altomer;dummer;khajiit;orque).
+1{guilty(X): ppl(X)}1.
+
+% L'Altomer affirme que le Dummer est coupable.
+right(altomer):- guilty(dummer).
+% Le Dummer accuse le Khajiit.
+right(dummer):- guilty(khajiit).
+% L'Orque jure qu'il n'a pas tué le Bosmer.
+right(orque):- not guilty(orque).
+% Le Khajiit dit que le Dummer ment.
+right(khajiit):- not guilty(khajiit).
+% Un seul de ces messieurs dit la vérité.
+1{right(X): ppl(X)}1.
+```
+
+L'unique answer set reçu est `ppl(altomer) ppl(dummer) ppl(khajiit) ppl(orque) guilty(orque) right(khajiit)`, qui contient notamment `guilty(orque)`.
+C'est bien, d'après le livre jaune des devinettes, la réponse attendue !
+
+Grâce à ce code ASP, on peut jouer au détective : que se passe-t-il si 1 ou 2 personnes disent la vérité ? Et si une complicité entre deux suspects est possible ?
+Dans ces cas là, notez la place particulière de l'Orque.
+
+
+
+
+
 
 
 ## Du bruit dans la cuisine
@@ -1300,6 +1352,11 @@ max_sound(X,L):- sound(X,L) ; not sound(X,L2): L2 > L, sound(X,L2).
 ```
 
 
+### Discussion
+En fait, cet exemple, c'est essentiellement du jeu d'exploration de graphe pas hyper malin.
+L'intérêt, c'est surtout d'introduire un cas simple qui sera la base de cas plus complexe.
+
+
 
 ## Placement de table, première approche
 Lors d'une fête de famille, ils y a deux problèmes majeurs :
@@ -1317,17 +1374,18 @@ Nous avons également des personnes, qui doivent toutes être placée sur une pl
 
 Maintenant, il y a des contraintes. Par exemple :
 
-- Justin ne peut pas être à côté ou en face de Karine, ils ne se supportent pas.
-- Mettre Cunégonde et Roger à côté est en revanche conseillé : ensembles ils font rire leur voisin avec leurs histoires de championnat de scuba-curling.
-- Mamie doit être à côté de la cheminée, mais pas Gérard, qui a vite trop chaud.
-- Si Pépé est à côté de Jeanine, alors Xavier doit être de l'autre côté de Jeanine.
-- Yolande veut être à la place la plus éloignée de la cuisine, pour éviter d'avoir à y aller.
-- Si Micheline peut voir Dominique, elle lui fera des remarques bruyantes et désagréables sur sa frange mauve : donc non.
+- Christine et Dominique ont des places atitrées.
+- Marise et Cunégonde ne veulent pas être près de la cuisine pour éviter d'avoir à y aller.
+- Christine ne supporte pas Yolande et Michel.
+- Mettre Gérard à côté de Michel et Richard est en revanche conseillé : ensembles ils font rire leurs voisins avec leurs histoires de championnat de scuba-curling.
+- Si Christine peut voir Dominique, elle lui fera des remarques bruyantes et désagréables sur sa frange mauve : donc non.
+- Yolande ne veux pas être à côté de Richard car il écarte beaucoup les bras en mangeant.
+- Marise veut être à côté de l'un des membres de sa fratrie (Cunégonde et Roger).
 
 Bref, le joyeux bordel typique du placement de table d'une réunion de famille.
 Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre famille que désormais c'est vous qui vous en occupez !
 Et ça ne vous prendra pas bien longtemps pour tout encoder parfaitement, et placer les étiquettes indiquant les positionnement des gens.
-Il ne reste donc plus qu'à vous faire mousser pour *ce placement de table par-fait !*
+Il ne restera donc plus qu'à vous faire mousser pour *ce placement de table par-fait !*
 
 ### Objectif
 Avoir pour chaque personne une place qui lui convienne.
@@ -1345,54 +1403,158 @@ Il existe une solution élégante à ce problème, grâce aux directives de mét
 que nous verrons plus tard.
 
 C'est donc dans la deuxième volée d'applications que nous verrons une approche plus maligne qui nous permettra de gérer les familles trop compliquées.
-Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors tentez malgré tout, vous pourriez être surpris.
+Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors tentez l'approche simple avant d'amener le bulldozer,
+vous pourriez être surpris.
 
 
-
-## Résoudre une énigme du livre jaune des devinettes
-Le livre jaune des devinettes est un texte qui se trouve dans le jeu Skyrim,
-dans lequel on trouve quelques énigmes écrites. L'une d'entre elle nous intéresse tout particulièrement,
-car elle tombe pile dans le cadre de la logique. En voici l'énoncé :
-
-> Un Bosmer a été tué.
-> L'Altomer affirme que le Dummer est coupable.
-> Le Dummer accuse le Khajiit.
-> L'Orque jure qu'il n'a pas tué le Bosmer.
-> Le Khajiit dit que le Dummer ment.
-> Si un seul de ces messieurs dit la vérité, qui a tué le Bosmer ?
-
-Les noms propres sont propres à l'univers du jeu The Elder Scrolls, et n'a aucun impact sur la résolution.
-Si cela vous gêne, remplacez Bosmer, Altomer, Dummer, Orque et Khajiit par Gérard, Gontran, Michel, Eugène et Siméon.
-
-
-### Réponse
-Le code ASP est étonnement proche de l'énoncé.
-Notez que les deux premières expressions sont données implicitement dans le problème. Notre ordinateur n'étant pas une intelligence forte,
-nous devons même si cela tombe sous le sens lui donner explicitement l'informations qu'il y a un coupable, et qu'il s'agit de l'un des quatre suspect.
+### Les humains
+Ça, c'est facile : c'est l'ensemble des humains que l'on veut placer.
 
 ```asp
-% Un des quatre suspect est coupable.
-ppl(altomer;dummer;khajiit;orque).
-1{guilty(X): ppl(X)}1.
-
-% L'Altomer affirme que le Dummer est coupable.
-right(altomer):- guilty(dummer).
-% Le Dummer accuse le Khajiit.
-right(dummer):- guilty(khajiit).
-% L'Orque jure qu'il n'a pas tué le Bosmer.
-right(orque):- not guilty(orque).
-% Le Khajiit dit que le Dummer ment.
-right(khajiit):- not guilty(khajiit).
-% Un seul de ces messieurs dit la vérité.
-1{right(X): ppl(X)}1.
+human(roger;cunegonde;marise;michel;yolande;dominique;gerard;richard;christine).
 ```
 
-L'unique answer set reçu est `ppl(altomer) ppl(dummer) ppl(khajiit) ppl(orque) guilty(orque) right(khajiit)`, qui contient notamment `guilty(orque)`.
-C'est bien, d'après le livre jaune des devinettes, la réponse attendue !
+### La table
+Décrivons la table, ou plus exactement les *places* disponibles :
 
-Grâce à ce code ASP, on peut jouer au détective : que se passe-t-il si 1 ou 2 personnes disent la vérité ? Et si une complicité entre deux suspects est possible ?
-Dans ces cas là, notez la place particulière de l'Orque.
+```asp
+% Il y a neuf places.
+place(1..9).
+% Deux places sont à côté si consécutives.
+next(X,X+1):- place(X) ; place(X+1).
+next(1,9).  % la table est circulaire.
+% Les places qui sont en face.
+face(2,9;3,8;4,7;5,6).
+% Les places qui sont proches.
+proche(X,Y):- next(X,Y).
+proche(X,Y):- face(X,Y).
+% Les places alignées.
+rangee(2,3;3,4;4,5).
+rangee(6,7;7,8;8,9).
+% Réversibilités.
+next(X,Y):- next(Y,X).
+face(X,Y):- face(Y,X).
+rangee(Y,X):- rangee(X,Y).
+rangee(X,Y):- rangee(X,Z) ; rangee(Z,Y).
+% places situées à des endroits particuliers.
+cheminee(5;6).
+cuisine(1;10).
+```
 
+### Génération de placements
+Maintenant, décrivons un placement de table : on associe une place à chaque personne,
+et une personne maximum à chaque place (on autorise une place vide, si il y a plus de places que de personnes).
+
+```asp
+0 { place(N,H): human(H) } 1 :- place(N).
+1 { place(N,H): place(N) } 1 :- human(H).
+#show place/2.
+```
+
+Maintenant, si on lance le programme, on obtient TOUS les placements possibles.
+Hors, et c'est bien ce qui pose problème, on ne veux que ceux qui respectent les contraintes vues plus haut.
+
+C'est parti !
+
+### Encoding des contraintes
+C'est pratique : un placement de table est équivalent à un modèle. Cela veux dire que notre objectif maintenant,
+c'est d'écrire des contraintes pour écarter les modèles qui ne nous intéressent pas… C'est parti !
+
+D'abord, rendons-nous service et définissons des contraintes sur `pas_copain/2` et `copain/2`,
+qui nous permettrons de générer automatiquement les contraintes pour les cas simples (machin veut (pas) être à côté de bidule) :
+
+```asp
+% Quand deux personnes sont pas copains, il faut éviter qu'elles soient à côté.
+:- pas_copain(H1,H2) ; place(X,H1) ; place(Y,H2) ; cote(X,Y).
+
+% Quand deux personnes sont copains, il faut les placer à côté.
+:- copain(H1,H2) ; place(X,H1) ; place(Y,H2) ; not cote(X,Y).
+```
+
+Maintenant, on peut traduire les contraintes vues plus haut :
+```asp
+% Christine et Dominique ont des places atitrées.
+1{place((6;9;2;5),christine)}1.
+1{place((6;9;2;5),dominique)}1.
+
+% Gérard doit être placé à côté de Michel et Richard.
+copain(gerard,(richard;michel)).
+
+% Mais Dominique ne doit pas être à côté de Christine.
+pas_copain(dominique,christine).
+% Pire : ces humains ne doivent même être sur la même rangée, pour être sûr qu'ils ne se voient pas !
+:- place(X,dominique) ; place(Y,christine) ; not rangee(X,Y).
+
+% Christine ne supporte pas Yolande et Michel.
+pas_copain(christine,(yolande;michel)).
+
+% Marise, Cunégonde et Roger sont frères et sœurs.
+soeur(marise;cunegonde;roger).
+% Marise veut être à côté de l'un des membres de sa fratrie.
+:- place(X,marise) ; place(Y,FS):soeur(FS) ; next(X,Y).
+
+% Yolande ne veux pas être à côté de Richard car il travaille dans l'aviation.
+:- place(X,yolande) ; place(Y,richard) ; not next(X,Y).
+
+% Marise et Cunégonde ne veulent pas être près de la cuisine.
+:- place(X,marise) ; not cuisine(X).
+:- place(X,cunegonde) ; not cuisine(X).
+```
+
+### Résultats
+Et voici les 8 modèles (trouvés en deux centièmes de seconde) :
+
+    clingo version 5.2.2
+    Reading from table.lp
+    Solving...
+    Answer: 1
+    place(2,dominique) place(5,christine) place(3,yolande) place(8,michel) place(4,richard) place(7,gerard) place(9,cunegonde) place(1,marise) place(6,roger)
+    Answer: 2
+    place(2,dominique) place(5,christine) place(8,yolande) place(3,michel) place(7,richard) place(4,gerard) place(9,cunegonde) place(1,marise) place(6,roger)
+    Answer: 3
+    place(2,christine) place(5,dominique) place(7,yolande) place(4,michel) place(8,richard) place(3,gerard) place(9,cunegonde) place(1,marise) place(6,roger)
+    Answer: 4
+    place(2,christine) place(5,dominique) place(4,yolande) place(7,michel) place(3,richard) place(8,gerard) place(9,cunegonde) place(1,marise) place(6,roger)
+    Answer: 5
+    place(2,christine) place(5,dominique) place(7,yolande) place(4,michel) place(8,richard) place(3,gerard) place(9,marise) place(6,roger) place(1,cunegonde)
+    Answer: 6
+    place(2,dominique) place(5,christine) place(8,yolande) place(3,michel) place(7,richard) place(4,gerard) place(9,marise) place(6,roger) place(1,cunegonde)
+    Answer: 7
+    place(2,christine) place(5,dominique) place(4,yolande) place(7,michel) place(3,richard) place(8,gerard) place(9,marise) place(6,roger) place(1,cunegonde)
+    Answer: 8
+    place(2,dominique) place(5,christine) place(3,yolande) place(8,michel) place(4,richard) place(7,gerard) place(9,marise) place(6,roger) place(1,cunegonde)
+    SATISFIABLE
+
+    Models       : 8
+    Calls        : 1
+    Time         : 0.019s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+    CPU Time     : 0.019s
+
+
+### Approche iterative
+La recherche des contraintes (ce moment où vous vous interrogez sur qui ne doit pas être à côté de qui) n'est pas nécessairement un travail à faire avant leur encoding.
+Personnellement, lorsque j'utilise ce genre de programme, je le fait avec d'autres personnes, et les contraintes viennent en discutant.
+On ajoute une contrainte, puis on regarde une solution. C'est là que machin dit : «nan, mais il est nul ton programme, je suis à côté de bidule mais j'ai pas envie».
+Donc j'ajoute la ligne `pas_copain(machin,bidule)`, je redonne une nouvelle solution. Et le manège recommence, jusqu'à ce que, au choix :
+
+- machin n'arrive plus à trouver de contraintes pour mettre en défaut le programme (parce que machin ne croit pas une seule seconde qu'un ordinateur soit capable de résoudre un problème de logique mieux qu'un humain, ça heurte son égo)
+- machin comprenne l'intérêt du programme, et dise «et si on ajoute une contraite qui…» plutôt que «il est nul ton programme»
+
+Bref, aux humains près, ce genre de recherche est souvent itérative : on regarde une solution, on dit pourquoi on l'aime pas, on le formalise, et on relance.
+Et quand il n'y a plus de solutions possible, c'est le moment où il faut relaxer des contraintes.
+
+### Dans le turfu
+Cette application d'ASP est simple et directe ; d'autant plus que normalement, la famille ne change pas trop entre deux repas,
+et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
+
+Et pas que avec les repas de famille : il marche également avec [les places au cinéma](https://xkcd.com/173/), les soirées entre amis,
+les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
+C'est fou l'informatique.
+
+On peut facilement imaginer la suite de cette application : faire une interface pour pouvoir définir les places, les contraintes, et voir les solutions.
+Faites ça sur mobile, et voilà, vous avez une application portable de placement de table complète que vous pouvez vendre.
+N'oubliez pas de faire une distribution pour ordinateur normaux, histoire de pouvoir travailler sérieusement sur les placement de table importants
+(comme les mariages, où on atteint vite la centaine de personnes).
 
 
 
@@ -1686,30 +1848,161 @@ sum(G,S):- S=#sum{V: val(G,V)} ; group(G).
 #show sum/2.  % on est fier de nos résultats !
 ```
 
+### La syntaxe réelle de #sum
+En fait, la syntaxe de #sum est un poil plus générale. Regardons un exemple avec le sum étalé sur plusieurs lignes :
+```asp
+#show N:N=#sum{
+    10: a;  % si a est vrai, ajouter 10
+    20: b;  % si b est vrai, ajouter 20
+    30;     % sans condition, ajouter 30
+    40: not a  % si a est faux, ajouter 40
+}
+```
+
+La logique est assez simple : #sum va ajouter des choses en fonction des conditions qui lui sont données. Ainsi, si vous lancez ce code tout seul,
+vous obtiendrez 70 (30 + 40). Si vous ajoutez l'atome a, vous aurez 42, ou 62 si b est vrai aussi. Ou encore 50 si seul b est vrai.
+
+### Variables
+Maintenant, quand j'écris par exemple :
+```asp
+valeurs(1,10;2,20).
+total(S):- S=#sum{N: valeurs(U,N)}.
+```
+
+Le grounder va faire son job, i.e. étendre la somme pour toutes les valeurs de variables possibles :
+
+```asp
+total(S):- S=#sum{
+    10: valeurs(1,10);
+    20: valeurs(2,20)
+}.
+```
+
+On obtient bien un total de 30. Super. Maintenant, changeons légèrement les données :
+```asp
+valeurs(1,10;2,10).
+total(S):- S=#sum{N: valeurs(U,N)}.
+```
+
+Et là, on lance et on obtient un total de… 10 ?! WTF ?!
+
+### Gérer les valeurs égales
+Il y a un point noir dans l'exemple précédent. Regardons comment le grounder va étendre l'expression :
+
+```asp
+total(S):- S=#sum{
+    10: valeurs(1,10);
+    10: valeurs(2,10)
+}.
+```
+
+A priori, rien de fou : on a des valeurs (ici, deux fois 10), et on cherche à les ajouter pour avoir la valeur totale.
+Sauf que, quand je lance clingo dessus, j'obtiens :
+
+    Solving...
+    Answer: 1
+    contrainte(1,10) contrainte(2,10) score(10)
+    SATISFIABLE
+
+Quoi ?! Un total de 10 ? Ça n'a aucun sens !
+Eh bien, en fait, c'est dû au fonctionnement interne d'ASP. Vous vous souvenez ? ASP ne sait pas ce qu'est une liste.
+Il ne travaille que sur des __ensembles__.
+
+il va donc __ignorer l'un des deux 10__, même s'il n'ont pas la même condition, si bien que pour lui
+l'expression du sum devient `#sum{10: valeurs(1,10)}`, et donc atteint un total de 10.
+
+C'est un peu nul, hein ?
+
+Et bien voici une solution :
+
+```asp
+total(S):- S=#sum{N,U: valeurs(U,N)}.
+```
+Notez ici l'importance du `N,U:`. Maintenant, le grounder arrive à cette expression :
+```asp
+total(S):- S=#sum{
+    10,1: valeurs(1,10);
+    10,2: valeurs(2,10)
+}.
+```
+Ça change tout : les valeurs sont désormais différentes. On a donc bien deux valeurs à ajouter : 10,1 et 10,2.
+Ici, #sum se fiche du second argument pour additionner : il se contente de considérer le premier nombre.
+On atteint donc 10 + 10 = 20.
+C'est bien la solution !
 
 
 
 # Interface avec Python
-*Où l'on apprend comment interfacer un langage puissant avec un langage puissant pour faire des trucs vachement puissants*
+*Où l'on apprend que l'on peut interfacer un langage puissant avec un langage puissant pour faire des trucs vachement puissants*
 
-ASP s'interface nativement avec Python et Lua. Je ne traite que de Python ici,
-mais les principes sont exactement les mêmes avec Lua : seule la syntaxe change.
+Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
+Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
+pour profiter, pendant le solving même, de la puissance d'un langage impératif.
 
-Si vous ne connaissez pas python, ignorez cette section. Il me faudrait 5000 lignes supplémentaires pour expliquer les concepts que j'utilise ici,
+ASP s'interface nativement avec Python et Lua. Je n'en traiterais pas ici,
+mais plutôt dans des quêtes annexes qui apparaîtrons petit à petit.
+<!-- mais plutôt dans des quêtes annexes dédiées, telles que : -->
+
+<!-- - [Observateurs]({filename}/articles/asp-observateurs.mkd), un moyen pour suivre, gérer et étendre le grounding -->
+<!-- - [Propagateurs]({filename}/articles/asp-propagateurs.mkd), un moyen pour suivre, gérer et étendre le solving -->
+<!-- - [Clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd), un moyen pour suivre, gérer et étendre le solving -->
+<!-- - [Variantes de solving]({filename}/articles/asp-variantes-solving.mkd), où l'on parle de multi-shot et iterative solving -->
+
+Pour ces quêtes, je considère python comme un langage acquis. Il me faudrait 5000 lignes supplémentaires pour expliquer les concepts que j'utilise ici,
 et du coups ce tuto deviendrait un énième [tuto pour python](https://python.developpez.com/cours/TutoSwinnen/).
-Si c'est juste les concepts de POO qui vous manquent, allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/). Si vous connaissez déjà python et que vous voulez progresser, allez voir [sametmax](http://sametmax.com/cours-et-tutos/).
+Si c'est juste les concepts de POO qui vous manquent, allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
+Si vous connaissez déjà python et que vous voulez progresser, allez voir [sametmax](http://sametmax.com/cours-et-tutos/).
+
+Le reste de cette section est là pour donner une vue générale de ce qu'il est possible de faire avec python ou lua.
+
+
+## Extending d'ASP
+La première manière de coupler les langages, c'est de mettre du python/lua dans ASP.
+
+Cela nécessite d'avoir compilé clingo avec les bonnes librairies (avec `clingo --version` vous pouvez voir si votre clingo supporte l'un ou l'autre des langages),
+et permet de faire plein de choses rigolotes qui seront présentées dans des annexes.
+
+Pour donner juste une intuition de l'usage, voilà un code où l'on donne un identifiant unique à des atomes :
+
+```asp
+% Données en entrée
+atom(a;b;c;d;e).
+
+% Le script python, qui va définir la fonction gen_id
+#script(python)
+import itertools
+gen = itertools.count(1)
+
+def gen_id():
+    "retourne un nouvel identifiant"
+    return next(gen)
+#end.
+
+% On donne à chaque atome son identifiant, en utilisant la fonction gen_id.
+uid(V,@gen_id()):- atom(V).  % le préfix @ permet d'indiquer qu'il s'agit d'une fonction python
+#show uid/2.
+```
+
+On utilisera python pour se simplifier la vie sur une application dans une prochaine section.
+
 
 ## Embedding dans Python
-Plutôt qu'appeler clingo pour tous nos cas de tests,
-et vérifier à la main si ils fonctionnent correctement,
-ou juste si on a besoin d'appeler clingo plusieurs fois avec des traitements des résultats,
+L'autre manière pour coupler les deux langages, c'est de faire l'inverse : mettre ASP dans Python.
+
+Par exemple, plutôt qu'appeler clingo pour tous nos cas de tests,
+et vérifier à la main si ils fonctionnent correctement, on peut faire un programme python qui va faire ça tout seul.
+Aussi, si on a besoin d'appeler clingo plusieurs fois avec des traitements des résultats,
 il est possible de le faire depuis Python.
 
-
 ### API officielle
-Il existe un module officiel, qui est dans les sources du logiciel et que vous pouvez installer avec un `python setup.py install` standard après compilation de clingo.
+Il existe un module officiel, qui est dans les sources du logiciel et que vous pouvez installer
+avec un `python setup.py install` standard après compilation de clingo.
 
-Je n'utilise pas cette API en règle générale, puisqu'il faut que le client compile clingo.
+La doc est [ici](https://potassco.org/clingo/python-api/current/clingo.html), et permet de faire tout ce que vous voulez :
+propagateurs, manipulation du grounding/solving, programmes,…
+
+Je n'utilise pas cette API en règle générale, puisqu'il faut que le client compile clingo avec le support python,
+ça demande parfois du boulot. C'est pourquoi il existe d'autres moyens.
 
 
 ### Autres API
@@ -1717,7 +2010,10 @@ Je vous recommande pour démarrer [clyngor](https://github.com/aluriak/clyngor).
 C'est un module python on ne peut plus standard, disponible sur pypi,
 et qui ne nécessite qu'une chose: que le binaire clingo soit dans votre PATH.
 
-Et normalement, c'est déjà fait :)
+Et normalement, c'est déjà fait si vous l'avez installé proprement :)
+
+(Il y aura probablement une quête annexe sur clyngor, parce qu'il offre bien plus que juste une récupération des solutions)
+
 
 Une alternative est [pyasp](https://github.com/sthiele/pyasp).
 Néanmoins, ce package ne supporte pas clingo *seul*,
@@ -1730,384 +2026,6 @@ les versions les plus récentes.
 
 
 
-## Extending avec Python: Propagateurs
-Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
-Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
-pour profiter, pendant le solving même, de la puissance d'un langage impératif.
-C'est ce qu'on nomme embedding, ou extending selon le point de vue.
-Ici, nous allons voir comment embed du Python dans ASP, ou, c'est équivalent, extend ASP avec Python.
-
-Les propagateurs sont des objets assez connus dans le monde du solving.
-Il s'agit plus ou moins d'un plugin qui va pouvoir suivre et modifier le déroulement de l'heuristique.
-Pour être encore plus pédagogue : un propagateur permet d'écrire des contraintes en python plutôt qu'en ASP.
-
-Avec Python et un peu de connaissance sur clingo, il est possible d'écrire un propagateur pouvant,
-par exemple, changer la véracité de certains atomes en fonction de celle d'autres atomes.
-
-Notez que l'API officielle de clingo est nécessaire ici. Si vous ne l'avez pas, vous ne pourrez pas exécuter les exemples
-(mais vous pourrez les comprendre quand même ; notre cerveau est bien pratique parfois).
-
-
-### Sous le capot de clingo
-Clingo, en interne, ne s'amuse pas à manipuler les atomes comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`
-sous la forme de chaîne de caractères, ou d'objets plus complexes.
-
-La raison est simple : c'est inefficace, d'autant que clingo se fiche de savoir que tel atome a tel predicat et tel arguments :
-il s'intéresse uniquement aux propagations qu'il peut faire selon les règles qu'on lui a fournis.
-
-Par exemple, `p(5):- p(4).` devient pour clingo quelque chose comme `12 :- 45`. Là, j'ai choisi les entiers au hasard,
-mais clingo, d'après ce que j'ai vu, les numérote à partir de 1, dans l'ordre où il les rencontre.
-C'est donc, de notre point de vue d'utilisateur extérieur, aléatoire.
-
-Donc, clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
-Ces litéraux du solveur ne changent pas durant tout le solving, et ce sont les éléments de base qu'un propagateur va manipuler.
-Le solveur associe à ces littéraux une des trois valeurs de vérité suivante : vrai, faux, non valide.
-Au tout départ, tous les atomes sont non valides, sauf ceux dont vous indiquez la véracité par défaut, par exemple avec l'expression `a.`: l'atome `a` ne sera jamais faux.
-Puis, en respectant les règles comme `p(X):- q(X) ; r(X).`, le solveur va pas à pas changer les valeurs de vérité des atomes.
-Si à un moment il s'aperçoit que ce qu'il fait est impossible, il *backtrack*, c'est-à-dire qu'il va revenir en arrière, pour essayer d'autres combinaisons.
-
-Et si à un moment tous les atomes ont une valeur de vérité vraie ou fausse, et qu'aucune contrainte n'est violée, alors le solveur sait qu'il s'agit d'un ensemble réponse :
-il affiche alors tous les atomes ayant une valeur de vérité vraie.
-
-Un propagateur va pouvoir agir à différents moments : au début, lorsque le solveur découvre les atomes, lorsque le solveur propose une valeur de vérité pour un atome (on dit alors qu'il *propage*), lorsqu'il *backtrack*, ou lorsqu'il a dans les mains un answer-set valide.
-
-### Les 4 cavaliers
-Un propagateur, en python, est une classe présentant au moins une de ces 4 méthodes :
-
-- `init`: appelée une seule fois, en première ; c'est là qu'on prend connaissance des littéraux du solveur choisis pour chaque atome
-- `propagate`: appelée chaque fois que l'heuristique va donner une valeur de vérité à un littéral (dire qu'un atome est vrai ou faux)
-- `undo`: appelée chaque fois que l'heuristique va retirer une valeur de vérité à un littéral
-- `check`: appelée chaque fois que l'heuristique vérifie le modèle qu'elle possède
-
-#### Vérification de modèle et vérité des litéraux
-Comme nous avons vu au début, un atome est soit vrai, soit faux.
-
-Ceci est faux : un atome peut également être dans un état indéterminé. Si nous ne l'avons jamais vu,
-c'est parce que cet état n'est possible que lorsque l'heuristique cherche pour un modèle valide.
-Pendant cette recherche, l'heuristique va donner des valeurs de vérité (vrai ou faux) aux atomes,
-chacun à leur tour, explorant les différentes possibilités.
-
-Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel
-où ne sont assignés à une valeur de vérité qu'une partie des atomes),
-il faut décider si le modèle, c'est-à-dire si les valeurs de vérité (ou assignation) est valide.
-
-C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
-et donc qu'il n'a pas a être écrit en sortie de programme.
-
-### Exemple de propagateur : dot propagator
-Celui-ci est très simple : il s'agit d'afficher un `.` pour chaque propagation du solveur, et d'en retirer un pour chaque *back-propagation* (ou *undo*).
-Cela résulte en une ligne de point qui progresse et régresse au fil de l'exploration du solveur.
-
-Ce propagateur est présent dans [le code source de clingo](https://github.com/potassco/clingo/tree/master/examples/clingo/dot-propagator) en figure d'exemple,
-et permet de toucher du doigt l'intérêt des propagateurs.
-Suis la version annotée des sources.
-
-```python
-% Là on est dans le code ASP
-#script (python)
-# et paf, on est en python maintenant !
-
-from time import sleep  # pour donner une dimension humaine au programme
-
-# La classe qui contient les méthodes. Notez qu'il n'y a évidemment aucune contrainte sur le nom,
-# et surtout que la classe n'hérite de rien. Duck Typing FTW.
-class Propagator:
-
-    # Première méthode : init (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
-    def init(self, init):
-        # init: un objet qui va nous donner des infos sur le solving
-        for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
-            init.add_watch(init.solver_literal(atom.literal))  # on le surveille
-
-    def propagate(self, ctl, changes):
-        # ctl: c'est le contrôleur du solving ; un objet qui mériterait une section à lui tout seul.
-        # changes: la liste des littéraux qui ont eu une assignation ; c'est eux qui nous intéressent.
-        for _ in changes:  # la valeur exacte ne nous intéresse pas
-            print('.', flush=True, end='')  # afficher un `.` sans passer à la ligne
-            sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
-        # À essayer de votre côté: afficher changes à la place des points. Ça permet de voir en quoi consiste le backtrack.
-
-    def undo(self, solver_id, assign, undo):
-        # undo contient la liste des littéraux dont l'assignation est annulée.
-        # on va donc enlever un '.' pour chacune de ces assignation.
-        for _ in undo:  # la valeur exacte ne nous intéresse pas
-            print('\b \b', flush=True, end='')  # revenir en arrière, afficher un espace, revenir en arrière
-            sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
-
-# notez que la function main est une convention de l'API de clingo :
-#  si elle existe, elle reçoit le contrôleur du solveur, et nous
-#  permet donc de contrôler le solving.
-def main(prg):
-    # prg: un contrôleur du solveur. C'est lui qu'on va utiliser pour faire ce qu'on veut
-    # on enregistre une instance de notre propagateur
-    prg.register_propagator(Propagator())
-    # on ground le programme 'base', qui est le programme par défaut
-    prg.ground([("base", [])])
-    # on lance le solving
-    prg.solve()
-    print()  # on écrit une ligne vide après les '.'
-
-#end.
-```
-
-Vous pouvez tester ce code avec n'importe quel programme ASP.
-Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples/clingo/dot-propagator/test.lp) est un bon exemple
-(pas un hasard qu'il soit fourni avec le propagateur ;\) ) car il génère beaucoup de backtracks (de retours en arrière dans la recherche).
-
-Le résultat est, vous vous en doutez, diablement rigolo :
-
-TODO: un gif de la sortie du dot propagator
-
-
-### Exemple de propagateur : color propagator
-Dans la série des visualisations rigolotes, je vous propose… le *color propagator* !
-
-Le principe : afficher les atomes disponibles, et les mettre en couleur
-en fonction de leur valeur d'assignation.
-
-Compliqué ? Non, pas tant que ça :
-
-```python
-#script (python)
-
-# de nombreux imports sont nécessaires
-import os  # pour nettoyer l'écran
-import shutil  # pour avoir la taille du terminal
-import textwrap  # pour afficher joliement les atomes
-from time import sleep  # pour que ça aille pas trop vite
-
-import colorama  # des couleurs dans le terminal ! (pip install colorama)
-from colorama import Fore, Back
-colorama.init()  # nécessaire pour windows
-
-
-# quelques constantes utiles
-SPEED = 0.5
-TERM_WIDTH = shutil.get_terminal_size().columns
-def clear(): os.system('cls' if os.name == 'nt' else 'clear')  # oui, c'est sale
-
-
-# ça, ça va être notre classe propagateur. Notez que pour éviter de dupliquer
-#  du code, on a écrit une méthode `print_atoms` qui s'occupe
-#  d'afficher les atomes en couleur.
-class ColorPropagator:
-    # appelée une fois au début: on va dire qu'on va observer tous les atomes du programme
-    def init(self, init):
-        self.sleep = SPEED
-        # On fait un dictionnaire pour se souvenir de la tête qu'à un atome,
-        #  connaissant le littéral.
-        # Notez que les atomes qui sont soumis aux exactes même règles
-        #  (et donc qui sont vrais ou faux en même temps) ont le même litéral.
-        # C'est pourquoi à un littéral (clef) on associe plusieurs valeurs
-        #   (set d'atomes).
-        self.__symbols = {}  # litéral du solveur -> set d'atomes
-        for atom in init.symbolic_atoms:
-            lit = init.solver_literal(atom.literal)  # on récupère le litéral
-            init.add_watch(lit)  # on veut être prévenu lorsque sa valeur de vérité change
-            if lit in self.__symbols:  # on l'ajoute au dictionnaire
-                self.__symbols[lit].add(atom.symbol)
-            else:
-                self.__symbols[lit] = {atom.symbol}
-
-    # la fonction appelée quand un litéral surveillé change de valeur.
-    def propagate(self, ctl, changes):
-        # ctl: le contrôleur
-        # changes: la liste des litéraux qui ont changé de valeur
-        # C'est assez simple: on dit à print_atoms d'afficher tout ça
-        self.print_atoms(ctl.assignment, changes=changes)
-
-    def undo(self, solver_id, assign, undo):
-        # c'est globalement la même chose que propagate, juste avec un argument
-        #  en plus qu'on utilise pas: solver_id.
-        self.print_atoms(assign, changes=undo)
-
-    # La fonction la plus complexe, qui n'a rien à voir avec les propagateurs
-    #  en général.
-    def print_atoms(self, assignment, changes):
-        # assignment: objet qui peut donner pour chaque 
-        clear()  # on nettoie l'écran
-        to_print = ''
-        # là, on boucle sur chaque littéral et atomes associés
-        for idx, (lit, atoms) in enumerate(self.__symbols.items(), start=1):
-            # quand un litéral est associé à plusieurs atomes,
-            #  on les affiche tous, séparés par un point-virgule
-            atom = ';'.join(map(str, atoms))
-            fore, back = Fore.WHITE, Back.BLACK  # couleurs par défaut
-            # assignment.value renvoie, pour un littéral donné:
-            #  - True si le littéral est vrai
-            #  - False si le littéral est faux
-            #  - None si le littéral n'a pas de valeur de vérité
-            if assignment.value(lit) is not None:  # donc, là, il a une valeur de vérité
-                # s'il est vrai, on le met en vert (GREEN), sinon en rouge (RED)
-                fore = Fore.GREEN if assignment.is_true(lit) else Fore.RED
-                # si l'atome vient justement d'être changé, on le surligne en blanc
-                if lit in changes: back = Back.WHITE
-            elif lit in changes:  # C'est un undo
-                # Effectivement, undo veut dire «enlever sa valeur de vérité à un atome»,
-                #  donc, il ne passe pas la première condition. Mais il fait
-                #  bien partie des atomes changé, donc on va le surligner aussi,
-                #  mais en en bleu pour montrer que c'est un backtrack.
-                back = Back.BLUE
-            else:  # et sinon, il n'a pas de valeur et n'a pas été changé
-                # on le laisse en couleur par défaut
-                pass
-            # maintenant on se prépare à l'afficher avec les couleurs sélectionnées
-            to_print += fore + back + atom + Fore.RESET + Back.RESET + '  '
-        # boucle terminée: on a généré toute la chaîne à afficher.
-        #  pour rendre ça beau, on utilise textwrap et la taille de l'écran
-        #  pour découper proprement les lignes.
-        print('\n\n' + '\n'.join(textwrap.wrap(to_print, width=TERM_WIDTH)))
-        # et on attend un poil, sinon on va rien voir.
-        sleep(self.sleep)
-
-
-# Et voilà notre main, qui ressemble à un main des plus standards.
-#  Pas grand chose à dire dessus.
-def main(prg):
-    prg.register_propagator(ColorPropagator())  # on y met notre propagateur
-    prg.ground([("base", [])])  # on grounde le programme de base
-    prg.solve()  # et on résoud le problème !
-
-# fin du python:
-#end.
-```
-
-Le code réel est [ici](https://github.com/aluriak/learning-ASP/blob/master/propagators/color.py).
-Il n'est pas très différent, mais largement moins annoté.
-
-
-### Exemple de propagateur : graphviz/dot propagator
-Celui-ci est carrément plus haut niveau, non par sa complexité, mais parce qu'il génère un fichier dans un format nommé *dot*.
-Si vous ne connaissez pas le dot, sachez qu'il s'agit d'un format très utilisé pour décrire des graphes, au sens de la théorie des graphes.
-
-La théorie des graphes et le dot sont tout à fait en dehors du scope de ce tuto, mais je vais essayer de faire court :
-- un graphe, c'est un objet mathématique consistant en un ensemble de nœuds éventuellement reliés par des arêtes. C'est la structure de base en informatique, à partir de laquelle on dérive les autres. Les graphes sont utilisés dans tous les domaines : maths, physique, informatique évidemment, biologie, science sociales,… Vous en voyez souvent, sans vous en rendre compte.
-- le dot, c'est une langue écrite, conçue par le projet graphviz, qui est aussi une suite logicielle. Les logiciels de graphviz sont capable de lire un programme en dot, et de générer une image ou d'autres fichiers qui représentent le graphe. C'est très puissant, car cela permet de voir graphiquement un graphe. C'est exactement ce qui nous intéresse.
-
-Pour ce propagateur, nous allons donc exploiter le dot. L'idée est la suivante : un littéral est un nœud du graphe, et l'on trace un arc (une arête orientée, avec une flèche)
-du nœud 1 vers le nœud 2 lorsque qu'une propagation assigne une valeur au littéral 2, et que la précédente assignait le littéral 1.
-En d'autres termes, nous voulons visualiser le chemin emprunté par le solveur : dans quel ordre il assigne (et dé-assigne) les atomes/littéraux.
-
-Le résultat est de facto très visuel : on génère des visualisations de graphes avec dot !
-
-#### Le graphviz/dot propagator
-Le code est disponible [sur mon github](https://github.com/aluriak/dot-propagator), et reproduit ci-après avec des annotations supplémentaires :
-
-```asp
-#script(python)
-class DotPropagator:
-    """A non-literal *dot* propagator"""
-
-    # Cette fois-ci, notre classe est un poil plus complexe.
-    #  Elle a un __init__, qu'on utilise pour préparer les conteneurs et le fichier dot
-    def __init__(self, dotfiledesc:str):
-        # dotfiledesc -- un descripteur de fichier dans lequel on peut écrire
-        self.__dotfiledesc = dotfiledesc
-        self.__stack = ['Start']  # c'est une pile de nœuds
-        self.__step = 0  # pour pouvoir annoter les arcs
-        self.__stable_nodes = set()  # tous les nœuds stables
-        self.write_header()  # on commence par écrire des lignes obligatoires
-        # C'est bon ! l'objet est prêt à faire propagateur !
-
-    def init(self, init):
-        # exactement comme pour notre premier propagateur: on suit tous les atomes
-        self.__symbols = {}  # littéral -> set d'atomes
-        for atom in init.symbolic_atoms:
-            lit = init.solver_literal(atom.literal)
-            init.add_watch(lit)
-            if lit in self.__symbols:  # on l'ajoute au dictionnaire
-                self.__symbols[lit].add(atom.symbol)
-            else:
-                self.__symbols[lit] = {atom.symbol}
-
-    def propagate(self, ctl, changes):
-        # ctl: l'objet de contrôle du solveur
-        # changes: les littéraux qui ont reçu une valeur
-        level = ctl.assignment.decision_level
-        self.__step += 1
-        # pour chaque changement, on va écrire dans le fichiers dot.
-        for lit in changes:
-            self.write('\t{} -> {} [label="{}"];'.format(self.last_node, lit, self.__step))
-            self.push_node(lit)  # et on ajoute le litéral dans la pile
-
-    def undo(self, sid, assign, undo):
-        # sid: on s'en fiche
-        # assign: ce sont les assignations de valeurs de vérité, on s'en fiche aussi
-        # undo: les litéraux qui ont été changés
-        while undo:  # tant qu'il y a un nœud dans les undo
-            prev_node = self.pull_node()  # on récupère le sommet de la pile
-            assert prev_node in undo  # par construction, il appartient aux nœuds qui sont retirés
-            # on affiche le backtrack en dot avec une flèche en pointillé qui retourne sur le nœud actuel (la tête de pile).
-            self.write('\t{} -> {} [style=dotted label={}];'.format(prev_node, self.last_node, self.__step))
-            undo.remove(prev_node)  # on enlève le littéral de la liste des undo
-
-    def check(self, ctl):
-        # le solveur trouve que l'assignation est totale et valide : il s'apprête à générer l'answer set !
-        # que faisons-nous ? On marque le nœud courant comme tel.
-        self.__stable_nodes.add(self.last_node)
-
-
-    # méthodes pour modifier le nœud courant (le sommet de la pile)
-    def pull_node(self):  # le nœud courant devient le précédent
-        *self.__stack, ret = self.__stack
-        return ret
-    def push_node(self, uid):  # nouveau nœud courant !
-        self.__stack.append(uid)
-
-    @property
-    def last_node(self):  # juste un raccourcis pour le nœud courant
-        return self.__stack[-1]
-
-    def write(self, line):  # pour écrire du dot
-        self.__dotfiledesc.write(line.rstrip() + '\n')
-
-    def write_nodes(self):  # pour écrire les nœuds
-        for uid, atoms in self.__symbols.items():
-            self.write('\t{} [label="{}"{}];'.format(
-                uid, ' '.join(str(atom.symbol) for atom in atoms),
-                ' fillcolor="green"' if uid in self.__stable_nodes else ''
-            ))
-
-    # Deux méthodes pour les premières et dernières lignes du dot, qui sont toujours les mêmes
-    def write_header(self):
-        self.write('digraph solving {')
-        self.write('\tnode [style=filled];')
-    def finalize(self):
-        self.write_nodes()
-        self.write('}')
-
-
-# Le main est assez standard également,
-#  sauf le fait que l'on fait tout le solving avec un fichier ouvert,
-#  que l'on donne à notre propagateur.
-def main(prg):
-    with open('out/out.dot', 'w') as fd:
-        propagator = DotPropagator(fd)  # c'est notre propagateur !
-        prg.register_propagator(propagator)  # on l'enregistre
-        prg.ground([("base", [])])  # on ground
-        prg.solve()  # on solve
-        propagator.finalize()  # et on termine d'écrire le dot
-#end.
-```
-
-
-#### Résultats sur cas simple
-Voici un cas simple:
-```asp
-1{a;b}1.
-1{c;d}1:-a.
-1{e;f}1:-b.
-```
-Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas de regarder tous les answer-set.
-
-<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "DotPropagator result for the simple case" %}</center>
-
-
-#### Résultats sur cas compliqué
-
-
-### Tips
-`#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
 
 
 
@@ -2279,14 +2197,106 @@ et on va pouvoir gérer des familles très compliquées, tellement compliquées 
 
 <!-- Autre effet kiss-cool : clingo va chercher à maximiser le score, et chaque fois qu'il trouve une solution meilleure que la précédente, il l'affichera. On peut donc le laisser chercher jusqu'au bout, ou interrompre la recherche une fois que le temps est écoulé ou que la solution est suffisamment bonne -->
 
-### Nuit de folie
-Cette application est directe ; d'autant plus que normalement,
-la famille ne change pas trop entre deux repas,
-et comme on ne change généralement pas de table si souvent non plus… Le programme est réutilisable !
+### Contraintes avec score
+En soit, il n'y a pas grands changements : plutôt que faire des contraintes simples comme celle-ci :
+```asp
+:- pas_copain(H1,H2) ; place(X,H1) ; place(Y,H2) ; proche(X,Y).
+```
 
-Et pas que avec les repas de famille : il marche également avec [les places au cinéma](https://xkcd.com/173/), les soirées entre amis,
-les réunions de confrères de secte, les barbecues entre collègues, les fêtes des voisins, le pot de la chorale…
-C'est fou l'informatique.
+On va définir des poids :
+
+```asp
+contrainte(1,-10):- pas_copain(H1,H2) ; place(X,H1) ; place(Y,H2) ; proche(X,Y).
+```
+
+Indiquant que la contrainte 1 à un poids de -10 (donc si elle est vrai, elle retire 10 points au score).
+
+### Unicité des contraintes
+Cette solution n'est pas parfaite : si j'indique deux fois pas_copain/2 dans mon code,
+je ne vais avoir qu'une fois `contrainte(1,10)`. Ça, c'est un effet direct du fait qu'ASP manipule des ensembles : un atome ne peux pas être vrai deux fois.
+
+Donc, la solution est la suivante :
+
+```asp
+% J'utilise toujours pas_copain/2 comme avant.
+pas_copain(dominique,christine).
+
+% Sauf que maintenant, je l'étends avec un troisième argument, un identifiant unique :
+pas_copain(@gen_id(),X,Y):- pas_copain(X,Y).
+
+% Et le numéro de la contrainte utilise l'identifiant unique pour la contrainte:
+contrainte(Uid,-10):- pas_copain(Uid,H1,H2) ; place(X,H1) ; place(Y,H2) ; proche(X,Y).
+```
+
+Notez que l'on utilise la fonction `gen_id` vue dans la partie sur [l'extending d'ASP](#Extending-dASP),
+mais que ce n'est pas obligé : on pourrait donner les identifiants à la main ; c'est juste plus simple ainsi.
+
+Maintenant que tous nos `pas_copain/2` sont convertis en contraintes uniques de poids -10, il nous reste deux choses à faire :
+
+- remplacer toutes les contraintes par des modifications du score (et pas seulement pas_copain/2)
+- calculer le score, et le maximiser.
+
+### Les autres contraintes
+```asp
+% J'utilise toujours copain/2 comme avant.
+copain(gerard,(richard;michel)).
+
+% Sauf que maintenant, je l'étends avec un troisième argument, un identifiant unique :
+copain(@gen_id(),X,Y):- copain(X,Y).
+
+% Et le numéro de la contrainte utilise l'identifiant unique pour la contrainte:
+contrainte(Uid,10):- copain(H1,H2) ; place(X,H1) ; place(Y,H2) ; not proche(X,Y).
+```
+
+Toutes les contraintes peuvent être converties ainsi. Par exemple, la contrainte sur Dominique et Christine :
+
+```asp
+% Mais Dominique ne doit pas être à côté de Christine.
+pas_copain(dominique,christine).
+% Pire : ces humains doivent même être sur la même rangée, pour être sûr qu'ils ne se voient pas !
+contrainte(@gen_id(),-40):- place(X,dominique) ; place(Y,christine) ; not rangee(X,Y).
+```
+
+Voyez, les poids sont modifiables selon vos préférences : ici il est *vraiment* important que Christine
+et Dominique ne doivent pas se voir. Donc on met un poids de -50.
+
+On peut continuer ainsi sur l'ensemble des contraintes, chacune avec des poids en fonction de l'importance de la chose.
+On peut ainsi déclarer des «primes» en fonction de certains critère : si je suis à côté de Christine, vu que je l'aime bien : paf, bonus !
+(l'idée, c'est que ces bonus soient petits, juste histoire de départager deux solutions équivalentes ; l'autre solution plus propre serait d'avoir un second score à maximiser, mais de priorité moindre)
+
+### Calcul du score
+On sait que toutes nos contraintes sont de la forme `contrainte(UID,POIDS)`, avec l'UID un nombre unique qui sert juste
+à permettre d'avoir plusieurs fois une valeur de contrainte, par exemple le -10 si Dominique et Christine sont à côté, et celui de -10 si Michel et Christine sont à côté.
+
+Le POIDS quant à lui est la valeur à sommer, et pour cela, si [vous vous souvenez bien](#sum), on a vu la directive de méta-programmation `#sum` :
+
+```asp
+score(S):- S=#sum{N,U: contrainte(U,N)}.
+```
+
+Notez ici l'importance du `N,U`, nécessaire si certaines contraintes ont le même poids (toujours le même problème des doublons en ASP).
+
+Maintenant, nous pouvons tout simplement indiquer à clingo qu'il faut maximiser le score :
+
+```asp
+#maximize{S:score(S)}.
+```
+
+Clingo va donc chercher le modèle qui a le plus grand score. Ce sera le dernier modèle qu'il affichera.
+Et ce modèle sera le meilleur placement de table possible, selon nos contraintes et leurs poids.
+
+
+### Dans le turfu et plus loin encore
+Avec cette méthodologie, il est possible de gérer des groupes de personnes impossibles à placer correctement,
+ce que ne gérait point la première implémentation avec juste des contraintes.
+
+Maintenant, vous pouvez gérer n'importe quel groupe, et avoir un système de contrainte avec des poids assignés par les gens.
+
+Eh oui : quid d'une appli qui permet à chacun des membres de votre famille de donner ses contraintes, éventuellement sous une forme «humaine»
+(je suis en discussion avec bidule, je veux bien aider à la cuisine,…), qui les rassemblent toutes,
+lance le calcul et indique à chacun où il doit se mettre ?
+
+Future is coming !
 
 
 
@@ -2424,7 +2434,8 @@ faire un one liner parfait est impossible ici.
 L'intérêt est qu'il montre que [bien des jeux](https://github.com/Aluriak/learning-ASP/blob/master/sevenwonders.lp), même ceux avec des règles complexes,
 peuvent être encodés en ASP pour être résolus ou étudiés.
 
-Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf* (et des fois, [non](https://codegolf.stackexchange.com/questions/44485/score-a-game-of-kingdom-builder/51777#51777)).
+Et aussi, ça montre que parfois, ASP donne de bonne solutions pour le *code golf*
+(et des fois, [non](https://codegolf.stackexchange.com/questions/44485/score-a-game-of-kingdom-builder/51777#51777)).
 
 Amis golfeurs, je vous salut !
 
@@ -2435,17 +2446,20 @@ Amis golfeurs, je vous salut !
 ## Construire un PC
 Ici, on va s'intéresser à un jeu de lego : construire une machine.
 
-Cela pourrait vous servir un jour, et sinon, c'est toujours rigolo à faire.
-Aussi, nul besoin de vous y connaître en PC, les explications viennent avec (ce tuto est inter-disciplinaire :p).
+Cela pourrait vous servir un jour, et sinon, c'est en fait une tâche assez standard en informatique,
+nommé le [problème du sac-à-dos](https://fr.wikipedia.org/wiki/Problème%20du%20sac%20à%20dos).
+Ça a des applications partout, de la gestion des ressources à [l'optimisation sur un cluster de calcul partagé](https://academic.oup.com/bioinformatics/article/28/19/2520/290322).
 
-Ce genre de programme s'organise autour de deux principaux sous-programmes :
-celui qui récupère les données, c'est-à-dire les pièces de pc disponibles,
-comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
-et celui qui construit le pc à partir des pièces récupérées, c'est-à-dire
-qui choisi quelles pièces utiliser.
+Cependant, nul besoin de vous y connaître en montage de PC, les explications viennent avec (ce tuto est inter-disciplinaire :p).
 
-Le mot-clef, vous l'aurez compris, c'est *choisir*, et il se trouve dans la seconde
-catégorie. L'interface avec un distributeur de matériel informatique n'est pas
+Ce genre de programme s'organise autour de trois principaux sous-programmes :
+
+- celui qui récupère les données, c'est-à-dire les pièces de pc disponibles, comme par exemple les cartes graphiques, les processeurs, les boîtiers,…
+- celui qui construit le pc à partir des pièces récupérées, c'est-à-dire qui choisi quelles pièces utiliser,
+- et celui qui affiche le résultat à l'utilisateur et lui permet de relancer la machine avec d'autres paramètres.
+
+Le mot-clef, vous l'aurez compris, c'est *choisir*, et il se trouve dans la seconde étape.
+L'interface avec un distributeur de matériel informatique n'est pas
 le sujet de ce tuto, donc on s'arrangera avec quelques données faites à la main.
 
 Mais si un jour quelqu'un veux s'amuser, la première étape est tout à fait automatisable,
@@ -2467,8 +2481,7 @@ Enfin, et c'est là tout le sel : on ne veux pas dépasser un prix maximum.
 On veut un programme ASP qui, en considérant les pièces disponibles, nos préférences personnelles, les interdépendances
 entre les pièces, et un prix maximum, soit capable de nous donner une bonne solution, voir la meilleure.
 
-Là où ASP est génial, c'est qu'il n'y a pas besoin de connaître grand chose en heuristique pour résoudre ce genre de problème
-(qui, j'en suis sûr, se réduit [au problème du sac-à-dos](https://fr.wikipedia.org/wiki/Problème%20du%20sac%20à%20dos), et par conséquent est NP-complet).
+Là où ASP est génial, c'est qu'il n'y a pas besoin de connaître grand chose en heuristique pour résoudre ce genre de problème.
 
 Le code le plus récent est disponible sur [le dépôt](https://github.com/aluriak/learning-ASP/blob/master/build-pc.lp).
 Nous allons ici l'aborder point par point.
@@ -2503,13 +2516,14 @@ Les deux autres GPU accessibles sont données avec les trois lignes suivantes.
 ```asp
 component(gpu,"B",200,7).
 component(gpu,"embedded graphic chipset",0,4).
-require(gpu,"embedded graphic chipset",cpu,"C").
+embeds(gpu,"embedded graphic chipset",cpu,"C").
 ```
 
-Les deux autres GPU étant moins bonnes, leurs prix et notes sont moins hauts (voir nuls pour la *C*, mais il s'agit d'une puce graphique intel, ce n'est donc qu'une solution par défaut).
+Les deux autres GPU étant moins bonnes, leurs prix et notes sont moins hauts
+(voir nuls pour la *C*, mais il s'agit d'une puce graphique intel, ce n'est donc qu'une solution par défaut).
 
 ##### Dépendances
-Notez l'atome `require/4` qui nous permet de définir que la puce intégrée
+Notez l'atome `embeds/4` qui nous permet de définir que la puce intégrée
 nécessite le CPU *C*, et par conséquent (la règle qui s'en assure sera vue plus tard, elle appartient à la *modélisation*)
 que le choix de cette GPU oblige à utiliser le processeur qui l'embarque (c'est assez logique, finalement).
 
@@ -2525,15 +2539,98 @@ Je vous invite à regarder le code pour avoir une idée de toutes les pièces qu
 
 
 #### Préférences
-Les choix concernant le build : pièces optionelles, importances relatives.
+Les choix concernant le build : pièces optionelles, importances relatives,…
+
+```asp
+% J'ai pas besoin d'un SSD, c'est juste une bonne upgrade si possible.
+optional(ssd).
+
+% Set importances of various components (default is 5).
+% Je peux préférer maximiser certains composants
+set_importance(gpu,10).  % je suis un gamer
+set_importance(motherboard,3).  % une motherboard pas cher, ça reste une motherboard
+set_importance(ssd,4).  % le ssd j'ai pas besoin qu'il soit d'une qualité/taille folle
+```
+
+
 #### Connaissances du domaine
 Pas très utilisé pour le moment, mais donne un exemple simple de ce qui pourrait y être placé.
-#### Expansion des données
-De l'interface haut niveau aux atomes pour la couche d'en dessous.
-#### Modèle
-C'est ici que le principal se passe.
 
-Maintenant que toutes les préférences
+```asp
+% Le CPU et la carte mère doivent avoir le même bridge, sinon l'ordi il marchera pas.
+incompatible(cpu,CPU,motherboard,MB):-
+    component(cpu,CPU) ; component(motherboard,MB) ;
+    bridge(cpu,CPU,CPU_Bridge) ; bridge(motherboard,MB,MB_Bridge) ;
+    MB_Bridge != CPU_Bridge.
+```
+
+#### Expansion des données
+C'est à ce moment qu'on transforme les raccourcis pour l'utilisateur
+en atomes qui seront utilisés par le modèle.
+Bref, on fait le pont entre l'interface haut niveau et les atomes pour la couche d'en dessous.
+
+Sans ça, l'utilisateur serait obligé d'écrire tout lui-même, donc ça complexifierait l'étape de description des données.
+
+```asp
+% Extraction des données des composants.
+component(O,Name):- component(O,Name,_,_).
+price(O,Name,P):- component(O,Name,P,_).
+rate(O,Name,R):- component(O,Name,_,R).
+
+% Quantité minimales de composants à acheter.
+% Par défaut, un composant est nécessaire.
+minimal_quantity(O,1):- component(O) ; not optional(O).
+minimal_quantity(O,0):- component(O) ; optional(O).
+
+% Importances des composants.
+% Par défaut, tous les composants sont équivalents en importance.
+importance(O,5):- component(O) ; not set_importance(O,_).
+importance(O,I):- component(O) ; set_importance(O,I).
+
+% Si on a marqué qu'un composant en contient un autre (embedding),
+% alors c'est équivalent à dire que l'un requiert l'autre et inversement.
+require(C1,N1,C2,N2):- embeds(C1,N1,C2,N2).
+require(C2,N2,C1,N1):- embeds(C1,N1,C2,N2).
+```
+
+
+#### Modèle
+C'est ici que le principal se passe : en s'appuyant sur les préférences et autres informations,
+on va pouvoir définir ce que l'on attend d'ASP.
+
+```asp
+component(O):- component(O,_).  % juste un raccourcis
+
+% On choisi un de chaque composant.
+Q { use(O,X): component(O,X) } 1 :- component(O) ; minimal_quantity(O,Q).
+
+% Si un composant choisi à des requirements, on doit les avoir choisi aussi.
+use(O2,N2):- use(O1,N1) ; require(O1,N1,O2,N2).
+1 { use(O2,X): require_one(O1,N1,O2,X) } 1:- use(O1,N1) ; require_one(O1,N1,O2,_).
+
+% On écarte tout modèle qui présente des incompatibilités.
+:- incompatible(O1,N1,O2,N2) ; use(O1,N1) ; use(O2,N2).
+
+% Calcul du coût total, et du score total.
+total_cost(T):- T=#sum{C,O: use(O,I), price(O,I,C)}.
+total_rate(T):- T=#sum{R*I,O: use(O,C), rate(O,C,R), importance(O,I)}.
+total_size(T):- T={use(_,_)}.
+
+% On écarte tout modèle où le score est supérieur au max autorisé.
+:- total_cost(T) ; T>max_cost.
+
+% On maximise le score.
+#maximize{S:total_rate(S)}.
+
+
+% On affiche ce qui intéresse l'utilisateur : les composants à prendre, et les scores.
+#show.
+#show use/2.
+#show total_cost/1.
+#show total_rate/1.
+#show total_size/1.
+```
+
 
 
 
@@ -2549,14 +2646,17 @@ pour décrire les pièces d'ordinateur et leurs relations.
 Là où c'est plus fort, c'est que vous pouvez aller plus loin : permettre à l'utilisateur de décrire les tâches qu'il veut faire avec son PC
 (les logiciels qu'il utilise, notamment, comme les jeux ou la bureautique qu'il veut faire tourner),
 et en déduire plus de contraintes sur le PC final : pas la peine d'avoir plus de 2GB de RAM
-si l'utilisateur final veut juste lire ses mails ou se connecter aux réseaux sociaux (4GB pour l'OS Windows),
+si l'utilisateur final veut juste lire ses mails ou se connecter aux réseaux sociaux,
 et à l'inverse, une puissance minimale de GPU peut être nécessaire pour certains jeux.
 
-Vous pouvez facilement imaginer ASP comme un générateur de DSL : c'est ce que je fait avec [Biseau](https://gitlab.inria.fr/lbourneu/biseau) et [se-lang]({filename}/articles/se-lang.mkd).
+Vous pouvez facilement imaginer ASP comme un générateur de DSL : c'est ce que je fait
+avec [Biseau](https://gitlab.inria.fr/lbourneu/biseau) et [se-lang]({filename}/articles/se-lang.mkd),
+et c'est ce qu'on a fait aussi pour le placement de table avec les atomes copains/2 et pas_copains/2.
 
 
 #### Attrapez les toutes
-Déjà, une première étape, c'est effectivement de récupérer les données, i.e. les pièces disponibles et leurs relations.
+Une première étape pour l'utilisation du programme dans la vie de tous les jours,
+c'est effectivement de récupérer les données, i.e. les pièces disponibles et leurs relations.
 
 Évidemment, récupérer TOUTES les pièces possibles est un peu long,
 alors avoir des informations en amont, notamment les prix minimaux et maximaux (globaux, et par catégorie)
@@ -2567,7 +2667,7 @@ des préférences, voir des contraintes.
 
 Une solution pourrait être de parser ou chopper l'API d'un site de vente
 de matériel, par exemple [LDLC](https://www.ldlc.com/configurateur-pc/)
-ou [partpicker](https://pcpartpicker.com/).
+ou [partpicker](https://pcpartpicker.com/) (ya un [module python non-officiel](https://pypi.org/project/PCPartPicker-API/) qui pourrait aider ;).
 
 Cet hypothétique programme consiste simplement en l'extraction d'info de ces sites,
 et l'écriture de règles ASP à mettre dans les données. Pas une tâche monstrueuse, donc.
@@ -2608,86 +2708,6 @@ J'ajouterais aussi que mettre à plat ce genre de chose aide beaucoup à faire u
 Et en plus, le solver vous donne la meilleure solution juste en connaissant vos goûts !
 
 Magique ? Non, informatique !
-
-
-
-## Clustering conceptuel
-Ne prenez pas peur en lisant cette expression : c'est en fait assez simple.
-
-Notez que cet exemple se base en grande partie sur les propagateurs.
-
-### Clustering
-Le clustering, c'est une opération visant à séparer en groupes un ensemble d'éléments.
-Dans la vie de tous les jours, on en fait beaucoup : notre cerveau est même spécialement entraîné à ce genre de tâche.
-
-Quand j'essuie la vaisselle, il faut savoir où mettre quels ustensiles : les fourchettes dans le bac à fourchettes, les assiettes sur la pile d'assiette (de même couleur).
-C'est du clustering : on range des éléments (les ustensiles) dans des groupes spécifiques (pile à assiette, bac à fourchette)
-en se basant sur les propriétés de l'objet (une fourchette, ça ressemble à une fourchette, donc ça va dans le bac à fourchette).
-
-De manière intéressante, ce clustering apparemment trivial se complexifie dés lors que vous avez des ustensiles qui ne tombent dans aucune catégorie, comme la [cuiller-fourchette](https://fr.wikipedia.org/wiki/Cuill%C3%A8re-fourchette) (ou *spork*, en anglais).
-Où mettre ces ustensiles qui appartiennent à plusieurs catégories ? Selon les personnes, le choix peut se faire de manière rationnelle, en ajoutant une propriété sur un groupe donné
-(*le bac à fourchette* devenant par exemple *le bac à tout ce qui a 2, 3 ou 4 pics métalliques allongés*). D'autres le feront au hasard, ou d'autres choisirons sur d'autres critères (on a moins de cuiller, donc le bac à cuiller a de la place pour la cuiller-fourchette dedans).
-
-Concernant les objets qui ne rentrent dans aucune catégorie, c'est exactement le problème que résouds *le plat qui est dans l'entrée* :
-un dépotoir où l'on met tous les objets que l'on ne sait pas ranger dans les groupes existants.
-
-Bref, du clustering, c'est très naturel comme opération. En mathématiques, évidemment, la chose est attaquée avec plus d'abstraction.
-
-### Clustering conceptuel
-Le clustering conceptuel est en réalité plus proche encore de notre manière de fonctionner : cela consiste à avoir,
-pendant le clustering même, un avis critique sur les groupes constitués.
-
-Par exemple, lorsque l'on remplis des cartons pour un déménagement, on essaye d'avoir une cohérence de contenu : un carton doit contenir un type d'objet
-(il y a donc, selon le théorème du plat dans l'entrée, un carton *de bordel* qui contient ce que l'on ne sait pas grouper).
-
-Le clustering parfait, ce serait d'avoir un minimum de cartons, remplis avec le même type d'objets,
-tous de même taille et masse qu'un humain peut porter facilement.
-
-Cependant, contrairement à l'exemple de la vaisselle où l'on a une bonne connaissance des objets qui sont clusterisés (on sait ce qu'on a comme vaisselle, et a peu près combien, et que l'on a tous les conteneurs adaptés),
-faire ses cartons vient avec la difficulté que l'on ne se rend pas compte de tous ce qu'on a accumulé, et que les cartons sont en nombre choisis a priori
-(a moins que vous n'ayez fait une simulation de déménagement avant qui vous aurais permis de déterminer le volume exact nécessaire à contenir vos possessions).
-
-Donc, pendant la mise en carton des objets à déménager, on fait un clustering conceptuel : on prend un objet, on cherche le meilleur carton pour le contenir,
-et si d'instinct on sens que cet objet n'est pas le seul de son type, on ouvre un nouveau carton pour l'y mettre.
-Au bout de quelques heures, on vide un carton qui n'était pas si remplis, pour y vider la moitié d'un carton trop lourd,
-et on dispatch les objets vidés dans d'autres cartons en fonction d'autres critères.
-
-(Évidemment, on travaille généralement de manière plus intelligente : pendant que gégé met les livres dans un carton (qui sera trop lourd, de fait), dom' met les assiettes dans un autre. Mais au delà de ces cas précis… il y a souvent du bordel à trier, et à un moment, des cartons à refaire)
-
-C'est cela le clustering conceptuel : prendre les objets un par un, et sans connaissance des prochains objets, faire un clustering.
-Ce clustering va évoluer au fur et à mesure des objets ajoutés, et parfois être complètement modifié suite à l'arrivée d'un objet qui change tout.
-
-### Le problème à résoudre
-L'énoncé est le suivant : nous avons 10 valeurs, qui peuvent donc être groupées dans au maximum 10 groupes, et au minimum, un seul.
-
-
-### Programme ASP
-Le programme ASP suivant s'occupe de la partie clustering : génération des données, et choix de groupements.
-
-Comme ce qui nous intéresse, c'est les groupes de valeur et non pas l'identifiant du groupe, on use de `#project` pour éviter de générer des clustering équivalents
-(par exemple, mettre une valeur toute seule dans le cluster 1 ou 2, ça revient au même : ce qui compte, c'est que la valeur est seule).
-
-```asp
-value(1..3).
-cluster(1..3).
-
-% 0 ou plus valeur dans chaque cluster.
-0 {cluster(C,V): value(V)} :- cluster(C).
-
-% Une valeur ne doit appartenir qu'à un seul cluster.
-1 {cluster(_,V)} 1 :- value(V).
-
-% Le numéro de cluster n'est pas pertinent.
-same_group(A,B):- cluster(C,A) ; cluster(C,B).
-#project same_group/2.
-```
-
-Vous pouvez tester ce programme : chaque modèle est une solution de clustering différente. Oui, il y en a plus de 100000.
-Non, j'ai pas eu la patience d'attendre qu'ils soient tous écoulés.
-
-Et oui, avec un clustering conceptuel, on peut éviter la génération de bien des modèles.
-
-### Squelette du propagateur
 
 
 
@@ -2742,71 +2762,151 @@ Donc, en clair : il faut ramasser une clef pour pouvoir annuler un obstacle qui 
 ou dans le cas des autres obstacles l'objet associé à l'obstacle
 (pour annuler un obstacle de type *arc*, il faut que l'objet *arc* ait été ramassé auparavant).
 
-Notez que le graphe n'est pas orienté. Néanmoins, on peut imaginer l'intérêt de l'orientation :
+Notez que le graphe n'est pas forcément orienté. Néanmoins, on peut imaginer l'intérêt de l'orientation :
 des passages ne pouvant être pratiqués que dans un seul sens par le personnage
 (porte de sortie, toboggan,…).
 
 Notez également que le langage est en fait un poil plus complexe, car il a une composante graphique importante
 (le placement des nœuds dépends de l'ordre dans lequel les objets/obstacles doivent être traités).
-Nous allons néanmoins ignorer cela, car (1) tout le sel est de laisser l'ordinateur faire la résolution totale,
-et (2) l'information de l'ordre est redondante, et n'est là que pour faciliter la lecture pour les humains qui regardent la vidéo/l'image.
+Nous allons néanmoins ignorer cela,
+car l'information de l'ordre est redondante, et n'est là que pour faciliter la lecture pour les humains qui regardent la vidéo/l'image.
 
 
 ### Le code
-D'abord, la définition du donjon.
+D'abord, la définition du donjon :
 
 ```asp
-% Dungeon objects.
-% onedoor(g).
-keydoor(g).
-keydoor(b;f).
-% door(D):- onedoor(D).
-door(D):- keydoor(D).
-key(c;e).
-% one(d).
-key(d).
-open(start).  % links starts the dungeon
+% Les portes fermées à clef.
+keydoor(g;b).
+% Une porte nécessite l'arc pour passer.
+objdoor(f,arc).
+% Ce sont des nœuds du donjon aussi.
+node(D):- keydoor(D).
+% On trouve une clef dans les nœud c et e.
+haskey(c;e).
+% l'arc est en d.
+hasobj(d,arc).
+% Et on commence à l'étape 1 sur le nœud s.
+is(1,s,start).
 
-% Links between doors
-link(start,(b;c;d)).
+% Liens entre les nœuds
+link(s,(b;c;d)).
 link(b,(e;f)).
-link(f,g;g,stop).
+link(f,g;g,boss).
+link(X,Y):- link(Y,X).  % on peut aller dans les deux sens.
+
+target(boss).  % c'est là qu'on veut aller
 ```
 
-Et ensuite, la définition de la solution :
+Et ensuite, vient la modélisation qui permet d'obtenir ce que l'on veut :
 
 ```asp
-% Doors next to open doors are accessible
-accessible(Door):- link(Open,Door) ; open(Open).
+% Les nœuds à coté des nœuds ouverts sont atteignables à la prochaine étape.
+accessible(E+1,Node):- link(Location,Node) ; is(E,Location,_).
 
-% Doors with objects inside are opened freely.
-open(ObjDoor):- accessible(ObjDoor) ; key(ObjDoor).
-open(ObjDoor):- accessible(ObjDoor) ; oner(ObjDoor).
+% On garde en mémoire les nœuds déjà visité à l'étape E.
+visited(E+1,Node):- is(F,Node,_) ; is(E,_,_) ; F<E.
 
-% Doors that are opened using one non-used key.
-open(KeyDoor,Key):- accessible(KeyDoor) ; keydoor(KeyDoor) ; open(Key) ; key(Key) ;
-                    not open(KeyDoor,OtherKey): key(OtherKey), OtherKey!=Key ;
-                    not open(OtherDoor,Key): keydoor(OtherDoor), OtherDoor!=KeyDoor.
+% On remarque les nœuds «vide», qui n'ont ni objet ni clef ni porte fermée.
+node(N):- link(N,_).
+node(N):- link(_,N).
+emptynode(N):- node(N) ; not haskey(N) ; not hasobj(N,_) ; not keydoor(N) ; not objdoor(N,_) ; not target(N).
 
-% Doors that are opened using a reusable object.
-% open(OneDoor,One):- not open(OneDoor) ; accessible(OneDoor) ; open(One) ; one(One).
-% open(TwoDoor,Two):- not open(TwoDoor) ; accessible(TwoDoor) ; open(Two) ; two(Two).
+% accessible/3: ce qu'on peut faire pour tout nœud à portée.
 
-% Keep in mind which object opened which door.
-open(Door):- open(Door,_).
+% Si contient une clef.
+accessible(E,ClosedNode,found(key)) :- accessible(E,ClosedNode) ; haskey(ClosedNode) ; not visited(E,ClosedNode).
+% Ou un objet.
+accessible(E,ClosedNode,found(Obj)):- accessible(E,ClosedNode) ; hasobj(ClosedNode,Obj) ; not visited(E,ClosedNode).
+% Ou si c'est juste un nœud avec rien.
+accessible(E,T,reached) :- accessible(E,T) ; target(T).
+accessible(E,N,empty) :- accessible(E,N) ; emptynode(N).
+
+% Ou si on est déjà passé par là.
+accessible(E,OpenNode,empty):- accessible(E,OpenNode) ; visited(E,OpenNode).
+
+% Ou si est fermée à clef, mais qu'on en possède une non utilisée.
+accessible(E,ClosedNode,openwith(KeyNode)):-
+    accessible(E,ClosedNode) ; keydoor(ClosedNode) ;
+    % On a une clef :
+    is(_,KeyNode,found(key)) ;
+    % Non utilisée :
+    not is(F,_,openwith(KeyNode)): is(F,_,_), F<E ;
+    % On a pas déjà ouvert la porte :
+    not accessible(E,ClosedNode,empty).
+
+% Ou si est fermée et associée à un objet, et qu'on le possède.
+accessible(E,ClosedNode,openwith(Obj)):-
+    accessible(E,ClosedNode) ; objdoor(ClosedNode,Obj) ;
+    % On a l'objet :
+    is(_,ObjNode,found(Obj)) ;
+    % On a pas déjà ouvert la porte :
+    not accessible(E,ClosedNode,empty).
 
 
-#show.
-#show open/2.
+% On choisi à chaque étape l'un des endroit accessible.
+#const max_etape=20.  % le nombre maximal d'étape autorisé.
+0{ is(E+1,O,A): accessible(E+1,O,A) }1:- is(E,N,_) ; E<max_etape ; not target(N).
+
+% On veut arriver à la fin.
+:- not is(_,T,_): target(T).
+
+% On compte le nombre de mouvements.
+nb_move(N):- N={is(_,_,_)}.
+% On le minimise :
+#minimise{N:nb_move(N)}.
+
+
+% On montre les atomes is/3, qui montrent la solution.
+#show is/3.
 ```
+
+Réponse obtenue :
+
+    clingo version 5.2.2
+    Reading from l.lp
+    Solving...
+    Answer: 1
+    is(1,s,start) is(2,c,found(key)) is(3,s,empty) is(4,d,found(arc)) is(5,s,empty) is(6,b,openwith(c)) is(7,e,found(key)) is(8,b,empty) is(9,f,openwith(arc)) is(11,boss,reached) is(10,g,openwith(e))
+    Optimization: 11
+    OPTIMUM FOUND
+
+    Models       : 1
+      Optimum    : yes
+    Optimization : 11
+    Calls        : 1
+    Time         : 0.073s (Solving: 0.04s 1st Model: 0.03s Unsat: 0.01s)
+    CPU Time     : 0.072s
+
+
+En réalité, il existe beaucoup plus de solutions, mais comme on a demandé une optimisation,
+ASP ne montre que celles qui sont meilleures que celles qu'il a affichées avant.
+Dans notre cas, comme le problème est trivial, ASP trouve très rapidement la meilleure solution, l'affiche à l'écran,
+puis termine d'explorer l'espace de recherche sans en trouver de meilleure.
+
+Notez bien la logique de cette solution : on ouvre la porte b avec la clef trouvée en c, puis la porte f avec l'arc,
+et ensuite la porte g avec la clef trouvée en e. Tout ça en 10 étapes pour arriver jusqu'au boss.
+
+C'est globalement la même technique que j'avais utilisée pour [résoudre un puzzle du jeu Deponia]({filename}/articles/deponia-asp.mkd).
+
 
 ### Généralisation
 Évidemment, le donjon de zelda, ce n'est qu'un prétexte pour attaquer le principe de planification d'une tâche,
 qui ici n'est pas **du tout** réalisé de manière optimale. Déjà, l'étape suivante, ce serait de passer ça en résolution incrémentale.
 
+Enfin, notez que ce genre de tâche est très standard.
 Dans la langue de Batman, on parle de [*planning*](https://fr.wikipedia.org/wiki/Planification).
 C'est un sujet de recherche où il y a beaucoup de choses à faire, surtout en ASP.
 
+### Conclusion sur le solveur de donjons
+C'est un exemple assez complet (choix, récursivité, optimisation, logique, et même constantes !),
+qui montre que même avec un encoding un peu bourrin ASP peut gérer franchement efficacement des problèmes un peu compliqué.
+
+Parmis les trucs à faire : réutiliser les dessins de Mark Brown pour encoder les véritables donjons
+(notamment le [donjon de l'eau](https://www.youtube.com/watch?v=6LO8Z1DkDqc#t=7m5s),
+avec tous ses états et modifications qui font de ce donjon un gros casse-tête).
+Ça nécessitera d'encoder les liens entre nœud de manière à prendre en compte des paramètres qui changent en fonction de leviers.
+Rien de complexe en soit, mais le programme va encore grandir d'une quinzaine de lignes.
 
 
 
