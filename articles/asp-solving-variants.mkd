@@ -8,7 +8,7 @@ Lang: français
 Translation: false
 Status: draft
 
-Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant aux variantes d'utilisation du solver, des approches alternatives utiles pour certaines tâches.
 
 Comme pour les propagateurs, cet aspect d'ASP est dirigé par l'interface avec les langages python et lua.

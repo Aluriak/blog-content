@@ -8,7 +8,7 @@ Lang: français
 Translation: false
 Status: draft
 
-Cet article est une (quête) annexe [du tuto général pour ASP]({filename}/articles/tuto-asp.mkd),
+Cet article est une (quête) annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant aux différences de performances entre différents encodings
 qui répondent à la même question.
 

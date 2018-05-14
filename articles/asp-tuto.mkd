@@ -4,7 +4,7 @@ Modified: 2017-03-31
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: un tuto pour ASP
-Slug: tuto-asp
+Slug: asp-tuto
 Lang: français
 Translation: false
 Status: draft
@@ -2835,7 +2835,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 - N'hésitez pas à poser des questions sur ASP sur [stack-overflow](http://stackoverflow.com/questions/tagged/answer-set-programming).
 - la page [potassco/teaching](https://potassco.org/teaching/) regorge de liens.
 - une erreur ? une idée ? une question ? Ça se passe sur [le dépôt du blog](https://github.com/aluriak/blog-content).
-- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/tuto-asp%20en.mkd).
+- If you want to help for the english version, it's [here](https://github.com/aluriak/blog-content/blob/master/articles/asp-tuto%20en.mkd).
 
 
 
