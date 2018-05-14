@@ -144,6 +144,8 @@ Les prochaines missions de l'ESA porterons sur Mars (avec [un partenariat avec l
 mais une plus grande partie est dédiée à l'étude de notre planète.
 
 
+[Présentation complète en anglais](https://www.youtube.com/watch?v=5nBsKbq5NQk).
+
 ### NASA (État-Unis)
 Probablement la plus célèbre et la plus prolifique des agences,
 avec nombre de missions prestigieuses et des objectifs ambitieux
@@ -528,6 +530,17 @@ Dans les deux cas (spatial et physique), les résultats sont globalement peu tan
 Pourtant, la recherche fondamentale est (comme son nom l'indique bien qu'il s'agisse là de polysémie) fondamentale. Ce que nous oublions facilement quand nous survivons
 à un accident grâce à une ceinture de sécurité ou participons à une IRM.
 
+### Argument général
+Discours standard qui fait chier tout ceux qui s'en fichent:
+
+Le spatial, l'exploration, c'est une manière de faire rêver, et d'inspirer les prochaines générations. Bien des génies n'ont été révélés que parce qu'ils ont été inspirés par un problème non pas motivé par des raisons économiques, mais par la curiosité, la volonté de découvrir des choses que l'on ne connaît pas encore.
+Demandez à des scientifiques, des explorateurs, des curieux. Non, ce n'est pas l'argent ou la gloire qu'ils cherchent. La majorité des scientifiques ont un niveau d'étude ridiculement haut pour la paye qu'ils recoivent en fin de mois. Ils s'en plaignent ? Pas tant que vous leur donnez ce qu'il faut pour faire leurs recherches.
+Personnellement, en tant que bioinformaticien, j'ai travaillé sur des données de cancer avec des biologistes. Eh bien, croyez-le ou non, trouver un début de traitement à un cancer, je m'en temponnais le coquillard. C'était même pas un objectif secondaire ni même tertiaire de mon travail de recherche. Au mieux, ç'eût été un effet de bord pratique, et encore, ça m'aurait mis en retard donc je l'aurais ignoré et laissé aux biologistes.
+Par contre, ce qui m'intéressais, c'était que les données avaient une tronche particulière, étaient bien annotées, et donc qu'ils y avait moyen d'appliquer des méthodes matheuses qui m'intéressaient dessus.
+Si c'est le bidule à propos du cancer qui vous intéresse, tant mieux pour nous tous : je m'amuse, et pas longtemps après la médecine avance.
+L'alternative moins coûteuse, c'est que je ne m'amuse pas, et que je ne fasse pas avancer la médecine (mais du coups on a gagné un peu d'argent… probablement suffisamment pour refaire l'isolation d'un gros immeuble !).
+C'est pareil pour le spatial : l'argent que vous investissez dedans, c'est de l'argent pour des esprits qui veulent bosser sur des sujets qui les intéresse et qui ont des retombées pour vous.
+Et en général, comme on va le voir pour deux cas particulier, payer des esprits géniaux, ça paye sur le long-terme (ah ben oui, c'est sur le long-terme, hein, la recherche c'est long).
 
 ## NASA
 Le retour sur investissement du spatial est abordé entre autres dans [cet article](https://www.investopedia.com/financial-edge/0812/the-roi-of-space-exploration.aspx).
