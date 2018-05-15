@@ -1939,7 +1939,7 @@ Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
 
-ASP s'interface nativement avec Python et Lua. Je n'en traiterais pas ici,
+ASP s'interface nativement avec Python et Lua. Je n'en traiterais pas beaucoup ici,
 mais plutôt dans des quêtes annexes qui apparaîtrons petit à petit.
 <!-- mais plutôt dans des quêtes annexes dédiées, telles que : -->
 
@@ -1948,7 +1948,7 @@ mais plutôt dans des quêtes annexes qui apparaîtrons petit à petit.
 <!-- - [Clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd), un moyen pour suivre, gérer et étendre le solving -->
 <!-- - [Variantes de solving]({filename}/articles/asp-variantes-solving.mkd), où l'on parle de multi-shot et iterative solving -->
 
-Pour ces quêtes, je considère python comme un langage acquis. Il me faudrait 5000 lignes supplémentaires pour expliquer les concepts que j'utilise ici,
+Pour ces annexes, je considère python comme un langage acquis. Il me faudrait 5000 lignes supplémentaires pour expliquer les concepts que j'utilise ici,
 et du coups ce tuto deviendrait un énième [tuto pour python](https://python.developpez.com/cours/TutoSwinnen/).
 Si c'est juste les concepts de POO qui vous manquent, allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
 Si vous connaissez déjà python et que vous voulez progresser, allez voir [sametmax](http://sametmax.com/cours-et-tutos/).

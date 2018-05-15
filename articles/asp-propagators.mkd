@@ -12,6 +12,9 @@ Cet article est une quête annexe [du tuto général pour ASP]({filename}/articl
 s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qui permettent de suivre l'évolution du solving en temps réel,
 pour le regarder, l'aider, et même le modifier.
 
+Je considère dans la suite Python comme un langage acquis. Au besoin, allez faire un tour du côté de [Swinnen](https://python.developpez.com/cours/TutoSwinnen/).
+S'il vous manque les notions de POO (bien qu'on n'en utilise que 1% ici), allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
+
 On commence avec une présentation théorique, suivis de trois exemples rigolos (mais néanmoins utiles !).
 
 
@@ -91,8 +94,6 @@ Ensuite, il *backtrack* : il revient sur le nœud b. C'est là qu'il choisi diff
 Et là, double backtrack : il revient sur b, constate qu'il a exploré tous les choix possible, donc revient encore jusqu'à start, où là un autre choix n'a pas encore été exploré : décider a comme vrai. Ce qui est fait à l'étape 4, et comme pour b, on assiste à une exploration de chaque possibilité avec un backtrack pour revenir sur a. Lorsque toutes les possibilités ont été épuisées, le solver backtrack encore, revenant sur *Start*. Sauf que maintenant… il n'y a plus rien à explorer. C'est donc la fin du solving, tous les modèles ont été générés.
 
 
-
-
 ## Les 4 cavaliers
 Un propagateur, en python, est une classe présentant au moins une de ces 4 méthodes :
 
@@ -111,7 +112,7 @@ chacun à leur tour, explorant les différentes possibilités.
 
 Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement total, en opposition à un assignement partiel
 où ne sont assignés à une valeur de vérité qu'une partie des atomes),
-il faut décider si le modèle, c'est-à-dire si les valeurs de vérité (ou assignation) est valide.
+il faut décider si le modèle est valide, c'est-à-dire si les valeurs de vérité (l'assignation) n'entre en conflit avec aucune contrainte.
 
 C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
 et donc qu'il n'a pas a être écrit en sortie de programme.
@@ -145,7 +146,7 @@ class Propagator:
         # init: un objet qui va nous donner des infos sur le solving
         for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
             init.add_watch(init.solver_literal(atom.literal))  # on le surveille
-            # atom.literal: la version littérale de l'atome
+            # atom.literal: la version littérale de l'atome, unique (contrairement aux littéraux du solveur).
             # init.solver_literal: donne pour un littéral d'atome le littéral que le solveur utilise pour le référencer
             # init.add_watch: méthode qui permet d'ajouter un littéral à surveiller
 
