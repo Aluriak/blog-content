@@ -1,13 +1,12 @@
 Title: Introduction à Answer Set Programming (ASP)
-Date: 2017-03-31
-Modified: 2017-03-31
+Date: 2018-05-16
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: un tuto pour ASP
 Slug: asp-tuto
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 ASP est un langage de programmation un peu particulier.
 C'est ce genre de langage qui en bave des ronds de chapeaux pour additionner les éléments d'une liste,
