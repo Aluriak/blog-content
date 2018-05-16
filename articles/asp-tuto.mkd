@@ -1104,14 +1104,17 @@ Si au bout de 10 minutes, vous:
 
 
 
-## Erreurs et warnings
+
+
+
+# Erreurs et warnings
 Une partie que je vois rarement dans les tutos pour un language, c'est celle dédiée aux erreurs.
 L'intérêt, c'est de pousser les gens à ne pas paniquer en voyant un message d'erreur qui sort de leur code,
 et d'apprendre à comprendre la méthodologie pour y répondre.
 
 En vrai, la méthodologie elle est assez universelle : il faut lire, comprendre, réfléchir, corriger, réessayer.
 
-### Unsafeness
+## Unsafeness
 En codant, il vous arrivera régulièrement de voir clingo lever une erreur du type :
 
 ```
@@ -1138,7 +1141,7 @@ hadoken(Y):- saiyan(X).  % effectivement, on se demande bien ce que peut être Y
 Il faut juste corriger pour que toute variable utilisée dans la tête soit définie dans le corps de la règle.
 
 
-### Unsafeness, deuxième tournée
+## Unsafeness, deuxième tournée
 Retrouvons l'erreur, légèrement changée :
 
 ```asp
@@ -1172,7 +1175,7 @@ hadoken(Y):- saiyan(X,Y): gandalf(X), dumbledore(Y).
 L'unsafeness arrive également quand dans une condition *pour tout* des variables à gauche du `:` ne sont pas définies, à droite du `:` (premier cas) ou dans le contexte de la règle (second cas).
 
 
-### Syntax error
+## Syntax error
 Celle-là sont en général assez simple à résoudre : il s'agit d'une mésutilisation de la grammaire du langage.
 
 Souvent, lorsque vous avez une telle erreur, c'est que vous avez oublié un point, une parenthèse,…
