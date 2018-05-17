@@ -169,9 +169,8 @@ le réutiliser pour exprimer le même problème, ou une variation
 
 Le problème, c'est qu'aujourd'hui en informatique, créer un programme qui
 comprendrais ce language relève encore de la science-fiction.
-Hors, et c'est bien là l'objet de ce tuto, on veut utiliser l'ordinateur
-(et un ordinateur de bureau, hein, pas un super calculateur et
-l'équipe de chercheur en langage naturel qui va avec).
+Hors, et c'est bien là l'objet de ce tuto, on veut utiliser notre ordinateur perso,
+pas un super calculateur et l'équipe de chercheur en langage naturel qui va avec.
 
 Donc, essayons maintenant de faire un language que nos petits ordinateurs puisse comprendre :
 
@@ -237,11 +236,14 @@ car les développeurs ont intuitivement ce découpage dans leur réflexions.
 
 ## Exemple de code ASP
 Reprenons notre problème initial : afficher à l'écran tous les multiples positifs de 3 inférieurs à 100.
-En ASP, nous pourrions résoudre ce problème ainsi (les caractères qui suivent les `%` sont des commentaires) :
+En ASP, nous pourrions résoudre ce problème ainsi :
 
 ```asp
 #show solution(X): X=1..100, X\3=0.
 ```
+
+On retrouve la même structure que tout à l'heure : afficher solution(X) pour X entre 1 et 100, et `X\3=0`
+qui est la vérification que X est bien multiple de 3. C'est finalement assez proche que la proposition précédente.
 
 À la fin de ce tuto, vous serez capable de comprendre parfaitement ce code, et d'imaginer d'autres manières de le résoudre.
 
