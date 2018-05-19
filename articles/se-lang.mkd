@@ -354,7 +354,7 @@ Concerning se-lang by itself, it's a great success: i was able to modelize of lo
 
 Concerning the ASP-based language: ASP is not an ideal language for DSLs, for various reasons, but it's fun (at least for me) and powerful (at least some times).
 There is however some drawbacks that makes it not suitable for a systematic use.
-If you are interested into ASP, dive into [this puzzles solving]({filename}/articles/deponia-asp_en.mkd) (and wait for my tutorial, in french). If you are interested into ASP for DSLs,
+If you are interested into ASP, dive into [this puzzles solving]({filename}/articles/deponia-asp_en.mkd) (or go to my (french) [tutorial]({filename}/articles/asp-tuto.mkd)). If you are interested into ASP for DSLs,
 look up one of my last project, [biseau](https://gitlab.inria.fr/lbourneu/biseau),
 which is using ASP as a DSL to draw graphs (that's very cool).
 
