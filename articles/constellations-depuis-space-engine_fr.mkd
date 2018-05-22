@@ -9,6 +9,12 @@ Lang: fr
 Translation: false
 Status: published
 
+Depuis l'écriture de cet article, certaines choses ont changées,
+notament [l'annonce d'une feature dans SpaceEngine](https://www.youtube.com/watch?v=DY42Qxl7Cu8)
+qui permet de répondre à toutes les questions posées ici.
+Les constellations en 3D, c'est trop cool !
+Vivement de pouvoir comparer les tronches des constellations de différentes cultures !
+
 <br/>
 
 [TOC]
