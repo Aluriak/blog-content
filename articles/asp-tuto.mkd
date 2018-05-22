@@ -4,6 +4,7 @@ Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: un tuto pour ASP
 Slug: asp-tuto
+AltSlugs: tuto-asp
 Lang: français
 Translation: false
 Status: published

@@ -42,8 +42,7 @@ ou [la page wikipédia](https://fr.wikipedia.org/wiki/Th%C3%A9orie_des_graphes) 
 
 Je vais aussi beaucoup utiliser [Answer Set Programming](https://fr.wikipedia.org/wiki/Answer_set_programming) (ASP),
 et plus précisément clingo, l'implémentation de [Potassco Labs](https://potassco.org).
-Un gros tuto est sur les rails,
-<!-- [Un gros tuto soit sur les rails]({filename}/articles/tuto-asp.mkd), -->
+[Un gros tuto est dispo]({filename}/articles/tuto-asp.mkd),
 mais il n'est pas fondamentalement nécessaire. J'ai énormément annoté les quelques codes,
 mais l'important, c'est ce qui se passe autour d'eux, pas dedans.
 
