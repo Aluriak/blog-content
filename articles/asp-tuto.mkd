@@ -3097,7 +3097,8 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 - [une page](http://www.hakank.org/answer%20set%20programming) très complète avec beaucoup d'exemples et de programmes avec explications.
 - Au sein [du projet pygarden](https://github.com/IndexErrorCoders/pygarden), [solasp](https://github.com/IndexErrorCoders/pygarden#solasp) est un code ASP qui permet d'optimiser le placement de plantes dans le jardin sachant leurs préférences de voisinage.
 - [pytest-asptest](https://github.com/aluriak/pytest-asptest) : un plugin pytest pour faire des tests unitaires sur des codes ASP.
-- [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python
+- [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python.
+- le jeu Warzone 2100 [utilise ASP pour la génération de cartes](http://warzone2100.org.uk/about.html).
 
 
 ## And now, for something totally different
