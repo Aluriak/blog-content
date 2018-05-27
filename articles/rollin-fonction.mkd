@@ -3,10 +3,16 @@ Date: 2018-05-25
 Tags: math, humor
 Authors: Lucas Bourneuf
 Summary: De la définition de la fonction Rollin, son étude, et son application
-Slug: fonction-rollin
+Slug: rollin-fonction
 Lang: français
 Translation: false
 Status: draft
+
+<br/>
+
+[TOC]
+
+<br/>
 
 
 La fonction Rollin est décrite par [François Rollin](https://fr.wikipedia.org/wiki/Fran%C3%A7ois_Rollin),
@@ -218,7 +224,11 @@ assert rollin(1922) == 5
 
 Nous pouvons maintenant nous poser la question de cette fonction dans sa représentation graphique !
 
-Le code générant les visualisations qui suivent:
+Les codes générant les visualisations qui suivent [sont disponibles sur mon dépôt](https://github.com/aluriak/rollin-function).
+Notez également que certaines sont générées avec [pyqtgraph](http://pyqtgraph.org/).
+C'est une (très agréable) découverte pour moi.
+
+Voici un code plus simple qui reproduit à peu près les résultats, en utilisant la trinité matplotlib/pandas/seaborn :
 
 ```python
 import seaborn as sbn
@@ -229,49 +239,155 @@ import matplotlib.pyplot as plt
 sbn.set()
 sbn.set_palette('husl', 10)
 
+# Construction des données
+BOUNDS = 1922, 2005
+ANNEES = range(BOUNDS[0], BOUNDS[1]+1)
+ROLLIN = tuple(rollin(annee) for annee in ANNEES)
+def evolution(nbs:[int], start:int) -> [int]:
+    prev = start
+    for nb in nbs:
+        nb, prev = nb - prev, nb
+        yield nb
+EVOLUTION = tuple(evolution(ROLLIN, rollin(BOUNDS[0] - 1)))
+GREEN = (119,172,48)
+RED = (200,12,48)
 
-# Représentation graphique de la fonction Rollin.
-ANNEES = list(range(1922, 2005))
+# Association nombre de Rollin -> années
+ANNEE_PAR_NB = {}  # nombre de rollin -> {années}
+for annee, nb_rollin in zip(ANNEES, ROLLIN):
+    ANNEE_PAR_NB.setdefault(nb_rollin, []).append(annee)
+
+# Simple plot de la trace de la fonction
 nb_par_annee = pd.DataFrame({
     'année': ANNEES,
     'nombre de Rollin': list(rollin(annee) for annee in ANNEES)
-})
-nb_par_annee = nb_par_annee.set_index('année')
-nb_par_annee.plot()
+}).set_index('année')
+ax = nb_par_annee.plot(legend=False)
+ax.set_title("Nombre de Rollin en fonction de l'année ({}-{})".format(*BOUNDS))
+ax.set_xlabel("Année")
+ax.set_ylabel("Nombre de Rollin")
 plt.show()
 
-# Association nombre de Rollin -> années
-annee_par_nb = {}  # nombre de rollin -> {années}
-for annee in ANNEES:
-    nb = rollin(annee)
-    annee_par_nb.setdefault(nb, []).append(annee)
+# Plot de l'évolution du nombre de Rollin
+nb_par_annee = pd.DataFrame({
+    'année': ANNEES,
+    'nombre de Rollin': EVOLUTION,
+}).set_index('année')
+ax = nb_par_annee.plot(legend=False)
+ax.set_title("Évolution du nombre de Rollin d'une année à l'autre ({}-{})".format(*BOUNDS))
+ax.set_xlabel("Année")
+ax.set_ylabel("Nombre de Rollin")
+plt.show()
 
 # Nombre d'années pour chaque nombre de Rollin
 nb_annee_par_nb = {"nombre d'années": [], 'nombre de Rollin': []}
-for nb, annees in annee_par_nb.items():
+for nb, annees in ANNEE_PAR_NB.items():
     nb_annee_par_nb["nombre d'années"].append(len(annees))
     nb_annee_par_nb["nombre de Rollin"].append(nb)
-nb_annee_par_nb = pd.DataFrame(nb_annee_par_nb)
-nb_annee_par_nb.plot.bar(x='nombre de Rollin', y="nombre d'années")
+nb_annee_par_nb = pd.DataFrame(nb_annee_par_nb).set_index('nombre de Rollin').sort_index()
+ax = nb_annee_par_nb.plot.bar(y="nombre d'années", rot=0, legend=False)
+ax.set_title("Dénombrement des années {}-{} selon leur nombre de Rollin".format(*BOUNDS))
+ax.set_xlabel("Nombre de Rollin")
+ax.set_ylabel("Nombre d'années")
+for patch in ax.patches:  # show the total count above each bar
+    b = patch.get_bbox()
+    ax.annotate(str(int(b.y1)).rjust(3), (patch.get_x() - 0.04, b.y1 * 1.01))  # MAGIC
 plt.show()
-
 
 # Boxplot, pour avoir une idée de la distribution des années
 df_annee_par_nb = pd.DataFrame(
-    {k: pd.Series(v) for k, v in annee_par_nb.items()},
-    columns=tuple(annee_par_nb.keys()),
+    {k: pd.Series(v) for k, v in ANNEE_PAR_NB.items()},
+    columns=sorted(tuple(ANNEE_PAR_NB.keys())),
 )
-df_annee_par_nb.boxplot()
+ax = df_annee_par_nb.boxplot(rot=0)
+ax.set_title("Distribution des années {}-{} selon leur nombre de Rollin".format(*BOUNDS))
+ax.set_xlabel("Nombre de Rollin")
+ax.set_ylabel("Distribution des années")
 plt.show()
 ```
 
+
 ## Représentation scolaire
+Comme à l'école, montrons la courbe de la fonction selon la valeur en abscisse. Intéressons-nous d'abord aux années 1922 à 2005 :
+
+<center>{% img {filename}/images/rollin/trace-1922-2005.png 670 "Trace de la fonction de Rollin pour les années 1922 à 2005" "" %}</center>
+
+La courbe ne montre à priori aucune régularité évidente, et ceci est appuyé par la visualisation de l'évolution du nombre de Rollin :
+
+<center>{% img {filename}/images/rollin/evolution-1922-2005.png 670 "Évolution du nombre de Rollin pour les années 1922 à 2005" "" %}</center>
+
+Maintenant, regardons pour les années de 1 à 2005 :
+
+<center>{% img {filename}/images/rollin/trace-1-2018.png 670 "Trace de la fonction de Rollin pour les années 1 à 2018" "" %}</center>
+
+C'est moche ! Notons que la visualisation laisse entendre que les extrêmes sont sous-représentés. Comme nous le verrons plus tard, une telle sous-représentation n'est pas visible.
+Il s'agit en réalité d'un artefact de visualisation, probablement dû à un effet graphique (qui a certainement un nom très connu parmi ceux qui le connaissent déjà),
+où la ligne symbolisant le nombre 5 est polluée par toutes les transitions
+d'un nombre supérieur à 5 vers un autre inférieur à 5, ou inversement, soit 5 × 5 × 2 = 50 transitions possibles.
+Dans le même temps, il n'existe aucun moyen de polluer de la sorte la ligne des nombres 1 et 9 (qui sont aux extrémités), puisque la courbe ne croise jamais ces lignes,
+et les seules transitions qui polluent la ligne 8 sont celles qui impliquent un 9, c'est-à-dire 1 × 7 × 2 = 14,
+ce qui explique également l'apparente faible densité pour les lignes 2 et 8, et par récurrence celle des lignes 3 et 7 (2 × 6 × 2 = 24).
+
 
 ## Nombre d'années par nombre de Rollin
-Première remarque : la fonction de Rollin ne suit pas, dans les cas étudiés, [la loi de Benford](https://fr.wikipedia.org/wiki/Loi%20de%20Benford).
-Pour un économiste, c'est emmerdant, car la fonction de Rollin n'est pas utilisable pour la falsification de compte.
+Une représentation plus intéressante serait de montrer le nombre d'années concernées par chaque nombre de Rollin. En d'autres terme, combien y a-t-il d'années à 1 ? À 2 ? À 3 ?
+Regardons d'abord le comptage pour les années 1 à 2018 :
+
+<center>{% img {filename}/images/rollin/comptage-1-2018.png 670 "Comptage des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
+
+Bon, sur de larges périodes, on observe une distribution uniforme. Cela étant dit, notons la place particulière des années de nombre de Rollin 3, qui sont les moins représentées.
+Là où c'est carrément questionnable, c'est sur les périodes récentes, où les résultats sont encore plus remarquables :
+
+<center>{% img {filename}/images/rollin/comptage-1922-2005.png 670 "Comptage des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
+
+On retrouve les même résultats en lançant le programme pour les années -8000 à 8000.
+On observe donc que ces dernière années particulièrement, mais également de manière générale, le nombre d'année ayant un nombre de Rollin de 3 est sous-représenté. Intéressant.
+
+Dernière remarque : la fonction de Rollin ne suit pas, dans les cas étudiés, [la loi de Benford](https://fr.wikipedia.org/wiki/Loi%20de%20Benford).
+Si tel était le cas, nous verrions une sur-représentation des années à petit nombre de Rollin, donc beaucoup de 1 et 2, mais peu de 8 ou 9.
+Objectivement, c'est emmerdant, car la fonction de Rollin n'est pas utilisable pour la falsification de compte.
+
 
 ## Boxplot de la distribution des données
+
+<center>{% img {filename}/images/rollin/distribution-1-2018.png 670 "Distribution des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
+
+Comment sont réparties les années ? De ce point de vue, sur plusieurs dizaines de générations, la fonction de Rollin est à l'image de l'humanité vue en gros :
+monotone (au sens où on se fait chier, pas au sens mathématique),
+c'est-à-dire des distributions avec des moyennes, médiane et écarts à la moyenne très proches, voire identiques.
+
+D'aucun dit que l'histoire se répète, au point de devenir lassante ?  La fonction Rollin nous le montre avec virtuosité !
+Mais que se passe-t-il si on zoom sur une ou deux générations ?
+
+<center>{% img {filename}/images/rollin/distribution-1922-2005.png 670 "Distribution des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
+
+C'est tout de suite plus intéressant ! Notez encore le statut particulier des chem… des années avec un nombre de Rollin de 3 !
+
+Ce comportement traduit une fonction *à taille humaine* : intéressez-vous à l'humanité entière, elle ne peut pas être appréhendée ;
+mais regardez-la à l'échelle d'une vie humaine, elle révèle des richesses insoupçonnées.
+
+
+# Autres propriétés de la fonction Rollin
+## Nullité unique
+La seule valeur pour laquelle la fonction Rollin ne donne pas un nombre de Rollin entre 1 et 9 inclus, c'est l'année zéro, où elle donne… zéro.
+Ce comportement peut sous-entendre le statut particulier d'une année pivot. Ou alors juste que le calcul n'est pas prévu pour remonter
+à des temps où de toute façon personne ne connaissait la fonction de Rollin, donc pourquoi se faire chier à gérer leurs années à la con, à ces ignorants.
+
+## Inversion sur les années négatives
+Un intéressant phénomène se produit lorsqu'on étudie les années -2000 à -1 : les années au nombre de Rollin de 3 sont sur-représentées, et non plus sous-représentées !
+Une hypothèse intéressante est celle du domaine limité de définition de la fonction Rollin : si elle n'est valide que depuis l'existence du compté de Champagne
+(rattaché à la couronne sous ce nom durant l'année 1284),
+cela résouds le problème de nullité à zéro, ainsi que l'interprétation des résultats dans les années négatives.
+En effet, dans le cas où l'hypothèse serait vérifiée, toute interprétation de la fonction pour une année antérieure à la création de la Champagne relèverait du non-sens,
+puisque la fonction n'est pas définie pour l'année considérée.
+
+La fonction de Rollin devrait alors renvoyer une erreur pour tout appel invalide, comme cela est fait pour le calcul de l'arcsinus de pi.
+Voici les lignes à ajouter dans notre implémentation de la fonction Rollin, avant tout traitement :
+
+```python
+    if annee < 1284:
+        raise ValueError("math domain error")
+```
 
 
 # De la particularité des années Rollin
@@ -285,7 +401,7 @@ les grand achèvements de l'humanité et de son environnement.
 Le corpus d'apprentissage sera donc récupéré selon [la méthode RACHE](http://www.la-rache.com/), c'est-à-dire avec un parsing des pages web
 concernées de l'apannage d'un vomi de fin de soirée : dégueux mais simple.
 Une fois les phrases récupérées, elles seront apprise par un modèle de Markov d'ordre 2 sur les mots, ou d'ordre 6 sur les lettres, car cela donne de bon résultats
-sur le travail de Victor Hugo. En utilisant en mode génératif ce modèle de Markov ainsi généré, nous obtiendrons des phrases que d'aucun pensera d'aléatoire,
+sur [le travail de Victor Hugo](https://github.com/Aluriak/NGram). En utilisant en mode génératif ce modèle de Markov ainsi généré, nous obtiendrons des phrases que d'aucun pensera d'aléatoire,
 et que les poseurs de question impertinants qualifierons de «non sens infondé».
 
 Néanmoins, le professeur Rollin n'ayant jamais tord, il est *évident* que les années Rollin portent une caractéristique. Si cette caractéristique a trait aux achèvements
@@ -294,3 +410,20 @@ et donc que ce même modèle génèrera des prédiction pour les prochaines ann�
 Sinon, on a démontré que les années Rollin n'ont pas en spécificité d'être liées à des évènements mondains.
 
 Quoiqu'il en soit, nous pouvons créer un générateur à choses qui seront vraies plus tard.
+
+TODO: parsing wikipédia
+TODO: ngram sur phrase
+
+
+
+# Conclusions & perspectives
+La fonction Rollin, définie en quelques minutes par l'éminent professeur éponyme, permet d'associer à une année donnée son *nombre de Rollin*, entier compris en 1 et 9 inclus.
+Bien qu'elle n'aie pas été définie suffisemment rigoureusement pour être directement traduite mathématiquement, le professeur a donné
+suffisemment d'indices qui nous permettent de définir une interprétation possible qui prédit tous les cas donnés par le professeur.
+
+Notre interprétation de la fonction Rollin a ensuite été étudiée, montrant quelques propriétés __qu'elle ne possédait pas__. C'est pas banal.
+
+Une application évidente de la fonction Rollin a été également implémentée : prédire les évènements des années en fonction de leur nombre de Rollin,
+en s'appuyant sur wikipédia pour le corpus d'apprentissage.
+Enfin, des mot-clefs tels que *machine-learning* ou *big data* ont été ajoutés afin de surfer sur l'hipsterisation du numérique
+et les facilités de référencement qui vont avec.
