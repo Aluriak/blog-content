@@ -9,11 +9,10 @@ Translation: false
 Status: draft
 
 
-La fonction Rollin est décrite par [François Rollin](https://fr.wikipedia.org/wiki/Fran%C3%A7ois_Rollin),
-dans [l'un de ses sketches](https://www.youtube.com/watch?v=26XJS8w44VE)
-où il joue le personnage du Professeur Rollin.
+La fonction Rollin est décrite par [François Rollin](https://fr.wikipedia.org/wiki/Fran%C3%A7ois%5FRollin),
+dans [l'un des contes de Noël et du Nouvel An du Professeur Rollin](https://www.youtube.com/watch?v=26XJS8w44VE).
 
-Cette fonction permet à François Rollin de montrer la spécificité de l'année 2005,
+Cette fonction permet au professeur Rollin de montrer la spécificité de l'année 2005,
 car la fonction associe 3 à cette année là. [3, en Champagne](https://fr.wikipedia.org/wiki/Troyes).
 
 Description de la fonction pour 2005 :
