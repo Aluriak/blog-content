@@ -6,7 +6,7 @@ Summary: De la définition de la fonction Rollin, son étude, et son application
 Slug: rollin-fonction
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 <br/>
 
@@ -399,7 +399,7 @@ les grand achèvements de l'humanité et de son environnement.
 
 Le corpus d'apprentissage sera donc récupéré selon [la méthode RACHE](http://www.la-rache.com/), c'est-à-dire avec un parsing des pages web
 concernées de l'apannage d'un vomi de fin de soirée : dégueux mais simple.
-Une fois les phrases récupérées, elles seront apprise par un modèle de Markov d'ordre 2 sur les mots, ou d'ordre 6 sur les lettres, car cela donne de bon résultats
+Une fois les phrases récupérées, elles seront apprise par un modèle de Markov d'ordre 2 sur les mots, car cela donne de bon résultats
 sur [le travail de Victor Hugo](https://github.com/Aluriak/NGram). En utilisant en mode génératif ce modèle de Markov ainsi généré, nous obtiendrons des phrases que d'aucun pensera d'aléatoire,
 et que les poseurs de question impertinants qualifierons de «non sens infondé».
 
@@ -408,10 +408,54 @@ de l'humanité et de son environnement, cela veut dire que cette caractéristiqu
 et donc que ce même modèle génèrera des prédiction pour les prochaines années Rollin.
 Sinon, on a démontré que les années Rollin n'ont pas en spécificité d'être liées à des évènements mondains.
 
-Quoiqu'il en soit, nous pouvons créer un générateur à choses qui seront vraies plus tard.
+Quoiqu'il en soit, nous pouvons créer un générateur à choses qui seront peut-être vraies plus tard.
+Les codes finaux sont dispos sur [le dépôt](https://github.com/aluriak/rollin-function).
 
-TODO: parsing wikipédia
-TODO: ngram sur phrase
+Nous obtenons ainsi quelques vues sur notre futur, telles que :
+
+- Eugene Cernan, astronaute américain, dernier homme ayant marché sur la propriété intellectuelle touchant au commerce.
+- 13e Festival international du film de Berlin au Niger.
+- La police de Montréal subit de violents orages qui occasionnent des inondations dans le cadre de la ville de deux.
+- Une constitution est publiée par le gouvernent de Tchang Kaï-chek, transporte la capitale du pays, cause la mort d'un Texan en 2001, le jury a condamné Merck à verser 229 millions de morts si le virus est en visite dans le sud-ouest de l'Allemagne. Le train était affrété par une foule d'admirateurs en délire.
+- Soulèvement intégraliste au Brésil. Les intégralistes (extrême droite) tentent de prendre Valence, mais sont repoussés par les Japonais.
+- Madonna donne son premier procès à Klaus Barbie, ancien chef de l’État dans la psychiatrie hospitalière, ainsi que sur le chromosome 10q22, code un nouveau report des élections prévues le 30 avril. Robert Bourassa veut y faire reconnaître ses cinq demandes dites minimales: la reconnaissance du romanche comme langue nationale.
+- Le groupe chinois Johnson Electric reprend le lancement du premier journal franco-yukonnais L'Aurore boréale.
+- Le deuxième congrès africain du pétrole a réuni des troupes italiennes en Irak.
+- Le groupe sud-africain Ladysmith Black Mambazo a été réélu avec 79,18% des suffrages selon les chiffres publiés par la Turquie.
+- Le médicament n’est pas un produit comme les autres partis.
+- Michael Skibbe devient le 19e pays membre de la grippe aviaire en raison de l’extension rapide de la IVe République dans le secteur du textile
+- Le président de l'UCECAO a déclaré qu’il se maintiendra en tant que 265e pape de l'histoire.
+- La drépanocytose est une maladie mystérieuse qui a battu le record du monde de handball masculin.
+
+Et enfin, mention spéciale à celui-ci, qui raconte une histoire palpitante :
+
+> La population française se monte à 40,5 millions de dollars US, actuellement bloqués sur un marché évalué à 38 millions d'euros et la communauté scientifique internationale ne peut rester insensible au défi visant à enrayer ce qui constitue un élément fondamental de la norme internationale ISO/CEI 27001, concernant les conditions de travail du Sénégal qui a connu une flambée, avec 3400 cas dont 54 décès recensés à travers une porte de cabine du motel Le Châtillon, tuant le poseur de tapis Serge Beaudoin et blessant son compagnon et collègue de travail Jean-Paul Beaumont. Ils croyaient avoir affaire à un contrôle douanier.
+
+## Discussion des résultats
+Vous avez accès aux codes ayant permis d'avoir ces phrases. Notez que la génération n'a pris pour corpus d'apprentissage seulement les années de Rollin entre 1922 et 2018, c'est-à-dire les années 1938, 1946, 1983, 1987, 2005, 2013, 2015 et 2017.
+Il eût été visionnaire d'intégrer également les années de Rollin à partir de 1284 pour les raisons historiques, donnant au corpus 70 années supplémentaires pour affiner ses prédictions.
+Je vous laisse faire l'exercice, il y a juste à changer l'argument à l'appel de `rollin.annees_rollin` dans `main.py`.
+
+Autre faiblesse du modèle courant : la méthode RACHE étant ce qu'elle est, quelques erreurs se sont glissées dans le corpus.
+Rien de grave, mais parfois certains résultats n'apporte pas d'information, voire sont de simples copié-collés d'évènements passés. C'est bien dommage !
+
+## Information continue
+Bon, c'est pas bien clair, mais on comprend que les années Rollin sont assez violentes, tant en actions militantes qu'en décisions géopolitiques.
+Ce dont nous avons besoin pour bien comprendre ce monde à venir, c'est d'un programme d'information continue débilitant et abrutissant.
+
+Sur ce, je vous donne une recette magique :
+
+```bash
+while true; do
+    python main.py | shuf -n 1 > out.txt
+    cat out.txt
+    cat out.txt | espeak -v fr-fr -s 150 &> /dev/null
+    sleep 1
+done
+```
+
+Cette commande lance le générateur de phrase, en choisi une au hasard qui sera imprimée à l'écran et lue par espeak.
+Et recommence ad vitam eternam, afin d'assurer un flux d'information continu, comme sur les plus grandes chaînes d'information !
 
 
 
@@ -420,9 +464,15 @@ La fonction Rollin, définie en quelques minutes par l'éminent professeur épon
 Bien qu'elle n'aie pas été définie suffisemment rigoureusement pour être directement traduite mathématiquement, le professeur a donné
 suffisemment d'indices qui nous permettent de définir une interprétation possible qui prédit tous les cas donnés par le professeur.
 
-Notre interprétation de la fonction Rollin a ensuite été étudiée, montrant quelques propriétés __qu'elle ne possédait pas__. C'est pas banal.
+Notre interprétation de la fonction Rollin a ensuite été étudiée, montrant quelques propriétés __qu'elle ne possédait pas__. C'est fascinant.
 
-Une application évidente de la fonction Rollin a été également implémentée : prédire les évènements des années en fonction de leur nombre de Rollin,
+Une application évidente de la fonction Rollin a été également implémentée : prédire les évènements des années de Rollin (c'est-à-dire les années dont le nombre de Rollin est le 3)
 en s'appuyant sur wikipédia pour le corpus d'apprentissage.
-Enfin, des mot-clefs tels que *machine-learning* ou *big data* ont été ajoutés afin de surfer sur l'hipsterisation du numérique
+Bien que des détails doivent encore être étudiés pour améliorer encore cette application, elle prédit déjà des évènements fascinants,
+tels que l'aide militaire Japonaise pour repousser des partis politiques au Brésil, ou encore des groupes de musique élus présidents.
+
+Les codes [étant disponibles librement](https://github.com/aluriak/rollin-function), il n'est à pas douter que des recherches plus avancées sur la fonction de Rollin
+et les années du même nom seront entreprises par de nombreuses personnes, la fonction et les années étant source de bien des mystères et comportements rigolos.
+
+Enfin, des mot-clefs tels que *machine-learning* ou *big data* ont été ajoutés à la conclusion afin de surfer sur l'hipsterisation du numérique
 et les facilités de référencement qui vont avec.
