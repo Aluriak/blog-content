@@ -55,10 +55,10 @@ Je vais rester sur le graphique, le textuel étant réservé à ceux qui compren
 
 
 # Premiers pas
-## q-bit
-Un q-bit, c'est un objet assez complexe qu'on peut représenter comme une [sphère de Bloch]() :
+## qubit
+Un qubit, c'est un objet assez complexe qu'on peut représenter comme une [sphère de Bloch](https://fr.wikipedia.org/wiki/Sph%C3%A8re%5Fde%5FBloch) :
 
-<center>{% img {filename}/images/quantum/bloch-sphere.png 670 "Une sphère de Bloch, représentation théorique d'un q-bit" "" %}</center>
+<center>{% img {filename}/images/quantum/bloch-sphere.png 370 "Une sphère de Bloch, représentation théorique d'un qubit" "" %}</center>
 
 Ok, ça a l'air chiant, ça rappelle des cours de trigonométrie. Effectivement, c'est lié, mais c'est pas le plus important.
 
@@ -69,59 +69,59 @@ Voilà, on vient d'utiliser une sphère de Bloch pour modéliser le calcul binai
 derrière le calcul non quantique avec des sphères de Bloch, mais l'intérêt serais limité.
 
 Vous devinez que ce qui nous intéresse, c'est ce qu'il y a entre le point le plus haut (donc, 1 en Z, et zéro en X et Y) et le point le plus bas (-1 en Z).
-En fait, à un instant donné, un q-bit est en fait un point sur cette sphère.
+En fait, à un instant donné, un qubit est en fait un point sur cette sphère.
 
 Pour symboliser un point sur une sphère, ya plein de méthodes.
-Nous, on va utiliser les axes X, Y et Z pour se repérer, mais on va aussi voir l'usage de ϴ (thêta) et Φ (phi), qui sont deux angles indiquant la position du q-bit sur la sphère
-(regardez la sphère de Bloch, et le principe de [coordonnées sphériques](https://en.wikipedia.org/wiki/Spherical%5Fcoordinate%5Fsystem)),
+Nous, on va utiliser les axes X, Y et Z pour se repérer, mais on va aussi voir l'usage de ϴ (thêta) et Φ (phi), qui sont deux angles indiquant la position du qubit sur la sphère
+(regardez encore la sphère de Bloch, et le principe de [coordonnées sphériques](https://en.wikipedia.org/wiki/Spherical%5Fcoordinate%5Fsystem)),
 ϴ indiquant l'angle à l'axe Z et Φ l'angle à l'axe X.
 L'angle à l'axe Y se déduit des deux précédents.
 
-La question est donc : «que symbolise le fait qu'un q-bit soit pas sur une extrémité de l'axe Z ?».
+La question est donc : «que symbolise le fait qu'un qubit soit pas sur une extrémité de l'axe Z ?».
 La réponse est simple : c'est une probabilité, induite par une superposition d'état.
-En réalité, quand un q-bit est en haut, il ne dit pas «ma valeur est 0», mais plutôt «dans 100% des cas, ma valeur est 0».
-Ah ! Intuitivement, ça veut dire que quand on est à mi-chemin des deux pôles (donc, sur l'équateur, par exemple à X=1 et Y=Z=zéro), ça veut dire que mon q-bit indique qu'il y a 50% de chance d'être à 1, et 50% d'être à 0. On note ça ainsi : *0.5×1 + 0.5×0*. À l'inverse, se situer au sommet de l'axe Z s'écrit *1×1 + 0×0*.
-Donc, pour donner une probabilité différente à notre q-bit, il suffit de le déplacer selon l'axe Z
+En réalité, quand un qubit est en haut, il ne dit pas «ma valeur est 0», mais plutôt «dans 100% des cas, ma valeur est 0».
+Ah ! Intuitivement, ça veut dire que quand on est à mi-chemin des deux pôles (donc, sur l'équateur, par exemple à X=1 et Y=Z=zéro), ça veut dire que mon qubit indique qu'il y a 50% de chance d'être à 1, et 50% d'être à 0. On note ça ainsi : *0.5×1 + 0.5×0*. À l'inverse, se situer au sommet de l'axe Z s'écrit *1×1 + 0×0*.
+Donc, pour donner une probabilité différente à notre qubit, il suffit de le déplacer selon l'axe Z
 (qu'on pourrait nommer également la latitude, si on continuait l'analogie avec la Terre).
 
-Donc, maintenant que l'on sait qu'un q-bit c'est un point sur une sphère qui représente une probabilité d'obtenir 0 ou 1, on peut se poser la question : «on peut en faire quoi ?»
-Eh bien, accrochez-vous à vos siège : c'est là qu'on va passer par des portes.
+Donc, maintenant que l'on sait qu'un qubit c'est un point sur une sphère qui représente une probabilité d'obtenir 0 ou 1, on peut se poser la question : «on peut en faire quoi ?»
+Eh bien, accrochez-vous à vos siège : c'est là qu'on va passer par des portes (au sens de [porte logique](https://fr.wikipedia.org/wiki/Fonction%5Flogique), hein).
 
 
 ## La porte d'Hadamard
+<!-- À ne pas confondre avec [l'amiral](https://en.wikipedia.org/wiki/William%5FAdama). -->
 La porte d'Hadamard est une excellente manière d'expliquer le principe de base du calcul quantique,
-car en général, voici ce qu'on dit d'elle : «la porte d'Hadamard change un q-bit de valeur 1×0 + 0×1 en q-bit de valeur 0.5×0 + 0.5×1».
+car en général, voici ce qu'on dit d'elle : «la porte d'Hadamard change un qubit de valeur 1×0 + 0×1 en qubit de valeur 0.5×0 + 0.5×1».
 
-En d'autres termes, si vous avez un q-bit qui est au sommet de l'axe Z (pôle nord), si vous le passez dans la porte d'Hadamard, il va se retrouver sur le cercle au milieu (l'équateur).
-Bon, le problème avec cette définition, c'est qu'elle est imprécise : quel point ? N'importe lequel ?
+En d'autres termes, si vous avez un qubit qui est au sommet de l'axe Z (pôle nord), si vous le passez dans la porte d'Hadamard, il va se retrouver sur le cercle au milieu (l'équateur).
+Bon, le problème avec cette définition, c'est qu'elle est imprécise : quel point de l'équateur ? N'importe lequel ? Comment se comporte la porte sur un qubit qui n'est pas au sommet de l'axe Z ?
 
-Eh bien non !
-Déjà, regardons ce qui se passe lorsque je simule un ordinateur quantique avec un q-bit sur lequel j'applique la porte d'Hadamard :
+Déjà, regardons ce qui se passe lorsque je simule un ordinateur quantique avec un qubit sur lequel j'applique la porte d'Hadamard :
 
 <center>{% img {filename}/images/quantum/hadamard-example.png 670 "Example d'usage de la porte d'Hadamard" "" %}</center>
 
-On voit ici que j'applique la porte d'Hadamard (le carré bleu avec un H) sur le q-bit numéro 0, et ensuite je l'affique (carré rose).
+On voit ici que j'applique la porte d'Hadamard (le carré bleu avec un H) sur le qubit numéro 0, et ensuite je l'affique (carré rose).
 Je lance la simulation, et voici :
 
 <center>{% img {filename}/images/quantum/hadamard-example-result.png 670 "Résultats de la porte d'Hadamard" "" %}</center>
 
-Nous voyons deux barres bleue, d'à peu près la même taille. Elles indiquent les proportions de combinaisons de q-bit obtenus. Ici, puisque 4 des 5 q-bits ne sont pas touchés,
-ils sont à zéro (valeur de base, mise par défaut par l'interface, c'est-à-dire que ϴ=Φ=zéro, c'est un choix arbitraire). Il n'y a donc que deux possibilités : soit le cinquième q-bit est à 1, soit il est à 0. Hors, grâce à la porte d'Hadamard, nous avons fait en sorte qu'il soit à 1 dans 50% des cas.
-C'est pour cette raison que les deux proportions (0.513 et 0.487) sont si proches : sur les 1000 runs, le simulateur à compté 513 q-bit à 1 lorsqu'il a été lu, et 487 à zéro.
+Nous voyons deux barres bleue, d'à peu près la même taille. Elles indiquent les proportions de combinaisons de qubit obtenus. Ici, puisque 4 des 5 qubits ne sont pas touchés,
+ils sont à zéro (valeur de base, mise par défaut par l'interface, c'est-à-dire que ϴ=Φ=zéro, c'est un choix arbitraire). Il n'y a donc que deux possibilités : soit le cinquième qubit est à 1, soit il est à 0. Hors, grâce à la porte d'Hadamard, nous avons fait en sorte qu'il soit à 1 dans 50% des cas.
+C'est pour cette raison que les deux proportions (0.513 et 0.487) sont si proches : sur les 1000 runs, le simulateur à compté 513 qubit à 1 lorsqu'il a été lu, et 487 à zéro.
 Si on augmente le nombre de tirs/shots, on augmente l'échantillon et par conséquent on se rapproche d'un 50-50 parfait.
 
 Bon, ok, mais du coups : elle fait quoi exactement la porte d'Hadamard dans d'autres cas ?
-Eh bien, en réalité, cette porte, ainsi que toutes les portes logiques en calcul quantique, __réalise une rotation__.
+Eh bien, en réalité, cette porte, ainsi que [toutes les portes logiques](https://fr.wikipedia.org/wiki/Porte%5Fquantique) en calcul quantique, __réalise une rotation du point sur la sphère__.
 
 Et la rotation de la porte d'Hadamard est très simple : X devient Z, et Z devient X. Regardez encore la sphère de Bloch, placez un point au pôle nord, et échangez les valeurs de X et Z.
 Que se passe-t-il ? Le point est maintenant au sommet de l'axe X.
-Réappliquez encore la même transformation, et le point revient au pôle nord. En d'autres termes, appliquez deux fois la porte d'Hadamard sur un q-bit de valeur 0,
+Réappliquez encore la même transformation, et le point revient au pôle nord. En d'autres termes, appliquez deux fois la porte d'Hadamard sur un qubit de valeur 0,
 et il sera encore à 0. Testez avec l'interface, vous verrez, c'est exactement ce qui se passe.
 
 ### Wait, what ?
-Ce qu'on vient de faire ici, c'est de comprendre un truc primordial : les portes logiques ne servent qu'à déplacer des q-bit sur la sphère de Bloch.
+Ce qu'on vient de faire ici, c'est de comprendre un truc primordial : les portes logiques ne servent qu'à déplacer des qubit sur la sphère de Bloch.
 Quand on nous dit que la porte d'Hadamard nous permet de passer de *1×1 + 0×0* à *0.5×1 + 0.5×0*, c'est comme dire *un sceau remplit de plomb, ça coule*.
-C'est vrai, mais ce n'est pas toute la vérité. En exprimant la porte comme une rotation, nous pouvons comprendre son effet sur n'importe quel q-bit.
+C'est vrai, mais ce n'est pas toute la vérité. En exprimant la porte comme une rotation, nous pouvons comprendre son effet sur n'importe quel qubit.
 
 Notez le parallèle avec le calcul binaire : les portes logiques comme OR et AND permettent de placer un bit à la valeur 0 ou à la valeur 1.
 En fait, ces portes logiques renvoient une position dans la sphère de Bloch, en s'appuyant sur la valeur d'autres bits.
@@ -129,23 +129,23 @@ Mais quoi qu'il arrive, dans un calcul binaire, il n'existe que deux positions v
 
 
 ### Note sur le quantique
-Notez que dans la théorie quantique, quand on dit qu'un q-bit est dans un état superposé, genre *0.7×1 + 0.3×0*,
+Notez que dans la théorie quantique, quand on dit qu'un qubit est dans un état superposé, genre *0.7×1 + 0.3×0*,
 c'est que l'on ne sait pas ce qui va être choisi, mais juste la probabilité. Si l'on mesure (avec la porte rose de mesure dans l'interface),
 on ouvre la boîte et on regarde. La valeur est fixée.
 
 
 ## Autre opérations basiques
-Voici une nouvelle simulation : j'applique trois transformations différentes à trois q-bits, indépendamment les un des autres :
+Voici une nouvelle simulation : j'applique trois transformations différentes à trois qubits, indépendamment les un des autres :
 
-<center>{% img {filename}/images/quantum/basic-moves.png 670 "Trois usages basiques de portes pour définir la valeur d'un q-bit dans l'interface" "" %}</center>
+<center>{% img {filename}/images/quantum/basic-moves.png 670 "Trois usages basiques de portes pour définir la valeur d'un qubit dans l'interface" "" %}</center>
 
 La première, nous venons de la voir, c'est la porte d'Hadamard. Les suivantes font appel à de nouvelles portes.
-La seconde (sur la ligne *q[1]*), c'est la rotation de pi sur l'axe X, aussi appelée rotation de [Pauli](https://fr.wikipedia.org/wiki/Wolfgang%5FPauli) X. En clair, vous prenez la sphère sur l'axe X, et vous la faite tourner autour de cet axe de pi (un demi-cercle). Si votre point/q-bit était au pôle nord, alors il va finir au pôle sud. Autrement dit, la valeur attendue pour le second q-bit est 1 dans 100% des cas, soit *1×1 + 0×0*.
+La seconde (sur la ligne *q[1]*), c'est la rotation de pi sur l'axe X, aussi appelée rotation de [Pauli](https://fr.wikipedia.org/wiki/Wolfgang%5FPauli) X. En clair, vous prenez la sphère sur l'axe X, et vous la faite tourner autour de cet axe de pi (un demi-cercle). Si votre point/qubit était au pôle nord, alors il va finir au pôle sud. Autrement dit, la valeur attendue pour le second qubit est 1 dans 100% des cas, soit *1×1 + 0×0*.
 
-Le troisième q-bit est quant à lui modifié avec une porte à triple argument, où l'on peut donner theta, phi et lambda
+Le troisième qubit est quant à lui modifié avec une porte à triple argument, où l'on peut donner theta, phi et lambda
 (comme montré à droite, dans l'interface de choix des valeurs des variables).
 Je n'ai donné que theta, et je lui ai donné la valeur de pi/2, soit un quart de cercle.
-Comme montré dans la sphère de Bloch, theta est l'angle avec l'axe Z. En le mettant au quart de cercle, et en mettant phi à un angle de zéro, je fait effectuer au q-bit une rotation qui va le placer… au sommet de l'axe X.
+Comme montré dans la sphère de Bloch, theta est l'angle avec l'axe Z. En le mettant au quart de cercle, et en mettant phi à un angle de zéro, je fait effectuer au qubit une rotation qui va le placer… au sommet de l'axe X.
 (Notez que je n'ai pas parlé de lambda : c'est normal, j'ai aucune idée de ce que c'est. Peut-être l'angle avec Y, mais ça me semble bizarre)
 
 Et lorsque je lance la simulation avec 1000 tirs, j'obtiens :
@@ -153,23 +153,23 @@ Et lorsque je lance la simulation avec 1000 tirs, j'obtiens :
 <center>{% img {filename}/images/quantum/basic-moves-result.png 670 "Résultats donnés par les trois usages de portes" "" %}</center>
 
 Ah ! Vérifions que notre théorie sur le fonctionnement de l'ordinateur quantique fonctionne :
-tout d'abord, nous nous attendions à avoir toujours 1 pour le second q-bit (en partant de la fin), et effectivement,
-les quatre solutions sont bien toutes avec ce q-bit à 1.
-Maintenant, les deux autres q-bit sont libres de choisir, en équiprobabilité.
+tout d'abord, nous nous attendions à avoir toujours 1 pour le second qubit (en partant de la fin), et effectivement,
+les quatre solutions sont bien toutes avec ce qubit à 1.
+Maintenant, les deux autres qubit sont libres de choisir, en équiprobabilité.
 Nous devrions donc avoir quatre valeurs différentes avec un nombre d'occurence proche, donc 25% chacunes. C'est exactement ce qu'on observe !
 
 Maintenant, relançons la simulation, mais avec un peu moins de pi/2, par exemple 1 tout rond, comme valeur pour theta :
 
 <center>{% img {filename}/images/quantum/theta-less.png 670 "Résultats donnés avec U3(1,0,0)" "" %}</center>
 
-Et on obtient bien un avantage certains pour zéro, puisque qu'avec un angle plus petit sur l'axe Z, notre q-bit est plus proche du pôle nord que de l'équateur.
+Et on obtient bien un avantage certains pour zéro, puisque qu'avec un angle plus petit sur l'axe Z, notre qubit est plus proche du pôle nord que de l'équateur.
 
 Maintenant que l'on sait comment jouer avec les bases, et qu'on arrive à lire les définitions de quelques portes logiques
 (qui dans l'interface sont toutes exprimées en tant que rotation), on va pouvoir s'intéresser aux structures de contrôle.
 
 
 ## CNOT
-La porte Controlled-NOT est assez simple : si un q-bit donné est à 1, alors on opère une rotation de Pauli X sur un autre q-bit donné.
+La porte Controlled-NOT est assez simple : si un qubit donné est à 1, alors on opère une rotation de Pauli X sur un autre qubit donné.
 Voici un exemple complet, avec le q[0] qui est choisi aléatoirement grâce à la porte Hadamard, et qui va modifier la valeur de q[1] :
 
 <center>{% img {filename}/images/quantum/struct-not-result.png 670 "Résultats donnés avec l'usage d'une porte CNOT" "" %}</center>
@@ -178,19 +178,19 @@ Le résultat est assez évident : dans 50% des cas, q[0] est à 1, donc active l
 qui passe alors à 1. À l'inverse, quand q[0] est à zéro, la porte CNOT laisse q[1] tranquille, il est donc inchangé, c'est-à-dire à 0 dans 100% des cas.
 
 ### Note sur le quantique II
-Si vous essayez de mesurer deux fois la valeur d'un q-bit, ou si vous essayez de l'écrire après mesure,
-l'interface vous renvois une erreur : vous ne pouvez pas jouer avec un q-bit après l'avoir lu.
-C'est une limitation pratique, car j'imagine qu'en théorie, vous pourriez pendant un calcul remettre un q-bit à zéro et le réutiliser d'une manière ou d'une autre.
+Si vous essayez de mesurer deux fois la valeur d'un qubit, ou si vous essayez de l'écrire après mesure,
+l'interface vous renvois une erreur : vous ne pouvez pas jouer avec un qubit après l'avoir lu.
+C'est une limitation pratique, car j'imagine qu'en théorie, vous pourriez pendant un calcul remettre un qubit à zéro et le réutiliser d'une manière ou d'une autre.
 
 L'autre limite est celle de la lecture : vous ne pouvez pas lire deux fois la valeur.
-Cela est pratique, pour que l'interface reste simple, il n'y a que deux cas à gérer pour un q-bit.
-En théorie, rien ne m'empêche d'utiliser un q-bit, de l'afficher (donc de lui fixer sa valeur), de le réutiliser et de l'afficher encore.
+Cela est pratique, pour que l'interface reste simple, il n'y a que deux cas à gérer pour un qubit.
+En théorie, rien ne m'empêche d'utiliser un qubit, de l'afficher (donc de lui fixer sa valeur), de le réutiliser et de l'afficher encore.
 Mais là, les devs de chez IBM devraient faire un travail supplémentaire sur l'interface qui ne peut en l'état pas afficher des stats qui prendrais ma tambouille en compte.
 
 ## Topologie
 Quand on veut poser la porte CNOT, on observe certaines limites de placement.
-Je ne peut pas par exemple mettre la porte CNOT sur q[4] et la faire dépendre de q[1]. Parce que ces deux q-bit ne sont pas en relation.
-En fait, la topologie d'un ordinateur quantique est super importante : elle détermine quel q-bit peut-être dépendant que quel autre.
+Je ne peut pas par exemple mettre la porte CNOT sur q[4] et la faire dépendre de q[1]. Parce que ces deux qubit ne sont pas en relation.
+En fait, la topologie d'un ordinateur quantique est super importante : elle détermine quel qubit peut-être dépendant que quel autre.
 
 [Voici la doc](https://github.com/QISKit/qiskit-backend-information/tree/master/backends/tenerife/V1) concernant l'ordinateur quantique que j'utilise.
 En scrollant en bas, on trouve le graphe de cette topologie :
@@ -198,7 +198,7 @@ En scrollant en bas, on trouve le graphe de cette topologie :
 <center>{% img https://raw.githubusercontent.com/QISKit/qiskit-backend-information/master/backends/tenerife/images/ibmqx4%5Fbus.png 670 "Topologie d'ibmqx4" "" %}</center>
 
 On voit maintenant pourquoi : ils ne sont pas reliés. Et dans ce cas, pourquoi IBM se fait chier avec une topologie ?
-Eh bien peut-être parce que permettre la liaison entre deux q-bit vient avec pleins de contraintes techniques.
+Eh bien peut-être parce que permettre la liaison entre deux qubit vient avec pleins de contraintes techniques.
 Ça semble franchement complexe, et il suffit de lire le paragraphe à ce propos pour voir que beaucoup de détails d'implémentation
 viennent abîmer le magnifique modèle d'un ordinateur quantique à topologie complète.
 Ou alors, ça a à voir avec les [ordinateurs quantique topologiques](https://en.wikipedia.org/wiki/Topological%5Fquantum%5Fcomputer).
@@ -226,7 +226,7 @@ de systèmes inter-connectés qui, juste avec des calculs binaires, permettent �
 qui s'empilent encore plus vite que des livres recommandés par des amis, évoluant plus vite qu'on ne peut les apprendre
 et disparaissant dans l'année en laissant place à trois autres équivalents.
 
-Imaginez dans un siècle, avec des interfaces qui permettent d'utiliser votre QPU sans même avoir besoin de comprendre ce qu'est un q-bit,
+Imaginez dans un siècle, avec des interfaces qui permettent d'utiliser votre QPU sans même avoir besoin de comprendre ce qu'est un qubit,
 comme aujourd'hui on peut faire des jeux vidéos ou un énième framework javascript
 sans piger un broc au fonctionnement de la logique booléenne («ils font chier avec les maths, je veux juste coder»).
 
