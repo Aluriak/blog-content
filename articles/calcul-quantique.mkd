@@ -1,22 +1,27 @@
 Title: La programmation d'ordinateur quantique expliquée avec les mains
-Date: 2018-06-04
+Date: 2018-06-05
 Tags: info, quantum, tuto
 Authors: Lucas Bourneuf
 Summary: Découverte avec les mains et les pieds du calcul quantique
 Slug: calcul-quantique
 lang: fr
 Translation: false
-Status: draft
+Status: published
 
 
 Ceci est une aventure dans le domaine du calcul quantique (réalisé avec un ordinateur quantique).
 Je n'ai aucune expertise dans ce domaine, mes seules connaissances viennent de quelques vidéos et articles,
-mais **surtout** de tripatouillages têtus réalisés à tâton.
-
-Je considère acquis tout ce qui est dit dans [cette vidéo de ScienceÉtonnante](https://www.youtube.com/watch?v=bayTbt_8aNc),
-et sera utilisé ici le [*quantum experience* d'IBM](https://quantumexperience.ng.bluemix.net/qx/editor),
+mais **surtout** de tripatouillages têtus réalisés à tâton, lors de mon utilisation du [*quantum experience* d'IBM](https://quantumexperience.ng.bluemix.net/qx/editor),
 qui propose une interface web programmable pour simuler un ordinateur quantique (et qui permet aussi de faire tourner le code sur un vrai ordinateur quantique !).
 
+
+<br/>
+
+[TOC]
+
+<br/>
+
+Pour une bonne introduction au principe d'ordinateur quantique, allez voir [cette vidéo de ScienceÉtonnante](https://www.youtube.com/watch?v=bayTbt%5F8aNc).
 
 # Mise en place et bases
 Rien à installer (mais il faut s'inscrire), c'est une page web sur laquelle nous pouvons *coder*.
@@ -29,7 +34,7 @@ c'est-à-dire la valeur de départ pour les choix [pseudo-aléatoires](https://f
 
 À l'inverse, le calcul réel fait appel à l'ordinateur quantique de 5 bits, et est évidemment en accès limité (on a droit à un certain nombre de runs par jour et par compte),
 et géré par un système de queue, pour éviter que quelqu'un ne monopolise la machine.
-Mais, l'ordinateur quantique étant ce qu'il est, le résultat est celui que l'on veut, pas une simulation.
+Mais, l'ordinateur quantique étant ce qu'il est, le résultat est bien celui que l'on veut, pas juste une simulation.
 
 Je me contenterais de jouer ici avec la simulation, c'est tout ce que je demande.
 
@@ -40,7 +45,7 @@ et elle est le centre de beaucoup d'intérêt,
 car la création d'un langage adapté aux problème que l'ordinateur peut résoudre est la clef pour une informatique efficace.
 
 Notez le côté «automate à pile» du langage, qui me laisse à penser que si un futur où les Quantum Processing Unit
-se placent à côté des Graphic Processing Unit dans les configurations minimales nécessaires pour les jeux vidéos,
+se placent à côté des Graphical Processing Unit dans les configurations minimales nécessaires pour les jeux vidéos,
 on verra naître des langages très haut niveau qui pourrait permettre de mixer la programmation binaire,
 et quantique comme aujourd'hui avec la binaire et graphique avec des langages comme OpenGL.
 
@@ -195,13 +200,15 @@ En fait, la topologie d'un ordinateur quantique est super importante : elle dét
 [Voici la doc](https://github.com/QISKit/qiskit-backend-information/tree/master/backends/tenerife/V1) concernant l'ordinateur quantique que j'utilise.
 En scrollant en bas, on trouve le graphe de cette topologie :
 
-<center>{% img https://raw.githubusercontent.com/QISKit/qiskit-backend-information/master/backends/tenerife/images/ibmqx4%5Fbus.png 670 "Topologie d'ibmqx4" "" %}</center>
+<center>{% img https://raw.githubusercontent.com/QISKit/qiskit-backend-information/master/backends/tenerife/images/ibmqx4%5Fbus.png 370 "Topologie d'ibmqx4" "" %}</center>
 
 On voit maintenant pourquoi : ils ne sont pas reliés. Et dans ce cas, pourquoi IBM se fait chier avec une topologie ?
-Eh bien peut-être parce que permettre la liaison entre deux qubit vient avec pleins de contraintes techniques.
+Eh bien simplement parce que permettre la liaison entre deux qubit vient avec pleins de contraintes techniques, et donc un coût élevé.
 Ça semble franchement complexe, et il suffit de lire le paragraphe à ce propos pour voir que beaucoup de détails d'implémentation
 viennent abîmer le magnifique modèle d'un ordinateur quantique à topologie complète.
-Ou alors, ça a à voir avec les [ordinateurs quantique topologiques](https://en.wikipedia.org/wiki/Topological%5Fquantum%5Fcomputer).
+<!-- Ou alors, ça a à voir avec les [ordinateurs quantique topologiques](https://en.wikipedia.org/wiki/Topological%5Fquantum%5Fcomputer). -->
+L'ordinateur quantique D-Wave, qui fonctionne sur un système très différent, est également très limité par cette histoire de topologie :
+il contient un millier de q-bit, mais chacun ne peut être relié qu'à 3 autres maximum. Ça limite énormément cette histoire !
 
 
 ## if
@@ -233,6 +240,12 @@ sans piger un broc au fonctionnement de la logique booléenne («ils font chier 
 J'imagine que si le quantique est aussi révolutionnaire que l'on aime à le dire,
 dans un siècle la communauté QJS sera un beau merdier.
 
+Sur une note plus sérieuse : vu les problèmes attaqués par les calculateurs quantiques,
+l'intérêt d'en avoir un au même titre qu'une GPU semble limité. C'est vrai pour le moment, mais pour combien de temps ?
+La nécessité d'une carte dédiée aux rendus graphiques ne s'est pas fait sentir immédiatement, et les applications rendues possibles n'ont pas été connues immédiatement.
+D'où la question : que ferons-nous avec nos QPU ? De meilleurs perfs pour les jeux vidéos ? Des q-crypto-monnaies ? Des oracles sur des problèmes d'optimisations ?
+Et avec quels langages, au final ? Est-ce que Vulkan proposera un support au calcul quantique ?
+
 
 ## Aller plus loin
 Si vous avez apprécié ce tour, [ce papier](https://arxiv.org/abs/1606.09225) est une mine d'or d'informations.
@@ -247,3 +260,7 @@ voire plusieurs librairies qui vous permettront de jouer avec des qubits.
 Voire même des librairies pour simuler des ordinateurs quantique !
 
 Par exemple, [qutip](http://qutip.org/) ou [qubiter](https://github.com/artiste-qb-net/qubiter). Formidable !
+
+
+*[GPU]: Graphical Processing Unit, la carte graphique.
+*[QPU]: Quantum Processing Unit, pour le moment c'est de la SF.
