@@ -730,10 +730,11 @@ Il existe aussi de nombreux créateurs de contenus qui attaquent de nombreux suj
 Une liste non exhaustive :
 
 - [Le Sense Of Wonder](https://www.youtube.com/channel/UCjsHDXUU3BjBCG7OaCbNDyQ), de la vulgarisation de phénomènes astrophysiques.
+- [Techniques spatiales](https://www.youtube.com/channel/UCwf-gTeemly9VOVALdBXiTw), qui fait quelques vidéos super intéressantes sur des sujets très techniques, super bien vulgarisés. Notamment son excellent *hosted show* pour [le lancement du premier block 5](https://www.youtube.com/watch?v=RVXDLrdS0N8)
 - [Hugo Lisoir](https://www.youtube.com/channel/UCDC6DBi0kRp6Jk21xqfvFLA) parle depuis sa chaîne de l'actualité du spatial en générial. C'est très bien remplis, très optimiste !
 - [La Folle Histoire de L'Univers](https://www.youtube.com/watch?v=mMssesTi7ys&list=PLGTCVNuFdipqOTZJ-yVx0AhFgVIDxtATF), à propos d'actualité estampillées «espace». C'est très riche, et assez régulier.
 - [le compte twitter de l'astrochimiste Hervé Cottin](https://twitter.com/hcottin), qui parle beaucoup des données de la sonde rosetta en ce moment.
-- [Everyday Astronaute](https://www.youtube.com/channel/UC6uKrU_WqJ1R2HMTY3LIx5Q), de la vulgarisation de divers sujets en anglais, allant du [vocabulaire](https://www.youtube.com/watch?v=52uikGLvKqA) à des [explications complètes](https://www.youtube.com/watch?v=OAXELmvb30E), en passant par [des analyses de sujets de discussion](https://www.youtube.com/watch?v=PlwA40tIKr8). C'est très orienté SpaceX (encore une fois, c'est biaisé car SpaceX communique beaucoup).
+- [Everyday Astronaute](https://www.youtube.com/channel/UC6uKrU%5FWqJ1R2HMTY3LIx5Q), de la vulgarisation de divers sujets en anglais, allant du [vocabulaire](https://www.youtube.com/watch?v=52uikGLvKqA) à des [explications complètes](https://www.youtube.com/watch?v=OAXELmvb30E), en passant par [des analyses de sujets de discussion](https://www.youtube.com/watch?v=PlwA40tIKr8). C'est très orienté SpaceX (encore une fois, c'est biaisé car SpaceX communique beaucoup).
 - [Scott Manley](https://www.youtube.com/channel/UCxzC4EngIsMrPmbm6Nxvb-A), avec une chaîne très diversifiée. Il y a notamment des vidéos de jeux vidéos estampillés spatial, qui sont utilisés comme prétextes pour aborder des concepts physiques et scientifiques comme [le carburant des fusées](https://www.youtube.com/watch?v=jI8TuufCp0M), les [cyclers](https://www.youtube.com/watch?v=-lW1LiIcT28), et des vidéos directement en rapport avec l'actualité comme [l'explosion d'une fusée sur son pas de tir](https://www.youtube.com/watch?v=mBcoTqhAM_g), ou des vulgarisations de phénomènes et notions complexes, comme [l'ISP](https://www.youtube.com/watch?v=nnisTeYLLgs) ou [la plomberie des moteurs](https://www.youtube.com/watch?v=4QXZ2RzN_Oo).
 
 ## Documentaires
@@ -754,16 +755,17 @@ Il y a tant à apprendre !
 
 
 ## Autres liens
-- [interview](https://www.youtube.com/watch?v=N4glvduGG_U) d'un (ancien) ingénieur de SpaceX à propos de la firme
+- [interview](https://www.youtube.com/watch?v=N4glvduGG%5FU) d'un (ancien) ingénieur de SpaceX à propos de la firme
 - [article *corporate* de Thalès](http://events.thalesgroup.com/parisairshow/fr/article/822046/Imagine-a-world-without-Earth-observation-satellites) sur un monde sans satellites artificiels.
 - [les kits de presse d'Arianespace pour les lancements](http://www.arianespace.com/press-kits/) sont des documents complets qui expliquent chaque mission.
 - [condor scan](http://www.universcience.tv/video-condor-scan-et-l-imagerie-dentaire-16410.html), permettant aux dentistes de construire un modèle 3D des dents de leur patients, est une application directe de recherches menées par le CNES pour étudier la surface de la Terre.
 - On en a pas trop parlé, mais l'astrobiologie est une discipline scientifique qui a le vent en poupe en ce moment. [Voilà une interview d'un astrophysicien à ce sujet](https://www.youtube.com/watch?v=1kYRv63pRrE)
-- Ça arrive en réalité assez souvent : [un astéroïde qui passe pas loin de la Terre](https://www.youtube.com/watch?v=u_faNY70L78).
-- [un TED](https://www.ted.com/talks/danielle_wood_how_we_can_use_space_technology_to_improve_life_on_earth) d'une scientifique du MIT qui bosse sur le transfert technologique.
+- Ça arrive en réalité assez souvent : [un astéroïde qui passe pas loin de la Terre](https://www.youtube.com/watch?v=u%5FfaNY70L78).
+- [un TED](https://www.ted.com/talks/danielle%5Fwood%5Fhow%5Fwe%5Fcan%5Fuse%5Fspace%5Ftechnology%5Fto%5Fimprove%5Flife%5Fon%5Fearth) d'une scientifique du MIT qui bosse sur le transfert technologique.
 - [Isaac Arthur](http://www.isaacarthur.net/) propose une très grande quantitité de vidéos sur de très nombreux sujets.
-- [Un documentaire](https://www.youtube.com/watch?v=dalKynWWKT0) sur l'arrivée sur Terre de [Scott Kelly](https://fr.wikipedia.org/wiki/Scott_Kelly) et
-[Mikhail Kornienko](https://fr.wikipedia.org/wiki/Mikhaïl_Kornienko), premiers astronautes à avoir passé une année entière dans l'espace. C'est grâce à cette mission (et au frère jumeau de Scott Kelly, resté sur terre pendant ce temps), que des études sur l'effet de la gravité zéro sur les humains commencent à voir le jour. C'est réellement génial de voir les astronautes russes et américains se parler dans leurs langues natales, et voir le comité d'accueil tout aussi mélangé les suivre et les récupérer.
+- [Un documentaire](https://www.youtube.com/watch?v=dalKynWWKT0) sur l'arrivée sur Terre de [Scott Kelly](https://fr.wikipedia.org/wiki/Scott%5FKelly) et
+[Mikhail Kornienko](https://fr.wikipedia.org/wiki/Mikhaïl%5FKornienko), premiers astronautes à avoir passé une année entière dans l'espace. C'est grâce à cette mission (et au frère jumeau de Scott Kelly, resté sur terre pendant ce temps), que des études sur l'effet de la gravité zéro sur les humains commencent à voir le jour. C'est réellement génial de voir les astronautes russes et américains se parler dans leurs langues natales, et voir le comité d'accueil tout aussi mélangé les suivre et les récupérer.
+- [Basic Satellite Design](https://www.youtube.com/playlist?list=PL3yeyMx6eI0wj-XdcdJmfMZO7SFw06fup), une suite de vidéos qui expliquent les bases de la conception de satellites.
 
 
 
