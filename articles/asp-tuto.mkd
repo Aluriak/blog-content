@@ -358,9 +358,9 @@ install:
 	cp clingo/bin/clingo ~/bin/clingo_compiled_from_repo
 
 compile:
-	cd clingo && cmake -H. -B.  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
+	cd clingo && cmake . -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
 	cd clingo && make
-	cd clingo && cmake --target test -H. -B.  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
+	cd clingo && cmake --target test . -DPYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython3.5m.so -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python3.5m -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.5m
 	cd clingo/app/clingo/tests && python3.5m run.py --clingo ../../../bin/clingo run
 
 update_repo:
