@@ -1,0 +1,144 @@
+Title: git annex — un cas d'utilisation
+Date: 2018-06-28
+Tags: git, tuto
+Authors: Lucas Bourneuf
+Summary: une description d'un cas d'utilisation de git annex
+Slug: tuto-git-annex
+Lang: français
+Translation: false
+Status: published
+
+
+Ceci est un mini-tuto/cas d'utilisation suppléant [à l'officiel](http://git-annex.branchable.com/walkthrough/) pour l'usage de *git annex*,
+une extension de git pour gérer les gros fichiers.
+
+Le cas d'usage est simple : je fais un film avec un ami, que nous appellerons Michel, et après le tournage nous avons
+40 Go de rushs à trier, renommer, et référencer dans les fichiers de montage.
+Les rushs sont des fichiers très lourds : exactement ce que git ne gère pas bien.
+
+La solution évidente : faire une aprèm triage et renommage, à deux sur un PC,
+puis s'échanger touts les fichier une seule fois.
+L'inconvénient majeur, c'est que si je dois à un moment renommer ou bouger un fichier,
+je dois l'indiquer à Michel, histoire qu'il reproduise _exactement_ le même comportement.
+Et ça, c'est de la bureautique de bas étage, donc merci, mais non merci.
+
+[Git annex](http://git-annex.branchable.com/) permet de gérer ça plus proprement,
+en passant les info de manipulation en commits standards, qui sont donc réalisés lors du pull.
+
+
+# Ce que nous avons fait
+
+## État initial
+À l'état initial, mon pc n'a aucun fichier, et le pc de Michel a tous les rushs, dans un dossier `/home/michel/film/rushs`.
+Ce qu'on veut, c'est avoir une gestion de version pour tout le film, dont les rushs.
+
+## Création du dépôt sur le PC de Michel
+Michel, sur son PC, lance les commandes suivantes :
+
+    cd /home/michel/film
+    git init  # création d'un dépôt
+    git annex init  # intervention d'annex
+    git annex add rushs  # les rushs sont gérés par git annex
+    git commit -m "ajout des rushs"
+
+Voilà, le commit ajoute les rushs dans le dépôt. Quiconque clonera le dépôt aura l'architecture, les noms, les métadonnées des gros fichiers de rushs.
+
+## Transmission des fichiers par clef USB
+Maintenant, afin de m'envoyer les rushs, Michel va passer par une clef usb :
+
+    # … montage de la clef sur /run/media/michel/michusb
+    cd /run/media/michel/michusb
+    git clone /home/michel/film/rushs  # création d'un clone
+    git remote add michel_pc /home/michel/film/rushs  # le dépôt sera utilisé pour récupérer des fichiers
+    git annex sync
+
+Ça, c'est immédiat, car on a pas encore transféré les gros fichiers, juste leurs métadonnées.
+Dans notre cas, la clef était trop petite pour tout prendre d'un coups, donc on a fait plusieurs voyages.
+Notez que si on avait été plus malin, on aurait exploité le fait qu'on soit sur le même réseau pour faire du FTP.
+
+Donc, on observe en faisant `ls` dans `/run/media/michel/michusb` que l'on retrouve la même architecture, les même noms de fichiers,…
+C'est juste que les données qu'ils contiennent n'y sont pas encore.
+On va donc récupérer une partie d'entre eux, en utilisant `git annex get` :
+
+    cd /run/media/michel/michusb/films/rushs
+    git annex get rush1.avi  # un fichier particulier
+    git annex get rush_du_lundi/  # tous les fichiers d'un dossier
+    […]
+
+En lancant cette commande, git annex va récupérer les données demandées. Elles seront donc sur la clef,
+que Michel me donnera après.
+
+## Récupération des fichiers
+Maintenant, à mon tour de jouer : j'ai la clef avec des données dessus.
+D'abord, je vais me créer mon dépôt dans `/home/lucas/film/` à partir de celui de la clef, dans `/run/media/lucas/lusb` :
+
+    cd /home/lucas
+    git clone /run/media/lucas/lusb
+    cd film
+
+Maintenant, comme Michel, je vais mettre la source en remote et l'utiliser pour rapatrier les données dont elle dispose :
+
+    git remote add usb_michel /run/media/lucas/lusb
+    git annex sync
+    git annex get .
+
+Notez que `git annex get .` va __tout__ récupérer. Du moins, c'est ce qu'il va essayer de faire. Dans les faits, toutes les données n'y sont pas,
+je vais donc avoir des warnings de ce type :
+
+    get rushs/rushs_du_mardi/0002.mov (not available)
+
+C'est normal : c'est pas sur la clef, donc pas récupérable.
+Mais tous les autres fichiers, eux, sont maintenant dispos. Je n'ai plus qu'à renvoyer la clef à Mikail,
+qui va recommencer depuis le début, mais avec des fichiers différents.
+Et je referais exactement la même chose.
+Et au bout d'un moment, on aura tous les deux les données.
+
+
+## Synchronisation des deux dépôts sur un dépôt central
+Maintenant que nos deux dépôts ont les données, on aimerait qu'un dépôt central nous permettent d'échanger les futurs commits.
+
+Nous allons utiliser un gitlab installé en local, mais ça marcherais pour n'importe quel serveur git centralisé.
+
+J'ai donc créé un dépôt sur gitlab.example.net, j'y ai mis Michel en contributeur, et nous avons tous deux lancé cette commande dans notre repository :
+
+    git remote add origin git@gitlab.example.net:lucas/film.git
+    git push -u origin master
+
+Le premier d'entre nous a fait un git push, le second doit d'abord faire un git pull.
+Dans les fait, c'est Michel qui a fait le push en premier, et comme je n'avais pas (encore) fait d'autres commits
+que ceux qu'il avait fait pour ajouter les rushs, mon push n'a pas servi à grand chose (sinon pour le side-effect sur le suivi de la branche origin/master).
+J'ai dû pull pour synchroniser le dépôt.
+
+Voilà, maintenant, on a un dépôt central, les données partagées,…
+Nous pouvons donc commencer à créer, trier, renommer à l'envie les fichiers, quelque soit leurs tailles et leurs contenus.
+
+
+<!-- ## Travail sur les données -->
+<!-- Le logiciel que nous utilisons pour le montage, [kdenlive](https://kdenlive.org/en/), référence le chemin vers les rushs qu'il utilise. -->
+<!-- Il va donc de soit que le fichier représentant le montage du film sera sur le dépôt. -->
+<!-- Le problème, c'est que dans l'état actuel, les fichiers gérés par git annex ne contiennent non pas des données, mais un hash qui permet à git annex de retrouver les données. -->
+<!-- Ce que kdenlive ne gère pas. Nous devons donc passer en [mode *direct*](http://git-annex.branchable.com/direct_mode/) : -->
+<!-- EH BEN NON ! Les nouvelles versions utilisent des symlinks, et ça kdenlive le gère très bien ! -->
+
+# Ce que nous aurions pu faire
+
+On aurait pu s'échanger les fichiers, ainsi que le repository intermédiaire, par le réseau, plutôt que par une clef.
+
+En fait, on aurait même pu passer par ssh, vu que c'est supporté par git annex. J'aurais ainsi pu cloner,
+sync et rapatrier les données juste avec une commande en ssh en me connectant au PC de Michel.
+On a juste oublié l'évident, comme d'habitude.
+
+Aussi, on aurait pu avoir les données qui n'arrivent qu'après avoir commencé à travailler sur le dépôt.
+En fait, c'est le cas général : le dépôt préexiste, les données arrivent pendant le projet.
+Ça, git annex le gère très bien. Au final, l'inclusion de fichiers dans leur forme indirecte avec git annex se résume à quelques commits,
+qui peuvent tout à fait être incorporés dans un dépôt existant. Ça ne change rien à la recette décrite dans ce tuto :
+Michel fait pareil, sauf qu'en plus il peut push sur le dépôt central immédiatement après avoir commité.
+Moi, de mon côté, je peux faire comme avant, voire même récupérer les commits avant même d'avoir la clef.
+
+
+# Conclusion
+
+C'est pas compliqué, git annex. Et bien que n'ait été effleuré ici qu'une infime partie des features disponibles,
+c'est déjà suffisant pour gérer un problème bien connu dans git : les gros fichiers binaires, c'est chiant.
+
+Maintenant, c'est *moins* chiant. On progresse.
