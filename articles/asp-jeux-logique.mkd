@@ -11,4 +11,81 @@ Status: draft
 Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant à la modélisation et résolution de problème de logique, sous la forme d'une volée de cas pratiques.
 
-[Sources des codes](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%20warmup)
+[Sources des codes](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%5Fwarmup)
+
+Les problèmes sont les *warmup logic exercises* du site [brilliant.org](https://brilliant.org).
+Tous les problèmes ne sont pas solvables simplement, mais pour ceux qui le sont,
+cela permet de découper la méthode logique nécessaire à leur résolution.
+
+
+# brothers
+On nous donne les tailles relatives de 5 frères (par exemple, *Alex est plus grand que Brian*), et nous devons deviner qui est le plus grand.
+
+Nous avons les données suivantes :
+
+```asp
+plus_grand_que(alex,brian).
+plus_grand_que(charlie,alex).
+plus_grand_que(daniel,edward).
+plus_grand_que(alex,daniel).
+```
+
+Comment résoudre le problème ? En fait, une fois les données ainsi couchées, la méthodologie est évidente : les plus grands sont ceux qui ne sont jamais plus petits qu'un autre :
+
+```asp
+plus_grand(X):- plus_grand_que(X,_) ; not plus_grand_que(_,X).
+```
+
+En fait, il s'agit là d'un problème de recherche de racine d'un arbre. Nous avons un arbre, définit par les arcs «plus grand que», où la source d'un arc est plus grand que la cible,
+et nous cherchons celui qui n'a aucun prédécesseur, c'est-à-dire la racine.
+
+C'est un problème assez standard de théorie des graphes, et la résolution est intuitive dés lors que l'on visualise l'arbre tel qu'il est réellement :
+
+<center>{% img {filename}/images/asp/brother-tree.png 700 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
+
+
+# Questions
+Soit deux questions :
+
+1. Sont-ce «oui» et «non» des réponses invalides pour la question 2 ?
+2. «oui» ou «non» est-il une réponse valide pour la question 1 ?
+
+Question : quelle est la réponse à la question 2 ?
+
+La méthode pour répondre à cette question peut consister à essayer toutes les combinaisons de oui et non, et voir si la proprosition est logique. Par exemple,
+Si je répond oui au deux questions, il y a un problème, car répondre oui à la question 1 implique qu'on ne peut pas répondre oui à la question 2.
+En essayant les quatre combinaisons, nous trouverions la bonne. Côté, ASI, cela peut s'encoder ainsi :
+
+```asp
+% Si on répond «oui» à la question 1, c'est parce qu'on ne peut répondre ni oui ni non à la question 2.
+q1(oui):- not q2(oui) ; not q2(non).
+% Si on répond «oui» à la question 2, c'est parce qu'on répond «oui» ou «non» à la question 1.
+q2(oui):- q1(oui;non).
+% Si on ne répond pas oui à une des deux questions, on répond non.
+q1(non):- not q1(oui).
+q2(non):- not q2(oui).
+```
+
+Notez que les deux dernières lignes sont logiques, car les questions sont fermées, et nécessaires, car l'ordinateur ne peut pas le deviner tout seul.
+Le jour où des IA fortes nous assisterons dans notre création de code, ce genre de ligne sera automatiquement ajoutées par l'IA en question.
+Mais d'ici là, il nous faut y penser nous même.
+
+
+
+# Déclarations contradictoires
+
+1. Il y a exactement 1 fausse déclaration dans cette liste.
+2. Il y a exactement 2 fausses déclarations dans cette liste.
+3. Il y a exactement 3 fausses déclarations dans cette liste.
+
+Combien y a t-il de fausses déclarations dans cette liste ?
+
+TODO: fix asp encoding (not working)
+
+
+# Recherche de vérité
+
+## Premier
+## Second
+## Troisième
+## Quatrième
