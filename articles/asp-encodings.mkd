@@ -46,7 +46,7 @@ Bref, le bon espace de recherche, c'est maison-jardin-garage :
 Mes clefs ne peuvent pas être ailleurs, et il est suffisamment petit pour être exploré en pratique.
 
 Notez que, pour être exact, l'espace de recherche valide minimal *assuré* est la sphère centrée sur moi d'un rayon de 5 minutes lumière. Mais, en posant l'hypothèse que ni moi ni mes clefs n'avons voyagé à la vitesse de la lumière ces cinq dernières minutes, on peut restreindre cet espace.
-D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter à mon terrain.
+D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter au terrain praticable par moi et mes clefs en 5 minutes.
 
 En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (ou du moins l'heuristique).
 
@@ -141,7 +141,7 @@ peuvent améliorer ou dégrader sérieusement les performances de grounding ou d
 Un exemple donné dans [les sources de clingo](https://github.com/potassco/clingo/tree/master/examples/gringo/queens) est le problème des N dames :
 comment placer N dames sur un plateau d'échec de taille N×N de manière à ce qu'aucune ne soit menacée par une autre.
 Le 1-dame est simple : vous devez placer 1 dame sur un échiquier de 1×1 case ; c'est facile, ya qu'un choix et il est bon. Le 2-dame est impossible : deux dames sur un échiquier de 2×2 cases sont forcément menacées.
-En fait, le puzzle devient sympa à partir du [8-dames](https://fr.wikipedia.org/wiki/Probl%C3%A8me%20des%20huit%20dames), où 92 solutions existes.
+En fait, le puzzle devient sympa à partir du [8-dames](https://fr.wikipedia.org/wiki/Probl%C3%A8me%20des%20huit%20dames), où 92 solutions existent.
 
 La question est : comment encoder (et donc résoudre) ce problème en ASP ?
 Je donne la valeur de N (par exemple 10), et ASP me donne tous les positionnement de dames sur l'échiquier qui sont solution.
