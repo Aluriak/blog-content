@@ -1554,7 +1554,7 @@ Eh bien, rassurez-vous : ce calvaire est fini, vous pouvez annoncer à votre fam
 Et ça ne vous prendra pas bien longtemps pour tout encoder parfaitement, et placer les étiquettes indiquant les positionnement des gens.
 Il ne restera donc plus qu'à vous faire mousser pour *ce placement de table par-fait !*
 
-### Objectif
+### Objectifs
 Avoir pour chaque personne une place qui lui convienne.
 
 Avoir plusieurs modèles/ensembles réponse, chacun décrivant un positionnement possible.
@@ -1570,7 +1570,7 @@ Il existe une solution élégante à ce problème, grâce aux directives de mét
 que nous verrons plus tard.
 
 C'est donc dans la deuxième volée d'applications que nous verrons une approche plus maligne qui nous permettra de gérer les familles trop compliquées.
-Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors tentez l'approche simple avant d'amener le bulldozer,
+Cela dit, même si votre famille est compliquée, il est possible qu'une solution existe : alors essayez avec la pelle avant d'amener le bulldozer,
 vous pourriez être surpris.
 
 
@@ -1740,6 +1740,7 @@ Ces expressions ce nomment *directives de métaprogrammation*, et commencent sys
 
 Nous allons ici voir les plus utiles. Pour plus d'exhaustivité,
 je vous renvoie [au manuel de clingo](http://sourceforge.net/projects/potassco/files/guide/).
+<!-- et à [la quête annexe associée]({filename}/articles/asp-metaprogramming.mkd). -->
 
 
 ## #show
@@ -1750,7 +1751,7 @@ En effet, pour chaque answer set, clingo donne la liste complète des atomes
 vrais. Dans certains cas, notamment quand vous avez beaucoup de données et d'atomes intermédiaires,
 seuls quelques uns vous intéressent.
 
-Par exemple, si vous codez un solveur de sudoku, les données (les cases déjà remplies)
+Par exemple, si vous codez un programme de placement de table, les données (les humains qui sont copains, les noms des humains,…)
 ne changent pas, sont constantes d'un answer set à l'autre : vous ne voulez pas les afficher.
 
 C'est là que `#show` intervient.
