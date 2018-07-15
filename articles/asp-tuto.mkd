@@ -837,16 +837,17 @@ ok(N):- 2{a;b;c}3.  % ok si 2 ou 3 éléments dans le sous-ensemble
 
 L'atome `ok` sera vrai si 2 ou 3 atomes parmis a, b et c sont vrais.
 
-### Le comptages comme une donnée
+### Le comptage comme une donnée
 Un autre usage de cette syntaxe est celui-ci :
 ```asp
 {a;b;c}.
 nb(N):- N={a;b;c}.  % compte le nombre d'éléments
 ```
 
-Il s'agit d'une simplification d'écriture (un *sucre syntaxique*)
-pour la directive de métaprogrammation #count, qui n'est pas vue dans ce tuto.
-<!-- pour la directive de métaprogrammation [#count]({filename}/articles/asp-metaprogramming.mkd#count). -->
+### Le comptage comme un calcul
+Il existe une troisième manière d'utiliser un comptage : pour compter des valeurs, éventuellement avec des poids différents pour chaque atome.
+Pour cela, on utilise la directive de métaprogrammation #count, qui n'est pas vue dans ce tuto.
+<!-- Allez voir [la quête annexe sur la métaprogrammation]({filename}/articles/asp-metaprogramming.mkd#count) pour en savoir plus. -->
 
 
 
@@ -1425,7 +1426,6 @@ Lorsque j'écris un truc du style `1{ … }1`, cette ligne agit à la fois comme
 (le solver va chercher des combinaisons d'atomes en fonction des choix qui lui sont donnés),
 ainsi que comme une contrainte : il ne peut y avoir qu'un seul parmis ce qui est donné.
 
-Donc, quand je dis q
 D'ailleurs, sur [le dépôt](https://github.com/Aluriak/learning-ASP/tree/master/sudoku), vous pouvez trouver une implémentation alternative qui utilise des contraintes
 à la place de certaines règles de génération, mais pas toutes. Pourquoi ? Parce que s'il n'y a que des contraintes,
 vous ne générez plus rien. Donc ASP va juste dire : «ben ya rien à chercher, donc pas de nouveaux atomes. Bonne journée !»
