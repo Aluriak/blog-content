@@ -1,0 +1,194 @@
+Title: Ce qu'indique ma performance dans la compétition Humain vs IA d'Angry Birds
+Date: 2018-07-18
+Tags: opinion, ia, gaming
+Authors: Lucas Bourneuf
+Summary: À propos de mon résultat
+Slug: angry-birds-fr
+lang: fr
+translation: false
+status: draft
+
+Le 18 juillet 2018 se tenait à la conférence internationale et européenne de l'intelligence artificielle, IJCAI-ECAI,
+plusieurs championnats en rapport avec l'IA. Outre les traditionnels [championnats d'échecs](http://icga.org/),
+il y avait celui d'[Angry Birds](https://fr.wikipedia.org/wiki/Angry%5FBirds), le nouveau jeu que les chercheurs veulent explorer après le go.
+
+D'abord, les IA se sont affrontées entre elles sur des niveaux connus. Le lendemain,
+les quatre meilleures IA ont attaqué 4 nouveaux niveaux, que personne n'avait jamais vu.
+Les humains volontaires ont fait de même, dont moi-même, et le classement était sans appel :
+les 10 meilleurs étaient tous humains.
+
+Ce n'est pas encore cette année que les IA auront résolu Angry Birds.
+
+La suite de ce post parle de la compèt, de comment sont faites les IA, et de mon retour d'expérience.
+Je conclue sur ce que semble indiquer ma performance (je suis arrivé premier, bien que je n'ai jamais joué) sur le jeu Angry Birds
+et sur la méthode optimale pour la conception d'une IA.
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+# Pourquoi Angry Birds
+On peut se demander ce que peux bien apporter Angry Birds aux chercheurs.
+La logique derrière le choix de ce jeu est très simple : il faut trouver un jeu différent de ceux déjà résolus (échecs, go),
+mais pas trop, afin qu'un maximum de monde puisse s'y intéresser, et donc le résoudre plus vite.
+
+Par exemple, Google/DeepMind s'intéresse au RTS Starcraft, après avoir défoncé l'humain au Go avec AlphaGo.
+C'est très louable, sauf qu'au Go, ce qui était dur, c'était l'espace de recherche. Starcraft possède un espace de recherche encore plus grand (virtuellement infini), et est également :
+
+- à *information cachée* (le joueur n'est pas omniscient)
+- en *temps réel*
+- en opposition directe avec un joueur
+- donc complètement *non déterministe*
+- graphique, donc requiert du traitement d'image (en temps réel, de fait)
+- avec plusieurs manières d'arriver à la victoire
+- de nombreux types d'unités et de bâtiments
+- demandant en gestion fine nécessaire pour remporter les bataille, le *micro-management*
+
+Donc, bon, bof. Trop complexe pour le moment, et rares sont les personnes qui peuvent bosser là-dessus, donc ça ne fait pas des discussions très intéressantes,
+ni d'avancées éclectiques en recherche fondamentale.
+
+Angry Birds, en revanche, n'est pas à proprement parler en temps réel, et reste très simple dans sa mécanique.
+En fait, ce qui fait qu'Angry Birds est une bonne idée, c'est que l'ordinateur doit maintenant composer avec l'incertitude.
+En effet, quand on joue au Go, on peut calculer très facilement l'effet qu'aura un coups sur le jeu.
+Mais dans Angry Bird, les IA n'ont pas accès au moteur physique du jeu, et ne peuvent donc pas calculer simplement l'effet qu'aura un tir d'oiseau.
+Ajoutons à ça qu'il y a une composante temps réel, car il existe différents types d'oiseaux,
+qui ont des effets lorsqu'ils sont actionnés en plein vol (comme par exemple, descendre en piqué pour les oiseaux jaune, ou lâcher un œuf pour les oiseaux blanc).
+
+Il s'agit donc bien d'une augmentation de la complexité, nécessitant de nouvelles techniques pour être résolu, sans non plus s'attaquer à un monstre.
+Donc, plein de personnes peuvent s'y intéresser (l'une des meilleures IA pour le moment est faite par un étudiant en Master),
+avec plein d'approches différentes, et c'est ainsi que l'on progresse en IA, et plus généralement en Science.
+
+
+# Dissection d'une IA pour Angry Birds
+Un agent pour Angry Birds (une IA, dans notre cas) est un programme qui peux :
+
+- demander une capture d'écran
+- demander à jouer un niveau
+- envoyer une action (tirer avec tel angle et telle force, déclencher l'effet de l'oiseau)
+
+À partir de là, on voit qu'on peut s'y prendre de plein de manières.
+Détail intéressant : contrairement aux échecs et au Go, il y a maintenant une composante de *computer vision*. En effet, l'agent (l'IA)
+doit inférer l'état du jeu et ses possibilités en fonction d'une capture d'écran. Ceci est déjà en soit un problème à résoudre proprement,
+sinon les agents vont mal évaluer le jeu, et donc faire n'importe quoi.
+
+Les agents proposés par les différentes équipes utilisaient des méthodes qui tombaient dans l'une des méthodes standards de conception d'IA.
+
+
+## Approche par apprentissage
+Vous avez entendu parler des réseaux de neurones ? Ben voilà, on est en plein dedans : il existe d'autres méthodes d'apprentissage,
+mais le *deep learning* a clairement le vent en poupe, et une bonne partie des agents proposés étaient basé dessus.
+
+L'idée est donc, en gros, de laisser le réseau de neurone évaluer le jeu, et indiquer quelle action doit être effectuée.
+Ça nécessite bien plus de choses que juste «brancher un réseau de neurones de la capture d'écran aux actions», mais l'idée est là.
+
+Agents utilisant l'apprentissage : *MYTBirds* (développé par Yuntian Ma), *DQ-Birds*.
+
+
+## Approche par raisonnement
+L'autre approche typique en IA, c'est la logique et le raisonnement : plutôt qu'apprendre à partir d'un ensemble,
+on va décrire le problème et utiliser un raisonneur pour trouver une réponse à une question posée.
+
+C'est typiquement l'approche d'[*AngryHex*](https://demacs-unical.github.io/Angry-HEX), qui utilise… suspens… [ASP !](https://en.wikipedia.org/wiki/Answer%5Fset%5Fprogramming)
+Enfin, plus exactement, une implémentation d'ASP très riche, [DLVHEX](http://www.kr.tuwien.ac.at/research/systems/dlvhex),
+vachement intriguante et intéressante, et qui sera donc probablement l'objet d'une quête annexe pour [mon tuto ;)]({filename}/articles/asp-tuto.mkd)
+
+
+## Approche par simulation
+C'est l'approche choisie par [IHSEV](https://bitbucket.org/polceanum/ihsev-aibirds) (développé par l'équipe du même nom),
+et elle consiste en de multiples simulations du jeu pour tester plusieurs tirs, et choisir le meilleur.
+
+
+## Approche par sélection de stratégie
+L'idée principale est d'avoir une collection de stratégies à appliquer, par exemple «*tirer sur un cochon directement*», et de choisir laquelle appliquer en fonction de règles logiques.
+C'est [l'approche](https://github.com/heartyguy/AI-AngryBird-Eagle-Wing/blob/master/docs/eaglewing2017.pdf) de l'actuelle meilleure IA,
+[Eagle's Wing](https://heartyguy.github.io/AI-AngryBird-Eagle-Wing/) (développé par Tian Jian Wang).
+Les stratégie ont été apprises par réseaux de neurones, puis réimplémentées proprement pour des calculs plus intelligibles et rapides.
+
+L'autre implémentation *Metabirds*, proposée par Shahaf S. Shperberg, est un *méta-agent* : il a en mémoire les autres agents, et en fonction du niveau à résoudre,
+va essayer de prédire le résultat de chaque agent en fonction de similarité avec des configurations vues auparavants, et utiliser celui qui donne la meilleure prédiction.
+
+
+
+# Comment ça se déroule
+Le 17 juillet, les 9 différentes IAs proposées par des équipes de recherche se sont affrontées en même temps, afin de dégager les 4 meilleures.
+Le jour suivant, ces quatre IA ainsi que les humains volontaires se sont comparé sur d'autres niveaux.
+
+
+## Déroulement du championnat des IAs
+Un *match* dure 30 minutes. Durant ces 30 minutes, les agents doivent, seuls et sans intervention humaine,
+choisir un niveau, le jouer, et recommencer.
+Le score final d'un agent est la somme de son meilleur score pour chaque niveau. Il s'agit donc non seulement
+de réussir tous les niveaux, mais aussi de recommencer ceux que l'on peut le plus probablement améliorer.
+Beaucoup d'agent ont donc en fait un deux IA : une pour jouer, une pour choisir le niveau à faire.
+
+Les niveau proposés, 10 au total, sont de différents difficultés, et ont des features (nombre de cochons, nombre et type d'oiseaux, structures…) qui exploitent des particularités/loopholes/… différents.
+
+[Les résultats donne l'agent «Eagle's Wing» gagnant](https://www.aibirds.org/angry-birds-ai-competition/competition-results.html) (note rigolote: c'est la version de l'année dernière qui a gagné, pas celle de cette année, bien qu'elle est sensée être améliorée).
+
+NB: les générations de nouveaux niveaux sont aussi sujet à [un concours international](http://aibirds.org/other-events/level-generation-competition.html), qui a lieu mi-août.
+
+## Déroulement du championnat des Humain + IA
+Pour la deuxième journée, la méthode n'a pas beaucoup changé, sauf que le temps alloué aux humains et aux machines était de 10 minutes,
+et seuls 4 niveaux, tous inédits, étaient proposés.
+Durant la journée, les volontaires humains étaient invités à jouer leurs 10 minutes sur des PC en accès libre.
+Vers 16h, c'était au tour des IA, qui ont joué en parallèle, retransmettant leur score et le live de leurs parties sur un écran dans le hall principal.
+
+
+## Avis personnel sur le déroulement du championnat
+Je pense que, pour la compétition man vs machine, toutes les IA auraient dû avoir le droit de participer.
+L'influence des niveaux est tellement importante sur la performance, peut-être qu'une IA moins bonne sur les niveaux du 17
+juillet (IA) aurait été très bonne candidate pour les niveaux du 18 (HU+IA).
+
+
+
+# Ce que j'ai à dire sur Angry Bird
+D'abord, je donne un peu de contexte : avant ce championnat, je n'ai jamais vraiment joué à Angry Bird.
+Enfin, j'avais essayé le deux premiers niveaux du jeu officiel, la veille sur l'ordiphone d'un camarade, mais sinon, je n'avais jamais joué.
+Vu, oui, notamment pendant le championnat du 17 juillet (avec que des IA).
+
+Et pourtant, malgré cet impair, je suis arrivé premier avec 305 000 points, soit 1.6% de moins que le designer du jeu qui est venu tester les niveaux
+(et qui ne participait pas réellement au championnat). Ce qui me laisse à penser que j'étais pas loin du maximum possible.
+Je ne doute pas que des milliers de joueurs auraient réussis au moins aussi bien que moi, mais là, aujourd'hui, c'était moi qui était présent
+(et la deuxième place n'était pas loin… 500 points de différence, c'est presque du vol).
+
+Je pense que j'ai eu beaucoup de chance, mais pas que : contrairement aux IA, j'ai utilisé le bouton «recommencer»,
+qui arrête immédiatement le niveau en cours et le restaure à l'état initial. La conséquence, c'est que sur le niveau 3,
+où il fallait viser très précisément, je tirais, et si je déviais ne serais-ce qu'un degré, je n'attendais même pas la fin du tir pour recommencer.
+J'ai donc eu, contrairement aux IA, beaucoup plus de tirs de tests, et, conséquemment, __j'ai appris énormément pendant que je jouais__.
+
+Autre détail important : les IA sont aujourd'hui surtout efficaces pour viser. C'est en fait là où elles excellent, car c'est en fait le plus simple à entraîner.
+Mais toute la logique, sur quel structure attaquer avec quel oiseau, et dans quel ordre, ceci requiert plus qu'un apprentissage :
+ça __requiert un mode de pensée analytique__. Et c'est là, où, je pense, les approches logiques vont briller.
+
+
+## Ce que je m'attend à voir dans les prochaines IA
+### Reset for learning
+L'utilisation abusive du bouton reset pour apprendre pendant le jeu est je pense nécessaire.
+Cela permet de voir quels sont les meilleurs tirs à faire avec le premier oiseau, puis de passer au suivant,… Tout ça très rapidement.
+C'est une sorte d'apprentissage itératif, qui ressemble à la simulation, sauf que là c'est réalisé sur le jeu directement.
+Pas besoin donc de modèles pour décrire la physique de manière approximative, mais bien de sacrifier du temps pour faire un test en condition réelle.
+Le bouton reset permet juste de minimiser le temps sacrifié.
+
+Je pense que ce n'est pour le moment pas implémenté dans le protocole de jeu utilisé par les agents.
+Si ce n'est effectivement pas le cas, ce devrait être je pense un développement prioritaire pour les développeurs.
+
+
+### L'intérêt grandissant de la logique
+L'approche logique est selon moi importante : les apprentissages sont très bien pour tirer, mais ce n'est que le tiers du problème :
+savoir quoi viser, avec quel angle, dans quel ordre. Et il y aussi toute la partie du choix du niveau à jouer,
+et l'estimation du gain à réaliser, où, vu les performances sur cet aspect vues le 17 juillet, il y a encore beaucoup de boulot.
+
+
+### L'IA qui battra les humains, selon moi
+Combinera les différentes approches. Il faudrait être capable de gérer plus de stratégies, qui dépendent de la situation du jeu (oiseaux restants, structures,…),
+et utiliser des raisonnements logiques pour en écarter le plus possible. Puis utiliser les simulations pour tester les stratégies restantes
+(ou le bouton reset pour tester la stratégie la plus prometteuse).
+Les stratégies seraient appliquées avec un code issu des réseaux de neurones, histoire d'être sûr d'avoir les tirs qui implémentent au mieux la stratégie choisie.
+
+Bref, Eagle's Wing, mais avec plus de programmation par contrainte et d'ASP pour la partie macro.
+
+Voilà une piste pour briller l'année prochaine !
