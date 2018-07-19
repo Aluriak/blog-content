@@ -475,6 +475,7 @@ Maintenant que l'on a plein de théorie dans la tête et clingo sur le pc,
 attaquons le vif du sujet: parler ASP !
 
 ## Commentaires
+<!-- Personnellement, ça me fait hurler de rire : «on va commencer à coder !» «cool !» «alors, ça, c'est un commentaire !» C'est comme dire «on va manger ! Regarde, ça c'est une vache !». -->
 Les commentaires sont des parties du texte que clingo ne va pas considérer.
 Pour le dire autrement, vous pouvez mettre les pires cochonneries dans des commentaires,
 clingo ne se formalisera pas.
@@ -1532,6 +1533,7 @@ Lors d'une fête de famille, ils y a deux problèmes majeurs :
 - qui s'assoie où à table ?
 
 C'est bien entendu le second qui nous intéresse ici.
+<!-- Pour le premier, allez voir [la quête annexe correspondante]({filename}/articles/asp-frites.mkd)) -->
 
 ### Spécification du problème
 L'idée est la suivante : nous avons un ensemble de places numérotées,
@@ -3100,6 +3102,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 - [pytest-asptest](https://github.com/aluriak/pytest-asptest) : un plugin pytest pour faire des tests unitaires sur des codes ASP.
 - [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python.
 - le jeu Warzone 2100 [utilise ASP pour la génération de cartes](http://warzone2100.org.uk/about.html).
+- [l'atterisseur Philae utilisait la programmation par contrainte](https://www.ibm.com/developerworks/community/blogs/jfp/entry/how%5Fwere%5Frosetta%5Fphilae%5Foperations%5Fscheduled?lang=en) pour organiser le lancement des appareils de mesure en fonction de l'énergie restante, de la position de Rosetta,…
 
 
 ## And now, for something totally different
