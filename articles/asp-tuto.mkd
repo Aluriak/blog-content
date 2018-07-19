@@ -2331,26 +2331,6 @@ Une nouvelles volées d'applications, prenant parti de nos dernières découvert
 sur la métaprogrammation et l'embedding de Python.
 
 
-## Choisir l'itinéraire d'un réveil coureur
-Un réveil coureur, c'est un réveil qui se met à courir partout lorsqu'il se met à sonner.
-Intérêt principal : vous devez l'attraper avant de pouvoir l'éteindre. Autant vous dire que c'est efficace pour vous empêcher de vous recoucher,
-surtout après un coups de tête dans le lavabo et un doigt de pied dans la porte.
-
-Sauf que, aujourd'hui, les réveils coureurs ne sont pas très intelligents : ils courent au hasard,
-et les développeurs espèrent juste qu'ils s'écrasera pas contre un mur.
-
-Pour cet exemple, nous allons imaginer avoir un robot capable de se représenter dans l'espace en 2 dimensions
-(c'est déjà de la science-fiction à ce niveau, mais passons). Notre objectif : faire le code qui permettra au robot de savoir où aller,
-sachant qu'il doit aller réveiller tout le monde dans la maison, et ne s'arrêter qu'au fond du frigo, en étant passé par la cave avant.
-
-Bref, il s'agit d'un parcours de graphe d'un point de départ au point d'arrivée, avec des jalons sur lesquels le chemin doit passer.
-Notez que le contexte de l'exercice est assez ridicule, mais en vrai, parcourir l'espace et passer par des endroits particulier,
-c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exemple, ou encore la robotique (robot nettoyeur, drone,…).
-
-[Solution](https://github.com/Aluriak/learning-ASP/blob/master/path-search.lp).
-
-
-
 
 ## Placement de table, seconde approche
 Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
@@ -2470,6 +2450,100 @@ Eh oui : quid d'une appli qui permet à chacun des membres de votre famille de d
 lance le calcul et indique à chacun où il doit se mettre ?
 
 Future is coming !
+
+
+
+
+
+## Choisir l'itinéraire d'un réveil coureur
+Un réveil coureur, c'est un réveil qui se met à courir partout lorsqu'il se met à sonner.
+Intérêt principal : vous devez l'attraper avant de pouvoir l'éteindre. Autant vous dire que c'est efficace pour vous empêcher de vous recoucher,
+surtout après un coups de tête dans le lavabo et un doigt de pied dans la porte.
+
+Sauf que, aujourd'hui, les réveils coureurs ne sont pas très intelligents : ils courent au hasard,
+et les développeurs espèrent juste qu'ils s'écrasera pas contre un mur.
+
+Pour cet exemple, nous allons imaginer avoir un robot capable de se représenter dans l'espace en 2 dimensions
+(c'est déjà de la science-fiction à ce niveau, mais passons). Notre objectif : faire le code qui permettra au robot de savoir où aller,
+sachant qu'il doit aller réveiller tout le monde dans la maison, et ne s'arrêter qu'au fond du frigo, en étant passé par la cave avant.
+
+Bref, il s'agit d'un parcours de graphe d'un point de départ au point d'arrivée, avec des jalons sur lesquels le chemin doit passer.
+Notez que le contexte de l'exercice est assez ridicule, mais en vrai, parcourir l'espace et passer par des endroits particulier,
+c'est une tâche assez standard en IA, très utile pour les jeux vidéos par exemple, ou encore la robotique (robot nettoyeur, drone,…).
+
+### Les données
+
+```asp
+position(1,1).                position(3,1). position(4,1). position(5,1).
+position(1,2). position(2,2). position(3,2). position(4,2).
+position(1,3). position(2,3).                position(4,3). position(5,3).
+position(1,4). position(2,4). position(3,4).                position(5,4).
+position(1,5). position(2,5). position(3,5). position(4,5). position(5,5).
+```
+
+Tout simplement, on indique les positions possibles. On en déduira les passages praticables.
+
+```asp
+milestone(1,5).  % coin en bas à gauche
+milestone(5,1).  % coin en haut à droite
+```
+
+Là, les deux endroits par lesquels il faut passer.
+
+```asp
+start(1,1).
+goals((1,1);(5,5)).  % on s'arrête sur l'un des deux
+```
+
+Et maintenant, là où on commence, et là où on doit s'arrêter (notez le choix possible entre deux cibles).
+
+```asp
+blocked((1,4),(1,5)).  % pas possible de sauter de 1,4 à 1,5
+```
+
+blocked/2 nous permet d'indiquer les chemins bloqués, c'est-à-dire où le réveil coureur ne peux pas passer, même si les positions sont juste à côté.
+
+
+Avec ces données, on s'attend à avoir la réponse suivante : 11 -> 12 -> 13 -> 24 -> 15 -> 25 -> 34 -> 43 -> 42 -> 51 -> 41 -> 31 -> 22 -> 11.
+
+
+### Solution
+
+```asp
+#const path_maxlen=100.
+
+% Il y a un arc entre deux position si elles existe et que le passage n'est pas bloqué.
+edge((X,Y),(I,J)):- position(X,Y) ; position(I,J) ; |X-I|=0..1 ; |Y-J|=0..1 ; |X-I|+|Y-J|=1..2 ; not blocked((X,Y),(I,J)).
+% NB: ça autorise les mouvements en diagonale. Pour les interdire, il faut que |X+Y-I-J| soit égal à 1 strictement
+
+% On créé une position virtuelle, qui sera la cible. Toutes les cibles possibles sont liées à cette position.
+%  (ça permet de gérer simplement le fait qu'il y ait plusieurs fins possibles)
+edge(G,endgoal):- goals(G).
+
+% Définition du choix d'un chemin du début à la fin.
+path(1,(X,Y)):- start(X,Y).
+0{path(N+1,E): path(N,S), edge(S,E), S!=endgoal}1:- path(N,_) ; N<path_maxlen.
+
+% Taille du chemin.
+pathlen(N):- path(N,_) ; not path(N+1,_).
+
+% Écarter tous les chemin qui ne finisse pas sur le nœud final.
+:- path(N,E) ; pathlen(N) ; not E=endgoal.
+% Ainsi que ceux qui ne passent pas par un des milestones.
+:- not path(_,(X,Y)) ; milestone(X,Y).
+
+
+% Et maintenant, on minimise la taille du chemin.
+#minimize{N: pathlen(N)}.
+
+
+% Outputs.
+#show.
+#show path/2.
+#show milestone(N,(X,Y)): milestone(X,Y), path(N,(X,Y)), path(M,_), not path(M,(X,Y)), M<N.
+```
+
+[Lien vers la solution complète](https://github.com/Aluriak/learning-ASP/blob/master/path-search.lp).
 
 
 
