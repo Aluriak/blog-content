@@ -8,14 +8,16 @@ lang: fr
 translation: false
 status: draft
 
+<center>*[English version]({filename}/articles/angry-birds_en.mkd)*</center>
+
 Le 18 juillet 2018 se tenait à la conférence internationale et européenne de l'intelligence artificielle, IJCAI-ECAI,
 plusieurs championnats en rapport avec l'IA. Outre les traditionnels [championnats d'échecs](http://icga.org/),
 il y avait celui d'[Angry Birds](https://fr.wikipedia.org/wiki/Angry%5FBirds), le nouveau jeu que les chercheurs veulent explorer après le go.
 
 D'abord, les IA se sont affrontées entre elles sur des niveaux connus. Le lendemain,
 les quatre meilleures IA ont attaqué 4 nouveaux niveaux, que personne n'avait jamais vu.
-Les humains volontaires ont fait de même, dont moi-même, et le classement était sans appel :
-les 10 meilleurs étaient tous humains.
+Les humains volontaires ont fait de même, dont moi-même, et [le classement était sans appel]() :
+les 10 meilleurs joueurs étaient tous humains.
 
 Ce n'est pas encore cette année que les IA auront résolu Angry Birds.
 
@@ -59,7 +61,7 @@ Ajoutons à ça qu'il y a une composante temps réel, car il existe différents 
 qui ont des effets lorsqu'ils sont actionnés en plein vol (comme par exemple, descendre en piqué pour les oiseaux jaune, ou lâcher un œuf pour les oiseaux blanc).
 
 Il s'agit donc bien d'une augmentation de la complexité, nécessitant de nouvelles techniques pour être résolu, sans non plus s'attaquer à un monstre.
-Donc, plein de personnes peuvent s'y intéresser (l'une des meilleures IA pour le moment est faite par un étudiant en Master),
+Donc, plein de personnes peuvent s'y intéresser (la meilleure des IA, *Eagle's Wing*, est faite par un étudiant en Master),
 avec plein d'approches différentes, et c'est ainsi que l'on progresse en IA, et plus généralement en Science.
 
 
@@ -76,16 +78,20 @@ doit inférer l'état du jeu et ses possibilités en fonction d'une capture d'é
 sinon les agents vont mal évaluer le jeu, et donc faire n'importe quoi.
 
 Les agents proposés par les différentes équipes utilisaient des méthodes qui tombaient dans l'une des méthodes standards de conception d'IA.
+(j'ai mis un lien vers le code/une publi en rapport avec les IA ou l'auteur, lorsque j'en ai trouvé un ; envoyez moi un mail si vous pouvez compléter)
 
 
 ## Approche par apprentissage
-Vous avez entendu parler des réseaux de neurones ? Ben voilà, on est en plein dedans : il existe d'autres méthodes d'apprentissage,
+Vous avez entendu parler des réseaux de neurones (souvent via le terme *deep learning*) ? Ben voilà, on est en plein dedans : il existe d'autres méthodes d'apprentissage,
 mais le *deep learning* a clairement le vent en poupe, et une bonne partie des agents proposés étaient basé dessus.
 
 L'idée est donc, en gros, de laisser le réseau de neurone évaluer le jeu, et indiquer quelle action doit être effectuée.
 Ça nécessite bien plus de choses que juste «brancher un réseau de neurones de la capture d'écran aux actions», mais l'idée est là.
 
 Agents utilisant l'apprentissage : *MYTBirds* (développé par Yuntian Ma), *DQ-Birds*.
+
+Notez que pour le deep learning, __énormément__ d'examples doivent être donnés aux réseaux de neurones pour qu'il apprennent correctement.
+Par exemple, *MYTBirds* a été entraîné avec plus de 2000 niveaux différents.
 
 
 ## Approche par raisonnement
@@ -103,10 +109,11 @@ et elle consiste en de multiples simulations du jeu pour tester plusieurs tirs, 
 
 
 ## Approche par sélection de stratégie
-L'idée principale est d'avoir une collection de stratégies à appliquer, par exemple «*tirer sur un cochon directement*», et de choisir laquelle appliquer en fonction de règles logiques.
+L'idée principale est d'avoir une collection de stratégies à appliquer, par exemple «*tirer sur un cochon directement*», et de choisir laquelle appliquer en fonction de règles logiques, ou d'un score ou d'une simulation qui prédisent l'intérêt de la stratégie.
 C'est [l'approche](https://github.com/heartyguy/AI-AngryBird-Eagle-Wing/blob/master/docs/eaglewing2017.pdf) de l'actuelle meilleure IA,
-[Eagle's Wing](https://heartyguy.github.io/AI-AngryBird-Eagle-Wing/) (développé par Tian Jian Wang).
-Les stratégie ont été apprises par réseaux de neurones, puis réimplémentées proprement pour des calculs plus intelligibles et rapides.
+[*Eagle's Wing*](https://heartyguy.github.io/AI-AngryBird-Eagle-Wing/) (développé par Tian Jian Wang).
+Pour cet agent là d'ailleurs, il y a 5 stratégies qui ont été individuellement apprises par réseaux de neurones,
+puis réimplémentées proprement pour des calculs plus intelligibles et rapides.
 
 L'autre implémentation *Metabirds*, proposée par Shahaf S. Shperberg, est un *méta-agent* : il a en mémoire les autres agents, et en fonction du niveau à résoudre,
 va essayer de prédire le résultat de chaque agent en fonction de similarité avec des configurations vues auparavants, et utiliser celui qui donne la meilleure prédiction.
@@ -153,7 +160,7 @@ Vu, oui, notamment pendant le championnat du 17 juillet (avec que des IA).
 Et pourtant, malgré cet impair, je suis arrivé premier avec 305 000 points, soit 1.6% de moins que le designer du jeu qui est venu tester les niveaux
 (et qui ne participait pas réellement au championnat). Ce qui me laisse à penser que j'étais pas loin du maximum possible.
 Je ne doute pas que des milliers de joueurs auraient réussis au moins aussi bien que moi, mais là, aujourd'hui, c'était moi qui était présent
-(et la deuxième place n'était pas loin… 500 points de différence, c'est presque du vol).
+(et la deuxième place n'était pas loin : 500 points de différence ; j'ai probablement détruit une planche en bois en plus).
 
 Je pense que j'ai eu beaucoup de chance, mais pas que : contrairement aux IA, j'ai utilisé le bouton «recommencer»,
 qui arrête immédiatement le niveau en cours et le restaure à l'état initial. La conséquence, c'est que sur le niveau 3,

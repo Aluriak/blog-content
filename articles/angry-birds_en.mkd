@@ -1,0 +1,195 @@
+Title: On the implications of my performance during Man vs Machine Angry Birds challenge
+Date: 2018-07-18
+Tags: opinion, ia, gaming
+Authors: Lucas Bourneuf
+Summary: About my result
+Slug: angry-birds-en
+lang: en
+translation: true
+status: draft
+
+<center>*[French version]({filename}/articles/angry-birds_fr.mkd)*</center>
+
+
+On 18 july 2018 held at the International Joint Conference on Artificial Intelligence, IJCAI-ECAI'18,
+two challenges about AI and its performances compared to humans. There were obviously the venerable [World Computer Chess Championship](http://icga.org/),
+but also the seventh edition of the [Angry Birds](https://en.wikipedia.org/wiki/Angry%5FBirds%5F(video%5Fgame)) AI Competition,
+the new game researchers wants to explore after Go.
+
+First, AIs compete between them on knowns levels. The day after, the four bests were tested on four brand new levels that no one saw before.
+Human volunteers were able to play the same way, including myself, and [the final ranking]() was unambiguous: the 10 first players were all humans.
+
+AIs haven't solved Angry Birds this year.
+
+This post is about the competition itself, about the underlying principles and limitations about AIs, and my experience feedback.
+I conclude on what seems to imply my performance (i am the first of the competition, although i never played before),
+and the optimal method for AI design for the Angry Birds game.
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+# Why *Angry Birds*
+We can wonder why is Angry Birds interesting to researchers in AI.
+The rationale behind choosing this game is simple : you have to study a game different to those already solved (chess, go),
+but not too much, so a maximal number of peoples of various domains can works on it, improving the overall speed of solving.
+
+For instance, Google/DeepMind currently works on the Starcraft RTS, after beating the best human Go player with AlphaGo.
+It's very laudable, unless that in Go, the hard part was the space search. Starcraft has a virtually infinite search space, which is one challenge, but also features:
+
+- hidden information (player is not omniscient)
+- real time
+- direct opposition to player
+- non determinitic
+- advanced computer vision to be able to understand the state of game (in real time)
+- many ways to get victory
+- numerous unit, building, and ressources types
+- *micro-management*, i.e. real time and precise control of each unit to ensure winning of battles
+
+Sounds like a stretch: too complex for the moment, and rare are peoples able to work on that, so it does not make really interesting discussions,
+nor eclectic approaches in fundamental research.
+
+Angry Birds, however, is not really in real time, and its mecanics are simple.
+Angry Birds is a good idea because it features, not only a different search space, but also new complexities : incertainity, notably.
+When playing Go, you can easily and quickly compute the effect of a move on the board game, and in case of chess, even the overall score and prediction of who will win.
+But in Angry Birds, IAs do not have access to the game physic engine, and therefore can't compute with certainty the effect of a move.
+And there is also a component of real time, since each bird type has a special action that player has to trigger at the right time to get a wanted effect.
+
+It's therefore an augmentation in overall complexity, calling scientists to find new technics, without attaquing a monster only some rich private compagny can afford to study.
+As a consequence, a lot of peoples can look at it (the current best AI, *Eagle's Wing*, is developped by an undergraduate student)
+with lot of different approaches, and that's how we really progress in AI, and more generally in Science.
+
+
+# Dissection of an Angry Birds AI
+An *agent* for Angry Birds (an AI, in our case) is a program able to:
+
+- ask for a screenshot
+- ask to play for a given level
+- send an action (shoot with a given angle and force, trigger a bird effect)
+
+Then, we see that we can freely implement an agent with many methods.
+Interesting detail: in opposition to chess and go, there is now a notion of *computer vision*. Indeed, the agent need to infer the state of the game and its options from the screenshots. This is in itself a problem to solve properly, else agents will evaluate wrongly the game, and apply wrong strategies.
+
+Agents implemented by the different teams used implementation methods that falls into standard AI methods for games.
+(i put a link to the source code/publication whenever i found it. If you find missing links, send me a mail or [contribute to github](https://github.com/Aluriak/blog-content))
+
+
+## Learning
+You probably already heard about neural networks (*deep learning* is often used to speak about them) ?
+Well, we're here: many others learning methods exists, but deep learning is clearly the hottest now, and many agents were implemented using it.
+
+The idea is then, in summary, to let a neural network evaluate the game, and indicate which action to execute.
+It needs much more thing than just «plug a neural network between screenshot and actions», but you get the idea.
+
+Agents using (deep) learning: *MYTBirds* (developped by Yuntian Ma), *DQ-Birds*.
+
+Note that deep learning needs __a lot__ of learning examples. For *MYTBirds*, it was trained using more than 2000 existing levels.
+
+
+## Reasonning
+The other typical approach in AI is logic reasonning: instead of learing from a gigantic learning test, we describe the problem in a logical manner,
+and then use a reasonning engine to find an answer to an asked question (in our case: *how to destroy all pigs with given birds ?*).
+
+It's the approach of [*AngryHex*](https://demacs-unical.github.io/Angry-HEX), which uses… suspens… [ASP](https://en.wikipedia.org/wiki/Answer%5Fset%5Fprogramming) !
+Well, more precisely, a very exciting ASP implementation, [DLVHEX](http://www.kr.tuwien.ac.at/research/systems/dlvhex),
+which i just discovered and will probably be the subject of a side-quest for [my ASP tutorial]({filename}/articles/asp-tuto.mkd).
+
+
+## Simulating
+It's the approach used by [IHSEV](https://bitbucket.org/polceanum/ihsev-aibirds) (developped by the team of same name),
+and consists into multiples simulations of the game to test many shots simultaneously, and to choose the best one.
+
+
+## Strategy selection
+The main idea is to get a collection of strategies to apply, for instance «*shoot on the closest pig*», and to choose a particular strategy
+to apply following logical rules or a score system that should predict the outcome of each strategy.
+C'est [l'approche de l'actuelle meilleure IA,
+It's [the approach](https://github.com/heartyguy/AI-AngryBird-Eagle-Wing/blob/master/docs/eaglewing2017.pdf) of the current best AI,
+[*Eagle's Wing*](https://heartyguy.github.io/AI-AngryBird-Eagle-Wing/) (developped by Tian Jian Wang).
+For this specific agent, there is 5 strategies that were individually learned by deep learning, then reimplemented properly in order to get computations more efficient and intelligibles.
+
+The other flagship implementation of strategy selection is more meta: *Metabirds* (developped by Shahaf S. Shperberg, is a *meta-agent*.
+In other words, it possess in memory the other agents, and, according to a scoring function that try hard to predict the performance of each agent in a given situation,
+using similarities of the situation with other situations encountered during a learning phase. It can then choose and apply the best agent.
+
+
+# Schedule of the competition
+The 17 july, the 9 different agents were playing between themselves, in order to define the 4 best AIs.
+The next day, these 4 agents and also volunteering humans played between themselves, on other game levels.
+
+
+## Déroulement du championnat des IAs
+## AI championship proceeding
+A *match* last 30 minutes. During this time, agents must, alone and without human intervention,
+choose levels to play, play them, and repeat.
+The final score of an agent is the sum of its best scores on each levels. It therefore non only about succeeding all levels,
+but also to be able to try again levels where the score could probably be improved.
+All agents have therefore two AIs: one to play, and another to choose the levels to do.
+
+The 10 proposed levels were of different difficulties, and with features (pig number, bird types, structures,…) exploiting particularities
+of the game and standard loopholes to trap the AIs (one level was really easy, with a single bird and an easy shot, but also features a lot of destructible structures giving a lot of points. Since you have only one bird, you can't really aim for these, or with a very complex shot, but all agents' AIs were trumped, and keep restarting this level and choose the simple shot even if in reality they were just doing the same amount of points).
+
+The results gives [agent *Eagle's Wing* winner](https://www.aibirds.org/angry-birds-ai-competition/competition-results.html) (funny notes: it's the last year version that won, not the new one, that was expected to be improved, and therefore perform better)
+
+NB: generations of new levels are also the subject of an [international challenge](http://aibirds.org/other-events/level-generation-competition.html), taking place in middle-august.
+
+## Man vs Machine championship proceeding
+For the second day, the method did not change much, except that the allocated time for both human and AIs was of 10 minutes only,
+and only 4 levels were playable. They were all brand new.
+During the day, the human volunteers were invited to play their 10 minutes on free-access machines.
+Around 16h, it was to IAs to play, in parallel, transmitting their score and live game to a big screen in the main hall. Cool ambiance.
+
+
+## Avis personnel sur le déroulement du championnat
+## Personal opinion on the championship proceeding
+I think that, for the second day, all IAs should have been able to join the competition. It's really hard to predict if a level will be solved by a given agent,
+so maybe the worse AIs for the 17 july would have performed well during the Man vs Machine championship.
+
+
+
+# What i have to say on Angry Birds
+First, a little context: before that event, i never really played Angry Birds. Well, the day before, i did played the first two levels on the real
+Angry Birds application on the smartphone of another phd student, but that was all.
+My real experience with this game was looking AIs playing during the 17 july.
+
+Then, despite that blunder, i arrived first with 305 000 points, 1.6% less than the game designer that came to test the levels (and that was not participating to the championship ; a chance for me). Because of that, i think i was really close to the best possible score.
+I do not doubt that thousands of every day players could have done at least as much as i did.
+Well, as a matter of fact, the second player was only 500 points behind me. I probably broke one more plank than her.
+
+I got lucky to be the best human, but for AIs, it's another story: unlikes AIs, i used the *reset* button,
+which immediatly stop the levels, and restore it the initial state. As a consequence, on the third level,
+where a very precise shot was needed, i just shot, and if i got any deviation, i just hit the reset button.
+I got, unlike AIs, a lot more test shots, and, consequently, __i learned a lot during the play__.
+
+Oher detail of importance: Ais are today mostly efficient for aiming. It's because it's simple to train, and therefore easy to get right.
+But all the logic side, which structure to destroy with which bird, and in which order, this requiers more than learning: __it requiers an analytical thinking mode__. Et that's where, i think, the reasonning-based approches will shine.
+
+
+## What i expect to see in future AIs
+### Reset for learning
+The abusive use of the reset button to learn during the game is, for me, necessary at the beginning.
+This allows to see which shoots works bests for specific goals in a specific (new) level, effectively testing the first bird option range, then try the next one,… Without loosing too much time.
+It's like an iterative learning, like simulation, but done with the game directly, so you don't need model of how the game physics is working, but instead sacrifice some time in order to test a strategy in real conditions. In such approach, the reset button is just here to minimze the sacrified game time (You easily spend one full minute in one level, so 10 minutes for 4 games does not let you try fully a level more than 3 times).
+
+Currently agents are not using the reset button, maybe because it's not implemented in the game protocol for agents.
+In this case, i would ask the developper of the game protocol for AIbirds to include it as soon as possible.
+
+
+### Increasing interest of reasonning
+The reasonning approach is important to me: (deep) learning performs well for shooting, but that's only a third of the problem:
+know what shooting at, with which angle and in which order. And there's also the part with the game level to choose,
+including the estimation of possible gains, where, as i saw it the 17 july, there is a lot of work to do.
+
+
+### The AI that will beat humans, in my opinion
+It will combine the different approaches. It should be able to handle more strategies, which depends of the game situation (available birds, structures, targets,…)
+and use reasonning to discard a big number of them. Then use simulations to test the remaining strategies (or the reset button to test the most promising one).
+Strategies would be applied with code learned with deep learning, ensuring to get the perfect shots in most situations.
+
+In short, Eagle's Wing, but with more constraint programming and ASP for the macro-management part.
+
+You have enough to shine next year !
