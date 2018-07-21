@@ -30,7 +30,7 @@ plus_grand_que(daniel,edward).
 plus_grand_que(alex,daniel).
 ```
 
-Comment résoudre le problème ? En fait, une fois les données ainsi couchées, la méthodologie est évidente : les plus grands sont ceux qui ne sont jamais plus petits qu'un autre :
+Comment résoudre le problème ? Une fois les données ainsi couchées, la méthodologie est évidente : les plus grands sont ceux qui ne sont jamais plus petits qu'un autre :
 
 ```asp
 plus_grand(X):- plus_grand_que(X,_) ; not plus_grand_que(_,X).
@@ -54,7 +54,7 @@ Question : quelle est la réponse à la question 2 ?
 
 La méthode pour répondre à cette question peut consister à essayer toutes les combinaisons de oui et non, et voir si la proprosition est logique. Par exemple,
 Si je répond oui au deux questions, il y a un problème, car répondre oui à la question 1 implique qu'on ne peut pas répondre oui à la question 2.
-En essayant les quatre combinaisons, nous trouverions la bonne. Côté, ASI, cela peut s'encoder ainsi :
+En essayant les quatre combinaisons, nous trouverions la bonne. En ASP, cela peut s'encoder ainsi :
 
 ```asp
 % Si on répond «oui» à la question 1, c'est parce qu'on ne peut répondre ni oui ni non à la question 2.
@@ -80,7 +80,17 @@ Mais d'ici là, il nous faut y penser nous même.
 
 Combien y a t-il de fausses déclarations dans cette liste ?
 
-TODO: fix asp encoding (not working)
+```asp
+% De toute évidence, seule l'une des trois proposition est vraie
+1{p(1..3)}1.
+```
+
+```asp
+% 
+p(1):- 2 { p(_) } 2.
+p(2):- 1 { p(_) } 1.
+p(3):- not p(_).
+```
 
 
 # Recherche de vérité
