@@ -9,7 +9,7 @@ Lang: français
 Translation: false
 Status: published
 
-ASP est un langage de programmation un peu particulier.
+ASP est un langage de programmation un peu particulier, à ne pas confondre avec l'[Astronomical Society of the Pacific](https://fr.wikipedia.org/wiki/Astronomical%5FSociety%5Fof%5Fthe%5FPacific), [le groupe de métal](https://fr.wikipedia.org/wiki/ASP%5F(groupe)), ou l'[ASP.NET](https://fr.wikipedia.org/wiki/Active%5FServer%5FPages).
 C'est ce genre de langage qui en bave des ronds de chapeaux pour additionner les éléments d'une liste,
 mais qui n'a besoin que de 6 lignes de code pour résoudre un sudoku.
 
