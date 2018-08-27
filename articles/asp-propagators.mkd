@@ -13,7 +13,7 @@ s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qu
 pour le regarder, l'aider, et même le modifier.
 
 Je considère dans la suite Python comme un langage acquis. Au besoin, allez faire un tour du côté de [Swinnen](https://python.developpez.com/cours/TutoSwinnen/).
-S'il vous manque les notions de POO (bien qu'on n'en utilise que 1% ici), allez voir [sametmax](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
+S'il vous manque les notions de POO (bien qu'on n'en utilise que 1% ici), allez voir [sam et max](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
 
 On commence avec une présentation théorique, suivis de trois exemples rigolos (mais néanmoins utiles !).
 
@@ -86,7 +86,7 @@ et les numéros indiquent dans quel ordre il faut suivre les flèches. Les nœud
 
 Suivons l'aventure pas-à-pas.
 Au début, clingo considère que tous les atomes sont de valeur non déterminée, et dans le dessin cet état est indiqué par le nœud *Start*.
-Ensuite, en première étape (flèche 1) clingo va assigner *vrai* à b. Puis à l'étape 2, *vrai* à f. On devine qu'en même temps, les atomes a et e sont mis à faux (car ils ne peuvent pas être vrais en même temps que b et f), ainsi que c et d, qui ne peuvent pas être vrais car a est faux.
+Ensuite, en première étape (flèche 1) clingo va assigner *vrai* à b. Puis à l'étape 2, *vrai* à f. On devine qu'en même temps, les atomes a et e sont mis à faux (car ils ne peuvent pas être vrais en même temps que b et f, d'après le programme), ainsi que c et d, qui ne peuvent pas être vrais car a est faux (toujours d'après le programme).
 Tous les atomes possèdent une valeur de vérité : il s'agit donc d'un modèle possible ; c'est pourquoi le nœud f est vert. Lorsque clingo atteint cet état, il affiche à l'écran tous les atomes dont la valeur de vérité est vraie.
 
 Ensuite, il *backtrack* : il revient sur le nœud b. C'est là qu'il choisi différemment qu'à l'étape 2, c'est-à-dire e comme vrai ; f est alors faux, et comme tous les atomes ont une valeur de vérité, il peut sortir le modèle (c'est pourquoi e est également en vert).
@@ -102,6 +102,8 @@ Un propagateur, en python, est une classe présentant au moins une de ces 4 mét
 - `undo`: appelée chaque fois que l'heuristique va retirer une valeur de vérité à un littéral
 - `check`: appelée chaque fois que l'heuristique vérifie le modèle qu'elle possède
 
+(détail important : le `init` n'a rien à voir avec `__init__`, utilisée en python pour initialiser les objets)
+
 ### Vérification de modèle et vérité des litéraux
 Comme nous avons vu au début, un atome est soit vrai, soit faux.
 
@@ -114,9 +116,10 @@ Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement
 où ne sont assignés à une valeur de vérité qu'une partie des atomes),
 il faut décider si le modèle est valide, c'est-à-dire si les valeurs de vérité (l'assignation) n'entre en conflit avec aucune contrainte.
 
+(en réalité, la vérification des contraintes se fait au fur et à mesure, sur les assignements partiels, histoire d'éviter de chercher un assignement total là où de toute façon on trouve une contradiction)
+
 C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
 et donc qu'il n'a pas a être écrit en sortie de programme.
-
 
 
 
@@ -167,10 +170,10 @@ class Propagator:
 
 # notez que la function main est une convention de l'API de clingo :
 #  si elle existe, elle reçoit le contrôleur du solveur, et nous
-#  permet donc de contrôler le solving.
+#  permet donc de contrôler le solving avec l'objet `prg`.
 def main(prg):
-    # prg: un contrôleur du solveur. C'est lui qu'on va utiliser pour faire ce qu'on veut
-    # on enregistre une instance de notre propagateur
+    # prg: un contrôleur du solveur.
+    # d'abord, on enregistre une instance de notre propagateur
     prg.register_propagator(Propagator())
     # on ground le programme 'base', qui est le programme par défaut
     prg.ground([("base", [])])
@@ -181,8 +184,8 @@ def main(prg):
 #end.
 ```
 
-Vous pouvez tester ce code avec n'importe quel programme ASP.
-Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples/clingo/dot-propagator/test.lp) est un bon exemple
+Vous pouvez (1) constater qu'il y a plus de commentaire que de code, et (2) tester ce code avec n'importe quel programme ASP.
+Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples/clingo/dot-propagator/test.lp) est un bon candidat
 (pas un hasard qu'il soit fourni avec le propagateur) car il génère beaucoup de backtracks (de retours en arrière dans la recherche).
 
 Le résultat est, vous vous en doutez, diablement rigolo :
@@ -195,7 +198,7 @@ Le résultat est, vous vous en doutez, diablement rigolo :
 # Exemple de propagateur : color propagator
 Dans la série des visualisations rigolotes, je vous propose… le *color propagator* !
 
-Le principe : afficher les atomes disponibles, et les mettre en couleur
+Le principe : afficher les atomes du problèmes, et les mettre en couleur
 en fonction de leur valeur d'assignation.
 
 Compliqué ? Non, pas tant que ça :
@@ -320,7 +323,7 @@ Si vous ne connaissez pas le dot, sachez qu'il s'agit d'un format très utilisé
 
 La théorie des graphes et le dot sont tout à fait en dehors du scope de ce tuto, mais je vais essayer de faire court :
 
-- [un graphe](https://fr.wikipedia.org/wiki/Th%C3%A9orie_des_graphes), c'est un objet mathématique consistant en un ensemble de nœuds éventuellement reliés par des arêtes. C'est la structure de base en informatique, à partir de laquelle on dérive les autres. Les graphes sont utilisés dans tous les domaines : maths, physique, informatique évidemment, biologie, science sociales,… Vous en voyez souvent, sans vous en rendre compte.
+- [un graphe](https://fr.wikipedia.org/wiki/Th%C3%A9orie%5Fdes%5Fgraphes), c'est un objet mathématique consistant en un ensemble de nœuds éventuellement reliés par des arêtes. C'est la structure de base en informatique, à partir de laquelle on dérive les autres. Les graphes sont utilisés dans tous les domaines : maths, physique, informatique évidemment, biologie, science sociales,… Vous en voyez souvent, sans vous en rendre compte (par exemple, l'image qui montre les propagations et backtracks du solveur au début de l'article).
 - le dot, c'est une langue écrite, conçue par le projet graphviz, qui est aussi une suite logicielle. Les logiciels de graphviz sont capable de lire un programme en dot, et de générer une image ou d'autres fichiers qui représentent le graphe. C'est très puissant, car cela permet de voir graphiquement un graphe. C'est exactement ce qui nous intéresse.
 
 Pour ce propagateur, nous allons donc exploiter le dot. L'idée est la suivante : un littéral est un nœud du graphe, et l'on trace un arc (une arête orientée, avec une flèche)
@@ -458,10 +461,10 @@ def formula(inputs):
     # ici, si le modèle contient b(2), on l'écarte
     return not inputs[('b', (2,))]
 
-# On l'encapsule dans l'objet dédié
+# On l'encapsule dans l'objet dédié, qui est en fait un propagateur
 constraint = Constraint(formula, {('b', (V,))})
 
-# On lance le grounding et le solving
+# On lance le grounding et le solving, avec le propagateur enregistré
 main = Main(constraint)
 
 #end.
@@ -525,9 +528,6 @@ class Constraint:
                 init.add_watch(lit)
                 self.__symbols[lit].add(repr_raw)
 
-        # juste un détail : on aura besoin de cet attribut plus tard pour annuler l'existance d'un modèle.
-        self.__added_lit = None
-
 
     # cette fonction est appelée lorsqu'un modèle s'apprête à être généré. C'est là qu'il faut décider si oui ou non
     #  la contrainte est respectée, pour empêcher le modèle de sortir si ce n'est pas le cas.
@@ -540,26 +540,29 @@ class Constraint:
             for lit, reprs in self.__symbols.items()
             for repr in reprs  # plusieurs atomes peuvent avoir la même valeur de littéral
         })
+        if not checked:
+            self.__invalidate_model(ctl)
+
+    def __invalidate_model(self, ctl):
         # on ajoute, si c'est pas encore fait, un nouveau littéral. C'est un peu comme si on ajoutait un atome,
         #  mais sans lui donner de représentation comme a(2) par exemple.
-        if not self.__added_lit:
-            self.__added_lit = ctl.add_literal()
-            # Ces deux lignes servent à ajouter une «clause», indiquant que notre nouveau littéral est vrai.
-            #  Quand on ajoute une clause, il se peut que le solveur ait besoin de revérifier l'espace de recherche.
-            #  Dans notre cas, on le change pas car le littéral assigné est tout nouveau et est indépendant du programme ASP.
-            #  mais dans le cas général, on pourrait assigner la valeur d'un atome existant, et donc là le solveur doit réagir en conséquence.
-            if not ctl.add_clause([self.__added_lit]) or not ctl.propagate():
-                return
-        # C'est là que la magie se passe : si la formule de l'utilisateur indique que le modèle n'est pas conforme…
-        if not checked:
-            # … on dit que le littéral est faux.
-            # Ce qui entre en conflit avec sa définition vue plus haut, qui indique qu'il est vrai.
-            if not ctl.add_nogood([self.__added_lit]) or not ctl.propagate():
-                return
-            # donc ça va annuler le check, et donc le modèle !
+        self.__added_lit = ctl.add_literal()
+        # Les deux lignes suivantes servent à ajouter une «clause», indiquant que notre nouveau littéral est vrai.
+        #  Quand on ajoute une clause, il se peut que le solveur ait besoin de revérifier l'espace de recherche.
+        #  Dans notre cas, on le change pas car le littéral assigné est tout nouveau et est indépendant du programme ASP.
+        #  mais dans le cas général, on pourrait assigner la valeur d'un atome existant, et donc là le solveur doit réagir en conséquence.
+        if not ctl.add_clause([self.__added_lit]) or not ctl.propagate():
+            return
+        # C'est là que la magie se passe : si la formule de l'utilisateur indique que le modèle n'est pas conforme,
+        #  on dit que le littéral est faux.
+        if not ctl.add_nogood([self.__added_lit]) or not ctl.propagate():
+            return
+        # Ce qui entre en conflit avec l'opération précédente, qui le requiert vrai.
+        #  donc ça va annuler le check, et donc le modèle !
+
 
     # Les fonctions suivantes sont des détails d'implémentation, et n'ont pas grand chose à voir avec les propagateurs,
-    #  mais je les laisse là pour la complétude.
+    #  mais je les laisse là pour la complétude du code.
 
     def _match_str(self, atom:str) -> bool:
         # Retourne vrai si l'atome en string donné est dans les inputs attendus par la formule
@@ -588,4 +591,5 @@ class Constraint:
 Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
 Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
 
-Enfin, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd).
+D'autres quêtes annexes viendront, pour apporter d'autres applications aux propagateurs, ou montrer d'autres manières d'étendre ASP.
+<!-- Enfin, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd). -->

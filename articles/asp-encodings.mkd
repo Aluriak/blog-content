@@ -15,11 +15,17 @@ qui répondent à la même question.
 On commence par une réflexion sur la notion d'espace de recherche, histoire d'être au clair dessus,
 puis on attaque les vrais morceaux qui eux parlent vraiment d'ASP dans la pratique.
 
+<br/>
+
+[TOC]
+
+<br/>
 
 # Notions d'espace de recherche
 Qu'est-ce qu'un espace de recherche ? C'est tout simplement l'espace dans lequel on cherche les solutions à un problème.
 Si la définition de l'espace de recherche est valide, toutes les solutions vont s'y trouver.
-Si au contraire elle est fausse, une partie des solutions (ou toutes) ne s'y trouvera pas. Généralement dans ce case, On dit qu'il y a un *bug* dans la définition, et on la modifie pour la rendre valide.
+Si au contraire elle est fausse, une partie des solutions (ou toutes) ne s'y trouvera pas. Généralement dans ce case, On dit qu'il y a un *bug* dans la définition,
+et on la modifie pour la rendre valide.
 
 Maintenant, une définition peut être valide, mais complètement inutile : l'espace de recherche contient bien toutes les solutions, mais il est tellement grand qu'il est très long de toutes les récupérer.
 
@@ -46,6 +52,7 @@ Bref, le bon espace de recherche, c'est maison-jardin-garage :
 Mes clefs ne peuvent pas être ailleurs, et il est suffisamment petit pour être exploré en pratique.
 
 Notez que, pour être exact, l'espace de recherche valide minimal *assuré* est la sphère centrée sur moi d'un rayon de 5 minutes lumière. Mais, en posant l'hypothèse que ni moi ni mes clefs n'avons voyagé à la vitesse de la lumière ces cinq dernières minutes, on peut restreindre cet espace.
+De plus, je ne me suis pas déplacé à plus de 8km/h depuis 5 minutes, et mes clefs, elles, n'ont pas la capacité de se déplacer d'elles-même.
 D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter au terrain praticable par moi et mes clefs en 5 minutes.
 
 En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (ou du moins l'heuristique).
@@ -328,5 +335,4 @@ Comme toujours en optimisation, il n'y a pas de solution universelle : chaque ca
 Cela étant dit, une bonne connaissance des outils utilisés et des problèmes traités est primordiale pour savoir quoi mesurer, sur quels leviers agir,
 et finalement comment se dépatouiller avec les gros problèmes.
 
-Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution.
-C'est juste un moyen de retarder les ralentissements.
+Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution, mais juste un moyen de retarder les ralentissements.
