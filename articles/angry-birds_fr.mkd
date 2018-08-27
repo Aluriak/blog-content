@@ -34,7 +34,7 @@ et sur la méthode optimale pour la conception d'une IA.
 
 
 # Pourquoi Angry Birds
-On peut se demander ce que peux bien apporter Angry Birds aux chercheurs.
+On peut se demander ce que [peux bien apporter Angry Birds aux chercheurs](https://arxiv.org/abs/1705.08807).
 La logique derrière le choix de ce jeu est très simple : il faut trouver un jeu différent de ceux déjà résolus (échecs, go),
 mais pas trop, afin qu'un maximum de monde puisse s'y intéresser, et donc le résoudre plus vite.
 
@@ -43,12 +43,11 @@ C'est très louable, sauf qu'au Go, ce qui était dur, c'était l'espace de rech
 
 - à *information cachée* (le joueur n'est pas omniscient)
 - en *temps réel*
-- en opposition directe avec un joueur
-- donc complètement *non déterministe*
 - graphique, donc requiert du traitement d'image (en temps réel, de fait)
 - avec plusieurs manières d'arriver à la victoire
 - de nombreux types d'unités et de bâtiments
 - demandant en gestion fine nécessaire pour remporter les bataille, le *micro-management*
+- et demandant en *macro-management*, sur le long terme, pour préparer et cacher la stratégie de victoire
 
 Donc, bon, bof. Trop complexe pour le moment, et rares sont les personnes qui peuvent bosser là-dessus, donc ça ne fait pas des discussions très intéressantes,
 ni d'avancées éclectiques en recherche fondamentale.
