@@ -55,7 +55,7 @@ Notez que, pour être exact, l'espace de recherche valide minimal *assuré* est 
 De plus, je ne me suis pas déplacé à plus de 8km/h depuis 5 minutes, et mes clefs, elles, n'ont pas la capacité de se déplacer d'elles-même.
 D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter au terrain praticable par moi et mes clefs en 5 minutes.
 
-En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (ou du moins l'heuristique).
+En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (et nous suivons une heuristique de recherche).
 
 ## Retour à ASP
 On comprend maintenant que pour un problème donné, on peut définir différemment l'espace de recherche, et que si on le modélise trop grand,
@@ -208,7 +208,7 @@ et un moindre travail de vérification à réaliser sur chaque modèle.
 
 Par conséquent : gain de temps.
 
-En général, gardez un œil sur l'équilibre en génération et contraintes :
+En général, gardez un œil sur l'équilibre génération/contraintes :
 s'il est souvent préférable d'utiliser les contraintes (ne serais-ce que parce que c'est plus simple et lisible),
 parfois on met sous contrainte des propriétés qui sont pourtant très simples à mettre dans la génération.
 
@@ -260,7 +260,7 @@ La clef du truc, c'est de bien comprendre ce que fait le grounding : il enlève 
 Mais pas seulement : le grounding, c'est aussi l'occasion de faire des traitements simples.
 Par exemple, si une règle/contrainte ne dépend d'aucun choix, elle peut être utilisée pendant le grounding pour compléter ou diminuer le grounding final.
 
-L'autre truc qui se passe pendant le grounding, c'est les comptages… si c'est possible. Et c'est là où ça coince. Dans le premier code, le nombre d'atomes two/2 est connu au grounding : le grounder connaît toutes les valeurs de `val/1`, et il sait faire des maths de base, donc il peut générer sans se tromper tous les atomes `two/2` valides. Et lorsqu'il rencontre la ligne 4, il substitue le `N={two(_,_)}.` par `N=XXX` avec XXX le nombre d'atomes two/2 qu'il a généré, et en déduis l'atome count/1 à rendre vrai.
+L'autre truc qui se passe pendant le grounding, c'est les comptages… si c'est possible. Et c'est là où ça coince. Dans le premier code, le nombre d'atomes two/2 est connu au grounding : le grounder connaît toutes les valeurs de `val/1`, et il sait faire des maths de base, donc il peut générer sans se tromper tous les atomes `two/2` valides. Et lorsqu'il rencontre la ligne 4, il substitue le `N={two(_,_)}` par `N=XXX` avec XXX le nombre d'atomes two/2 qu'il a généré, et en déduis l'atome count/1 à rendre vrai.
 Vous voulez vous en convaincre ? Utilisez l'option `--text` de clingo sur le premier programme pour voir ce qui est généré : la liste des atomes valides. Par exemple, voilà les dernières lignes du grounding que j'obtient :
 
     two(4,116).
@@ -294,7 +294,7 @@ Sauf que, maintenant, pour count/1, l'histoire est différente, même carrément
 
 Oui, le milieu est tronqué. Parce qu'il y a près d'un million de caractères par ligne. Et il y a dix lignes, car il y a 10 modèles.
 
-Vous comprenez ce qui se passe ? C'est monstrueux : le grounder n'est pas capable de résoudre ce problème de comptage, donc il le laisse au solveur, avec toutes les infos dont il a besoin :
+Vous comprenez ce qui se passe ? C'est monstrueux : le grounder n'est pas capable de résoudre ce problème de comptage, donc il le laisse au solveur, avec *toutes* les infos dont il *pourrait* avoir besoin :
 c'est-à-dire, pour chaque atome qui *pourrait* être impliqué dans le comptage,
 l'expression `0,two(119,1):two(119,1);`, qui indique au solveur de compter zéro
 si l'atome `two(119,1)` est vrai. Pour __tous les atomes__.
@@ -325,7 +325,7 @@ Peut-être dans une prochaine version ?
 
 ### Diverses conséquences
 En fait, #count n'est pas le seul à être concerné. #min, #max, #minimize, #maximize,… Toutes ces directives de métaprogrammation peuvent être sources de ralentissements assez importants.
-Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, c'est dur.
+Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, cela nécessite une complexification du programme.
 Et parfois, c'est juste impossible, et il faut faire avec.
 
 
@@ -336,3 +336,11 @@ Cela étant dit, une bonne connaissance des outils utilisés et des problèmes t
 et finalement comment se dépatouiller avec les gros problèmes.
 
 Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution, mais juste un moyen de retarder les ralentissements.
+
+
+
+<br/>
+
+
+Merci d'avoir lu ! Si vous avez des corrections à apporter, vous pouvez le faire [via git](https://github.com/Aluriak/blog-content),
+et sinon, envoyez moi [un mail](mailto:prénom@nom.net).
