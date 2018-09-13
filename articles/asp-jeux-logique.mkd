@@ -1,4 +1,4 @@
-Title: Answer Set Programming — Jeux de logique
+Title: Answer Set Programming — Jeux de logique et énigmes
 Date: 2018-04-13
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
@@ -13,9 +13,18 @@ s'intéressant à la modélisation et résolution de problème de logique, sous 
 
 [Sources des codes](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%5Fwarmup)
 
-Les problèmes sont les *warmup logic exercises* du site [brilliant.org](https://brilliant.org).
+Les premiers problèmes sont les *warmup logic exercises* du site [brilliant.org](https://brilliant.org).
 Tous les problèmes ne sont pas solvables simplement, mais pour ceux qui le sont,
 cela permet de découper la méthode logique nécessaire à leur résolution.
+
+On termine sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant et buvant avec leurs animaux de compagnie dans des maisons colorées.
+
+
+<br/>
+
+[TOC]
+
+<br/>
 
 
 # brothers
@@ -42,6 +51,7 @@ et nous cherchons celui qui n'a aucun prédécesseur, c'est-à-dire la racine.
 C'est un problème assez standard de théorie des graphes, et la résolution est intuitive dés lors que l'on visualise l'arbre tel qu'il est réellement :
 
 <center>{% img {filename}/images/asp/brother-tree.png 700 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
+(image faite avec [biseau]())
 
 
 # Questions
@@ -109,6 +119,251 @@ Par conséquent, il n'existe aucun modèle stable dans lequel `p(3)` serait vali
 # Recherche de vérité
 
 ## Premier
+```asp
+% Knights always tell the truth. Knaves always lie. Joker can do either.
+% What is an agent saying «i'm a knave» ?
+
+% It's one of the three.
+1 {knight ; knave ; joker} 1.
+
+% What can be said depending of the kind.
+say(knight):- knight.
+say(knight) ; say(joker):- knave.
+say(knight) ; say(knave) ; say(joker):- joker.
+
+% We know it said it was a knave, so it has to be in the answer.
+:- not say(knave).
+```
+
+
 ## Second
+```asp
+% Knights always tell the truth. Knaves always lie. Joker can do either.
+
+% 3 agents knows themselves, and say:
+%  - ellis: farin is a joker
+%  - farin: gobi is a joker
+%  - gobi: ellis is a joker
+% There is only one joker. How many knights ?
+
+% Data.
+kind(knight;knave;joker).
+ppl(ellis;farin;gobi).
+
+% Each one has a kind.
+1 { kind(P,K): kind(K) } 1:- ppl(P).
+
+% There is one and only one joker.
+1 { kind(P,joker):ppl(P) } 1.
+
+% Number of knight.
+answer(N):- N={kind(_,knight)}.
+
+% A knight always imply the thruth.
+kind(farin,joker):- kind(ellis,knight).
+kind(gobi,joker):- kind(farin,knight).
+kind(ellis,joker):- kind(gobi,knight).
+
+% Knaves can't tell the truth.
+:- kind(farin,joker) ; kind(ellis,knave).
+:- kind(gobi,joker) ; kind(farin,knave).
+:- kind(ellis,joker) ; kind(gobi,knave).
+
+% NB: the three generated answer sets all say there is 1 knight.
+% Additionnal constraints are therefore not necessary.
+```
+
+
 ## Troisième
+Trois boîtes indiquent chacune :
+
+1. la voiture est dans la boite 1.
+2. la voiture n'est pas dans la boite 2.
+3. la voiture n'est pas dans la boite 1.
+
+Sachant qu'il n'y a qu'une voiture, et qu'une seule des boîte indique une vérité, où est la voiture ?
+
+
+```asp
+1 { p(1;2;3) } 1.    % une seule proposition est vraie
+1 { car(1;2;3) } 1.  % une seule voiture
+```
+
+```asp
+% Si la voiture est dans la boîte 1, alors la boîte 1 dit vrai.
+p(1):- car(1).
+% Si la voiture n'est pas dans la boîte 2, alors la boîte 2 dit vrai.
+p(2):- not car(2).
+% 
+p(3):- not car(1).
+```
+
+En écrivant ces règles, on devine immédiatement le problème.
+La réponse est `car(2) p(3)`.
+
+
 ## Quatrième
+Ne se fait pas en ASP. Arg.
+```asp
+```
+
+
+
+
+# Énigme d'Einstein
+Vous vous en souvenez certainement : [cette énigme](https://fr.wikipedia.org/wiki/%C3%89nigme%5Fd%27Einstein) occupe les repas de famille tous les ans, sans qu'aucune solution ne soit trouvée. Elle est très bien [expliquée ici](http://villemin.gerard.free.fr/Puzzle/Enigme5.htm), ainsi que deux méthodes de résolutions possibles : avec la tête, ou algorithmiquement.
+
+En gros, selon certains indices, il faut savoir qui parmis l'anglais, le norvégien, le suédois, le danois et l'allemand possède les *poissons*.
+La modélisation du problème est un poil longue, car il y a beaucoup de relations à écrire, et aussi beaucoup d'évidences.
+
+Allons-y pas-à-pas…
+
+## Les données
+```asp
+humain(anglais;suedois;danois;norvegien;allemand).
+couleur(rouge;bleue;jaune;verte;blanche).
+animal(chiens;oiseaux;cheval;chats;poisson).
+boisson(lait;biere;the;cafe;eau).
+fume(dunhill;blue_master;blend;prince;pall_mall).
+
+% Les maisons sont proches selon leur place.
+next(1,2). next(2,3). next(3,4). next(4,5).
+next(X,Y) :- next(Y,X).  % réciprocité
+```
+
+## Les évidences
+
+```asp
+% Chaque humain a une couleur de maison.
+1 { maison(H,C): couleur(C) } 1 :- humain(H).
+% Chaque couleur de maison a un humain.
+1 { maison(H,C): humain(H) } 1 :- couleur(C).
+
+% Chaque humain a un animal.
+1 { animal(H,A): animal(A) } 1 :- humain(H).
+% Chaque animal a un humain.
+1 { animal(H,A): humain(H) } 1 :- animal(A).
+
+% Pareil pour la boisson…
+1 { boisson(H,B): boisson(B) } 1 :- humain(H).
+1 { boisson(H,B): humain(H) } 1 :- boisson(B).
+
+% Pareil pour le tabac…
+1 { fume(H,F): fume(F) } 1 :- humain(H).
+1 { fume(H,F): humain(H) } 1 :- fume(F).
+
+% Pareil pour la place de maison…
+1 { place_maison(H,P): next(P,_) } 1 :- humain(H).
+1 { place_maison(H,P): humain(H) } 1 :- next(P,_).
+```
+
+Rien de très intéressant ici. Notez que, pour faire une association 1-pour-1 parfait, deux règles sont nécessaires :
+l'une pour dire qu'il y a un humain pour chaque chose, et une autre pour dire qu'il y a une chose pour chaque humain.
+Retirez une seule de ces règles, et vous obtenez plusieurs solutions où des humains se partagent des objets ou inversement.
+
+Notez qu'en plaçant le nom des objets (boisson, fume, couleur, animal, place) comme argument d'un atome,
+on pourrait n'avoir besoin d'écrire qu'une seule fois ces règles d'assignation:
+
+```asp
+humain(anglais;suedois;danois;norvegien;allemand).
+objet(fume,(dunhill;blue_master;blend;prince;pall_mall)).
+objet(couleur,(rouge;bleue;jaune;verte;blanche)).
+objet(animal,(chiens;oiseaux;cheval;chats;poisson)).
+objet(boisson,(lait;biere;the;cafe;eau)).
+
+objet(O) :- objet(O,_).
+
+1 { association(H,O,V): objet(O,V) } 1 :- humain(H) ; objet(O).
+1 { association(H,O,V): humain(H) } 1 :- objet(O,V).
+```
+
+Voilà une piste d'amélioration pour pouvoir gérer des instances du problème avec un nombre arbitraire d'objets.
+
+## Les indices
+```asp
+% 1. L'Anglais vit dans une maison rouge.
+maison(anglais,rouge).
+
+% 2. Le Suédois a des chiens comme animaux domestiques.
+animal(suedois,chiens).
+
+% 3. Le Danois boit du thé.
+boisson(danois,the).
+
+% 4. La maison verte est juste à gauche de la maison blanche.
+:- maison(H1,blanche) ; place_maison(H1,Pb) ; maison(H2,verte) ; place_maison(H2,Pv) ; Pb-Pv!=1.
+
+% 5. Le propriétaire de la maison verte boit du café.
+boisson(P,cafe) :- maison(P,verte).
+
+% 6. La personne qui fume des Pall Mall a des oiseaux.
+fume(P,pall_mall) :- animal(P,oiseaux).
+
+% 7. Le propriétaire de la maison jaune fume des Dunhill.
+maison(P,jaune) :- fume(P,dunhill).
+
+% 8. La personne qui vit dans la maison du centre boit du lait.
+place_maison(P,3) :- boisson(P,lait).
+
+% 9. Le Norvégien habite la première maison.
+place_maison(norvegien,1).
+
+% 10. L'homme qui fume les Blend vit à côté de celui qui a des chats.
+fume(P,blend) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonChat) ; place_maison(HommeChat,MaisonChat) ; animal(HommeChat,chats).
+
+% 11. L'homme qui a un cheval est le voisin de celui qui fume des Dunhill.
+animal(P,cheval) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonDunhill) ; place_maison(HommeDunhill,MaisonDunhill) ; fume(HommeDunhill,dunhill).
+
+% 12. Le propriétaire qui fume des Blue Master boit de la bière.
+boisson(P,biere) :- fume(P,blue_master).
+
+% 13. L'Allemand fume des Prince.
+fume(allemand,prince).
+
+% 14. Le Norvégien vit juste à côté de la maison bleue.
+maison(Autre,bleue) :- next(PlaceNorvegien,PlaceAutre) ; place_maison(Autre,PlaceAutre) ; place_maison(norvegien,PlaceNorvegien).
+
+% 15. L'homme qui fume des Blend a un voisin qui boit de l'eau
+fume(P,blend) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonEau) ; place_maison(HommeEau,MaisonEau) ; boisson(HommeEau,eau).
+```
+
+### L'horreur de l'indice 14
+L'indice 14 est piégeant. Une première manière de l'écrire pourrait être le suivant :
+```asp
+place_maison(norvegien,PlaceNorvegien) :- next(PlaceNorvegien,PlaceAutre) ; place_maison(Autre,PlaceAutre) ; maison(Autre,bleue).
+```
+Mais attention ! Cette règle rendra le problème insoluble. Cela peut paraître un tantinet capillotracté, mais il est important de le comprendre :
+il y a **deux** atomes `next(PlaceNorvegien,PlaceAutre)` valides pour une maison bleue donnée (la maison à sa gauche, et la maison à sa droite).
+Or, avec cette écriture, on indique au solveur que pour *chaque maison à côté*, on a `place_maison(norvegien,PlaceNorvegien)`.
+Et c'est là qu'est l'os : le norvegien ne peut être à deux endroits en même temps.
+
+Mais alors, me diriez-vous, pourquoi dans le code plus haut, cette écriture est-elle valide ?
+```asp
+maison(Autre,bleue) :- next(PlaceNorvegien,PlaceAutre) ; place_maison(Autre,PlaceAutre) ; place_maison(norvegien,PlaceNorvegien).
+```
+On reconnaît le problème dû au next/2 rencontré dans la formulation au dessus. Mais là, a priori sans raison, cette expression fonctionne.
+Et cela est dû à un cas particulier : la place de la maison du norvégien est fixée à 1, à cause de l'indice 9. Par conséquent, `next(PlaceNorvegien,PlaceAutre)` est traduit `next(1,PlaceAutre)` par le grounder, qui n'est vrai qu'avec un seul atome : `next(1,2)`.
+
+C'est donc un cas particulier qui nous permet d'écrire la règle ainsi.
+En réalité, il faudrait dire *qu'exactement un voisin* du norvégien vit dans une maison bleue :
+```asp
+1 { maison(Autre,bleue): next(PlaceNorvegien,PlaceAutre), place_maison(Autre,PlaceAutre) } 1 :- place_maison(norvegien,PlaceNorvegien).
+```
+
+Et là, effectivement, ça fonctionne. Notez qu'avec cette écriture, vous pouvez supprimer l'indice 9, et vous obtiendrez
+deux modèles qui répondent de manière identique pour le propriétaire des poissons.
+Enfin, si vous regardez bien les autres indices, vous verrez que les indices 10, 11 et 15 sont de la même facture. Et, comme pour le 14,
+une subtilité dans les indices permet d'éviter une limitation explicite du nombre de voisins. C'est pas hyper robuste, mais c'est plus rapide pour le solveur.
+
+
+## Réponse…
+
+Et la réponse est… L'allemand. En effet, le seul answer-set donné par le solveur indique bien, entre autre, l'atome `animal(allemand,poisson)`.
+Évidemment, toutes les assocations sont données, par exemple `fume(danois,blend)`, qui ne peut être deviné lorsque l'on déroule l'énigme que dans les dernières étapes.
+
+
+# Conclusion
+Pour certains jeux de logique, ASP est utile. Même quand les relations s'accumulent, ou que l'instance grossie,
+il reste possible d'obtenir un code relativement simple qui réponde à la question.
+
+Quelles énigme ASP ne peut-il pas résoudre ? Eh bien, beaucoup. Notamment ceux qui font appelle à la logique systémique, ou demandent l'élaboration de protocoles. (TODO: add links)
