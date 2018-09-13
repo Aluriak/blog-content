@@ -3183,6 +3183,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 - [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python.
 - le jeu Warzone 2100 [utilise ASP pour la génération de cartes](http://warzone2100.org.uk/about.html).
 - [l'atterisseur Philae utilisait la programmation par contrainte](https://www.ibm.com/developerworks/community/blogs/jfp/entry/how%5Fwere%5Frosetta%5Fphilae%5Foperations%5Fscheduled?lang=en) pour organiser le lancement des appareils de mesure en fonction de l'énergie restante, de la position de Rosetta,…
+- [Angry-HEX](https://demacs-unical.github.io/Angry-HEX/), une intelligence artificielle pour le jeu Angry Birds, est implémentée en [ASP](http://www.kr.tuwien.ac.at/research/systems/dlvhex).
 
 
 ## And now, for something totally different
