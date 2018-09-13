@@ -1,4 +1,4 @@
-Title: Answer Set Programming — Efficacité des encodings
+Title: Answer Set Programming — De l'espace de recherche à l'efficacité des encodings
 Date: 2018-04-13
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
@@ -343,4 +343,4 @@ Mais, au final, si votre problème est de grande complexité, une optimisation n
 
 
 Merci d'avoir lu ! Si vous avez des corrections à apporter, vous pouvez le faire [via git](https://github.com/Aluriak/blog-content),
-et sinon, envoyez moi [un mail](mailto:prénom@nom.net).
+et sinon, envoyez moi [un mail à prénom@nom.net](mailto:prénom@nom.net?subject=\[tuto ASP/encodings\]).
