@@ -81,16 +81,29 @@ Mais d'ici là, il nous faut y penser nous même.
 Combien y a t-il de fausses déclarations dans cette liste ?
 
 ```asp
-% De toute évidence, seule l'une des trois proposition est vraie
-1{p(1..3)}1.
+% De toute évidence, toutes les propositions sont exclusives, donc il ne peut y avoir qu'une seule de vraie, ou aucune.
+0{p(1..3)}1.
 ```
 
+Notez que si il y doit y avoir exactement une vraie déclaration, même sans ASP,
+écrire cette évidence nous donne presque la réponse. En effet, si une seule est vraie, alors 2 sont fausses.
+N'avoir aucune garantie de la véracité d'au moins une déclaration complexifie un peu le problème, à cause de la proposition 3 (qui induit un conflit).
+
+Écrivons les déclarations, et voyons si ASP s'en sort :
+
 ```asp
-% 
+% La première est vraie si une est fausse, donc si deux sont vraies.
 p(1):- 2 { p(_) } 2.
+% La seconde est vraie si deux sont fausses, donc si une seule est vraie.
 p(2):- 1 { p(_) } 1.
+% La troisième est vraie si les trois sont fausses.
 p(3):- not p(_).
 ```
+
+La réponse, unique, du solveur, est bien sûr `p(2)`. En effet, si une proposition est vraie, il s'agit nécessairement de `p(2)`, par définition.
+Si aucune n'est vraie, alors `p(3)` pourrait être valide… Sauf que dans un tel cas, la proposition n'est plus vraie.
+Par conséquent, il n'existe aucun modèle stable dans lequel `p(3)` serait valide.
+
 
 
 # Recherche de vérité
