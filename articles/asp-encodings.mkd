@@ -1,4 +1,4 @@
-Title: Answer Set Programming — Efficacité des encodings
+Title: Answer Set Programming — De l'espace de recherche à l'efficacité des encodings
 Date: 2018-04-13
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
@@ -15,11 +15,17 @@ qui répondent à la même question.
 On commence par une réflexion sur la notion d'espace de recherche, histoire d'être au clair dessus,
 puis on attaque les vrais morceaux qui eux parlent vraiment d'ASP dans la pratique.
 
+<br/>
+
+[TOC]
+
+<br/>
 
 # Notions d'espace de recherche
 Qu'est-ce qu'un espace de recherche ? C'est tout simplement l'espace dans lequel on cherche les solutions à un problème.
 Si la définition de l'espace de recherche est valide, toutes les solutions vont s'y trouver.
-Si au contraire elle est fausse, une partie des solutions (ou toutes) ne s'y trouvera pas. Généralement dans ce case, On dit qu'il y a un *bug* dans la définition, et on la modifie pour la rendre valide.
+Si au contraire elle est fausse, une partie des solutions (ou toutes) ne s'y trouvera pas. Généralement dans ce case, On dit qu'il y a un *bug* dans la définition,
+et on la modifie pour la rendre valide.
 
 Maintenant, une définition peut être valide, mais complètement inutile : l'espace de recherche contient bien toutes les solutions, mais il est tellement grand qu'il est très long de toutes les récupérer.
 
@@ -46,9 +52,10 @@ Bref, le bon espace de recherche, c'est maison-jardin-garage :
 Mes clefs ne peuvent pas être ailleurs, et il est suffisamment petit pour être exploré en pratique.
 
 Notez que, pour être exact, l'espace de recherche valide minimal *assuré* est la sphère centrée sur moi d'un rayon de 5 minutes lumière. Mais, en posant l'hypothèse que ni moi ni mes clefs n'avons voyagé à la vitesse de la lumière ces cinq dernières minutes, on peut restreindre cet espace.
+De plus, je ne me suis pas déplacé à plus de 8km/h depuis 5 minutes, et mes clefs, elles, n'ont pas la capacité de se déplacer d'elles-même.
 D'autres hypothèses sur nos capacités de course, de forage ou de vol permettent de restreindre encore l'espace, jusqu'à le limiter au terrain praticable par moi et mes clefs en 5 minutes.
 
-En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (ou du moins l'heuristique).
+En ASP, les clefs sont la ou les solutions que l'on cherche, et nous, qui parcourons l'espace à la recherche des-dites solutions, sommes le solver (et nous suivons une heuristique de recherche).
 
 ## Retour à ASP
 On comprend maintenant que pour un problème donné, on peut définir différemment l'espace de recherche, et que si on le modélise trop grand,
@@ -201,7 +208,7 @@ et un moindre travail de vérification à réaliser sur chaque modèle.
 
 Par conséquent : gain de temps.
 
-En général, gardez un œil sur l'équilibre en génération et contraintes :
+En général, gardez un œil sur l'équilibre génération/contraintes :
 s'il est souvent préférable d'utiliser les contraintes (ne serais-ce que parce que c'est plus simple et lisible),
 parfois on met sous contrainte des propriétés qui sont pourtant très simples à mettre dans la génération.
 
@@ -253,7 +260,7 @@ La clef du truc, c'est de bien comprendre ce que fait le grounding : il enlève 
 Mais pas seulement : le grounding, c'est aussi l'occasion de faire des traitements simples.
 Par exemple, si une règle/contrainte ne dépend d'aucun choix, elle peut être utilisée pendant le grounding pour compléter ou diminuer le grounding final.
 
-L'autre truc qui se passe pendant le grounding, c'est les comptages… si c'est possible. Et c'est là où ça coince. Dans le premier code, le nombre d'atomes two/2 est connu au grounding : le grounder connaît toutes les valeurs de `val/1`, et il sait faire des maths de base, donc il peut générer sans se tromper tous les atomes `two/2` valides. Et lorsqu'il rencontre la ligne 4, il substitue le `N={two(_,_)}.` par `N=XXX` avec XXX le nombre d'atomes two/2 qu'il a généré, et en déduis l'atome count/1 à rendre vrai.
+L'autre truc qui se passe pendant le grounding, c'est les comptages… si c'est possible. Et c'est là où ça coince. Dans le premier code, le nombre d'atomes two/2 est connu au grounding : le grounder connaît toutes les valeurs de `val/1`, et il sait faire des maths de base, donc il peut générer sans se tromper tous les atomes `two/2` valides. Et lorsqu'il rencontre la ligne 4, il substitue le `N={two(_,_)}` par `N=XXX` avec XXX le nombre d'atomes two/2 qu'il a généré, et en déduis l'atome count/1 à rendre vrai.
 Vous voulez vous en convaincre ? Utilisez l'option `--text` de clingo sur le premier programme pour voir ce qui est généré : la liste des atomes valides. Par exemple, voilà les dernières lignes du grounding que j'obtient :
 
     two(4,116).
@@ -287,7 +294,7 @@ Sauf que, maintenant, pour count/1, l'histoire est différente, même carrément
 
 Oui, le milieu est tronqué. Parce qu'il y a près d'un million de caractères par ligne. Et il y a dix lignes, car il y a 10 modèles.
 
-Vous comprenez ce qui se passe ? C'est monstrueux : le grounder n'est pas capable de résoudre ce problème de comptage, donc il le laisse au solveur, avec toutes les infos dont il a besoin :
+Vous comprenez ce qui se passe ? C'est monstrueux : le grounder n'est pas capable de résoudre ce problème de comptage, donc il le laisse au solveur, avec *toutes* les infos dont il *pourrait* avoir besoin :
 c'est-à-dire, pour chaque atome qui *pourrait* être impliqué dans le comptage,
 l'expression `0,two(119,1):two(119,1);`, qui indique au solveur de compter zéro
 si l'atome `two(119,1)` est vrai. Pour __tous les atomes__.
@@ -318,7 +325,7 @@ Peut-être dans une prochaine version ?
 
 ### Diverses conséquences
 En fait, #count n'est pas le seul à être concerné. #min, #max, #minimize, #maximize,… Toutes ces directives de métaprogrammation peuvent être sources de ralentissements assez importants.
-Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, c'est dur.
+Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, cela nécessite une complexification du programme.
 Et parfois, c'est juste impossible, et il faut faire avec.
 
 
@@ -328,5 +335,12 @@ Comme toujours en optimisation, il n'y a pas de solution universelle : chaque ca
 Cela étant dit, une bonne connaissance des outils utilisés et des problèmes traités est primordiale pour savoir quoi mesurer, sur quels leviers agir,
 et finalement comment se dépatouiller avec les gros problèmes.
 
-Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution.
-C'est juste un moyen de retarder les ralentissements.
+Mais, au final, si votre problème est de grande complexité, une optimisation n'est pas une solution, mais juste un moyen de retarder les ralentissements.
+
+
+
+<br/>
+
+
+Merci d'avoir lu ! Si vous avez des corrections à apporter, vous pouvez le faire [via git](https://github.com/Aluriak/blog-content),
+et sinon, envoyez moi [un mail à prénom@nom.net](mailto:prénom@nom.net?subject=\[tuto ASP/encodings\]).

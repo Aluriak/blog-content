@@ -1722,8 +1722,12 @@ C'est fou l'informatique.
 
 On peut facilement imaginer la suite de cette application : faire une interface pour pouvoir définir les places, les contraintes, et voir les solutions.
 Faites ça sur mobile, et voilà, vous avez une application portable de placement de table complète que vous pouvez vendre.
-N'oubliez pas de faire une distribution pour ordinateur normaux, histoire de pouvoir travailler sérieusement sur les placement de table importants
-(comme les mariages, où on atteint vite la centaine de personnes).
+N'oubliez pas de faire une distribution pour ordinateur normaux, histoire de pouvoir travailler sérieusement sur les placement de table importants,
+comme les mariages, où on atteint vite la centaine de personnes (je vous ai déjà dit que j'aimais pas les ordiphones ?).
+
+Dans la même veine, vous pouvez vous intéresser au placement des gens dans votre lieu de travail,
+en prenant en compte les préférences de chacun en matière de cohabitation professionnelle.
+C'est un travail que j'ai attaqué avec le projet [Cathplace](https://github.com/Aluriak/Cathplace), qui propose notamment une interface graphique pour visualiser les résultats.
 
 
 
@@ -1769,7 +1773,7 @@ vous allez avoir *exactement* 1 modèle/answer set, contenant 3 ou 6 atomes selo
 
 Pour être plus rigoureux, dans les deux cas les atomes vérifiés dans le modèle sont strictement identiques,
 c'est juste qu'avec la dernière ligne, seuls 3 sont affichés (ceux ayant `b` comme prédicat).
-**Show change les atomes affichés, pas les answer sets.**
+**#show change les atomes affichés, pas les answer sets.**
 
 Notez la manière dont on renseigne *l'ensemble des atomes de prédicat `b`*: en utilisant une notation très courante dans le monde de la programmation logique: `<prédicat>/<arité>`.
 Si vous remplacez le 1 par un 2, clingo n'affichera rien : il va en effet afficher uniquement les atomes de prédicat `b` avec deux arguments, c'est-à-dire, dans ce cas précis, aucun.
@@ -1778,13 +1782,15 @@ Si vous remplacez le 1 par un 2, clingo n'affichera rien : il va en effet affich
 *Regardez, ce programme fait bugger clingo ! Il lui fait afficher 3 fois la même réponse ! Alors que normalement c'est pas possible, on l'a vu dans une section précédente !*
 
 ```asp
-a(1;2;3).
-b:- a(X).
-#show b/0.
+1{a(1..3)}1.
+#show.
+#show b.
 ```
 
 Bon, vu que vous avez lu le paragraphe sur `#show`, vous ne vous êtes pas fait avoir :
 ce n'est pas trois answer set équivalents, mais 3 différents qui sont affichés pareil.
+
+Bon, pour le moment, les deux dernières lignes semblent assez inexplicables, alors allons explorer les subtilités de cette directive.
 
 
 ### Le côté obscur de #show
@@ -3177,6 +3183,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 - [clyngor](https://github.com/aluriak/clyngor) : un package pour appeler et gérer clingo depuis python.
 - le jeu Warzone 2100 [utilise ASP pour la génération de cartes](http://warzone2100.org.uk/about.html).
 - [l'atterisseur Philae utilisait la programmation par contrainte](https://www.ibm.com/developerworks/community/blogs/jfp/entry/how%5Fwere%5Frosetta%5Fphilae%5Foperations%5Fscheduled?lang=en) pour organiser le lancement des appareils de mesure en fonction de l'énergie restante, de la position de Rosetta,…
+- [Angry-HEX](https://demacs-unical.github.io/Angry-HEX/), une intelligence artificielle pour le jeu Angry Birds, est implémentée en [ASP](http://www.kr.tuwien.ac.at/research/systems/dlvhex).
 
 
 ## And now, for something totally different
