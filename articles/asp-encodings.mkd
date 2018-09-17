@@ -328,6 +328,9 @@ En fait, #count n'est pas le seul à être concerné. #min, #max, #minimize, #ma
 Il est nécessaire de prendre conscience de cette propriété, et d'éviter au maximum leur effet retord, même si parfois, cela nécessite une complexification du programme.
 Et parfois, c'est juste impossible, et il faut faire avec.
 
+Si vous voulez un exemple plus «vivant» du problème, allez voir [le code stair-fixer](https://github.com/Aluriak/learning-ASP/blob/master/stair-fixer.lp),
+et notamment [le commit qui le réimplémente](https://github.com/Aluriak/learning-ASP/commit/0150b454c3d2debf1e6c66e3f079b18bf6f391ba) de manière efficace.
+
 
 # Conclusions
 Comme toujours en optimisation, il n'y a pas de solution universelle : chaque cas est particulier.
