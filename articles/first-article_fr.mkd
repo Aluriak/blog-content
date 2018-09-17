@@ -20,8 +20,8 @@ Une sorte d'exutoire, donc.
 
 Niveau informatique, ce sera probablement en rapport avec python,
 le langage avec lequel je développe de préférence, ou avec un domaine plus langage-agnostique.  
-Il est assez improbable qu'[ASP](https://en.wikipedia.org/wiki/Answer_set_programming)
-ne soit pas de la partie, car j'ai pas mal de choses à tripatouiller avec.
+Il est assez improbable qu'[ASP](https://en.wikipedia.org/wiki/Answer%5Fset%5Fprogramming)
+ne soit pas de la partie, car j'ai pas mal de choses à tripatouiller avec (EDIT: c'est même un sujet récurrent, avec [un tuto]({filename}/articles/asp-tuto.mkd), maintenant).
 
 Un autre usage est la présentation de projets persos, histoire de répondre
 à des questions qui n'ont pas leur place dans le README.
@@ -48,16 +48,15 @@ Normalement, je devrais publier régulièrement, en anglais ou en français, et 
 En théorie, je suis sensé apprendre des trucs avec ce serveur, car c'est l'occasion de me mettre au [*web*](http://i.imgur.com/kSh5G5o.gif).  
 
 Et j'ai d'ailleurs déjà commencé : des extensions de pélican dans tous les sens, des configs pour automatiser les tâches répétitives…
-J'ai même commencé à développer mon moteur [shaarli-like](https://github.com/Aluriak/shaarpli).
-Bref, ça me simplifie des problèmes que je n'aurais pas eu si j'étais resté tranquille.
+J'ai même commencé à développer mon moteur [shaarli-like](https://github.com/Aluriak/shaarpli), qui a été remplacé par une seconde instance pelican et des scripts bashs/systemd pour l'automatisation, donnant [/links](https://lucas.bourneuf.net/links)).
 
 
 ### TODO-LIST
 
-- [ ] automatiser le système d'envois des articles
+- [v] automatiser le système d'envois des articles
     - [v] via ssh
     - [v] via rsync
-    - [ ] heuristique de publication automatique
+    - [v] heuristique de publication automatique
     - [v] upload sur IPFS
     - [s] il y a même une gateway IP{[F](https://bourneuf.net/ipfs),[N](https://bourneuf.net/ipns)}S !
 - [ ] blog theme
@@ -99,12 +98,12 @@ Bref, ça me simplifie des problèmes que je n'aurais pas eu si j'étais resté 
     - [ ] requête de liens
     - [ ] BMB
 - [ ] peupler le serveur de services
-    - [ ] [serveur mail](http://i.imgur.com/gQJAa4m.gifv)
+    - [ ] serveur mail
     - [ ] gitlab ou gogs, à voir
     - [ ] diaspora
     - [x] shaarli
     - [v] shaarpli
-    - [ ] un nœud IPFS, pour la gloire
+    - [v] un nœud IPFS, pour la gloire
 - [v] push blog code on github
     - [v] config
     - [v] published content

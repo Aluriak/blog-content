@@ -1,12 +1,12 @@
 Title: Answer Set Programming — De l'espace de recherche à l'efficacité des encodings
-Date: 2018-04-13
+Date: 2018-09-16
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: une quête annexe pour le tuto ASP
 Slug: asp-encodings
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 Cet article est une (quête) annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant aux différences de performances entre différents encodings
