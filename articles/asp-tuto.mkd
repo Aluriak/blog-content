@@ -52,13 +52,8 @@ Si ça ne vous motive pas, [installez](#compilation) directement,
 et commencez à jouer avec [l'introduction du langage](principes-danswer-set-programming).
 
 ## Quêtes annexes
-D'autres articles de ce blog à propos d'ASP s'intègrerons bientôt dans ce tuto, sous la forme de lien à cliquer.
-Il s'agit, par référence aux jeux vidéos, de *quêtes annexes* optionnelles et indépendantes du reste.
-
-Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page web ;)
-
-<!-- D'autres articles de ce blog à propos d'ASP s'intègrent dans ce tuto. Il s'agit, par référence aux jeux vidéos, de *quêtes annexes* optionnelles et indépendantes du reste. -->
-<!-- Une compréhension de base du langage est parfois nécessaire, donc n'allez sur les quêtes annexes qu'après avoir avancé un peu sur la quête principale (le présent tuto, donc). -->
+D'autres articles de ce blog à propos d'ASP s'intègrent dans ce tuto. Il s'agit, par référence aux jeux vidéos, de *quêtes annexes* optionnelles et indépendantes du reste.
+Une compréhension de base du langage est parfois nécessaire, donc n'allez sur les quêtes annexes qu'après avoir avancé un peu sur la quête principale (le présent tuto, donc).
 
 <!-- - [Observateurs]({filename}/articles/asp-observateurs.mkd), un moyen pour suivre, gérer et étendre le grounding -->
 <!-- - [Propagateurs]({filename}/articles/asp-propagateurs.mkd), un moyen pour suivre, gérer et étendre le solving -->
@@ -67,8 +62,11 @@ Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page w
 <!-- - [Theory Atoms]({filename}/articles/asp-theory-atoms.mkd), pour manipulation avancée de l'heuristique -->
 <!-- - [Variantes de solving]({filename}/articles/asp-variantes-solving.mkd), où l'on parle de multi-shot et iterative solving -->
 <!-- - [Jeux de logique]({filename}/articles/asp-jeux-logique.mkd), résolution d'énigmes logiques trouvées sur internet -->
-<!-- - [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle des coûts induits par certains encodings -->
+- [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle d'espace de recherche et des coûts induits par certains encodings
 <!-- TODO: search for /asp- to find inline references to sidequests -->
+
+Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page web ;)
+
 
 ## Quelques liens préliminaires
 *Où l'on se demande pourquoi faire un tuto si c'est pour envoyer tout le monde voir ailleurs*
