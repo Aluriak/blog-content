@@ -19,14 +19,15 @@ The basic example is this piece of code:
     ```
 
 Here, it's written in a way that it will not be interpreted by markdown to HTML compiler, but rendered as-is, like `<pre>` in HTML.
-Now, i can write it as any markdown, and i got this:
+Now, if i write it as any markdown in my text editor, and compile my website, i got this:
 
 ```genmark
 print('__this is a bold text in markdown/HTML__')
 ```
 
 Nothing big here : the plugin matches the triple-quotes notation and whatever is inside, run the corresponding python code to get its output. It then replace the code by the output.
-Now, this allows us to do a little work. You maybe saw my tutorial for Answer Set Programming ? And all other tutorials about ASP, Python, and other things ?
+Now, this allows us to do a little work. You maybe saw [my (french) tutorial for Answer Set Programming]({filename}/articles/tuto-asp.mkd) ?
+And all other tutorials about ASP, Python, and other things ?
 
 My questions are: *how many times is written names of languages ? Of humans, like Carl Sagan ? Of subjects, like 'space' or 'logic' ? Do i write more 'python' or 'Python' ?*
 
@@ -37,13 +38,14 @@ Or, and that's the point of the article, i can embed in the article the python c
 
 First, we need a way to retrieve content of all articles:
 
-```python
+```genmark interpret=both
 from glob import glob
 from unidecode import unidecode
 from collections import Counter
 # get words of all articles
 def gen_words():
     for article in glob('./content/articles/*.mkd'):
+        if article == './content/articles/genhtml.mkd': continue  # ignore this article
         words = unidecode(open(article).read()).split()
         yield from (word.strip(' \n\t.!?:;,/"\'') for word in words if word)
 words = Counter(gen_words())
@@ -54,11 +56,11 @@ and the `str.strip` to ensure a minimal number of punctuation noise.
 
 Now, we have to ask ourselves, which words do we want to match ?
 
-```python
+```genmark interpret=both
 CATEGORIES = {
     'languages': {'python', 'markdown', 'asp', 'c', 'c++', 'java', 'rust', 'ruby', 'html', 'perl', 'ada', 'lisp'},
     'humans': {'sagan', 'rossum', 'einstein'},
-    'subjects': {'space', 'logic', 'game'},
+    'subjects': {'space', 'logic', 'game', 'SpaceEngine'},
 }
 ```
 
@@ -67,7 +69,7 @@ With three categories, we will get 6 charts.
 
 Let's now define a function that, according to a `Counter` and a title, build a pie chart:
 
-```python
+```genmark interpret=both
 def make_pie(counts:str, title:str):
     "build & print a pie chart of given counts and title"
     labels, values = zip(*counts.items())
@@ -90,75 +92,48 @@ def make_pie(counts:str, title:str):
 Note that the function *prints* the output, which is in our case some plotly HTML/JS code that implements an interactive pie chart.
 Now, we need a fonction that will compute the subset of the `words` dict that match a particular category. It will do it twice, and call accordingly the `make_pie` function twice:
 
-```python
-def make_category(category:str, title:str):
+```genmark interpret=both
+def make_category(category:str, title:str=None):
     "build two pie charts for given categories"
-    categories = {k.lower(): v for k, v in words.items() if k.lower() in CATEGORIES[category]}
+    if title is None:
+        title = f'{category.title()}-related words in this blog articles'
     categories_casing = {k: v for k, v in words.items() if k.lower() in CATEGORIES[category]}
+    categories = defaultdict(int)
+    for word, count in categories_casing.items():
+        categories[word.lower()] += count
     make_pie(categories, title)
     make_pie(categories_casing, title + ' (case-sensitive)')
 ```
 
 And, finally, we will call the `make_category` for all available categories:
 
-```python
+```genmark interpret=both
 for category in CATEGORIES:
     make_category(category, f'{category.title()}-related words in this blog articles')
 ```
 
-This code can be put inside a triple-backquotes block, as explained earlier, in order to get the following (interactive!) pie charts:
+All these codes are put inside a triple-backquotes block, as explained earlier,
+in order to get the following (interactive!) pie charts by simple calls of `make_category('languages')`:
 
-```genmark interpret=both
-from glob import glob
-from unidecode import unidecode
-glob, unidecode
-# get words of all articles
-def gen_words():
-    for article in glob('./content/articles/*.mkd'):
-        words = unidecode(open(article).read()).split()
-        yield from (word.strip(' \n\t.!?:;,/"\'') for word in words if word)
-words = collections.Counter(gen_words())
+```genhtml global-env=true
+make_category('languages')
+```
 
-# categories of words to be plotted
-CATEGORIES = {
-    'languages': {'python', 'markdown', 'asp', 'c', 'c++', 'java', 'rust', 'ruby', 'html', 'perl', 'ada', 'lisp'},
-    'humans': {'sagan', 'rossum', 'einstein'},
-    'subjects': {'space', 'logic', 'game'},
-}
+Obviously, a call to `make_category('humans')` will produce the next charts:
 
+```genhtml global-env=true
+make_category('humans')
+```
 
-def make_pie(counts:str, title:str):
-    "build & print a pie chart of given counts and title"
-    labels, values = zip(*counts.items())
+Note that all words put in the `CATEGORIES` dictionnary are not necessarily in the data,
+since this article is taken out of scope.
 
-    data = go.Pie(
-        labels=labels, values=values,
-        hoverinfo='label+percent',
-        textinfo='value', textfont={'size': 15},
-        marker={'line': {'color': '#000000', 'width': 2}})
-    layout = go.Layout(
-        title=f'<b>{title}</b>',
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
-    )
-
-    figure = go.Figure(data=[data], layout=layout)
-    print(offline.plot(figure, output_type='div'))
-
-def make_category(category:str, title:str):
-    "build two pie charts for given categories"
-    categories = {k.lower(): v for k, v in words.items() if k.lower() in CATEGORIES[category]}
-    categories_casing = {k: v for k, v in words.items() if k.lower() in CATEGORIES[category]}
-    make_pie(categories, title)
-    make_pie(categories_casing, title + ' (case-sensitive)')
-
-# languages
-for category in CATEGORIES:
-    make_category(category, f'{category.title()}-related words in this blog articles')
+```genhtml global-env=true
+make_category('subjects')
 ```
 
 Well, that's a quick & dirty application of having python building the markdown/HTML.
 Next steps are [the README of genhtml](https://github.com/Aluriak/genhtml-markdown/blob/master/README.mkd),
 and the [examples](https://github.com/Aluriak/genhtml-markdown/tree/master/examples),
-
-showing for instance how to [draw images](https://github.com/Aluriak/genhtml-markdown/blob/master/examples/images.mkd) or [plot a networkx graph](https://github.com/Aluriak/genhtml-markdown/blob/master/examples/networkx%5Fand%5Fdot.mkd).
+showing for instance how to [draw images](https://github.com/Aluriak/genhtml-markdown/blob/master/examples/images.mkd)
+or [plot a networkx graph](https://github.com/Aluriak/genhtml-markdown/blob/master/examples/networkx%5Fand%5Fdot.mkd).
