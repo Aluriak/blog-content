@@ -25,6 +25,9 @@ I took me about 30 minutes to get Space Engine working.
 This blog post is a tutorial, with explanations and few screenshots, about how to install and run Space Engine 0.9.8.0 with PlayOnLinux 4.2.10.
 (This should be valid even for later versions of PlayOnLinux and SpaceEngine ; until SpaceEngine officially get the linux native support)
 
+This blog hosts way more about SpaceEngine, like the [Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd),
+[constellations (french)]({filename}/articles/constellations-depuis-space-engine_fr.mkd), or the [logical modding language]({filename}/articles/se-lang.mkd).
+
 
 # Get PlayOnLinux
 Depends of your [distributions](https://www.playonlinux.com/en/download.html).
