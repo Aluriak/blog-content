@@ -62,7 +62,7 @@ In order to simplify our future life, we will add one icon to launch Space Engin
 click *Next* two times (you can change the shortcut name between the two *Next*),
 then click *I don't want to create new icons*, then *Next*.
 
-Now, Space Engine is ready to be launched. Try it yourself !
+Now, Space Engine is ready to launch. Try it yourself !
 If it does not work (like in my case), it is probably because of the new wine version.
 
 Consequently, we will change the wine version to use by clicking on our shortcut in the list
@@ -86,13 +86,17 @@ Now try again to run Space Engine.
 ## error !
 If it do not work, try other versions of Wine (the most recent first).
 
+If [the troobleshoot can't help you](http://forum.spaceengine.org/viewtopic.php?f=5&t=78),
+double-check your [GPU support](https://www.game-debate.com/games/index.php?g_id=7682&canMyGpuRunIt=Space%20Engine)
+and ask for help on [the forum](http://forum.spaceengine.org).
+
 
 # Easy run
 Remember that, in order to run a PlayOnLinux application, you do not need to start its GUI ; just type this simple command:
 
      playonlinux --run SpaceEngine
 
-I mapped this command with one keystroke ; now space engine is running like a charm.
+I mapped this command with one keystroke ; now space engine is running as soon as i hit the key.
 
 # Migration
 If you had a previously installed instance of Space Engine, you may want to keep saves, journal, screenshots,…
@@ -111,10 +115,10 @@ You may want to copy:
 - `screenshots`: contains all screenshots taken from SE
 
 
-# What next ?
+# What's next ?
 Install [additional music](http://forum.spaceengine.org/viewtopic.php?f=3&t=163),
 like [Emmitremus' *Welcome to Nova*](https://www.jamendo.com/track/1219424/welcome-to-nova) that fits Space Engine wonderfully.
 
 Install [other mods](http://forum.spaceengine.org/viewtopic.php?f=3&t=142) for new spacecraft and systems,
-or try the [ultimate engineered solar system](https://lucas.bourneuf.net/blog/uess.html) for yourself,
+or try [Sean Raymond's Ultimate Engineered Solar System]({filename}/articles/the-ultimate-engineered-system-on-space-engine_en.mkd) for yourself,
 or install the [last patch implementing ephemerides](http://spaceengine.org/news/patch0980e/) (and therefore eclipses).
