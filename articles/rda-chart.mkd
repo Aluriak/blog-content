@@ -1,0 +1,173 @@
+Title: Générer des «Narrative Charts» pour Reflets d'Acide
+Date: 2018-09-28
+Modified: 2018-09-28
+Tags: python, stdlib
+Authors: Lucas Bourneuf
+Summary: génération de graphiques avec Python et RdA
+Slug: rda-chart
+lang: fr
+translation: false
+status: published
+
+La nuit dernière, la motivation est venue sous la forme d'une idée rigolote : XKCD avait fait des [movie narrative charts](https://www.xkcd.com/657/), qui représente, à un instant donné,
+les personnages qui sont ensembles. Les visualisations pour différents films, y compris pour *Le Seigneur des Anneaux* et *Jurassic Park*, rendent super bien et sont très rigolotes à explorer.
+
+D'où la question :
+
+<center>**Que faudrait-il pour reproduire ce genre de graphe pour [Reflets d'Acide](http://www.refletsdacide.com/) ?**</center>
+
+La réponse est dans ce billet, qui accompagne [un programme](https://github.com/Aluriak/rda-chart) qui s'occupe de générer les graphiques.
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+# Les données
+Le dépôt [Neamar/sagas-mp3](https://github.com/Neamar/sagas-mp3) contient, à ma connaissance, les données les plus à jour sur Reflets d'Acide.
+C'est un travail collaboratif impressionnant et, surtout, très facile à exploiter : les épisodes sont dans un format standard textuel
+facile à parser (j'ai même commencé [un package pour automatiser ça](https://github.com/Aluriak/pysaga)).
+
+Donc, on a accès, pour chaque épisode, pour chaque chapitre, pour chaque ligne de dialogue, au personnage qui parle,
+ce qu'il dit, et même les annotations qui expliquent les références et autres jeux de mot.
+Parfait ! C'est même plus qu'il n'en faut !
+
+
+# La théorie
+En considérant qu'un chapitre est une unité de temps et d'espace, on sait facilement qui est avec qui :
+si deux personnages parlent dans le même chapitre, ils sont ensembles.
+(on note la place particulière du Narrateur, que je vais généralement enlever des données pour cette raison)
+
+Maintenant, le mouvement : on relie deux chapitres pour chaque personnage en commun, à condition qu'il n'y ait aucun chapitre entre les deux qui contienne aussi le personnage
+(on relis de proche en proche, quoi).
+En d'autres termes, ce sont les personnages présents dans les chapitres qui définissent comment ceux-ci sont liés entre eux.
+
+Il y a aussi des questions plus complexes, comme les chapitres équivalents : des chapitres qui se suivent et contiennent exactement les même personnages, sans qu'ils n'aient été utilisés par un autre chapitre entre-temps.
+Plutôt que les afficher bêtement, ce qui alourdis le graphique sans être très informatif, on préférerais n'avoir
+qu'un seul groupe qui porte les noms de tous les chapitres qu'il représente.
+
+On note enfin certains personnages spéciaux : Travia, le groupe de gredins que rencontre Alia, Squikky et ses amis, ou encore le Capitaine Gloomy et son équipage…
+Tout ces personnages :
+
+- apparaissent une unique fois, ou
+- sont nombreux, mais apparaissent tous ensembles
+
+Les premiers peuvent être, pour les plus mineurs, retirés :
+ils sont endémiques à un chapitre qu'ils justifient d'eux-même : pas besoin de les placer dans la timeline.
+Je pense notamment à Rico, René, le prêtre prononçant l'exil de Tormys, Peggy, Gégène,…
+
+Les second gagneraient quant à eux à être «compressés» en un seul, afin de gagner de la place, et donc en lisibilité.
+
+
+# La pratique
+Ces derniers temps, je joue pas mal avec [plotly](https://plot.ly), qui a l'avantage d'être utilisable en python
+et de produire des graphes interactifs en javascript. Préparez-vous à en manger !
+
+Le code python [est disponible ici](https://github.com/Aluriak/rda-chart). Il consiste en les routines qui extraient l'information,
+calculent le graphique final, et en une interface en ligne de commande qui permet de jouer avec différents paramètres,
+tels que les personnages à considérer, les épisodes à étudier,…
+
+Dans le code, on trouvera notamment des [listes d'alias](https://github.com/Aluriak/rda-chart/blob/master/definitions.py),
+ou de personnages à ignorer, permettant de contrôler finement ceux qui seront présents dans le graphique
+(ces listes étant utilisées comme valeur par défaut quand le programme est lancé en ligne de commande).
+
+
+# Les résultats
+Je donnerais à chaque fois la commande qui a permit de générer le graphique, et le graphique lui-même.
+
+```genhtml
+# cette fonction est là pour automatiser l'affichage des plots.
+def plot(name:str):
+    # print le code qui print les lignes (sauf la première, qui contient un backlink)
+    print(f"```genhtml\nprint('\\n'.join(open('content/images/rda/{name}.htm').readlines()[1:]))\n```")
+    print(f"<center>[ouvrir en grand]({{filename}}/images/rda/{name}.htm), en [noir]({{filename}}/images/rda/{name}-black.htm)</center>")
+```
+
+## Complet de 6
+Un simple d'abord : je veux l'évolution des personnages durant les 6 premiers épisodes.
+
+    python cli.py 1 6 -m -b -io -i narrateur tous groupe -t "Timeline des 6 premiers épisodes de Reflets d'Acide"
+
+Notons que j'enlève le narrateur, car il est partout, et casse donc un peu la visualisation,
+et les méta-personnages comme «tous» et «groupe».
+
+Et on obtient :
+
+```genhtml global-env=true
+plot('complète-1-6')
+```
+
+C'est facile à suivre, et on voit d'ailleurs que le dénominateur commun, c'est les 4 compagnons.
+L'intégration de Trichelieu au chapitre 3 de l'épisode 5 se voit bien, et on le voit continuer avec les autres.
+À ce moment de la saga, il n'y a pas encore assez de protagonistes pour avoir des chapitres dédiés à d'autres personnages.
+Remarquez qu'ils vont arriver vite, et bientôt, la piste suivie par le groupe sera moins évidente.
+
+
+## Partiel de 12
+Poursuidont avec un graphique légèrement plus complexe, avec plus de personnages, et sur les 12 premiers épisodes.
+
+    python cli.py 1 12 -m -b -io -r default -t "Timeline simplifiée des 12 premiers épisodes de Reflets d'Acide"
+
+Qui nous donne :
+
+```genhtml global-env=true
+plot('simplifiée-1-12')
+```
+
+Les chemins parallèles de l'histoire sont visibles ! Morthys, Kyo, Moumoune, Alia,…
+On voit par exemple très bien la renconte entre Roger, Moumoune et Alia, momentanément séparés par l'invocation de Roger
+qui retrouve le groupe dans le chapitre 7, puis le retour auprès des deux femmes, pour aller trouver Kyo, puis enfin le Devin.
+
+On trouve aussi la première apparition de Morthys, qui n'est alors qu'une voix lointaine dans la boule de Sacher-Masoch, escorté par Kyo.
+
+On trouve aussi quelques détails amusants : par exemple le premier chapitre de l'épisode 7,
+où Zarakaï se trouve seul, foulant du pied les poésies du Narrateur.
+
+Et enfin, la fin : on voit l'apparition de Bélial avec son fils, et sa rencontre avec le groupe.
+
+
+## Complet de 16
+Enfin, voici le boss final : tous les épisodes, et tous les personnages qui durent sur plus d'un chapitre :
+
+    python cli.py 1 16 -m -io -i default -t "Timeline complète de Reflets d'Acide"
+
+Et on obtient le gloubi-boulga suivant :
+
+```genhtml global-env=true
+plot('complète-1-16')
+```
+
+Celle-ci semble a priori terrible, mais en réalité, il suffit de l'ouvrir sur un écran suffisamment large pour voir apparaître de magnifiques courbes !
+
+Même sans zoomer, on devine bien le chemin suivis par le groupe, et les quelques chapitres faisant intervenir des personnages de manière unique :
+par exemple, les personnages d'Adoprixtoxis qui sont réuni en un seul méta-personnage éponyme, ou Travia, ou encore les disciples de Shamrodia.
+
+On voit également Gertrude, qui fait un sacré bond dans les épisodes, ainsi que tous les personnages des derniers épisodes, comme Thormys et Vine.
+
+On voit aussi le petit tour aux enfers de Bélial, qui débute avec le combat contre Alia et se termine avec l'ouverture du portail dans le dernier épisode.
+Et Roger qui se retrouve au milieu de tout ça.
+
+
+# Conclusions
+Avec un peu de python, des données bien formées et une librairie graphique, il est assez simple de faire des visualisations rigolotes.
+Ici, elles mériteraient d'être travaillées à la main, car elles sont franchement brouillon par endroit,
+mais c'est déjà assez fou de pouvoir générer cela automatiquement !
+
+Plotly souffre de quelques limitations (zoom, notamment), mais reste un excellent moyen de faire des visualisations en quelques lignes.
+Le plus long ici a clairement été de traiter les données pour les structurer convenablement.
+
+Maintenant, il y a moyen de jouer avec le programme : il y a [plein de paramètres](https://github.com/aluriak/rda-chart#Paramtres-du-CLI) sur lesquels jouer.
+
+Il reste aussi plein d'améliorations possibles sur le programme lui-même, comme pouvoir mettre en surbrillance certains personnages, ou l'interface,
+vu que les données sont là, avec les deux autres sagas Xantah et Adoprixtoxis.
+
+Enfin, ce petit projet d'un jour aura permit, entre autres, de détecter de nombreuses inconsistances dans les données,
+allant des sauts de ligne superfêtatoires à des de noms fluctuant avec les chapitres (Sacher-Masoch devenant Sacher, la Grenouille devenant la Genouille, ou Morthys perdant son h).
+
+
+Morale de la fin :
+
+<center>*Pour gérer Reflets d'Acide, il faut un écran très large.*</center>
