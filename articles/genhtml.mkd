@@ -92,7 +92,7 @@ def make_pie(counts:str, title:str):
 Note that the function *prints* the output, which is in our case some plotly HTML/JS code that implements an interactive pie chart.
 Now, we need a fonction that will compute the subset of the `words` dict that match a particular category. It will do it twice, and call accordingly the `make_pie` function twice:
 
-```genmark interpret=both
+```genmark interpret=both global-env=true
 def make_category(category:str, title:str=None):
     "build two pie charts for given categories"
     if title is None:
