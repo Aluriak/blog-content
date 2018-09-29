@@ -1,0 +1,514 @@
+Title: Answer Set Programming — bouteilles pleines et logique temporelle
+Date: 2018-09-30
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-temporal
+Lang: français
+Translation: false
+Status: published
+
+
+
+Le weekend dernier, avec [un ami](http://dridk.me), on s'est intéressés à une énigme.
+La question que l'on s'est posée est évidemment :
+comment résoudre cette énigme de manière systématique, i.e. comment la formaliser pour la résoudre ?
+
+L'ami sus-nommé a dessiné des graphes, pendant que j'expliquai le problème à [ASP]({filename}/articles/asp-tuto.mkd).
+Comme nous sommes tous les deux arrivés à une modélisation du problème, nous avons décidé de relâcher ensembles
+nos conclusions respectives, sur nos blogs, respectifs également.
+
+Les questions adressées dans ce billet sont donc :
+
+1. peut-on encoder l'énigme en ASP ?
+2. et la corrolaire : existe-t-il des approches plus adaptées ?
+
+De son côté, [Sacha aborde la question](http://dridk.me/graph-solution-exploration.html) de la modélisation à l'aide de graphes :
+
+3. Comment modéliser le problème avec un graphe ?
+
+La troisième question est importante, car c'est le premier pas vers la formalisation complète du problème,
+et donc sa résolution avec un algo standard, donc bien maîtrisé, et un point de départ pour tout ce qui pourrait être extension ou vérification du problème.
+Bref, c'est comme le travail pour [un autre puzzle du jeu deponia]({filename}/articles/deponia-asp.mkd) : modéliser pour mieux comprendre les tenants et aboutissants de l'énigme,
+et permettre de systématiser la réponse à des questions, telles que : l'énigme est-elle soluble ? Combien de temps en moyenne mettra un joueur qui essaye les solutions une par une ?
+Comment complexifier ? Y a-t-il des erreurs dans l'énoncé qui pourraient mener à un comportement non voulu du programme ?
+
+La première question sera traitée dans la première partie. Sans vouloir spoiler, sachez qu'on va résoudre l'énigme.
+La seconde question nous ouvrira les portes d'une autre implémentation d'ASP permettant de réaliser
+ce qu'on appelle dans la langue de Batman la «*temporal logic*», ou *logique temporelle*.
+Il s'agit de raisonner avec des interactions dans le temps, ce qui, comme vous pouvez le deviner, est essentiel dans beaucoup d'applications.
+
+Cet article est de facto une (quête) annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
+qui s'intéresse aux notions de base et à l'extension du langage avec les opérateurs principaux de la *logique temporelle*.
+
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+# L'énigme
+> On possède 3 bouteilles A, B et C, ayant des contenances
+>  respectives de 10, 5 et 6 litres. La bouteille A nous est donnée pleine, et la bouteille B avec un seul litre.
+>  La bouteille C est donc vide.
+> Sachant qu'on ne peut transférer de l'eau qu'en vidant ou remplissant une bouteille,
+>  comment faire pour obtenir exactement 8 litres d'eau dans la bouteille A ?
+
+Elle est assez connue : je me souviens la première fois l'avoir bruteforcée
+sur le jeu [Runaway](https://fr.wikipedia.org/wiki/Runaway:%5FA%5FRoad%5FAdventure),
+et en avoir trouvé une autre variation dans [Deponia](https://fr.wikipedia.org/wiki/Deponia).
+
+
+
+# Encoding et résolution en ASP
+D'abord, encodons les objectifs :
+
+```asp
+#const max_move=10.  % on verra, si ça se trouve il faudra plus
+
+% Objectif: on vise 8 litres dans la bouteille a.
+#const obj_bottle=a.
+#const obj_quantity=8.
+```
+
+Il nous faut aussi nous assurer d'afficher les modèles qui nous intéressent,
+c'est-à-dire ceux qui terminent avec l'objectif remplis :
+
+```asp
+% On termine au step donné quand les contenances atteignent l'objectif.
+finished(Step) :- contient(Step,obj_bottle,obj_quantity).
+% Pas la peine de proposer une solution si elle ne marche pas.
+:- not finished(_).
+```
+
+Cela étant fait, on peut définir les contenances et tailles des trois bouteilles :
+
+```asp
+% 3 bouteilles
+bottle(a;b;c).
+% A: 10/10 litres
+contient(1,a,10).  max(a,10).
+% B:  1/5  litres
+contient(1,b,1).   max(b,5).
+% C:  0/6  litres
+contient(1,c,0).   max(c,6).
+```
+
+Et maintenant, écrivons les possibilités : à l'état initial, il est possible de verser A dans B ou C,
+ou de verser B dans C.
+De manière générale, on peut écrire :
+
+```asp
+% on peut transvaser d'une bouteille à l'autre.
+transvasable(Step,Source,Target) :-
+    % la source contient du liquide
+    contient(Step-1,Source,Q) ; Q > 0
+    % la target contient du ¬liquide
+    ; contient(Step-1,Target,R) ; R < Rmax ; max(Target,Rmax)
+    % On ne peut pas verser d'une bouteille à elle-même
+    ; Source!=Target
+    .
+```
+
+L'heuristique doit choisir une de ces possibilités, à moins qu'elle n'ait déjà trouvé une réponse
+ou épuisé son nombre de mouvements d'eau.
+C'est dans ce choix que réside toute la complexité : il va falloir durant le grounding explorer touts les chemins possibles,
+ce qui génèrera à n'en pas douter une fort belle explosion en mémoire.
+
+```asp
+% On choisi une possibilité, tant qu'on a pas tourné en rond ou trouvé la solution.
+0 { transvase(Step,Source,Target): transvasable(Step,Source,Target) } 1 :- transvasable(Step,_,_) ; Step>1 ; Step<=max_move ; not finished(Step-1).
+```
+
+Il nous faut déterminer aussi quelle sera la conséquence de notre choix.
+D'abord, il faut savoir quelle quantité exactement a été transvasée.
+Il s'agit ni plus ni moins de la quantité minimale entre la place libre dans la bouteille cible,
+et l'eau restante dans la bouteille source.
+
+```asp
+% Calcul des quantités transvasables
+transferrable(Step,Libre,Dispo) :- transvase(Step,Source,Target)
+    % place libre dans la cible
+    ; contient(Step-1,Target,PlacePrise) ; max(Target,PlaceMax) ; Libre=PlaceMax-PlacePrise
+    % quantité dispo dans la source
+    ; contient(Step-1,Source,Dispo)
+    .
+transferred(Step,Libre) :- transferrable(Step,Libre,Dispo) ; Libre<Dispo.
+transferred(Step,Dispo) :- transferrable(Step,Libre,Dispo) ; Libre>=Dispo.
+```
+
+Ensuite, il faut conclure sur les conséquences de notre choix : quelles sont les nouvelles contenances,
+sachant les bouteilles source et cible, et la quantité transferée ?
+
+```asp
+% On effectue le transvasement.
+contient(Step,Source,InitQ-RemovedQ) :- contient(Step-1,Source,InitQ)
+    ; transvase(Step,Source,_) ; transferred(Step,RemovedQ).
+contient(Step,Target,InitQ+RemovedQ) :- contient(Step-1,Target,InitQ)
+    ; transvase(Step,_,Target) ; transferred(Step,RemovedQ).
+contient(Step,Autre,Q) :- transvase(Step,Source,Target) ; bottle(Autre) ; Autre!=Source ; Autre!=Target ; contient(Step-1,Autre,Q).
+```
+
+Maintenant que de nouveaux atomes contient/3 avec une nouvelle valeur de step sont définit,
+le calcul va recommencer pour la prochaine étape. Super !
+
+Aussi, histoire de ne pas être noyé dans la sortie, on affiche juste ce qui nous intéresse : les opérations à faire, et les contenances au fil de l'eau :
+
+```asp
+#show.
+#show contient/3.
+#show transvase/3.
+```
+
+Le temps de calcul de la bête est assez elevé : c'est effectivement attendu.
+N'augmentez pas trop le nombre de mouvements maximums, ou vous allez avoir une réquisition de mémoire douloureuse…
+Et n'oubliez pas `--parallel-mode=N,split` pour utiliser vos N processeurs pour le solving (qui n'est pas très long, cependant).
+
+
+## Solution de l'instance
+La solution la plus rapide se fait en 8 mouvements, que voici :
+
+      a       b      c
+    10/10    1/5    0/6  initial
+     4/10    1/5    6/6  a>c
+     4/10    5/5    2/6  c>b
+     9/10    0/5    2/6  b>a
+     9/10    2/5    0/6  c>b
+     3/10    2/5    6/6  a>c
+     3/10    5/5    3/6  c>b
+     8/10    0/5    3/6  b>a
+
+Bon, voilà. Ça se trouvait «à la main» en quelques minutes, mais maintenant
+on a un code ASP pour toutes les instances à trois bouteilles !
+
+Les avantages de la modélisation !
+
+
+# Logique temporelle
+## késako ?
+La logique temporelle, avec les mains, c'est une logique dans laquelle on trouve des opérateurs qui travaillent sur le *temps*.
+Par exemple, *jusqu'à*, ou *pas avant*, ou encore *depuis*.
+Ces opérateurs permettent d'exprimer assez simplement des relations complexes entre des faits.
+
+Dans notre cas, on utilisera pas toutes ces logiques.
+
+## telingo
+Pour utiliser tout cela, on va utiliser [telingo](https://github.com/potassco/telingo).
+Telingo est, formellement parlant, une implémentation d'ASP qui supporte des opérateurs et syntaxes différentes.
+Dans la pratique, il s'agit d'un module python qui :
+
+- prend en entrée un code ASP+logique temporelle, avec la syntaxe que l'on va découvrir ensembles
+- compile ledit code comme un code ASP standard
+- appelle clingo sur le code ASP standard
+- retourne les modèles trouvés après les avoir transformés pour mieux faire ressortir la logique temporelle
+
+Bref, telingo, c'est une surcouche à clingo qui écrit pour nous le code relatif à la gestion du temps.
+
+Les opérateurs du temps dans telingo sont écrits avec [de nouvelles syntaxes](https://github.com/potassco/telingo#input),
+à base de guillemets, de chevrons et autres opérateurs mathématiques ou logiques.
+Nous verrons cela en temps voulu, ne vous précipitez pas tout de suite sur la doc.
+
+
+### installation
+Telingo est un package python qui nécessite que pyclingo soit installé.
+Pyclingo est disponible lorsque vous compilez vous-même votre clingo, et doit être installé manuellement.
+
+Telingo s'appelle ainsi :
+
+    python -m telingo mon-encoding.lp --imin=6 --imax=8
+
+Notez que les arguments de clingo sont disponibles, il seront bien passés au solveur (notamment en matière de multithreading).
+Les arguments `imin` et `imax` sont en revanche nouveaux et correspondent au nombre d'étapes minimales et maximales à réaliser.
+En clair, telingo gère tout seul l'argument `max_move` que l'on devait prendre en compte dans notre implémentation en pur ASP/clingo.
+Par défaustiesut
+
+D'ici quelques temps, quand telingo aura été bien polishé,
+on aura peut-être droit à un binaire auto-suffisant ?
+
+
+
+## Retour à nos bouteilles
+Décrivons maintenant le code ASP/telingo qui nous permet d'exprimer
+notre problème avec de la logique temporelle.
+
+Globalement, le code est très identique à celui de la section précédente. Il n'y a rien de nouveau,
+à l'exception des directives de méta-programmation `#program`, dont je n'ai pas encore parlé, parce que ça m'ennuie et qu'il y a beaucoup de choses à dire.
+Voici donc un petit aperçu de cette directive :
+
+### la directive #program
+Cette directive est la seule dont la position dans le fichier a une influence sur le déroulement du programme, ce qui déjà donne à réfléchir sur sa place dans nos cœurs
+(gagons qu'en boîtes de nuit pour langages déclaratifs, elle n'est pas populaire, et doit être souvent affublée de surnoms tels que «casseuse d'ambiance» ou «suppôt du procédural»).
+
+Pour faire simple, elle permet de déclarer des programmes indépendants au sein d'un fichier. Par exemple :
+
+```asp
+#program ation.
+a.
+#program ateur(p).
+b(p).
+```
+
+Ici, on déclare deux programmes : `ation` et `ateur`. Le premier contient l'atome `a`. Cela veut dire que si on le donne à manger au solveur,
+celui-ci nous dira qu'il existe un modèle contenant `a`. Vous pourriez mettre n'importe quel code ASP dans ce programme, ça fonctionnerais tout autant.
+Le second est globalement identique, à la différence qu'il a un argument, `p`, qui permet d'avoir un contrôle sur le programme groundé.
+(au passage : l'ordre des programmes ne change rien, et si deux programme ont le même nom, il seront considérés comme un seul programme)
+
+Si vous lancez clingo directement là-dessus, vous allez obtenir la même réponse que si **vous lui aviez donné un fichier vide !**.
+Pourquoi ? Parce que clingo utilise le programme `base`, et ignore les autres.
+Le programme *base* est, la vie est bien faite, le programme par défaut : d'une certaine manière nous utilisons toujours les programmes.
+C'est juste que, tant qu'on utilise pas explicitement `#program`, nous nous trouvons dans le programe *base*, et par conséquent tout fonctionne de manière transparente.
+Donc, vous avez deviné : si vous rajoutez des lignes avant le premier `#program`, clingo détectera ces lignes comme appartenant à *base*.
+
+D'ailleurs, cela explique que quand en python, on doit contrôler le grounding et solving à la main, on se retrouve à grounder le programe *base* avec zéro arguments.
+Et cela me fait une merveilleuse transition pour la suite :
+*Mais, si clingo n'utilise que le programme base, à quoi servent les autres ?*
+
+La réponse à cette question est assez longue à écrire. Il me faudra probablement deux ou trois annexes au tuto ASP, incluant celle-ci.
+Mais en clair : quand vous n'utilisez pas clingo depuis la ligne de commande, mais depuis un langage de programmation comme C ou Python,
+il est possible d'avoir un contrôle *très* fin sur les programmes à utiliser, et avec quels arguments quand ils en ont.
+En fait, une annexe ou deux seront dédiées à des technique de solving avancées qui utilise ce contrôle
+fin pour diminuer le temps de calcul des solutions optimales.
+Ces solutions consistent généralement à faire ce qu'on va faire dans la section suivantes : découper notre code en plusieurs programmes,
+qui auront chacun un rôle différent durant le solving.
+
+Et, à ce titre, la logique temporelle de telingo est une très bonne application du principe.
+
+### Retour au code
+Ouf !
+
+D'abord, on va juste écrire les constantes. Plus par habitude qu'autre chose. Notez la disparition de `max_move` ; nous verrons plus tard comment telingo gère cela
+(spoiler: plus proprement que nous avec notre contante).
+
+```asp
+% On vise 8 dans la bouteille a.
+#const obj_bottle=a.
+#const obj_quantity=8.
+```
+
+Nous allons maintenant déclarer le programme *always*, qui contient des déclarations qui seront toujours vraies,
+durant toute la durée du solving.
+Dans notre cas, il s'agit des identifiants et des contenances des bouteilles.
+
+```asp
+#program always.
+% 3 bouteilles
+bottle(a;b;c).
+max(a,10).  max(b,5).  max(c,6).
+```
+
+Maintenant, dans le programme *initial*, nous allons déclarer l'état… initial, évidemment !
+
+```asp
+#program initial.
+contient(a,10).  % A: 10/10 litres
+contient(b,1).   % B:  1/5  litres
+contient(c,0).   % C:  0/6  litres
+```
+
+Jusqu'ici, ça va, on s'est pas encore foulé de cheville.
+Bon, maintenant, faut s'accrocher, car vient la partie avec tous les `Step`, les calculs pour savoir quelles sont nos options,
+et quelles sont leurs conséquences : j'ai nommé le programme *dynamic*.
+
+```asp
+#program dynamic.
+% on peut transvaser d'une bouteille à l'autre.
+transvasable(Source,Target) :-
+    % la source contient du liquide
+    'contient(Source,Q) ; Q > 0
+    % la target contient du ¬liquide
+    ; 'contient(Target,R) ; R < Rmax ; max(Target,Rmax)
+    % On ne peut pas verser d'une bouteille à elle-même
+    ; Source!=Target
+    .
+
+% On choisi une possibilité, tant qu'on a pas tourné en rond ou trouvé la solution.
+0 { transvase(Source,Target): transvasable(Source,Target) } 1.
+
+% Calcul des quantités transvasables
+transferrable(Libre,Dispo) :- transvase(Source,Target)
+    % place libre dans la cible
+    ; 'contient(Target,PlacePrise) ; max(Target,PlaceMax) ; Libre=PlaceMax-PlacePrise
+    % quantité dispo dans la source
+    ; 'contient(Source,Dispo)
+    .
+transferred(Libre) :- transferrable(Libre,Dispo) ; Libre<Dispo.
+transferred(Dispo) :- transferrable(Libre,Dispo) ; Libre>=Dispo.
+
+% On effectue le transvasement.
+contient(Source,InitQ-RemovedQ) :- 'contient(Source,InitQ) ; transvase(Source,Target) ; transferred(RemovedQ).
+contient(Target,InitQ+RemovedQ) :- 'contient(Target,InitQ) ; transvase(Source,Target) ; transferred(RemovedQ).
+contient(Autre,Q) :- transvase(Source,Target) ; bottle(Autre) ; Autre!=Source ; Autre!=Target ; 'contient(Autre,Q).
+```
+
+Diantre ! Que voyons-nous ?
+
+- `Step` a disparu, aspiré par la logique temporelle.
+- une écriture zarbi avec un `'` avant certains atomes
+
+D'ailleurs, ces deux observations sont liées : COMME PAR HASARD, ce sont les atomes qui avaient
+comme premier argument `Step-1` qui se retrouvent avec un guillement devant…
+Bon, ok, c'est pas du tout un hasard : `'contient(a,10)` indique que l'atome `contient(a,10)` devait être vrai *avant*,
+ce qu'avant nous émulions en disant que .
+À l'inverse, `contient'(a,10)` indique qu'il doit être vrai *plus tard*.
+Comme dans le code initial nous n'utilisions que `Step-1`, nous n'avons besoin que de la première forme.
+Dans des problèmes plus complexes avec des interactions avec les atomes du futur, les opérateurs du futur devraient être utiles.
+
+L'opérateur «guillemet devant» nous permet ici de complètement occulter le compteur d'état `Step`,
+Ici, nous écrivons le code pour un temps donné, et telingo se charge seul de compiler tout ça avec les indices du temps,
+à notre place. C'est du travail en moins pour nous,
+et nous offre une multitude d'opérateurs pour exprimer des relations plus complexes que juste «il avait cette valeur juste avant».
+
+Enfin, une petite remarque : lorsque l'on choisi un transvase/2, on donne une borne minimale de zéro.
+C'est un choix, ça pourrait aussi être 1. Ici, ça ne change rien, si ce n'est qu'avec un 1
+j'observe un léger ralentissement. Je ne suis pas capable de l'expliquer.
+Dans d'autres problème, choisir 0 ou 1 pourrait avoir un sens
+(par exemple, des effets qui se font sentir si l'agent ne prend aucune décision).
+Ici, ça n'en a pas, pour la bonne raison que si on choisi de ne rien faire, il ne se passe rien.
+
+Bref, revenons à nos litres de flotte : voici la dernière partie de notre programme : le *final* !
+C'est ici que l'on va indiquer nos objectifs, sous la forme de contraintes
+qui *planteront tant que les objectifs ne sont pas atteints*.
+Ici, évidemment, il s'agit de planter tant qu'on a pas mis 8 litres dans la bouteille A :
+
+```asp
+#program final.
+:- not contient(obj_bottle,obj_quantity).
+
+#show contient/2.
+#show transvase/2.
+```
+
+Les show sont à la fin plus par habitude que par nécessité ; vous pouvez les mettre en réalité dans n'importe quel *#program*,
+et même au début si vous suivez les conseils de la sagesse du documentaliste.
+
+Au final, le code n'a pas gagné en complexité, au contraire : les 4 programmes permettent de découper logiquement notre problème,
+et on perd la notion d'index au profit des puissants opérateurs temporels (même si ici, on en utilise un seul).
+
+La question est maintenant : cet ASP/telingo, ça tient la route ?
+
+
+## Sortie de telingo
+Voici la sortie de telingo quand je lui donne la commande suivante à manger,
+avec `l.lp` le fichier contenant le code de la section précédente :
+
+    $ python -m telingo l.lp --imin=6 --imax=9 0
+    telingo version 1.0
+    Reading from l.lp
+    <string>:56:1-19: info: no atoms over signature occur in program:
+      transvase/3
+
+    Solving...
+    Solving...
+    Solving...
+    Solving...
+    Solving...
+    Solving...
+    Solving...
+    Solving...
+    Answer: 1
+     State 0:
+      contient(a,10) contient(b,1) contient(c,0)
+     State 1:
+      contient(a,4) contient(b,1) contient(c,6)
+      transvase(a,c)
+     State 2:
+      contient(a,4) contient(b,5) contient(c,2)
+      transvase(c,b)
+     State 3:
+      contient(a,9) contient(b,0) contient(c,2)
+      transvase(b,a)
+     State 4:
+      contient(a,9) contient(b,2) contient(c,0)
+      transvase(c,b)
+     State 5:
+      contient(a,3) contient(b,2) contient(c,6)
+      transvase(a,c)
+     State 6:
+      contient(a,3) contient(b,5) contient(c,3)
+      transvase(c,b)
+     State 7:
+      contient(a,8) contient(b,0) contient(c,3)
+      transvase(b,a)
+    SATISFIABLE
+
+    Models       : 1
+    Calls        : 8
+    Time         : 39.150s (Solving: 30.45s 1st Model: 25.67s Unsat: 4.73s)
+    CPU Time     : 39.084s
+
+Déjà, le premier truc qui frappe, c'est que la sortie est très semblable à celle de clingo. La grande différence réside dans le format de sortie des answer set,
+qui au lieu d'être un ensemble d'atomes, est désormais une liste *d'état*, les étapes que nous avons décrites dans notre code (chacun étant un ensemble d'atomes).
+
+Nous pouvons lire que le solver n'a trouvé qu'un seul modèle ayant entre 6 et 9 mouvements. Ça colle avec nos observations précédentes.
+
+La solution proposée par le solveur est la suivante :
+
+      a       b      c
+    10/10    1/5    0/6  initial
+     4/10    1/5    6/6  a>c
+     4/10    5/5    2/6  c>b
+     9/10    0/5    2/6  b>a
+     9/10    2/5    0/6  c>b
+     3/10    2/5    6/6  a>c
+     3/10    5/5    3/6  c>b
+     8/10    0/5    3/6  b>a
+
+Soit exactement la même que celle trouvée par notre code précédent.
+
+Néanmoins, il a battu notre version implémentée à la main, car il a eu besoin de presque 10 fois moins de temps pour parvenir au résultat. Super !
+(néanmoins, je soupçonne une consommation mémoire plus grande ; avec `--imax=10`, j'ai atteins les 32Go de RAM occupés en quelques minutes…)
+
+Cela est probablement dûs à deux facteurs :
+
+- notre code «naïf» n'est probablement pas aussi efficace que le code produit par telingo
+- contrairement à telingo, nous n'avions pas pu dire qu'il n'existait aucune solution utilisant moins de 7 mouvements, ce qui pourrait diminuer considérablement [l'espace de recherche]({filename}/articles/asp-encodings).
+
+On trouve aussi une indication à propos d'un atome transvase/3 ; j'avoue n'avoir aucune idée de l'origine de ce message,
+vu qu'aucun atome de ce type n'existe ni n'est référencé dans le code.
+Je table sur un bug de telingo. Affaire à suivre.
+
+
+## Aller plus loin avec la logique temporelle
+La beauté de cette logique particulière, c'est qu'avec des opérateurs comme *toujours après* ou *eventuellement avant*,
+vous pouvez avoir des interactions très complètes entre les différents moments de votre programme.
+
+Ici, on a pas touché à grand chose de l'implémentation telingo. En fait, on a utilisé un seul opérateur du langage,
+alors qu'il en existe [une bonne vingtaine](https://github.com/potassco/telingo/#input).
+
+Si la question vous intéresse, allez voir d'autres puzzle proposés dans le projet telingo lui-même,
+comme «[le singe et la banane](https://github.com/potassco/telingo/tree/master/examples/monkey)»,
+[les tours de hanoï](https://github.com/potassco/telingo/tree/master/examples/hanoi) ou encore
+«[le renard la chèvre et le chou](https://github.com/potassco/telingo/tree/master/examples/river-crossing)».
+
+Si c'est la logique temporelle elle-même qui vous intéresse, les mot-clefs et une description franchement claire
+sont dans [la page wikipédia](https://fr.wikipedia.org/wiki/Logique%5Ftemporelle).
+La logique sur laquelle ASP/telingo s'appuie est, si mes souvenirs sont bons, la [LTL](https://fr.wikipedia.org/wiki/Logique%5Ftemporelle%5Flin%C3%A9aire).
+
+
+
+# Conclusions
+Beaucoup de problèmes sont à propos de choses qui bougent dans le temps, des connaissances qui évoluent, et où l'on recherche un état particulier. Par exemple l'énigme vue ici.
+Ou, plus typiquement, [le problème des robots dans un entreprôt](https://www.youtube.com/watch?v=cLVCGEmkJs0#t=26s), qui doivent ranger les boites trouvées à la zone de dépôt,
+ou les ammener à la zone d'expédition, en suivant des ordres donnés en fonction des commandes des clients, sans se gêner les uns les autres, et le plus rapidement possible s'il-vous-plaît.
+L'encodage de ce genre de problème, au-delà du cas simple et pas bien gros des trois bouteilles, est un problème à part entière. On ne sait tout simplement pas faire avec des méthodes purement déclaratives comme ASP. Donc on a recours à des heuristiques spécialisées, donc des codes complexes, dédiés à un cas particulier, et sans garantie d'exactitude.
+
+La logique temporelle est un formalisme qui peut servir de base à la modélisation de ce genre de problème
+(ainsi, si on trouvait une implémentation efficace de ce formalisme, les problèmes ainsi formalisés seraient solubles efficacement).
+Nous avons effleuré cette logique avec un langage qui nous permet, et c'est tout le pouvoir de la programmation déclarative,
+de décrire le problème simplement, et d'obtenir ses solutions grâce à un solveur.
+Dans notre cas, nous avons utilisé telingo, la surcouche au solveur clingo pour prendre en charge la logique temporelle,
+pour résoudre l'énigme des bouteilles.
+
+On y a gagné un code plus simple, et un solving moins long, quoique peut-être plus lourd en mémoire.
+Mais surtout, on a maintenant un moyen simple pour gérer les prochaines énigmes de Sacha, ou tout énigme qui fait intervenir la notion de temps.
+Par exemple, [la résolution des donjon de Zelda dans le tuto général](https://lucas.bourneuf.net/blog/asp-tuto.html#resoudre-un-donjon-de-the-legend-of-zelda),
+qui avait alors été traitée de manière traditionnelle, «naïve».
+
+Enfin, si vous ne l'avez pas encore lu, vous devriez aller voir l'article de [Sacha Schutz](http://dridk.me/graph-solution-exploration.html)
+qui parle de la même énigme, mais avec un angle différent : la modélisation avec (MODE GROUPHIE ACTIVÉ) *la théorie des graphes* ! YOUHOU !
+
+
+*[GROUPHIE]: Comme une groupie, mais pour les graphes. Exemple de phrase de Grouphie: «Aaaaah Dijkstra ! Aaaaah un graphe avec un nombre chromatique de 1993, c'est l'année de ma naissance ! Aaaaah !»
