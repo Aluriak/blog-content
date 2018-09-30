@@ -29,7 +29,7 @@ De son côté, [Sacha aborde la question](http://dridk.me/the-rusty-lake-hostel.
 
 La troisième question est importante, car c'est le premier pas vers la formalisation complète du problème,
 et donc sa résolution avec un algo standard, donc bien maîtrisé, et un point de départ pour tout ce qui pourrait être extension ou vérification du problème.
-Bref, c'est comme le travail pour [un autre puzzle du jeu deponia]({filename}/articles/deponia-asp.mkd) : modéliser pour mieux comprendre les tenants et aboutissants de l'énigme,
+Bref, c'est comme le travail réalisé pour [un autre puzzle du jeu deponia]({filename}/articles/deponia-asp.mkd) : modéliser pour mieux comprendre les tenants et aboutissants de l'énigme,
 et permettre de systématiser la réponse à des questions, telles que : l'énigme est-elle soluble ? Combien de temps en moyenne mettra un joueur qui essaye les solutions une par une ?
 Comment complexifier ? Y a-t-il des erreurs dans l'énoncé qui pourraient mener à un comportement non voulu du programme ?
 
