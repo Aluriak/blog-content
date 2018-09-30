@@ -1,5 +1,5 @@
 Title: Answer Set Programming — bouteilles pleines et logique temporelle
-Date: 2018-09-30
+Date: 2018-09-31
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: une quête annexe pour le tuto ASP
