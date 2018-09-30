@@ -23,7 +23,7 @@ Les questions adressées dans ce billet sont donc :
 1. peut-on encoder l'énigme en ASP ?
 2. et la corrolaire : existe-t-il des approches plus adaptées ?
 
-De son côté, [Sacha aborde la question](http://dridk.me/graph-solution-exploration.html) de la modélisation à l'aide de graphes :
+De son côté, [Sacha aborde la question](http://dridk.me/the-rusty-lake-hostel.html) de la modélisation à l'aide de graphes :
 
 3. Comment modéliser le problème avec un graphe ?
 
