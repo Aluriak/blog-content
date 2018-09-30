@@ -148,7 +148,7 @@ Autrement dit, un langage *logique* est un langage *déclaratif*.
 À l'inverse, un langage *déclaratif* n'est pas nécessairement *logique* (le HTML, par exemple, n'est pas logique).
 
 Le paradigme logique repose sur les méthodes formelles issues des maths et de la théorie de la logique.
-C'est avec ces outils que la description de la solution (la réponse au **quoi**) est formulée.
+C'est avec ces outils que la description de la solution (le **quoi**) est donnée à l'ordinateur.
 
 C'est précisément à cette catégorie de langage qu'ASP appartient.
 
@@ -281,7 +281,7 @@ Clingo est en fait constitué de deux composantes: *gringo* et *clasp* (que l'on
 Gringo est à ASP ce que [le compilateur de CPython](https://docs.python.org/3/library/dis.html) est à Python, ou ce que gcc est à C:
 une grammaire et un ensemble de routines
 qui compilent vers un langage simplifié à l'extrême.
-(dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour CPython c'est du bytecode, et pour C c'est de l'assembleur)
+(dans le cas d'ASP, c'est du [smodels](http://www.tcs.hut.fi/Software/smodels/), pour Python c'est du bytecode, et pour C c'est de l'assembleur)
 
 Clasp est à ASP ce que l'interpréteur de CPython est à Python :
 un ensembles de routines qui pigent le langage simplifié calculé par l'outils précédent (gringo/compilateur)
