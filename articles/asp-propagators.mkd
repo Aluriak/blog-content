@@ -586,10 +586,22 @@ class Constraint:
                         return True
 ```
 
+Si vous vous demandez ce qu'est une *clause* en logique, [wikipédia vous aidera](https://en.wikipedia.org/wiki/Clause%5F(logic)).
+
 
 # Conclusions
-Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
-Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
+C'était une grosse quête annexe, avec beaucoup de code (et hélas, pas en ASP). Mais c'est un mal pour un bien :
+l'interface des propagateurs est un outils extrèmement puissant pour travailler *avec* le solveur.
+En effet, jusqu'alors, on déléguait au solveur des questions. Maintenant, nous avons un moyen de dialoguer
+avec lui pendant ses recherches pour l'aider, ou contrôler finement l'exploration de l'espace de recherche.
+
+Dans les applications évidentes, on trouve les «observateurs», qui regardent comment se passent
+le solving et propose un rendu en conséquence. On trouvera aussi toutes les notions rigolotes relatives aux contraintes dynamiques,
+ou plus généralement l'appel à des sources extérieur pour résoudre des propagations.
 
 D'autres quêtes annexes viendront, pour apporter d'autres applications aux propagateurs, ou montrer d'autres manières d'étendre ASP.
-<!-- Enfin, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd). -->
+<!-- Ainsi, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd). -->
+
+Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
+Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
+Il propose aussi une implémentation complète de PyConstraint que nous avons détaillé dans la dernière section.
