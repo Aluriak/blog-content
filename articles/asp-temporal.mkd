@@ -8,9 +8,7 @@ Lang: français
 Translation: false
 Status: published
 
-
-
-Le weekend dernier, avec [un ami](http://dridk.me), on s'est intéressés à une énigme.
+Le weekend dernier, avec mon ami [dridk](http://dridk.me), on s'est intéressés à une énigme.
 La question que l'on s'est posée est évidemment :
 comment résoudre cette énigme de manière systématique, i.e. comment la formaliser pour la résoudre ?
 
@@ -18,21 +16,20 @@ L'ami sus-nommé a dessiné des graphes, pendant que j'expliquai le problème à
 Comme nous sommes tous les deux arrivés à une modélisation du problème, nous avons décidé de relâcher ensembles
 nos conclusions respectives, sur nos blogs, respectifs également.
 
-Les questions adressées dans ce billet sont donc :
+Les questions adressées dans nos billets sont donc :
 
 1. peut-on encoder l'énigme en ASP ?
 2. et la corrolaire : existe-t-il des approches plus adaptées ?
-
-De son côté, [Sacha aborde la question](http://dridk.me/the-rusty-lake-hostel.html) de la modélisation à l'aide de graphes :
-
 3. Comment modéliser le problème avec un graphe ?
 
-La troisième question est importante, car c'est le premier pas vers la formalisation complète du problème,
+La troisième question est [abordée par dridk](http://dridk.me/the-rusty-lake-hostel.html) sur son blog.
+Elle est importante, car c'est le premier pas vers la formalisation complète du problème,
 et donc sa résolution avec un algo standard, donc bien maîtrisé, et un point de départ pour tout ce qui pourrait être extension ou vérification du problème.
 Bref, c'est comme le travail réalisé pour [un autre puzzle du jeu deponia]({filename}/articles/deponia-asp.mkd) : modéliser pour mieux comprendre les tenants et aboutissants de l'énigme,
 et permettre de systématiser la réponse à des questions, telles que : l'énigme est-elle soluble ? Combien de temps en moyenne mettra un joueur qui essaye les solutions une par une ?
 Comment complexifier ? Y a-t-il des erreurs dans l'énoncé qui pourraient mener à un comportement non voulu du programme ?
 
+Les deux premières questions seront traitées ici.
 La première question sera traitée dans la première partie. Sans vouloir spoiler, sachez qu'on va résoudre l'énigme.
 La seconde question nous ouvrira les portes d'une autre implémentation d'ASP permettant de réaliser
 ce qu'on appelle dans la langue de Batman la «*temporal logic*», ou *logique temporelle*.
@@ -194,6 +191,8 @@ Par exemple, *jusqu'à*, ou *pas avant*, ou encore *depuis*.
 Ces opérateurs permettent d'exprimer assez simplement des relations complexes entre des faits.
 
 Dans notre cas, on utilisera pas toutes ces logiques.
+(en fait, on pourrait même dire que nous nous apprêtons à utiliser un bulldozer pour écraser une mouche ;
+le problème se règle de manière plus simple et efficace avec un *solving iteratif*, que nous verrons dans une annexe dédiée, prochainement)
 
 ## telingo
 Pour utiliser tout cela, on va utiliser [telingo](https://github.com/potassco/telingo).
