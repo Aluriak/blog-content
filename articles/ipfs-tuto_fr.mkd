@@ -51,6 +51,8 @@ Un système de fichier, c'est une structure de donnée qui permet d'organiser, q
 en général organisés comme un arbre (on parle d'arborescence de fichiers,
 où des fichiers particuliers, appellés *dossiers*, peuvent contenir d'autres fichiers).
 
+C'est typiquement ce que vous explorez dans «l'explorateur de fichier». Des dossiers, avec des fichiers dedans.
+
 
 
 
@@ -142,7 +144,7 @@ L'avantage du hash ? Si deux ressources sont identiques, elles auront le même h
 Aux collisions près (considérées trop rares pour être plausibles),
 l'inverse est vrai aussi : deux ressources différentes n'ont pas le même hashs.
 Cela veux dire qu'un serveur de la nuée, sachant de quelles ressources il possède une copie, entretient une liste des hashs associés.
-Ainsi, quand on lui demande si il possède la ressource identifiée par un hash, il doit juste le comparer avec ceux qu'il possède, ce qui est très rapide (beaucoup plus que de comparer les ressources directement).
+Ainsi, quand on lui demande si il possède la ressource identifiée par un hash, il doit juste le comparer avec ceux qu'il possède, ce qui est très rapide (beaucoup plus que de comparer les ressources directement ; imaginez vérifier que l'entièreté d'un film est équivalente à un autre).
 Le hash permet donc de savoir très rapidement où sont les ressources, indépendemment de leur type, format, contenu. C'est universel.
 
 Cela veux aussi dire que, si je demande une ressource particulière en utilisant son hash, et qu'on m'en fournie une autre (par erreur ou par malice),
@@ -158,7 +160,7 @@ faisant notamment intervenir une autorité extérieure, [les autorités de certi
 Notez la subtilité : la *provenance* d'une page.
 HTTP est orienté localisation : la page vient donc du bon serveur, mais c'est tout ce qu'on peut garantir.
 
-Avec un système orienté-contenu comme IPFS, il devient difficile de perdre une page ou de recevoir une copie modifiée de la page voulue.
+À l'inverse, avec un système orienté-contenu comme IPFS, il devient difficile de perdre une page ou de recevoir une copie modifiée de la page voulue.
 L'intérêt de ce système est aussi dans sa résistance, par exemple en cas de catastrophe qui sépare le réseau en deux.
 Les ressources sont possiblement toujours présentes sur les deux sous-réseaux, et peuvent exister indépendemment l'un de l'autre. Lorsqu'elles seront réunifiées, les échanges reprendrons, et chaque côté pourra constater les mises à jour de l'autre. Tout ça est géré naturellement sans réel problème.
 
@@ -240,7 +242,7 @@ BitTorrent est, indépendemment des réseaux illégaux, de plus en plus utilisé
 
 Du point du vue du particulier, une fois pris en main, c'est un vrai bonheur :
 le téléchargement peut être contrôlé (arrêt, limite de vitesse), ne peut pas être corrompu,
-et est d'autant plus rapide qu'il y a de gens qui le possèdent et le téléchargent,
+et est d'autant plus rapide qu'il y a de gens qui possèdent et téléchargent le fichier,
 ce qui assure la disponibilité des données même (et surtout) en cas d'accès massif.
 
 <!-- Il est facile de publier des fichiers, et même de les partager. -->
@@ -299,13 +301,13 @@ et pour la planète.
 Notez qu'IPFS, comme HTTP, BitTorrent, SOAP, TCP/IP ou le Morse,
 sont des **protocoles**, c'est-à-dire des conventions plus ou moins longues et détaillées
 qui détaillent *comment* il fonctionne. Rien d'utile en soi,
-donc (sauf, une fois imprimés, pour caler un meuble).
+donc, sauf une fois imprimé pour caler un meuble.
 
 Néanmoins, histoire que ce soit un peut plus palpable, les concepteurs d'IPFS se
 sont également lancés dans une implémentation du protocole, c'est-à-dire
 dans l'écriture d'un programme qui utilise le protocole.
 
-Ce programme, il s'appelle [go-ipfs](https://github.com/ipfs/go-ipfs), car il est implémenté en utilisant le [langage Go](https://fr.wikipedia.org/wiki/Go%20(langage)).
+Ce programme, il s'appelle [go-ipfs](https://github.com/ipfs/go-ipfs), car il est implémenté en utilisant le [langage Go](https://fr.wikipedia.org/wiki/Go%20(langage)) (Comme tout programme, il n'y a pas besoin de connaître le langage d'écriture pour l'utiliser).
 Il existe d'autres implémentations, mais go-ipfs est celle de référence : elle est officielle.
 Elle est aussi, au moment où j'écris ces lignes, celle qui implémente le mieux le protocole.
 
@@ -315,7 +317,7 @@ qui comprend le language Python et est capable de l'exécuter.
 
 BitTorrent est un protocole, [transmission](https://en.wikipedia.org/wiki/Transmission%20(BitTorrent%20client)) et utorrent sont des programmes
 qui implémentent ce protocole pour permettre à l'utilisateur de télécharger
-des fichiers à partir de *fichiers torrent* glanés par exemple sur [internet archive](https://archive.org/details/bittorrent).
+des fichiers à partir de *fichiers torrent* glanés par exemple sur [*internet archive*](https://archive.org/details/bittorrent).
 
 De la même manière, go-IPFS est un programme qui implémente le protocole IPFS,
 et est capable de l'exécuter via internet, et de s'interfacer avec et s'intégrer
@@ -327,7 +329,7 @@ dans la nuée de serveurs qui constitue le réseau IPFS.
 
 
 ## IPNS
-Maintenant, une question se pose : si le contenu de mon site change tout le temps,
+Maintenant, une question se pose : si le contenu de mon site, et donc son hash, change tout le temps,
 comment les utilisateurs peuvent-ils obtenir l'identifiant de la version la plus à jour ?
 
 En HTTP, c'est facile : on se connecte au site, et on peut constater
@@ -368,7 +370,7 @@ Cette liste grandit vite, et beaucoup de projets proposés ont clairement un pie
 - [akasha](https://akasha.world/), réseau social basé sur IPFS et la blockchain Etherum
 - [wiki interplanétaire](https://github.com/jamescarlyle/ipfs-wiki), preuve de concept pour un wiki distribué
 - [module firefox](https://github.com/ipfs/ipfs-firefox-addon) qui agit comme une gateway
-- [js-ipfs](https://github.com/ipfs/js-ipfs), l'implémentation d'IPFS en javascript. Hyperactif, mais probablement mort dans 6 mois.
+- [js-ipfs](https://github.com/ipfs/js-ipfs), l'implémentation d'IPFS en javascript. Hyperactif, mais probablement mort dans 6 mois (EDIT: je suis mauvaise langue ; le projet semble encore actif).
 
 
 ### Le mot de la fin (de l'introduction)
@@ -498,5 +500,5 @@ J'attends donc impatiemment un point de vue mitigé sur la techno, avec les crit
 - [IPNS en quelques lignes](https://github.com/ipfs/examples/tree/master/examples/ipns)
 - l'instance stackexchange pour Etherum propose un [tag ipfs](https://ethereum.stackexchange.com/questions/tagged/ipfs)
 - [IPFS vs Swarm](https://github.com/ethersphere/go-ethereum/wiki/IPFS-&-SWARM), le second étant une alternative ; les deux pourraient bien se complémenter
-- [la littérature blanche](https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf) qui explique les bases d'IPFS
+- [la littérature blanche](https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf) qui explique les principes techniques d'IPFS
 - les [web seeds](http://techie-buzz.com/how-to/what-are-web-seeds-bittorrent.html) du protocole bittorrent permettent d'allier ftp et torrent
