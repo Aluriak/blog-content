@@ -8,7 +8,7 @@ Lang: français
 Translation: false
 Status: draft
 
-<center>*Ceci est une traduction de l'article «[*Writing system software: code comments*](http://antirez.com/news/124)», écrit et publié par le développeur de Redis, antirez.
+<center>*Ceci est une traduction amateure de l'article «[*Writing system software: code comments*](http://antirez.com/news/124)», écrit et publié par le développeur de Redis, antirez.
 Quelques choix de traduction : je garde certains termes techniques en anglais, pas tous, mais de manière consistante, et l'habitude de l'auteur de ne pas mettre d'hyperliens dans le texte. À la place, je garnirais en fin d'article. Les titres sont également mis en valeur, et les commentaires dans les codes sont traduits (c'est discutable, mais meilleur pour la démonstration).
 Si vous voyez des coquilles, améliorations, [les pull requests sont bienvenues](https://github.com/Aluriak/blog-content/blob/master/articles/TRL-antirez-code-comments.mkd).*</center>
 
@@ -22,11 +22,15 @@ Si vous voyez des coquilles, améliorations, [les pull requests sont bienvenues]
 
 <center><i>Début de traduction</i></center>
 
-Cela fait un certain temps que je voulais publier une vidéo à propos des commentaires (du code) pour ma série «Writing system software» (NdT: «écrire des systèmes logiciels») sur YouTube. Cependant, en y réfléchissant, j'ai réalisé que le sujet serait mieux traité via un article de blog. Nous y voilà.
+Cela fait un certain temps que je voulais publier une vidéo à propos des commentaires (du code) pour ma série «Writing system software» (NdT: «écrire des systèmes logiciels») sur YouTube.
+Mais en y réfléchissant, j'ai réalisé que le sujet serait mieux traité via un article de blog. Nous y voilà.
 Dans cet article, je vais analyser des commentaires du code de Redis, en essayant de les catégoriser.
-Au fur et à mesure, je vais montrer pourquoi, selon moi, écrire des commentaires est d'une importance capitale lorsque que l'on produit du code de qualité, c'est-à-dire maintenable sur le long-terme et compréhensible pour les autres et par les auteurs pendant les périodes de modifications et de debugging.
+Au fur et à mesure, je vais montrer pourquoi, selon moi, écrire des commentaires est d'une importance capitale lorsque que l'on produit du code de qualité,
+c'est-à-dire maintenable sur le long-terme et compréhensible pour les autres et par les auteurs pendant les périodes de modifications et de debugging.
 
-Tout le monde ne pense pas ainsi. Beaucoup pensent que les commentaires sont inutiles si le code est suffisemment bien fait. L'idée étant que, quand tout est bien conçu, le code lui-même documente ce qu'il fait, donc les commentaires sont superfêtatoires. Je ne suis pas d'accord avec cette vision pour deux principales raisons :
+Tout le monde ne pense pas ainsi. Beaucoup pensent que les commentaires sont inutiles si le code est suffisemment bien fait.
+L'idée étant que, quand tout est bien conçu, le code lui-même documente ce qu'il fait, donc les commentaires sont superfêtatoires.
+Je ne suis pas d'accord avec cette vision pour deux principales raisons :
 
 1. Beaucoup de commentaires n'expliquent pas ce que le code fait. Ils expliquent ce que vous ne pouvez pas pas comprendre juste en observant ce que le code fait. Souvent, cette information manquante est *pourquoi* le code réalise une certaine action, ou pourquoi il fait quelque chose plutôt qu'une autre, qui aurait semblé plus naturelle.
 
@@ -59,21 +63,25 @@ scripting.c:
         lua_call(lua,2,0);
     }
 
-Lua utilise une API basée sur une pile. Le lecteur qui suit chaque appel dans la fonction ci-dessus, et ayant une référence du langage Lua sous la main, sera capable de reconstruire mentalement la pile à tout instant. Mais pourquoi forcer le lecteur à faire cet effort ?
-Quand il écrit le code, l'auteur aura à faire cet effort de toute façon. J'ai juste annoté chuaque ligne avec l'état de la pile après chaque appel. Lire ce code est donc trivial,
+Lua utilise une API basée sur une pile. Le lecteur qui suit chaque appel dans la fonction ci-dessus, et ayant une référence du langage Lua sous la main,
+sera capable de reconstruire mentalement la pile à tout instant. Mais pourquoi forcer le lecteur à faire cet effort ?
+L'auteur aura de toute façon à le faire lui-même lorsqu'il écrira le code.
+J'ai donc annoté chaque ligne avec l'état de la pile après chaque appel. Lire ce code est maintenant trivial,
 indépendamment du fait que l'API de Lua est difficile à suivre.
 
 <!-- Lua uses a stack based API. A reader following each call in the function above, having also a Lua API reference at hand, will be able to mentally reconstruct the stack layout at every given moment. But why to force the reader to do such effort? While writing the code, the original author had to do that mental effort anyway. What I did there was just to annotate every line with the current stack layout after every call. Reading this code is now trivial, regardless of the fact the Lua API is otherwise non trivial to follow. -->
 
-Mon but ici n'est pas juste de donner mon point de vue sur l'utilité des commentaires
+Mon but ici n'est pas uniquement de donner mon point de vue sur l'utilité des commentaires
 pour donner un contexte qui n'est pas exposé clairement lorsqu'on lit une section spécifique du code source.
-Mon but est aussi de donner des indications sur l'utilité du genre de commentaire qui est historiquement considéré inutile voire dangereux, c'est-à-dire les commentaires parlant du *quoi*, du *qu'est-ce que le code fait ?*, et non du *pourquoi*.
+Mon but est aussi de donner des indications sur l'utilité du genre de commentaire qui est historiquement considéré inutile voire dangereux,
+c'est-à-dire les commentaires parlant du *quoi*, du *qu'est-ce que le code fait ?*, et non du *pourquoi*.
 
 <!-- My goal here is not just to offer my point of view on the usefulness of comments as a tool to provide a background that is not clearly available reading a local section of the source code. But also to also provide some evidence about the usefulness of the kind of comments that are historically considered useless or even dangerous, that is, comments stating *what* the code is doing, and not why. -->
 
 # Classification des commentaires
 
-Au début, j'ai commencé par la lecture de parties choisies aléatoirement du code source de Redis, pour vérifier si et pourquoi les commentaires étaient utilisés dans différents contextes.
+Au début, j'ai commencé par la lecture de parties choisies aléatoirement du code source de Redis, pour vérifier
+si et pourquoi les commentaires étaient utilisés dans différents contextes.
 Rapidement, il apparut que les commentaires étaient utiles pour des raisons très différentes,
 puisqu'ils tendent à différer de par leur fonction, style d'écriture, taille et fréquence de mise-à-jour. J'ai donc fini par faire de la classification.
 
@@ -89,15 +97,15 @@ J'ai identifié neuf types de commentaires pendant mes recherches :
 * commentaires de dette
 * commentaires de backup
 
-The first six are, in my opinion, mostly very positive forms of commenting, while the final three are somewhat questionable. In the next sections each type will be analyzed with examples from the Redis source code.
-Les six premiers sont, selon moi, en majorité des formes très positive de commentaire,
-alors que les trois derniers sont discutables.
+Les six premiers sont, selon moi, en majorité des formes très positive de commentaire, alors que les trois derniers sont discutables.
 Dans les prochaines sections, chaque type sera analysé avec des examples trouvés dans le code source de Redis.
 
 
 ## Commentaires de fonction
 Le but d'un commentaire de fonction est d'éviter au lecteur d'avoir à lire du code.
-En effet, après avoir lu le commentaire, il est possible de considérer le code comme une boîte noire qui obéis à certaines règles. On devrait trouver les commentaires de fonction en haut des définitions de fonctions, mais on les trouve à d'autres places, documentant les classes, macro, ou tout autre block de code isolé fonctionellement qui définit une interface.
+En effet, après avoir lu le commentaire, il est possible de considérer le code comme une boîte noire qui obéis à certaines règles.
+On devrait trouver les commentaires de fonction en haut des définitions de fonctions, mais on les trouve à d'autres endroits,
+documentant les classes, macro, ou tout autre bloc de code isolé fonctionellement qui définit une interface.
 
 
 rax.c:
@@ -115,8 +123,11 @@ Si il est bien écrit, l'utilisateur devrait pouvoir retourner
 
 De tous les types de commentaires, ce sont ceux qui sont le plus largement acceptés
 par la commauté des programmeurs, aussi larges que nécessaire.
-Le seul point à analyser : est-ce une bonne idée de placer des commentaires qui sont de fait une documentation de référence de l'API dans le code lui-même (NdT: et non dans un document qui s'appelerait «Référence de l'API»).
-Pour moi, la réponse est simple : je veux que la documentation de l'API corresponde exactement au code. Si le code est changé, la documentation doit être changée. Pour cette raison, en utilisant les commentaires de fonction comme un prologue aux fonctions et autres éléments, nous écrivons la documentation de l'API à côté du code, impliquant trois conséquences :
+Le seul point à analyser : est-ce une bonne idée de placer des commentaires qui sont de fait une documentation de référence de l'API
+dans le code lui-même (NdT: et non dans un document qui s'appelerait «Référence de l'API»).
+Pour moi, la réponse est simple : je veux que la documentation de l'API corresponde exactement au code.
+Si le code est changé, la documentation doit être changée. Pour cette raison, en utilisant les commentaires de fonction comme un prologue
+aux fonctions et autres éléments, nous écrivons la documentation de l'API à côté du code, ce qui a trois conséquences :
 <!-- Among all the kinds of comments, these are the ones most widely accepted by the programming community at large as needed. The only point to analyze is if it is a good idea to place comments that are largely API reference documentation inside the code itself. For me the answer is simple: I want the API documentation to exactly match the code. As the code is changed, the documentation should be changed. For this reason, by using function comments as a prologue of functions or other elements, we make the API documentation close to the code, accomplishing three results: -->
 
 * La documentation peut être facilement changée en même temps que le code, sans risque de vieillissement de la référence.
@@ -130,12 +141,14 @@ Alors qu'un «commentaire de fonction» se trouve au commencement d'une fonction
 un commentaire de conception est plus souvent trouvé au début d'un fichier.
 Le commentaire donne en gros comment et pourquoi une partie du code donnée utilise certains algorithmes, techniques, astuces, et implémentations.
 C'est à un niveau au-dessus de ce que vous verrez implémenté dans le code.
-Avec un tel contexte, lire le code sera plus simple. De plus, je tends à avoir plus de confiance envers un code où je peux trouver des notes sur la conception. Au moins je sais qu'une certaine phase de conception s'est faite, à un certains moment pendant le processus de développement.
+Avec un tel contexte, lire le code sera plus simple. Et je tends à avoir plus de confiance envers un code où je peux trouver des notes sur la conception.
+Au moins je sais qu'une certaine phase de conception s'est faite, à un certains moment pendant le processus de développement.
 
 Dans mon expérience, les commentaires de conception sont très utiles pour indiquer,
 dans le cas où la solution proposée par l'implémentation semble un peu trop triviale,
-quelle étaient les solutions concurrents et pourquoi une solution aussi simple fût considérée suffisante pour le cas traité.
-Si la conception est correcte, le lecteur se convaincra lui-même que la solution est appropriée et que la simplicité vient d'une réflexion, pas de la fainéantise ou de l'incapacité à coder autrement qu'avec des concepts basiques.
+quelle étaient les solutions concurrentes et pourquoi une solution aussi simple fût considérée suffisante pour le cas traité.
+Si la conception est correcte, le lecteur se convaincra lui-même que la solution est appropriée et que la simplicité vient d'une réflexion,
+pas de la fainéantise ou de l'incapacité à coder autrement qu'avec des concepts basiques.
 
 bio.c:
 
@@ -151,7 +164,8 @@ bio.c:
 
 
 # Commentaires *pourquoi*
-Les commentaires *pourquoi* expliquent les raisons derrière une opération réalisée dans le code, et ce même si ce que fait le code est évident. Regardez cet exemple du code de réplication de Redis :
+Les commentaires *pourquoi* expliquent les raisons derrière une opération réalisée dans le code, et ce même si ce que fait le code est évident.
+Regardez cet exemple du code de réplication de Redis :
 
 replication.c:
 
@@ -212,8 +226,8 @@ replication.c:
 Si vous lancez SYNC alors qu'il y a encore des sorties en attente (d'une commande précédente)
 à envoyer au client, la commande devrait échouer, car durant le handshake de réplication
 le buffer de sortie est utilisé pour accumuler les changements, et pourrait plus tard être
-dupliqué pour servir d'autres réplica se connectant, alors que nous sommes déjà en train de créer un fichier RDB pour la synchronisation complètement avec le premier réplica.
-C'est pour ça que nous faisons ça. Ce que l'on fait est trivial : réponses en attente ? Émettre une erreur. Le *pourquoi* est obscur sans le commentaire.
+dupliqué pour servir d'autres réplica se connectant, alors que nous sommes déjà en train de créer un fichier RDB pour la synchronisation complète avec le premier réplica.
+Tout ça pour ça. Ce que l'on fait est trivial : réponses en attente ? Émettre une erreur. Le *pourquoi* est obscur sans le commentaire.
 
 On pourrait penser que ce genre de commentaires sont nécessaires uniquement quand on décrit des protocoles et intéractions complexes, comme dans le cas de la réplication.
 Est-ce réellement le cas ? Changeons complètement de fichier et d'objectifs, et nous verrons encore ces commentaires partout.
@@ -241,9 +255,12 @@ laissant les clefs logiquement expirées s'accumuler dans les autres BdDs, puisq
 
 Avec un tel commentaire, on explique à la fois pourquoi on incrémente aussi tôt,
 et que la prochaine personne qui voudra modifier le code devra préserver cette fonctionalité.
-Notez que sans le commentaire, le code semble complètement inoffensif. Sélectionne, incrémente, travaille. Il n'y a aucune raison évidente pour ne pas remettre l'incrémentation à la fin de la boucle, où cela semblerait plus naturel.
+Notez que sans le commentaire, le code semble complètement inoffensif. Sélectionne, incrémente, travaille.
+Il n'y a aucune raison évidente pour ne pas remettre l'incrémentation à la fin de la boucle, où cela semblerait plus naturel.
 
-Anecdote : l'incrément dans la boucle était effectivement à la fin dans le code original. Il a été bougé à la fin pendant une correction : au même moment où le commentaire fût ajouté. On pourrait dire qu'il s'agit d'un «commentaire de régression» (NdT: parallèle avec les tests de régression, détectant d'éventuelle perte de fonctionalités).
+Anecdote : l'incrément dans la boucle était effectivement à la fin dans le code original. Il a été bougé à la fin pendant une correction :
+au même moment où le commentaire fût ajouté. On pourrait dire qu'il s'agit d'un «commentaire de régression»
+(NdT: parallèle avec les tests de régression, détectant d'éventuelle perte de fonctionalités).
 
 
 
