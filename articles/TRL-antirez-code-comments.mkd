@@ -1,12 +1,12 @@
 Title: Écrire des systèmes logiciels: les commentaires
-Date: 2018-10-09
+Date: 2018-10-10
 Tags: language
 Authors: Lucas Bourneuf
 Summary: traduction d'un article d'antirez
 Slug: antirez-commentaires
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 <center>*Ceci est une traduction amateure de l'article «[*Writing system software: code comments*](http://antirez.com/news/124)», écrit et publié par le développeur de Redis, antirez.
 Quelques choix de traduction : je garde certains termes techniques en anglais, pas tous, mais de manière consistante, et l'habitude de l'auteur de ne pas mettre d'hyperliens dans le texte. À la place, je garnirais en fin d'article. Les titres sont également mis en valeur, et les commentaires dans les codes sont traduits (c'est discutable, mais meilleur pour la démonstration).
