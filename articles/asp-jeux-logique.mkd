@@ -1,4 +1,4 @@
-Title: Answer Set Programming — Jeux de logique et énigmes
+Title: Answer Set Programming — Jeux de logique et énigmes, résolutions et limitations
 Date: 2018-04-13
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
@@ -17,7 +17,11 @@ Les premiers problèmes sont les *warmup logic exercises* du site [brilliant.org
 Tous les problèmes ne sont pas solvables simplement, mais pour ceux qui le sont,
 cela permet de découper la méthode logique nécessaire à leur résolution.
 
-On termine sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant et buvant avec leurs animaux de compagnie dans des maisons colorées.
+Ensuite, s'intercale une partie sur les limites d'ASP, en montrant des énigmes
+qu'ASP ne peut pas résoudre directement.
+
+On termine sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant
+et buvant avec leurs animaux de compagnie dans des maisons colorées.
 
 
 <br/>
@@ -27,7 +31,8 @@ On termine sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant et
 <br/>
 
 
-# brothers
+# Énigmes simples
+## brothers
 On nous donne les tailles relatives de 5 frères (par exemple, *Alex est plus grand que Brian*), et nous devons deviner qui est le plus grand.
 
 Nous avons les données suivantes :
@@ -51,10 +56,10 @@ et nous cherchons celui qui n'a aucun prédécesseur, c'est-à-dire la racine.
 C'est un problème assez standard de théorie des graphes, et la résolution est intuitive dés lors que l'on visualise l'arbre tel qu'il est réellement :
 
 <center>{% img {filename}/images/asp/brother-tree.png 700 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
-(image faite avec [biseau]())
+<!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
 
 
-# Questions
+## Questions
 Soit deux questions :
 
 1. Sont-ce «oui» et «non» des réponses invalides pour la question 2 ?
@@ -82,7 +87,7 @@ Mais d'ici là, il nous faut y penser nous même.
 
 
 
-# Déclarations contradictoires
+## Déclarations contradictoires
 
 1. Il y a exactement 1 fausse déclaration dans cette liste.
 2. Il y a exactement 2 fausses déclarations dans cette liste.
@@ -116,65 +121,86 @@ Par conséquent, il n'existe aucun modèle stable dans lequel `p(3)` serait vali
 
 
 
-# Recherche de vérité
+## Recherche de vérité
 
-## Premier
+### Premier
+#### Énoncé
+
+- Le chevalier dit toujours la vérité.
+- La canaille ment toujours.
+- Le joker peut faire les deux.
+
+Question : L'un des trois dit «je suis une canaille». Qui est-il ?
+
+#### Résolution
 ```asp
-% Knights always tell the truth. Knaves always lie. Joker can do either.
-% What is an agent saying «i'm a knave» ?
 
-% It's one of the three.
-1 {knight ; knave ; joker} 1.
+% C'est l'un des trois.
+1 {chevalier ; canaille ; joker} 1.
 
-% What can be said depending of the kind.
-say(knight):- knight.
-say(knight) ; say(joker):- knave.
-say(knight) ; say(knave) ; say(joker):- joker.
+% Que pourrais dirais chaque agent s'il parlait ?
+reponse(chevalier):- chevalier.
+reponse(chevalier) ; reponse(joker):- canaille.
+reponse(chevalier) ; reponse(canaille) ; reponse(joker):- joker.
 
-% We know it said it was a knave, so it has to be in the answer.
-:- not say(knave).
+% On sait que l'agent à dit qu'il était la canaille, donc il doit être dans la réponse.
+:- not reponse(canaille).
 ```
 
+Écrire proprement le problème permet de trouver la réponse, même sans aller chercher clingo.
+Ici, on voit bien que parmis les atomes qui peuvent être générés, seul le joker peut dire `reponse(canaille)`.
+Par conséquent, c'est le joker qui a parlé.
 
-## Second
+
+### Second
+#### Énoncé
+- Le chevalier dit toujours la vérité.
+- La canaille ment toujours.
+- Le joker peut faire les deux.
+
+Trois agents savent qui ils sont, et disent:
+
+- ellis: farin est un joker
+- farin: gobi est un joker
+- gobi: ellis est un joker
+
+Question: Sachant qu'il n'y a qu'un seul joker, combien y a-t-il de chevaliers ?
+
+
+#### Résolution
 ```asp
-% Knights always tell the truth. Knaves always lie. Joker can do either.
-
-% 3 agents knows themselves, and say:
-%  - ellis: farin is a joker
-%  - farin: gobi is a joker
-%  - gobi: ellis is a joker
-% There is only one joker. How many knights ?
-
-% Data.
-kind(knight;knave;joker).
-ppl(ellis;farin;gobi).
+% Données.
+type(chevalier;canaille;joker).
+agent(ellis;farin;gobi).
 
 % Each one has a kind.
-1 { kind(P,K): kind(K) } 1:- ppl(P).
+1 { type(P,K): type(K) } 1:- agent(P).
 
 % There is one and only one joker.
-1 { kind(P,joker):ppl(P) } 1.
+1 { type(P,joker): agent(P) } 1.
 
-% Number of knight.
-answer(N):- N={kind(_,knight)}.
+% Nombre de chevalier.
+reponse(N):- N={type(_,chevalier)}.
 
-% A knight always imply the thruth.
-kind(farin,joker):- kind(ellis,knight).
-kind(gobi,joker):- kind(farin,knight).
-kind(ellis,joker):- kind(gobi,knight).
+% Ce qu'un chevalier dit est vrai.
+type(farin,joker):- type(ellis,chevalier).
+type(gobi,joker):- type(farin,chevalier).
+type(ellis,joker):- type(gobi,chevalier).
 
 % Knaves can't tell the truth.
-:- kind(farin,joker) ; kind(ellis,knave).
-:- kind(gobi,joker) ; kind(farin,knave).
-:- kind(ellis,joker) ; kind(gobi,knave).
-
-% NB: the three generated answer sets all say there is 1 knight.
-% Additionnal constraints are therefore not necessary.
+:- type(farin,joker) ; type(ellis,canaille).
+:- type(gobi,joker) ; type(farin,canaille).
+:- type(ellis,joker) ; type(gobi,canaille).
 ```
 
+Les ensemble réponse indiquent tous la même chose : il y a un chevalier, une canaille et un joker.
+Comme les données sont symétriques, si l'on fixe l'un des trois agent comme chevalier, les autres voient leur rôle fixé.
+Par exemple, si ellis est chevalier, alors farin est un joker, ce qui pourrait impliquer que gobi en est un aussi,
+sauf que l'on sait qu'il n'y en a qu'un seul, donc, comme il ment, c'est une canaille.
 
-## Troisième
+
+### Troisième
+#### Énoncé
 Trois boîtes indiquent chacune :
 
 1. la voiture est dans la boite 1.
@@ -183,6 +209,7 @@ Trois boîtes indiquent chacune :
 
 Sachant qu'il n'y a qu'une voiture, et qu'une seule des boîte indique une vérité, où est la voiture ?
 
+#### Résolution
 
 ```asp
 1 { p(1;2;3) } 1.    % une seule proposition est vraie
@@ -202,16 +229,284 @@ En écrivant ces règles, on devine immédiatement le problème.
 La réponse est `car(2) p(3)`.
 
 
+
+# Limites d'ASP
+
 ## Quatrième
-Ne se fait pas en ASP. Arg.
+> On a 4 boites. La première est étiquettée comme contenant une pomme, la seconde une banane, la troisième une carotte, et la dernière une datte.
+> Sachant qu'une seule d'entre elle est étiquettée correctement,
+> combien de boites au pire doit-on ouvrir pour savoir de laquelle il s'agit ?
+
+Cette énigme ne se résouds pas en ASP, du moins pas de manière directe comme on a pu le faire jusqu'ici.
+La résolution de cette énigme requiert l'usage de la [logique épistémique](https://fr.wikipedia.org/wiki/Logique%5F%C3%A9pist%C3%A9mique),
+où l'on est capable de représenter les *connaissances* de différents agents.
+
+### Résoudre avec une itérative
+Une solution pour s'en dépatouiller est de faire l'algo nous-même.
+Déjà, on observe que lorsqu'on ouvre une boite, il y a deux cas de figure :
+
+1. on ouvre la boite correctement étiquettée
+2. on ouvre une autre boite
+
+Le premier cas ne nous intéresse pas, car il ne répond pas à la question
+(qui demande *le pire cas*, i.e. quand on ouvre jamais la bonne boite).
+Le second, en revanche, nous donne deux informations. Mettons que l'on ouvre la boite 2, qui contient une carotte : nous pouvons dire que, évidemment, la boite 2 n'est pas correctement étiquettée, mais également *que la boite trois, étiquettée comme contenant une carotte, n'est pas bien étiquettée non plus, puisque nous venons de trouver la carotte dans une autre boite*.
+
+Donc, en utilisant cette double détection de mauvaise étiquette, nous pouvons dire que les boites 2 et 3 sont mal étiquettées.
+
+Maintenant, nous pouvons *recommencer* : ouvrir une autre boite que l'on a pas découverte mal étiquettée précédemment.
+Et ce, jusqu'à ce qu'il ne reste plus qu'une boite : il s'agit nécessairement de la boite bien étiquettée.
+
+### Algo et espace de recherche
+Nous allons donc implémenter cet algo : ouvrir une (mauvaise) boite, décider lesquelles sont donc mal étiquettées,
+et recommencer jusqu'à n'avoir plus qu'une boite.
+La question étant de trouver le pire cas, il faudra donc chercher la solution qui *maximise* le nombre d'itérations.
+
+Il y a différentes manière de donner la réponse, par exemple :
+
+- donner, pour n'importe quelle répartition d'objets dans les boites, toutes les séquences possibles et leur sortie («a-t-on réussi à trouver la bonne boite ?»)
+- donner, pour une répartition particulière d'objets, toutes les séquences possibles et leur sortie
+- donner, pour une répartition particulière d'objets, les séquences qui permettent de connaître la bonne boite
+- donner, pour une répartition particulière d'objets, les tailles des séquences qui permettent de connaître la bonne boite
+
+(par séquence, on entend l'ordre dans lequel il faut ouvrir quelle boite ; la taille d'une séquence est donc le nombre de boite à ouvrir)
+
+En modifiant légèrement le code ASP, nous pourrons avoir l'une ou l'autre des réponses. Celle qui répond effectivement à la question est bien sûr la dernière méthode : si il faut ouvrir 2 boites, on veut obtenir «2», rien de plus. La troisième méthode nous donnerais en plus les boites à ouvrir (la numéro 2, puis la 4).
+
+Enfin, notons que l'espace de recherche possède quelques symmétries : par exemple, que la bonne boite soit la numéro 1, 2, 3 ou 4,
+cela ne changera pas la réponse, car il n'y au aucune différence entre résoudre le problème quand la bonne boite est la 2, ou quand elle est la 3.
+Nous allons donc pouvoir, dans notre encoding ASP, encoder une situation particulière. Par défaut, nous prendrons que la bonne boite est la 1, i.e. qu'elle contient une pomme (*apple*).
+
+Bien que ce soit inutile, rien ne nous empêchera ensuite de formuler le code pour qu'il cherche la réponse parmi toutes les combinaisons boite/objet possible.
+
+C'est parti !
+
+
+### L'encoding
+Déjà, commençons par déclarer les étiquettes, et en déduire les raccourcis vers les boites et les objets :
+
 ```asp
+label(1,apple).
+label(2,banana).
+label(3,carrot).
+label(4,date).
+item(I):- label(_,I).
+box(B):- label(B,_).
+nb_box(N):- N=#max{B:box(B)}.  % nombre maximal d'ouvertures nécessaires
 ```
+
+Ensuite, choisissons un cas bien précis : la pomme est bien placé, les autres non :
+
+```asp
+contains(1,apple).  correct(1).
+contains(2,carrot).
+contains(3,date).
+contains(4,banana).
+```
+
+Maintenant, commençons la partie iterative.
+D'abord, définissons que nous commençons au pas (*step*) zéro,
+et décidons quelle boite *peuvent* être ouvertes :
+
+```asp
+choosable(N,B):- step(N-1) ; box(B) ; not bad(N-1,B) ; not correct(B).
+```
+
+On utilise N comme le numéro de pas. Ici, on dit bien que la boite B peut être choisie à l'étape N si à l'étape précédente,
+elle n'était pas connue pour être mal étiquettée, et qu'il ne s'agit pas de la bonne boite (sinon c'est trop simple).
+
+Maintenant, choisissons une boite à ouvrir :
+
+```asp
+step(0).  % le prochain step est donc le 1
+0 { open(N,B): choosable(N,B) } 1 :- step(N-1) ; N<NbBox ; nb_box(NbBox).
+step(N):- open(N,_).
+```
+
+Le nombre de boite est le numéro de pas maximal :
+l'autre solution pour éviter un grounding infini eût été de donner un grand nombre, genre 100. Mais c'est plus économique de juste dire qu'au maximum,
+on ouvre autant de boite qu'il y en a dans le problème posé (mois une, car même dans le pire cas on ouvre pas la dernière boite).
+
+Maintenant, propageons la connaissance obtenue :
+
+```asp
+%  on se souvient des mauvais précédents:
+bad(N,B):- step(N) ; bad(N-1,B).
+%  la boite ouverte est mauvaise:
+bad(N,B):- open(N,B) ; step(N).
+%  et celle qui est étiquettée avec l'objet trouvé aussi:
+bad(N,B):- open(N,O) ; step(N) ; contains(O,I) ; label(B,I).
+```
+
+Nous avons donc bad/2, qui nous indique pour un step donné ce que nous *savons* sur les boites, i.e. lesquelles sont mal étiquettées.
+Comme nous allons ouvrir des boites tant qu'il y en a de *choosable*, le solver va donc énumérer des modèles
+contenant des séquences d'ouvertures, jusqu'à ce qu'il n'y en ai plus.
+Cependant, comme la règle d'ouverture stipule que l'on peut choisir entre 0 et 1 boite à ouvrir, cela veut dire que le solveur peut tout à fait s'arrêter
+avant d'avoir trouvé toutes les mauvaises boites.
+D'où les lignes suivantes, où l'on écarte les modèles qui ne terminent pas le travail, c'est-à-dire ceux qui n'identifie pas toutes les boites sauf une comme mal étiquettées :
+
+```asp
+finished(B):- box(B) ; not bad(_,B) ; 1{box(X): not bad(_,X), box(X)}1.
+:- not finished(_).  % on écarte le modèle s'il ne termine pas
+```
+
+Pour simplifier l'affichage, arrangeons-nous pour n'afficher que les ouvertures :
+
+```asp
+#show open/2.
+```
+
+Et, en lançant le solveur, nous obtenons… *roulement de tambour*
+
+    clingo version 5.2.2
+    Reading from l.lp
+    Solving...
+    Answer: 1
+    open(1,4) open(2,3)
+    Answer: 2
+    open(1,2) open(2,4)
+    Answer: 3
+    open(1,3) open(2,2)
+    SATISFIABLE
+
+    Models       : 3
+    Calls        : 1
+    Time         : 0.010s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+    CPU Time     : 0.010s
+
+Trois possibilités, toutes de deux ouvertures. En affichant également les `bad/2`, on peut voir l'évolution de la connaissance au fur et à mesure.
+On découvre ainsi que, pour trouver la bonne boite, il suffit d'en ouvrir deux dans le pire cas.
+Voilà la réponse à la question.
+
+Cependant, il y a encore bien des choses à dire…
+
+### Généralisations
+Avez-vous remarqué que le code est spécifiquement fait pour pouvoir facilement rajouter des objets ?
+C'est parti, rajoutons des boites !
+
+```asp
+label(1,apple).
+label(2,banana).
+label(3,carrot).
+label(4,date).
+label(5,eggfruit).
+label(6,fig).
+label(7,grape).
+label(8,huckleberry).
+```
+
+Et paf ! 936 modèles ! Effectivement, il manque les contains/2, qui ajoute de la variabilité malvenue.
+Ajoutons-les manuellement :
+
+```asp
+contains(5,fig).
+contains(6,grape).
+contains(7,huckleberry).
+contains(8,eggfruit).
+```
+
+Et bim ! 192 modèles ! Bon, on va pas s'amuser à les détailler, mais en gros, vous pouvez par exemple ouvrir la 3, la 5, la 8, la 2 et enfin la 7,
+donnant donc la solution en 5 ouvertures.
+Ou encore ouvrir la 3, la 2, la 8 et la 6, donnant la solution en 4 ouvertures.
+Holà ! Intéressante découverte : il y des solutions de plusieurs tailles !
+
+
+### Énumérations des possibilités
+Essayons d'étudier la question proprement : quelles sont les facteurs qui peuvent changer la taille de la solution ?
+Et bien, avec 5 boites, il y a déjà une variabilité ; on trouve 8 modèles allant de 2 à 3 ouvertures. Par exemple :
+
+```asp
+label(1,apple).  label(2,banana).
+label(3,carrot).  label(4,date).
+label(5,eggfruit).
+contains(1,apple). contains(2,eggfruit).
+contains(3,date). contains(4,banana).
+contains(5,carrot).
+```
+
+Cette variabilité vient du fait que, lorsqu'on ouvre la seconde boite, il y a deux possibilités concernant l'objet qu'elle contient, qui aurait dû se trouver dans une boite :
+
+- que l'on a déjà trouvée comme mal étiquettée
+- ou que l'on a pas encore pu décider
+
+Par exemple, dans l'exemple précédent, si on ouvre la boite 4, on trouve que la boite 2 est mal étiquettée (car sensée contenir une banane).
+Si on ouvre la boite 5, on trouve la carotte, indiquant que la boite 3 est mal étiquettée. Les boites 2, 3, 4 et 5 étant invalidées, la bonne est bien la numéro 5.
+Maintenant, si plutôt que la 5 on avait ouvert la 3, on serait tombé sur la datte, qui ne nous aurait rien appris de plus que la 3 était mal étiquettée, *puisque la boite 4, sensée contenir la datte, à déjà été ouverte*.
+
+On comprend donc pourquoi le puzzle, sur le site, utilise 4 boites, et pas plus : car à partir de 5 boites,
+il y a plusieurs réponses à la question.
+
+Histoire de pouvoir explorer l'espace des solutions, comptons le nombre d'étape, et projetons le modèle sur le nombre de step :
+
+```asp
+#project nb_step/1.
+#show nb_step/1.
+nb_step(M):- M=#max{N:step(N)}.
+```
+
+<!-- Si vous ne connaissez pas project, il est présenté dans l'annexe sur la [métaprogrammation]({filename}/articles/asp-metaprogramming.mkd). -->
+Si vous ne connaissez pas project, qui sera présenté dans une annexe, dites vous que dans ce cas,
+lorsqu'il trouve plusieurs modèles avec les mêmes atomes nb_step/1, il n'en garde qu'un seul. Comme nous n'avons qu'un seul nb_step/1, qui donne le nombre d'ouvertures de boites, il aggrège les solutions en fonction de leurs tailles. Pratique.
+
+Avec ce code à la place des #show déjà en place, et en appelant clingo avec l'option `--project`, on obtient :
+
+    clingo version 5.2.2
+    Reading from l.lp
+    Solving...
+    Answer: 1
+    nb_step(2)
+    Answer: 2
+    nb_step(3)
+    SATISFIABLE
+
+    Models       : 2
+    Calls        : 1
+    Time         : 0.013s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+    CPU Time     : 0.012s
+
+Ok ! C'est tout bon, on a bien 2 ou 3 boites à ouvrir (selon la chance que l'on a).
+Si on relance clingo, mais cette fois-ci avec les 8 boites, on obtient des solutions de taille 4, 5 ou 6.
+En fait, plus on rajoute d'objets, plus il faut ouvrir de boites. Mais, selon la chance qu'on a, on peut avoir à en ouvrir seulement la moitié,
+ou les trois quarts.
+
+### exploration exhaustive
+Enfin, bien que ce soit inutile, rien ne nous empêche de formuler le code pour qu'il cherche la réponse parmi toutes les combinaisons boite/objet possible.
+Pour cela, il faut bien évidemment retirer les déclarations explicites d'atomes `contains/2`, et il faut associer un objet à une boite et inversement :
+
+```asp
+% 1:1 association of boxes and items.
+1 { contains(B,I): box(B)  } 1:- item(I).
+1 { contains(B,I): item(I) } 1:- box(B).
+```
+
+Attention cependant : si on ne dit rien de plus, on aura droit à toutes les combinaisons possibles, par exemple des combinaisons où deux boites sont bien étiquettées, ou plus !
+Avec une contrainte, on peut retirer les modèles qui décrivent une situation non voulue :
+
+```asp
+correct(B):- label(B,I) ; contains(B,I).
+:- 1!={ correct(B): box(B) }.
+```
+
+Bon, maintenant, si on lance le code, c'est le gros dawa : il y a beaucoup plus de solutions possibles.
+Avec les 8 boites, on obtient 28560 solutions différentes.
+
+## Conclusions
+Comme ASP ne nous permettais pas simplement de résoudre l'énigme, nous avons imaginé et implémenté
+l'algorithme qui nous permet de le faire. Et ainsi, avec une approche itérative, nous avons pu trouver la réponse à la question, et les réponses à des questions plus générales.
+
+Notons aussi que, qui dit itératif, dit *iterative solving*, qui existe justement pour résoudre des problèmes de manière iterative, et que nous verrons dans une annexe dédiée en cours d'écriture.
+<!-- Notons aussi que, qui dit itératif, dit [*iterative solving*]({filename}/articles/asp-solving-variants.mkd), qui existe justement pour résoudre des problèmes de manière iterative. -->
+L'[approche temporelle]({filename}/articles/asp-temporal.mkd) est également possible ; cependant,
+c'est comme utiliser un bulldozer pour exploser une mouche, c'est-à-dire faire exactement
+ce qui a été fait dans cette quête annexe : utiliser le temps pour simuler l'itération.
 
 
 
 
 # Énigme d'Einstein
-Vous vous en souvenez certainement : [cette énigme](https://fr.wikipedia.org/wiki/%C3%89nigme%5Fd%27Einstein) occupe les repas de famille tous les ans, sans qu'aucune solution ne soit trouvée. Elle est très bien [expliquée ici](http://villemin.gerard.free.fr/Puzzle/Enigme5.htm), ainsi que deux méthodes de résolutions possibles : avec la tête, ou algorithmiquement.
+Vous vous en souvenez certainement : [cette énigme](https://fr.wikipedia.org/wiki/%C3%89nigme%5Fd%27Einstein) occupe les repas de famille tous les ans,
+sans qu'aucune solution ne soit trouvée. Elle est très bien [expliquée ici](http://villemin.gerard.free.fr/Puzzle/Enigme5.htm),
+ainsi que deux méthodes de résolutions possibles : avec la tête, ou algorithmiquement.
 
 En gros, selon certains indices, il faut savoir qui parmis l'anglais, le norvégien, le suédois, le danois et l'allemand possède les *poissons*.
 La modélisation du problème est un poil longue, car il y a beaucoup de relations à écrire, et aussi beaucoup d'évidences.
@@ -261,6 +556,7 @@ Rien de très intéressant ici. Notez que, pour faire une association 1-pour-1 p
 l'une pour dire qu'il y a un humain pour chaque chose, et une autre pour dire qu'il y a une chose pour chaque humain.
 Retirez une seule de ces règles, et vous obtenez plusieurs solutions où des humains se partagent des objets ou inversement.
 
+### Généralisations des valeurs
 Notez qu'en plaçant le nom des objets (boisson, fume, couleur, animal, place) comme argument d'un atome,
 on pourrait n'avoir besoin d'écrire qu'une seule fois ces règles d'assignation:
 
@@ -277,7 +573,7 @@ objet(O) :- objet(O,_).
 1 { association(H,O,V): humain(H) } 1 :- objet(O,V).
 ```
 
-Voilà une piste d'amélioration pour pouvoir gérer des instances du problème avec un nombre arbitraire d'objets.
+Voilà une piste d'amélioration — que nous n'utiliserons pas ici — permettant de gérer des instances du problème avec un nombre arbitraire d'objets.
 
 ## Les indices
 ```asp
@@ -356,7 +652,7 @@ Enfin, si vous regardez bien les autres indices, vous verrez que les indices 10,
 une subtilité dans les indices permet d'éviter une limitation explicite du nombre de voisins. C'est pas hyper robuste, mais c'est plus rapide pour le solveur.
 
 
-## Réponse…
+## Réponse… (SPOILER)
 
 Et la réponse est… L'allemand. En effet, le seul answer-set donné par le solveur indique bien, entre autre, l'atome `animal(allemand,poisson)`.
 Évidemment, toutes les assocations sont données, par exemple `fume(danois,blend)`, qui ne peut être deviné lorsque l'on déroule l'énigme que dans les dernières étapes.
@@ -366,4 +662,10 @@ Et la réponse est… L'allemand. En effet, le seul answer-set donné par le sol
 Pour certains jeux de logique, ASP est utile. Même quand les relations s'accumulent, ou que l'instance grossie,
 il reste possible d'obtenir un code relativement simple qui réponde à la question.
 
-Quelles énigme ASP ne peut-il pas résoudre ? Eh bien, beaucoup. Notamment ceux qui font appelle à la logique systémique, ou demandent l'élaboration de protocoles. (TODO: add links)
+Quelles énigmes ASP ne peut-il pas résoudre ? Eh bien, beaucoup. Notamment ceux qui font appelle à la logique épistémologique,
+ou demandent l'élaboration de protocoles. Ou alors, comme on l'a vu dans la partie dédiée,
+il faut élaborer une recherche de la solution sois-même, il ne suffit plus de décrire le problème.
+Heureusement, de nombreuses techniques permettent de se simplifier la vie, même dans ces cas complexes, par exemple
+les variantes du solving (que nous verrons dans une (quête) annexe dédiée),
+<!-- [les variantes du solving]({filename}/articles/asp-solving-variants.mkd), -->
+ou [la logique temporelle]({filename}/articles/asp-temporal.mkd).

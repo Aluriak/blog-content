@@ -1,0 +1,649 @@
+Title: Écrire des systèmes logiciels: les commentaires
+Date: 2018-10-09
+Tags: language
+Authors: Lucas Bourneuf
+Summary: traduction d'un article d'antirez
+Slug: antirez-commentaires
+Lang: français
+Translation: false
+Status: draft
+
+<center>*Ceci est une traduction amateure de l'article «[*Writing system software: code comments*](http://antirez.com/news/124)», écrit et publié par le développeur de Redis, antirez.
+Quelques choix de traduction : je garde certains termes techniques en anglais, pas tous, mais de manière consistante, et l'habitude de l'auteur de ne pas mettre d'hyperliens dans le texte. À la place, je garnirais en fin d'article. Les titres sont également mis en valeur, et les commentaires dans les codes sont traduits (c'est discutable, mais meilleur pour la démonstration).
+Si vous voyez des coquilles, améliorations, [les pull requests sont bienvenues](https://github.com/Aluriak/blog-content/blob/master/articles/TRL-antirez-code-comments.mkd).*</center>
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+<center><i>Début de traduction</i></center>
+
+Cela fait un certain temps que je voulais publier une vidéo à propos des commentaires (du code) pour ma série «Writing system software» (NdT: «écrire des systèmes logiciels») sur YouTube.
+Mais en y réfléchissant, j'ai réalisé que le sujet serait mieux traité via un article de blog. Nous y voilà.
+Dans cet article, je vais analyser des commentaires du code de Redis, en essayant de les catégoriser.
+Au fur et à mesure, je vais montrer pourquoi, selon moi, écrire des commentaires est d'une importance capitale lorsque que l'on produit du code de qualité,
+c'est-à-dire maintenable sur le long-terme et compréhensible pour les autres et par les auteurs pendant les périodes de modifications et de debugging.
+
+Tout le monde ne pense pas ainsi. Beaucoup pensent que les commentaires sont inutiles si le code est suffisemment bien fait.
+L'idée étant que, quand tout est bien conçu, le code lui-même documente ce qu'il fait, donc les commentaires sont superfêtatoires.
+Je ne suis pas d'accord avec cette vision pour deux principales raisons :
+
+1. Beaucoup de commentaires n'expliquent pas ce que le code fait. Ils expliquent ce que vous ne pouvez pas pas comprendre juste en observant ce que le code fait. Souvent, cette information manquante est *pourquoi* le code réalise une certaine action, ou pourquoi il fait quelque chose plutôt qu'une autre, qui aurait semblé plus naturelle.
+
+2. Bien que ce ne soit généralement pas utile de commenter, ligne par ligne, ce que le code fait, parce que c'est compréhensible en le lisant, un objectif clé dans l'écriture de code lisible est de limiter l'effort nécessaire et la quantité de détail que le lecteur doit avoir dans sa tête lorsqu'il lit du code. De cette façon, les commentaires peuvent être, selon moi, une manière de diminuer la charge cognitive pour le lecteur.
+
+L'extrait de code qui suit est un bon exemple du second point. Notez que tous les extraits de cet article viennent du code source de Redis. Tous les extraits sont préfixés par le nom du fichier d'origine. La branche utilisée est la présente «unstable» avec le hash 32e0d237.
+
+
+scripting.c:
+
+    /* Pile initiale: array */
+    lua_getglobal(lua,"table");
+    lua_pushstring(lua,"sort");
+    lua_gettable(lua,-2);       /* Pile: array, table, table.sort */
+    lua_pushvalue(lua,-3);      /* Pile: array, table, table.sort, array */
+    if (lua_pcall(lua,1,0,0)) {
+        /* Pile: array, table, error */
+
+        /* Nous ne some pas intéressés par l'erreur,
+         * on assume que le problème est qu'il y a des éléments faux
+         * dans le tableau *array*, donc on ré-essaye avec une fonction plus lente
+         * mais capable de gérer ce cas :
+         * table.sort(table, __redis__compare_helper) */
+        lua_pop(lua,1);             /* Pile: array, table */
+        lua_pushstring(lua,"sort"); /* Pile: array, table, sort */
+        lua_gettable(lua,-2);       /* Pile: array, table, table.sort */
+        lua_pushvalue(lua,-3);      /* Pile: array, table, table.sort, array */
+        lua_getglobal(lua,"__redis__compare_helper");
+        /* Pile: array, table, table.sort, array, __redis__compare_helper */
+        lua_call(lua,2,0);
+    }
+
+Lua utilise une API basée sur une pile. Le lecteur qui suit chaque appel dans la fonction ci-dessus, et ayant une référence du langage Lua sous la main,
+sera capable de reconstruire mentalement la pile à tout instant. Mais pourquoi forcer le lecteur à faire cet effort ?
+L'auteur aura de toute façon à le faire lui-même lorsqu'il écrira le code.
+J'ai donc annoté chaque ligne avec l'état de la pile après chaque appel. Lire ce code est maintenant trivial,
+indépendamment du fait que l'API de Lua est difficile à suivre.
+
+<!-- Lua uses a stack based API. A reader following each call in the function above, having also a Lua API reference at hand, will be able to mentally reconstruct the stack layout at every given moment. But why to force the reader to do such effort? While writing the code, the original author had to do that mental effort anyway. What I did there was just to annotate every line with the current stack layout after every call. Reading this code is now trivial, regardless of the fact the Lua API is otherwise non trivial to follow. -->
+
+Mon but ici n'est pas uniquement de donner mon point de vue sur l'utilité des commentaires
+pour donner un contexte qui n'est pas exposé clairement lorsqu'on lit une section spécifique du code source.
+Mon but est aussi de donner des indications sur l'utilité du genre de commentaire qui est historiquement considéré inutile voire dangereux,
+c'est-à-dire les commentaires parlant du *quoi*, du *qu'est-ce que le code fait ?*, et non du *pourquoi*.
+
+<!-- My goal here is not just to offer my point of view on the usefulness of comments as a tool to provide a background that is not clearly available reading a local section of the source code. But also to also provide some evidence about the usefulness of the kind of comments that are historically considered useless or even dangerous, that is, comments stating *what* the code is doing, and not why. -->
+
+# Classification des commentaires
+
+Au début, j'ai commencé par la lecture de parties choisies aléatoirement du code source de Redis, pour vérifier
+si et pourquoi les commentaires étaient utilisés dans différents contextes.
+Rapidement, il apparut que les commentaires étaient utiles pour des raisons très différentes,
+puisqu'ils tendent à différer de par leur fonction, style d'écriture, taille et fréquence de mise-à-jour. J'ai donc fini par faire de la classification.
+
+J'ai identifié neuf types de commentaires pendant mes recherches :
+
+* commentaires de fonction
+* commentaires de conception/*design*
+* commentaires de *Pourquoi*
+* commentaires d'enseignant
+* commentaires check-list
+* commentaires guides
+* commentaires triviaux
+* commentaires de dette
+* commentaires de backup
+
+Les six premiers sont, selon moi, en majorité des formes très positive de commentaire, alors que les trois derniers sont discutables.
+Dans les prochaines sections, chaque type sera analysé avec des examples trouvés dans le code source de Redis.
+
+
+## Commentaires de fonction
+Le but d'un commentaire de fonction est d'éviter au lecteur d'avoir à lire du code.
+En effet, après avoir lu le commentaire, il est possible de considérer le code comme une boîte noire qui obéis à certaines règles.
+On devrait trouver les commentaires de fonction en haut des définitions de fonctions, mais on les trouve à d'autres endroits,
+documentant les classes, macro, ou tout autre bloc de code isolé fonctionellement qui définit une interface.
+
+
+rax.c:
+
+    /* Cherche la plus grande clef dans le sous-arbre du nœud courant.
+     * Retourne 0 sur une sortie mémoire, sinon 1.
+     * Ceci est une fonction d'aide pour plusieurs fonctions d'itération
+     * définies plus bas. */
+    int raxSeekGreatest(raxIterator *it) {
+    …
+
+Les commentaires de fonction  sont en fait une forme de documentation d'API intégrée.
+Si il est bien écrit, l'utilisateur devrait pouvoir retourner
+à ses lectures précédente (le code qui appelait l'API en question) sans avoir à lire l'implémentation de la fonction, la class, la macro, ou autre.
+
+De tous les types de commentaires, ce sont ceux qui sont le plus largement acceptés
+par la commauté des programmeurs, aussi larges que nécessaire.
+Le seul point à analyser : est-ce une bonne idée de placer des commentaires qui sont de fait une documentation de référence de l'API
+dans le code lui-même (NdT: et non dans un document qui s'appelerait «Référence de l'API»).
+Pour moi, la réponse est simple : je veux que la documentation de l'API corresponde exactement au code.
+Si le code est changé, la documentation doit être changée. Pour cette raison, en utilisant les commentaires de fonction comme un prologue
+aux fonctions et autres éléments, nous écrivons la documentation de l'API à côté du code, ce qui a trois conséquences :
+<!-- Among all the kinds of comments, these are the ones most widely accepted by the programming community at large as needed. The only point to analyze is if it is a good idea to place comments that are largely API reference documentation inside the code itself. For me the answer is simple: I want the API documentation to exactly match the code. As the code is changed, the documentation should be changed. For this reason, by using function comments as a prologue of functions or other elements, we make the API documentation close to the code, accomplishing three results: -->
+
+* La documentation peut être facilement changée en même temps que le code, sans risque de vieillissement de la référence.
+
+* Cette approche maximise la probabilité que l'auteur du changement dans le code, qui est celui comprenant le mieux ce qu'il fait, sera aussi l'auteur du changement de la documentation.
+
+* Il est pratique d'avoir la doc au même endroit que les fonctions ou méthodes, permettant au lecteur de se concentrer uniquement sur le code, plutôt que switcher entre code et documentation.
+
+# Commentaires de conception
+Alors qu'un «commentaire de fonction» se trouve au commencement d'une fonction,
+un commentaire de conception est plus souvent trouvé au début d'un fichier.
+Le commentaire donne en gros comment et pourquoi une partie du code donnée utilise certains algorithmes, techniques, astuces, et implémentations.
+C'est à un niveau au-dessus de ce que vous verrez implémenté dans le code.
+Avec un tel contexte, lire le code sera plus simple. Et je tends à avoir plus de confiance envers un code où je peux trouver des notes sur la conception.
+Au moins je sais qu'une certaine phase de conception s'est faite, à un certains moment pendant le processus de développement.
+
+Dans mon expérience, les commentaires de conception sont très utiles pour indiquer,
+dans le cas où la solution proposée par l'implémentation semble un peu trop triviale,
+quelle étaient les solutions concurrentes et pourquoi une solution aussi simple fût considérée suffisante pour le cas traité.
+Si la conception est correcte, le lecteur se convaincra lui-même que la solution est appropriée et que la simplicité vient d'une réflexion,
+pas de la fainéantise ou de l'incapacité à coder autrement qu'avec des concepts basiques.
+
+bio.c:
+
+     * CONCEPTION
+     * ------
+     *
+     * La conception est triviale,
+     * on a une structure représentant un job à réaliser
+     * et un thread et une file de job pour chaque type de job.
+     * Chaque thread attends pour de nouveaux job dans sa file,
+     * et applique chaque job séquentiellement.
+     …
+
+
+# Commentaires *pourquoi*
+Les commentaires *pourquoi* expliquent les raisons derrière une opération réalisée dans le code, et ce même si ce que fait le code est évident.
+Regardez cet exemple du code de réplication de Redis :
+
+replication.c:
+
+    if (idle > server.repl_backlog_time_limit) {
+    /* Quand on libère le backlog, on utilise toujours
+     * un nouvel ID de réplication et nettoyons l'ID2.
+     * C'est nécessaire car quand il n'y a pas de backlog,
+     * le master_repl_offset n'est pas mis à jour,
+     * mais on veut toujours conserver notre ID de réplication,
+     * ce qui implique le problème suivant :
+     *
+     * 1. On est en instance maître
+     * 2. Notre réplica est promu maître.
+     *    Son repl-id-2 sera le même que notre repl-id.
+     * 3. On, toujours maître, recevons des mise à jours,
+     *    qui n'incrémenterons pas le master_repl_offset.
+     * 4. Plut tard, on passe en réplica, et sommes connectés
+     *    au nouveau maître qui acceptera notre requête PSYNC
+     *    par l'ID secondaire de réplication, mais il y aura
+     *    une inconsistence des données car on a reçu
+     *    des requêtes d'écriture. */
+    changeReplicationId();
+    clearReplicationId2();
+    freeReplicationBacklog();
+    serverLog(LL_NOTICE,
+        "Replication backlog freed after %d seconds "
+        "without connected replicas.",
+        (int) server.repl_backlog_time_limit);
+    }
+
+Si je vérifie uniquement les appels de fonction, il y a bien peu à imaginer : si le temps d'expiration est atteint, changer l'ID principal de réplication, supprime l'ID secondaire,
+et enfin libère le backlog de réplication. Il n'est cependant pas évident de comprendre
+pourquoi on a besoin de changer les IDs de réplication quand on libère les backlogs.
+<!-- If I check just the function calls there is very little to wonder: if a timeout is reached, change the main replication ID, clear the secondary ID, and finally free the replication backlog. However what is not exactly clear is why we need to change the replication IDs when freeing the backlog. -->
+
+C'est le genre de chose qui arrive régulièrement dans un logiciel, une fois qu'il a atteint un certain niveau de complexité. Quelque soit le code impliqué, le protocole de réplication
+a lui-même un certain de niveau de complexité, donc nous avons besoin de certaines actions pour être sûr que de mauvaises choses ne puissent arriver.
+Ce genre de commentaire est probablement, d'une certaine façon, l'opportunité de raisonner sur le système et vérifier si il pourrait être amélioré,
+de telle manière qu'une telle complexité n'est plus nécessaire, ainsi que le commentaire lui-même.
+Cependant, faire quelque chose de plus simple rime souvent avec la nécessité de rendre quelque chose d'autre plus complexe, ou est tout simplement non-viable,
+ou encore requiert de casser la compatibilité.
+<!-- Now this is the kind of thing that happens continuously in software once it has reached a given level of complexity. Regardless of the code involved, the replication protocol has some level of complexity itself, so we need to do certain things in order to make sure that other bad things can't happen. Probably these kind of comments are, in some way, opportunities to reason about the system and check if it should be improved, so that such complexity is no longer needed, hence also the comment can be removed. However often making something simpler may make something else harder or is simply not viable, or requires future work breaking backward compatibility. -->
+
+Voici un autre exemple.
+
+replication.c:
+
+    /* SYNC ne peut être distribué quand le serveur a des données en attente
+     * a envoyer au client à propos de commandes déjà délivrées.
+     * On a besoin d'un nouveau buffer de réponse enregistrant les différences
+     * entre BGSAVE et les données courantes, ainsi on pourra les copier
+     * à d'autres réplicas si besoin. */
+    if (clientHasPendingReplies(c)) {
+        addReplyError(c,"SYNC and PSYNC are invalid with pending output");
+        return;
+    }
+
+Si vous lancez SYNC alors qu'il y a encore des sorties en attente (d'une commande précédente)
+à envoyer au client, la commande devrait échouer, car durant le handshake de réplication
+le buffer de sortie est utilisé pour accumuler les changements, et pourrait plus tard être
+dupliqué pour servir d'autres réplica se connectant, alors que nous sommes déjà en train de créer un fichier RDB pour la synchronisation complète avec le premier réplica.
+Tout ça pour ça. Ce que l'on fait est trivial : réponses en attente ? Émettre une erreur. Le *pourquoi* est obscur sans le commentaire.
+
+On pourrait penser que ce genre de commentaires sont nécessaires uniquement quand on décrit des protocoles et intéractions complexes, comme dans le cas de la réplication.
+Est-ce réellement le cas ? Changeons complètement de fichier et d'objectifs, et nous verrons encore ces commentaires partout.
+
+expire.c:
+
+    for (j = 0; j < dbs_per_call && timelimit_exit == 0; j++) {
+        int expired;
+        redisDb *db = server.db+(current_db % server.dbnum);
+
+        /* Incrémente la BdD maintenent, pour être sûrs que si on manque de temps
+         * dans la BdD courante on recommencera depuis la suivante.
+         * Ceci permet de distribuer le temps régulièrement entre les BdDs. */
+        current_db++;
+        …
+
+C'en est une intéressante. Nous voulons expirer les clefs de différentes Bases de Données,
+tant que l'on a du temps. Mais, plutôt qu'incrémenter «l'ID de BdD» pour machiner
+le suivant à la fin de la boucle qui s'occupe de la BdD courante, nous le faisons différemment :
+Nous sélectionnons la BdD courante dans la variable 'db', et incrémentons immédiatement l'ID de la prochaine base à traiter (pour le prochain appel de cette fonction).
+De cette manière, si la fonction se termine parce que trop d'efforts ont été placés dans un seul appel,
+nous n'avons pas à gérer le fait que le prochain appel recommencera sur la même BdD,
+laissant les clefs logiquement expirées s'accumuler dans les autres BdDs, puisque l'exécution passera encore et encore son temps sur les expirations d'une seule BdD.
+<!-- That's an interesting one. We want to expire keys from different DBs, as long as we have some time. However instead of incrementing the “database ID” to process next at the end of the loop processing the current database, we do it differently: we select the current DB in the `db` variable, but then we immediately increment the ID of the next database to process (at the next call of this function). This way if the function terminates because too much effort was spent in a single call, we don't have the problem of restarting again from the same database, letting logically expired keys accumulating in the other databases since we are too focused in processing the same database again and again. -->
+
+Avec un tel commentaire, on explique à la fois pourquoi on incrémente aussi tôt,
+et que la prochaine personne qui voudra modifier le code devra préserver cette fonctionalité.
+Notez que sans le commentaire, le code semble complètement inoffensif. Sélectionne, incrémente, travaille.
+Il n'y a aucune raison évidente pour ne pas remettre l'incrémentation à la fin de la boucle, où cela semblerait plus naturel.
+
+Anecdote : l'incrément dans la boucle était effectivement à la fin dans le code original. Il a été bougé à la fin pendant une correction :
+au même moment où le commentaire fût ajouté. On pourrait dire qu'il s'agit d'un «commentaire de régression»
+(NdT: parallèle avec les tests de régression, détectant d'éventuelle perte de fonctionalités).
+
+
+
+## Commentaires d'enseignant
+
+Les commentaires d'enseignant n'essaye pas d'expliquer le code lui-même ou certains effets de bord dont on devrait avoir connaissance. Ils expliquent plutôt le *domaine* (par exemple, les maths, infographies, networking, statistiques, ou encore des structures de données complexes) avec lequel le code opère, qui pourrait être en dehors de l'expertise du lecteur,
+ou est tout simplement fait de tant de détails que l'on ne peut tous les avoir en mémoire.
+
+La commande LOLWUT dans la version 5 de Redis doit montrer des carrés pivotés à l'écran ( [http\://antirez.com/news/123](http://antirez.com/news/123) ).
+Pour faire ça, elle utilise de la trigonométrie basique :
+malgré le fait que les mathématiques utilisées soient simples, beaucoup de programmeurs
+lisant le code source de Redis pourraient ne pas avoir le background matheux,
+donc le commentaire au début de la fonction explique ce qui arrivera dans la fonction elle-même.
+
+lolwut5.c:
+
+    /* Dessine un carré centré sur les coordonnées x,y données,
+     * avec l'angle et la taille indiqués. Pour écrire un carré pivoté,
+     * on utilise le fait que l'équation paramétrique :
+     *
+     *  x = sin(k)
+     *  y = cos(k)
+     *
+     * Décrit un cercle pour les valeurs allant de 0 à 2*PI.
+     * Donc, si on commence à 45 degrés, donc k=PI/4, avec le premier point,
+     * et que l'on trouve les 3 autres points en incrémentant k de PI/2 (90 degré),
+     * on aura les 4 points du carré. Pour pivoter le carré, on commence avec
+     * k = PI/4 + angle de rotation
+     *
+     * Bien sûr, les équations standard ci-dessus vont décrire un carré
+     * dans un cercle de rayon 1, donc pour dessiner de plus gros carrés,
+     * on va devoir multiplier les coordonnées des 4 points, et opérer une translation.
+     * C'est beaucoup plus simple que d'implémenter le concept abstrait de forme en 2D,
+     * et ensuite de réaliser la rotation/translation,
+     * donc pour LOLWUT c'est une bonne approche. */
+
+Le commentaire ne contient pas une seule chose en rapport avec le contenu de la fonction elle-même, ou ses effets de bords, ou les détails techniques qui s'y rapportent.
+La description est uniquement limitée aux concepts mathématiques utilisés par la fonction
+pour atteindre son but.
+
+Je pense que les commentaires d'enseignant sont de grande valeur. Ils enseignent quelque chose dans le cas où le lecteur n'est pas au fait de tels concepts, ou en tout cas donne un point de départ pour une étude poussée. Cela veut dire qu'un commentaire d'enseignant augmente le nombre de programmeurs qui peuvent lire certaines parties du code : écrire du code que beaucoup de programmeurs peuvent lire est un de mes objectifs majeurs. Il y a des dévelopeurs qui n'ont peut-être pas les compétences en mathématiques, mais qui sont de très bons programmeurs qui pourraient contribuer avec de merveilleux patchs ou optimisations.
+Et en général, à part être exécuté, un code devrait être lu, puisqu'écrit par les humains, pour les humains.
+
+Il y a des cas où les commentaires d'enseignants sont presques impossibles à éviter
+pour écrire du code décent. Un bon exemple est l'implémentation de l'arbre radix de Redis.
+Les arbres radix sont des structures de données articulées.<!-- meh -->
+L'implémentation de Redis ré-explique entièrement la théorie derrière la structure,
+montrant les différents cas et ce que l'algorithme fait pour fusionner et séparer les nœuds et cetera.
+Immédiatement après chaque section de commentaires, nous avons le code qui implémente ce qui a été écrit auparavant. Après plusieurs mois sans toucher le fichier implémentant l'arbre radix, j'ai été capable de l'ouvrir, de résoudre un bug en quelques minutes, et de continuer à faire autre chose. Il n'y a aucun besoin d'étudier à nouveau comment un arbre radix fonctionne,
+puisque les explications sont la même chose que le code lui-même, entremêlés dans le fichier.
+
+Les commentaires sont trop longs, je vais donc juste montrer des extraits.
+
+rax.c:
+
+    /* Si le nœud sur lequel on s'est arrêté est un nœud compressé,
+     * on doit d'abord le séparer pour continuer.
+     *
+     * Séparer un nœud compresser présente quelques cas possibles.
+     * Imaginons qu'un nœud 'h', sur lequel nous sommes, est compressé
+     * et contient la chaîne «ANNIBALE» (indiquant qu'il représente
+     * les nœuds A -> N -> N -> I -> B -> A -> L -> E avec le
+     * seul pointeur enfant de ce nœuds pointant vers le nœud 'E',
+     * car rappelons que l'on a des caractères sur les arcs du graphe,
+     * pas dans les nœuds eux-même.
+     *
+     * Pour montrer un cas réel, imaginons que notre nœud pointe également
+     * vers un autre enfant représentant 'O' :
+     *
+     *     "ANNIBALE" -> "SCO" -> []
+
+     […]
+
+     * 3a. IF $SPLITPOS == 0:
+     *     Remplace l'ancien nœud avec le nœud séparé, en copiant
+     *     les données auxiliaire le cas échéant. Répare la référence
+     *     du parent. Libère l'ancien nœud si possible (on a toujours
+     *     besoin de ses données pour les prochaines étapes de l'algorithme)
+     *
+     * 3b. IF $SPLITPOS != 0:
+     *     Coupe le nœud compressé (le ré-allouant au passage) pour
+     *     qu'il contienne $splitpos caractères. Change le pointeur chilid
+     *     pour pour le lier au nœud séparé. Si le nœud nouvellement compressé
+     *     a une taille de 1, mettre iscompr à 0 (même layout).
+     *     Répare la référence du parent.
+
+     […]
+
+        if (j == 0) {
+            /* 3a: Remplace l'ancien nœud avec le nœud séparé. */
+            if (h->iskey) {
+                void *ndata = raxGetData(h);
+                raxSetData(splitnode,ndata);
+            }
+            memcpy(parentlink,&splitnode,sizeof(splitnode));
+        } else {
+            /* 3b: Coupe le nœud compressé. */
+            trimmed->size = j;
+            memcpy(trimmed->data,h->data,j);
+            trimmed->iscompr = j > 1 ? 1 : 0;
+            trimmed->iskey = h->iskey;
+            trimmed->isnull = h->isnull;
+            if (h->iskey && !h->isnull) {
+                void *ndata = raxGetData(h);
+                raxSetData(trimmed,ndata);
+            }
+            raxNode **cp = raxNodeLastChildPtr(trimmed);
+        …
+
+
+Comme vous pouvez le voir, la description dans le commentaire est réutilisée avec les même label dans le code.
+C'est assez difficile à montrer avec seulement des extraits, donc si vous voulez voir l'idée générale, allez voir le fichier complet à :
+
+    https://github.com/antirez/redis/blob/unstable/src/rax.c
+
+Ce niveau de commentaire n'est pas nécessaire pour tout, mais des choses comme les arbres radix sont vraiment remplis de petits détails et cas  particuliers.
+Ils sont difficiles à se remémorer, et certains détails sont *spécifiques* à une implémentation. Faire ça pour une liste chaînée n'a évidemment pas beaucoup de sens.
+C'est une affaire de sensibilité personnelle de décider quand c'est intéressant ou non.
+
+
+
+## Commentaires check-list
+
+C'est un commentaire très commun and particulier : parfois à cause des limites de langages, des problèmes de conceptions,
+ou simplement de la complexité naturelle apparaissant dans les systèmes, il n'est pas possible de centraliser un concept ou une interface en une seule pièce,
+il y a donc des commentaires dans le code qui vous rappelerons certaines chose à faire dans d'autres endroits du code.
+Le concept général est :
+
+    /* Attention: si vous ajoutez un ID de type ici, assurez-vous de modifier
+     * le function getTypeNameByID() également. */
+
+Dans un monde parfait, ceci ne serais jamais nécessaire, mais en pratique il n'y a parfois aucun moyen d'y échapper.
+Par exemple, les types de Redis pourraient être représentés via une structure «type objet»,
+et tous les objets seraient liées au type objet auquel il appartient, donc vous pourriez faire :
+
+    printf("Type is %s\n", myobject->type->name);
+
+Mais devinez quoi ? C'est trop coûteux pour nous, car un objet Redis est représenté ainsi :
+
+    typedef struct redisObject {
+        unsigned type:4;
+        unsigned encoding:4;
+        unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
+                                * LFU data (least significant 8 bits frequency
+                                * and most significant 16 bits access time). */
+        int refcount;
+        void *ptr;
+    } robj;
+
+Nous utilisons 4 bits plutôt que 64 pour représenter le type. Tout ceci est là juste pour montrer pourquoi les choses ne sont pas aussi centralisées et naturelles
+que ce qu'elles devraient. Dans une telle situation, ce sont sont les commentaires défensifs (NdT: référence à la programmation défensive) qui nous aident,
+assurant que si une certaine partie du code est touchée, vous vous souviendrez qu'il faut aussi modifier une autre partie du code.
+Spécifiquement, un commentaire check-list fait l'un ou les deux parmis :
+
+* Il vous rappelle un ensemble d'actions à faire si le code est touché.
+* Il vous indique comment certains changements doivent être menés.
+
+Un autre exemple dans blocked.c, quand un nouveau type de blocage est introduit :
+
+blocked.c:
+
+     * Quand implemente un nouveau type d'opération de blockage, l'implémentation
+     * doit modifier unblockClient() et replyToBlockedClientTimedOut() pour
+     * gérer le comportement de btype-specific dans ces deux fonctions.
+     * Si l'opération de blocage attends certaines clefs pour changer d'état,
+     * la fonction clusterRedirectBlockedClientIfNeeded() doit aussi être mise à jour.
+
+Le commentaire check-list est aussi utile dans un contexte similaire à celui où les commentaires *pourquoi* sont utilisés : quand il n'est pas évident
+de savoir pourquoi un code doit être exécuté à une place donnée, avant ou après quelque autre traitement.
+Mais là où les commentaires *pourquoi* vous indiquent pourquoi une déclaration est là, le commentaire check-list utilisé dans le même
+cas sera plus enclin à vous dire quelles règles sont à respecter si vous voulez la modifier (dans ce cas, la règle est de suivre un certain ordre)
+sans casser le comportement du code.
+
+
+cluster.c:
+
+    /* Mise à jour de nos info à propos de l'emplacement servis.
+     *
+     * Note: ceci DOIT arriver après que l'on mette à jour l'état du maître/réplica
+     * pour que le flag CLUSTER_NODE_MASTER soit allumé. */
+
+Les commentaires de check-list sont très communs dans le kernel Linux, où l'ordre de certaines opérations est extrèmement important.
+
+
+
+## Commentaire guides
+
+J'abuse des commentaires guides à un tel point que, probablement, la majorité des commentaires de Redis sont des guides.
+De plus, les commentaires guides sont exactement ce que la plupart des gens pensent être complètement inutiles.
+
+* Ils n'affirment pas ce qui n'est pas clair dans le code.
+* On n'y trouve aucun indice de conception.
+
+Les commentaires guides font une chose simple : ils babysittent le lecteur, l'assistent en donnant des divisions claires de ce qui est écrit dans le code source,
+rythment et introduisent ce que vous allez lire.
+
+La seule raison d'exister des commentaires guides est de diminuer la charge cognitive du programmeur lisant le code.
+
+rax.c:
+
+    /* Apelle le callback du nœud si il y en a un, et remplace
+     * le pointeur du nœuds si le callback renvoit vrai. */
+    if (it->node_cb && it->node_cb(&it->node))
+    memcpy(cp,&it->node,sizeof(it->node));
+
+    /* Pour l'étape "suivante", s'arrêter chaque fois que
+     * l'on trouve une clef sur le chemin, puisque la clef
+     * est lexicographiquement plus petite comparée
+     * à ce qui suit dans le sous-enfant. */
+    if (it->node->iskey) {
+    it->data = raxGetData(it->node);
+
+    return 1;
+    }
+
+Il n'y a rien que les commentaires ajoutent au code ci-dessus.
+Les commentaires guides vous assistent à la lecture du code, et vous assurent que vous comprenez bien.
+
+Plus d'exemples.
+
+networking.c:
+
+    /* Log les déconnexions de liens avec les réplica */
+    if ((c->flags & CLIENT_SLAVE) && !(c->flags & CLIENT_MONITOR)) {
+        serverLog(LL_WARNING,"Connection with replica %s lost.",
+            replicationGetSlaveName(c));
+    }
+
+    /* Libère le buffer de requête */
+    sdsfree(c->querybuf);
+    sdsfree(c->pending_querybuf);
+    c->querybuf = NULL;
+
+    /* Désalloue les structures utilisées pour bloquer les opérations bloquantes. */
+    if (c->flags & CLIENT_BLOCKED) unblockClient(c);
+    dictRelease(c->bpop.keys);
+
+    /* Arrête de surveiller toutes les clefs */
+    unwatchAllKeys(c);
+    listRelease(c->watched_keys);
+
+    /* Se désinscrit de toutes les chaînes de pubsub */
+    pubsubUnsubscribeAllChannels(c,0);
+    pubsubUnsubscribeAllPatterns(c,0);
+    dictRelease(c->pubsub_channels);
+    listRelease(c->pubsub_patterns);
+
+    /* Libère des structures de données. */
+    listRelease(c->reply);
+    freeClientArgv(c);
+
+    /* Délie le client: ceci va clore le socket, enlever
+     * les gestionnaires d'I/O, et enlever les références du client
+     * de différentes places où des clients actifs
+     * pourraient être référencés. */
+    unlinkClient(c);
+
+Redis est *littéralement* remplis de commentaires guides, au point que tout fichier que vous ouvrirez en contiendra des pelletées.
+Pourquoi s'embêter ? De tous les types de commentaires que j'ai analysés jusque là dans cet article, j'admet qu'il s'agit bien du plus subjectif.
+Je n'évalue pas du code sans ce genre de commentaire comme moins bon, pourtant je suis convaincu que si les gens considèrent le code de Redis comme lisible,
+cela est en partie dû au commentaires guides.
+
+Les commentaires guides ont une utilité autre que ceux affirmés précedemment. Puisqu'ils divisent clairement le code en sections isolées,
+une addition au code sera très certainement insérée dans la section appropriée, plutôt que finir dans une partie indéfinie.
+Conserver proches les déclarations associées est un succès du point de vue de la lisibilité.
+
+Aussi, soyez sûrs de lire le commentaires guide avant que la fonction unlinkClient() soit appelée. Le commentaire indique brièvement au lecteur ce que la fonction s'apprête à faire,
+évitant audit lecteur d'avoir à aller à la fonction elle-même si il n'est intéressé que par la vue d'ensemble (NdT: court-circuitant un éventuel commentaire de fonction).
+
+
+
+## Commentaires triviaux
+
+Les commentaires guides sont des outils subjectifs. Vous pouvez les aimer ou pas. Mais un commentaire guide peut néanmoins dégénérer en un très mauvais commentaire :
+il peut facilement devenir un «commentaire trivial», une sorte de commentaire guide où la charge cognitive dûe à la lecture du commentaire est égale ou supérieure
+à la lecture directe du code associé.
+La forme suivante de commentaire trivial est exactement celle que beaucoup de livres vont vous dire d'éviter.
+
+    array_len++;	/* Incrémente la taille du tableau. */
+
+Donc, si vous écrivez des commentaires guides, soyez attentifs à ne pas en écrire de trivial.
+
+
+
+## Commentaires de dette
+
+Les commentaires de dette sont des déclarations de dette technique explicitement marqué dans le code source lui-même :
+
+t_stream.c:
+
+    /* Ici on devrait lancer le ramasse-miette au cas où
+     * à ce moment il y a trop d'entrées supprimées dans la listpack. */
+    entries -= to_delete;
+    marked_deleted += to_delete;
+    if (entries + marked_deleted > 10 && marked_deleted > entries/2) {
+    /* TODO: lancer une garbage collection. */
+    }
+
+L'extrait ci-dessus vient de l'implémentation des flux de Redis. Les flux de Redis permettent de supprimer des éléments au milieu en utilisant la commande XDEL.
+Ce peut être utile dans différents cas, particulièrement dans le contexte de régulation de la vie privée où certaines données ne peuvent être conservées,
+quelque soit les structures de données ou systèmes vous utilisez pour les stocker.
+C'est un cas d'usage très étrange pour une structure de donnée principalement *append-only* (NdT: qui ne supporte que la modification de données aux extrémités),
+mais si les utilisateurs commencent à supprimer plus de 50% des éléments dans le centre, le flux va se fragmenter, et sera composé de «macro nœuds».
+Les entrées sont juste marquées comme supprimées, mais sont récupérées seulement une fois que toutes les entrées dans un macro nœud donné sont libérées.
+De fait, votre suppression de masse changera le comportement des flux en mémoire.
+
+Pour le moment, ça sonne comme un non-problème, puisque je ne m'attends pas à ce que des utilisateurs suppriment l'essentiel de l'historique dans un flux.
+Il est cependant possible que dans le future nous voulions introduire le ramasse-miette :
+le macro nœud pourrait être compacté une fois le ratio entre entrées supprimées et entrées existantes atteint un niveau donné.
+De plus, des nœuds proches pourraient être collés ensembles après le passage du ramasse-miette. J'étais en quelque sorte inquiet que plus tard
+je ne pourrais me rappeler quels étaient les points d'entrée du ramasse-miette, donc j'ai mis un commentaire TODO,
+et même écris la condition déclencheuse.
+
+Ce n'est probablement pas génial. Une meilleure idée aurait été d'écrire, dans le commentaire de conception au début du fichier, pourquoi nous n'utilisons
+pas actuellement le ramasse-miette. Et quels sont les points d'entrée du ramasse-miette, si on voulait l'ajouter plus tard.
+
+FIXME, TODO, XXX, "This is a hack", sont tous des formes de commentaires de dette. Ils ne sont en général pas souhaitables, j'essaye de les éviter,
+mais ce n'est pas toujours possible, et parfois, plutôt qu'oublier un problème, je préfère mettre une note dans le source code.
+Au moins devrait-on régulièrement chercher ces commentaires, et voir si il est possible de mettre ces notes dans un meilleur emplacement,
+ou si le problème n'est plus d'actualité, ou encore s'il peut être réglé immédiatement.
+
+
+## Commentaires de backup
+
+Pour finir, les commentaires de backup sont ceux que le dévelopeur produit en gardant sous la forme de commentaires
+d'ancienne versions de block de code ou même de fonctions entières, par peur des changements qui ont conduits à la nouvelle version.
+Ce qui est déconcertant, c'est que cela arrive encore alors que nous avons Git. J'imagine que les gens sont gênés par la perte du fragment de code,
+considéré plus sain ou stable, dans un commit vieux de plusieurs années.
+
+Mais le code source n'est pas là pour faire des backups. Si vous voulez conserver une ancienne version d'une fonction ou d'une partie de code,
+votre travail n'est pas terminé et ne peut être commité.
+Vous devez soit décider que votre nouvelle fonction est meilleure que l'ancienne, ou la laisser dans votre arbre de dévelopment jusqu'à ce que vous en soyez sûr.
+
+Les commentaires de backup terminent la classification. Essayons de conclure.
+
+
+# Conclusion
+## Les commentaires comme un outils d'analyse
+
+Les commentaires sont la méthode du canard en plastique sous stéroïdes, en parlant non pas à un canard en plastique, mais au future lecteur du code,
+qui est plus intimidant qu'un canard, et sait utiliser Twitter.
+Ainsi, dans le processus de commentaire, vous devez essayer de comprendre si ce que vous dites est *acceptable*, honorable, suffisamment bon.
+Et si ce n'est pas le cas, faites votre devoir, et revenez avec quelque chose de décent.
+
+C'est le même processus qui opère lorsque l'on écrit de la documentation : l'écrivain essaye de donner une idée de ce qu'un code fait, quelles sont les garanties, les effets de bord.
+C'est souvent une opportunité de chasse au bug. C'est très facile lorsque l'on décrit quelque chose de trouver des trous… Vous ne pouvez pas vraiment le décrire complètement
+car vous n'êtes pas sûr à propos d'un comportements donné : le genre de comportement qui émerge de la complexité, aléatoirement.
+Vous ne voulez pas ça, donc vous retournez au code, et le corrigez. Je trouve qu'il s'agit là d'une magnifique raison d'écrire des commentaires.
+
+## Écrire de bon commentaires est plus dur qu'écrire du bon code
+
+Vous pourriez penser qu'écrire des commentaires est un art moins noble que le code. Après tout, vous *pouvez coder* !
+Néanmoins, considérez ceci : le code est un ensemble de déclarations et appels de fonctions, ou autre quelque soit votre paradigme de programmation.
+Parfois, ces déclarations ne font pas sens, honnêtement, si le code n'est pas bon.
+Les commentaires nécessiteront toujours un processus de conception actif, et de comprendre, dans le sens de compréhension profonde, le code que vous voulez écrire.
+Pour couronner le tout, pour écrire de bons commentaires, vous devez développer votre talent d'écriture.
+Le même talent d'écriture qui vous aidera à écrire vos emails, documentations, documents de conception, articles de blog et messages de commit.
+
+J'écris du code parce que je ressent un besoin urgent de partager et communiquer plus qu'autre chose.
+Les commentaires coopèrent avec le code, l'assistent, décrivent nos efforts, et après tout j'aime les écrire autant que j'aime écrire le code lui-même.
+
+(Merci à Michel Martens pour ses retours pendant l'écriture de cet article)
+
+<!-- You may think that writing comments is a lesser noble form of work. After all you *can code*! -->
+<!-- However consider this: code is a set of statement and function calls, or whatever your programming paradigm is. -->
+<!-- Sometimes such statements do not make much sense, honestly, if the code is not good. -->
+<!-- Comments require always to have some design process ongoing, and to understand the code you are writing in a deeper sense. -->
+<!-- On top of that, in order to write good comments, you have to develop your writing skills. -->
+<!-- The same writing skills will assist you writing emails, documentation, design documents, blog posts, and commit messages. -->
+<!-- I write code because I have an urgent sense to share and communicate more than anything else. Comments coadiuvate the code, assist it, describe our efforts, and after all I love writing them as much as I love writing code itself. -->
+<!-- (Thanks to Michel Martens for giving feedbacks during the writing of this blog post) -->
+
+
+<center><i>Fin de traduction</i></center>
+
+
+# Liens
+
+- [Redis (en)](https://redis.io/) est une base de données versatile orientée clef-valeur, [introduite ici en français](http://sametmax.com/redis-pourquoi-et-comment/)
+- [Les exemples sont adaptés du code source de Redis (en)](https://github.com/antirez/redis/tree/unstable/src)
+- [antirez (en)](http://antirez.com) est le créateur de Redis, et publie régulièrement sur son blog éponyme
+- [*Writing system software* (en)](https://www.youtube.com/watch?v=VBrnmciV9fM&list=PLrEMgOSrS_3fghr8ez63xKFNF-BA6Pz13), la série de vidéo par antirez
+- [L'arbre radix](https://fr.wikipedia.org/wiki/Arbre%5Fradix) expliqué par wikipédia
+- [pycrastinate (en)](https://github.com/isaacbernat/pycrastinate) le module python qui aide à gérer les commentaires de dette.
+- [Combien y a-t-il de TODO et FIXME dans le kernel linux ? (en)](http://smackerelofopinion.blogspot.com/2016/01/fixme-and-todo-comments-in-linux-kernel.html)
+- Enfin, si vous voulez améliorer cette traduction, allez sur [le dépôt git](https://github.com/Aluriak/blog-content/blob/master/articles/TRL-antirez-code-comments.mkd)

@@ -2093,18 +2093,35 @@ Et bien voici une solution :
 ```asp
 total(S):- S=#sum{N,U: valeurs(U,N)}.
 ```
+
 Notez ici l'importance du `N,U:`. Maintenant, le grounder arrive à cette expression :
+
 ```asp
 total(S):- S=#sum{
     10,1: valeurs(1,10);
     10,2: valeurs(2,10)
 }.
 ```
+
 Ça change tout : les valeurs sont désormais différentes. On a donc bien deux valeurs à ajouter : 10,1 et 10,2.
 Ici, #sum se fiche du second argument pour additionner : il se contente de considérer le premier nombre.
 On atteint donc 10 + 10 = 20.
 C'est bien la solution !
 
+### L'exemple complet
+Voici un exemple simple qui montre les différences de deux approches :
+
+```asp
+objet(a,1).
+objet(b,1).
+objet(c,1).
+objet(d,2).
+
+total(naif,   T) :- T=#sum{V: objet(_,V)}.
+total(correct,T) :- T=#sum{V,O: objet(O,V)}.
+
+#show total/2.
+```
 
 
 # Interface avec Python
