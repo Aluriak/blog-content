@@ -1,12 +1,12 @@
 Title: Écrire des logiciels systèmes: les commentaires
-Date: 2018-10-09
+Date: 2018-10-10
 Tags: language
 Authors: Lucas Bourneuf
 Summary: traduction d'un article d'antirez
 Slug: antirez-commentaires
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 <center>*Ceci est une traduction amateure de l'article «[*Writing system software: code comments*](http://antirez.com/news/124)», écrit et publié par le développeur de Redis, antirez.
 Quelques choix de traduction : je garde certains termes techniques en anglais, pas tous, mais de manière consistante, et l'habitude de l'auteur de ne pas mettre d'hyperliens dans le texte. À la place, je garnirais en fin d'article. Les titres sont également mis en valeur, et les commentaires dans les codes sont traduits (c'est discutable, mais meilleur pour la démonstration).
@@ -41,27 +41,29 @@ L'extrait de code qui suit est un bon exemple du second point. Notez que tous le
 
 scripting.c:
 
-    /* Pile initiale: array */
-    lua_getglobal(lua,"table");
-    lua_pushstring(lua,"sort");
+```c
+/* Pile initiale: array */
+lua_getglobal(lua,"table");
+lua_pushstring(lua,"sort");
+lua_gettable(lua,-2);       /* Pile: array, table, table.sort */
+lua_pushvalue(lua,-3);      /* Pile: array, table, table.sort, array */
+if (lua_pcall(lua,1,0,0)) {
+    /* Pile: array, table, error */
+
+    /* Nous ne some pas intéressés par l'erreur,
+     * on assume que le problème est qu'il y a des éléments faux
+     * dans le tableau *array*, donc on ré-essaye avec une fonction plus lente
+     * mais capable de gérer ce cas :
+     * table.sort(table, __redis__compare_helper) */
+    lua_pop(lua,1);             /* Pile: array, table */
+    lua_pushstring(lua,"sort"); /* Pile: array, table, sort */
     lua_gettable(lua,-2);       /* Pile: array, table, table.sort */
     lua_pushvalue(lua,-3);      /* Pile: array, table, table.sort, array */
-    if (lua_pcall(lua,1,0,0)) {
-        /* Pile: array, table, error */
-
-        /* Nous ne some pas intéressés par l'erreur,
-         * on assume que le problème est qu'il y a des éléments faux
-         * dans le tableau *array*, donc on ré-essaye avec une fonction plus lente
-         * mais capable de gérer ce cas :
-         * table.sort(table, __redis__compare_helper) */
-        lua_pop(lua,1);             /* Pile: array, table */
-        lua_pushstring(lua,"sort"); /* Pile: array, table, sort */
-        lua_gettable(lua,-2);       /* Pile: array, table, table.sort */
-        lua_pushvalue(lua,-3);      /* Pile: array, table, table.sort, array */
-        lua_getglobal(lua,"__redis__compare_helper");
-        /* Pile: array, table, table.sort, array, __redis__compare_helper */
-        lua_call(lua,2,0);
-    }
+    lua_getglobal(lua,"__redis__compare_helper");
+    /* Pile: array, table, table.sort, array, __redis__compare_helper */
+    lua_call(lua,2,0);
+}
+```
 
 Lua utilise une API basée sur une pile. Le lecteur qui suit chaque appel dans la fonction ci-dessus, et ayant une référence du langage Lua sous la main,
 sera capable de reconstruire mentalement la pile à tout instant. Mais pourquoi forcer le lecteur à faire cet effort ?
@@ -110,12 +112,14 @@ documentant les classes, macro, ou tout autre bloc de code isolé fonctionelleme
 
 rax.c:
 
-    /* Cherche la plus grande clef dans le sous-arbre du nœud courant.
-     * Retourne 0 sur une sortie mémoire, sinon 1.
-     * Ceci est une fonction d'aide pour plusieurs fonctions d'itération
-     * définies plus bas. */
-    int raxSeekGreatest(raxIterator *it) {
-    …
+```c
+/* Cherche la plus grande clef dans le sous-arbre du nœud courant.
+ * Retourne 0 sur une sortie mémoire, sinon 1.
+ * Ceci est une fonction d'aide pour plusieurs fonctions d'itération
+ * définies plus bas. */
+int raxSeekGreatest(raxIterator *it) {
+...
+```
 
 Les commentaires de fonction  sont en fait une forme de documentation d'API intégrée.
 Si il est bien écrit, l'utilisateur devrait pouvoir retourner
@@ -136,7 +140,7 @@ aux fonctions et autres éléments, nous écrivons la documentation de l'API à 
 
 * Il est pratique d'avoir la doc au même endroit que les fonctions ou méthodes, permettant au lecteur de se concentrer uniquement sur le code, plutôt que switcher entre code et documentation.
 
-# Commentaires de conception
+## Commentaires de conception
 Alors qu'un «commentaire de fonction» se trouve au commencement d'une fonction,
 un commentaire de conception est plus souvent trouvé au début d'un fichier.
 Le commentaire donne en gros comment et pourquoi une partie du code donnée utilise certains algorithmes, techniques, astuces, et implémentations.
@@ -152,49 +156,53 @@ pas de la fainéantise ou de l'incapacité à coder autrement qu'avec des concep
 
 bio.c:
 
-     * CONCEPTION
-     * ------
-     *
-     * La conception est triviale,
-     * on a une structure représentant un job à réaliser
-     * et un thread et une file de job pour chaque type de job.
-     * Chaque thread attends pour de nouveaux job dans sa file,
-     * et applique chaque job séquentiellement.
-     …
+```c
+/* CONCEPTION
+ * ------
+ *
+ * La conception est triviale,
+ * on a une structure représentant un job à réaliser
+ * et un thread et une file de job pour chaque type de job.
+ * Chaque thread attends pour de nouveaux job dans sa file,
+ * et applique chaque job séquentiellement.
+ ...
+```
 
 
-# Commentaires *pourquoi*
+## Commentaires *pourquoi*
 Les commentaires *pourquoi* expliquent les raisons derrière une opération réalisée dans le code, et ce même si ce que fait le code est évident.
 Regardez cet exemple du code de réplication de Redis :
 
 replication.c:
 
-    if (idle > server.repl_backlog_time_limit) {
-    /* Quand on libère le backlog, on utilise toujours
-     * un nouvel ID de réplication et nettoyons l'ID2.
-     * C'est nécessaire car quand il n'y a pas de backlog,
-     * le master_repl_offset n'est pas mis à jour,
-     * mais on veut toujours conserver notre ID de réplication,
-     * ce qui implique le problème suivant :
-     *
-     * 1. On est en instance maître
-     * 2. Notre réplica est promu maître.
-     *    Son repl-id-2 sera le même que notre repl-id.
-     * 3. On, toujours maître, recevons des mise à jours,
-     *    qui n'incrémenterons pas le master_repl_offset.
-     * 4. Plut tard, on passe en réplica, et sommes connectés
-     *    au nouveau maître qui acceptera notre requête PSYNC
-     *    par l'ID secondaire de réplication, mais il y aura
-     *    une inconsistence des données car on a reçu
-     *    des requêtes d'écriture. */
-    changeReplicationId();
-    clearReplicationId2();
-    freeReplicationBacklog();
-    serverLog(LL_NOTICE,
-        "Replication backlog freed after %d seconds "
-        "without connected replicas.",
-        (int) server.repl_backlog_time_limit);
-    }
+```c
+if (idle > server.repl_backlog_time_limit) {
+/* Quand on libère le backlog, on utilise toujours
+ * un nouvel ID de réplication et nettoyons l'ID2.
+ * C'est nécessaire car quand il n'y a pas de backlog,
+ * le master_repl_offset n'est pas mis à jour,
+ * mais on veut toujours conserver notre ID de réplication,
+ * ce qui implique le problème suivant :
+ *
+ * 1. On est en instance maître
+ * 2. Notre réplica est promu maître.
+ *    Son repl-id-2 sera le même que notre repl-id.
+ * 3. On, toujours maître, recevons des mise à jours,
+ *    qui n'incrémenterons pas le master_repl_offset.
+ * 4. Plut tard, on passe en réplica, et sommes connectés
+ *    au nouveau maître qui acceptera notre requête PSYNC
+ *    par l'ID secondaire de réplication, mais il y aura
+ *    une inconsistence des données car on a reçu
+ *    des requêtes d'écriture. */
+changeReplicationId();
+clearReplicationId2();
+freeReplicationBacklog();
+serverLog(LL_NOTICE,
+    "Replication backlog freed after %d seconds "
+    "without connected replicas.",
+    (int) server.repl_backlog_time_limit);
+}
+```
 
 Si je vérifie uniquement les appels de fonction, il y a bien peu à imaginer : si le temps d'expiration est atteint, changer l'ID principal de réplication, supprime l'ID secondaire,
 et enfin libère le backlog de réplication. Il n'est cependant pas évident de comprendre
@@ -213,15 +221,17 @@ Voici un autre exemple.
 
 replication.c:
 
-    /* SYNC ne peut être distribué quand le serveur a des données en attente
-     * a envoyer au client à propos de commandes déjà délivrées.
-     * On a besoin d'un nouveau buffer de réponse enregistrant les différences
-     * entre BGSAVE et les données courantes, ainsi on pourra les copier
-     * à d'autres réplicas si besoin. */
-    if (clientHasPendingReplies(c)) {
-        addReplyError(c,"SYNC and PSYNC are invalid with pending output");
-        return;
-    }
+```c
+/* SYNC ne peut être distribué quand le serveur a des données en attente
+ * a envoyer au client à propos de commandes déjà délivrées.
+ * On a besoin d'un nouveau buffer de réponse enregistrant les différences
+ * entre BGSAVE et les données courantes, ainsi on pourra les copier
+ * à d'autres réplicas si besoin. */
+if (clientHasPendingReplies(c)) {
+    addReplyError(c,"SYNC and PSYNC are invalid with pending output");
+    return;
+}
+```
 
 Si vous lancez SYNC alors qu'il y a encore des sorties en attente (d'une commande précédente)
 à envoyer au client, la commande devrait échouer, car durant le handshake de réplication
@@ -234,15 +244,17 @@ Est-ce réellement le cas ? Changeons complètement de fichier et d'objectifs, e
 
 expire.c:
 
-    for (j = 0; j < dbs_per_call && timelimit_exit == 0; j++) {
-        int expired;
-        redisDb *db = server.db+(current_db % server.dbnum);
+```c
+for (j = 0; j < dbs_per_call && timelimit_exit == 0; j++) {
+    int expired;
+    redisDb *db = server.db+(current_db % server.dbnum);
 
-        /* Incrémente la BdD maintenent, pour être sûrs que si on manque de temps
-         * dans la BdD courante on recommencera depuis la suivante.
-         * Ceci permet de distribuer le temps régulièrement entre les BdDs. */
-        current_db++;
-        …
+    /* Incrémente la BdD maintenent, pour être sûrs que si on manque de temps
+     * dans la BdD courante on recommencera depuis la suivante.
+     * Ceci permet de distribuer le temps régulièrement entre les BdDs. */
+    current_db++;
+    ...
+```
 
 C'en est une intéressante. Nous voulons expirer les clefs de différentes Bases de Données,
 tant que l'on a du temps. Mais, plutôt qu'incrémenter «l'ID de BdD» pour machiner
@@ -277,25 +289,27 @@ donc le commentaire au début de la fonction explique ce qui arrivera dans la fo
 
 lolwut5.c:
 
-    /* Dessine un carré centré sur les coordonnées x,y données,
-     * avec l'angle et la taille indiqués. Pour écrire un carré pivoté,
-     * on utilise le fait que l'équation paramétrique :
-     *
-     *  x = sin(k)
-     *  y = cos(k)
-     *
-     * Décrit un cercle pour les valeurs allant de 0 à 2*PI.
-     * Donc, si on commence à 45 degrés, donc k=PI/4, avec le premier point,
-     * et que l'on trouve les 3 autres points en incrémentant k de PI/2 (90 degré),
-     * on aura les 4 points du carré. Pour pivoter le carré, on commence avec
-     * k = PI/4 + angle de rotation
-     *
-     * Bien sûr, les équations standard ci-dessus vont décrire un carré
-     * dans un cercle de rayon 1, donc pour dessiner de plus gros carrés,
-     * on va devoir multiplier les coordonnées des 4 points, et opérer une translation.
-     * C'est beaucoup plus simple que d'implémenter le concept abstrait de forme en 2D,
-     * et ensuite de réaliser la rotation/translation,
-     * donc pour LOLWUT c'est une bonne approche. */
+```c
+/* Dessine un carré centré sur les coordonnées x,y données,
+ * avec l'angle et la taille indiqués. Pour écrire un carré pivoté,
+ * on utilise le fait que l'équation paramétrique :
+ *
+ *  x = sin(k)
+ *  y = cos(k)
+ *
+ * Décrit un cercle pour les valeurs allant de 0 à 2*PI.
+ * Donc, si on commence à 45 degrés, donc k=PI/4, avec le premier point,
+ * et que l'on trouve les 3 autres points en incrémentant k de PI/2 (90 degré),
+ * on aura les 4 points du carré. Pour pivoter le carré, on commence avec
+ * k = PI/4 + angle de rotation
+ *
+ * Bien sûr, les équations standard ci-dessus vont décrire un carré
+ * dans un cercle de rayon 1, donc pour dessiner de plus gros carrés,
+ * on va devoir multiplier les coordonnées des 4 points, et opérer une translation.
+ * C'est beaucoup plus simple que d'implémenter le concept abstrait de forme en 2D,
+ * et ensuite de réaliser la rotation/translation,
+ * donc pour LOLWUT c'est une bonne approche. */
+```
 
 Le commentaire ne contient pas une seule chose en rapport avec le contenu de la fonction elle-même, ou ses effets de bords, ou les détails techniques qui s'y rapportent.
 La description est uniquement limitée aux concepts mathématiques utilisés par la fonction
@@ -316,59 +330,61 @@ Les commentaires sont trop longs, je vais donc juste montrer des extraits.
 
 rax.c:
 
-    /* Si le nœud sur lequel on s'est arrêté est un nœud compressé,
-     * on doit d'abord le séparer pour continuer.
-     *
-     * Séparer un nœud compresser présente quelques cas possibles.
-     * Imaginons qu'un nœud 'h', sur lequel nous sommes, est compressé
-     * et contient la chaîne «ANNIBALE» (indiquant qu'il représente
-     * les nœuds A -> N -> N -> I -> B -> A -> L -> E avec le
-     * seul pointeur enfant de ce nœuds pointant vers le nœud 'E',
-     * car rappelons que l'on a des caractères sur les arcs du graphe,
-     * pas dans les nœuds eux-même.
-     *
-     * Pour montrer un cas réel, imaginons que notre nœud pointe également
-     * vers un autre enfant représentant 'O' :
-     *
-     *     "ANNIBALE" -> "SCO" -> []
+```c
+/* Si le nœud sur lequel on s'est arrêté est un nœud compressé,
+ * on doit d'abord le séparer pour continuer.
+ *
+ * Séparer un nœud compresser présente quelques cas possibles.
+ * Imaginons qu'un nœud 'h', sur lequel nous sommes, est compressé
+ * et contient la chaîne «ANNIBALE» (indiquant qu'il représente
+ * les nœuds A -> N -> N -> I -> B -> A -> L -> E avec le
+ * seul pointeur enfant de ce nœuds pointant vers le nœud 'E',
+ * car rappelons que l'on a des caractères sur les arcs du graphe,
+ * pas dans les nœuds eux-même.
+ *
+ * Pour montrer un cas réel, imaginons que notre nœud pointe également
+ * vers un autre enfant représentant 'O' :
+ *
+ *     "ANNIBALE" -> "SCO" -> []
 
-     […]
+ [...]
 
-     * 3a. IF $SPLITPOS == 0:
-     *     Remplace l'ancien nœud avec le nœud séparé, en copiant
-     *     les données auxiliaire le cas échéant. Répare la référence
-     *     du parent. Libère l'ancien nœud si possible (on a toujours
-     *     besoin de ses données pour les prochaines étapes de l'algorithme)
-     *
-     * 3b. IF $SPLITPOS != 0:
-     *     Coupe le nœud compressé (le ré-allouant au passage) pour
-     *     qu'il contienne $splitpos caractères. Change le pointeur chilid
-     *     pour pour le lier au nœud séparé. Si le nœud nouvellement compressé
-     *     a une taille de 1, mettre iscompr à 0 (même layout).
-     *     Répare la référence du parent.
+ * 3a. IF $SPLITPOS == 0:
+ *     Remplace l'ancien nœud avec le nœud séparé, en copiant
+ *     les données auxiliaire le cas échéant. Répare la référence
+ *     du parent. Libère l'ancien nœud si possible (on a toujours
+ *     besoin de ses données pour les prochaines étapes de l'algorithme)
+ *
+ * 3b. IF $SPLITPOS != 0:
+ *     Coupe le nœud compressé (le ré-allouant au passage) pour
+ *     qu'il contienne $splitpos caractères. Change le pointeur chilid
+ *     pour pour le lier au nœud séparé. Si le nœud nouvellement compressé
+ *     a une taille de 1, mettre iscompr à 0 (même layout).
+ *     Répare la référence du parent.
 
-     […]
+ [...]
 
-        if (j == 0) {
-            /* 3a: Remplace l'ancien nœud avec le nœud séparé. */
-            if (h->iskey) {
-                void *ndata = raxGetData(h);
-                raxSetData(splitnode,ndata);
-            }
-            memcpy(parentlink,&splitnode,sizeof(splitnode));
-        } else {
-            /* 3b: Coupe le nœud compressé. */
-            trimmed->size = j;
-            memcpy(trimmed->data,h->data,j);
-            trimmed->iscompr = j > 1 ? 1 : 0;
-            trimmed->iskey = h->iskey;
-            trimmed->isnull = h->isnull;
-            if (h->iskey && !h->isnull) {
-                void *ndata = raxGetData(h);
-                raxSetData(trimmed,ndata);
-            }
-            raxNode **cp = raxNodeLastChildPtr(trimmed);
-        …
+    if (j == 0) {
+        /* 3a: Remplace l'ancien nœud avec le nœud séparé. */
+        if (h->iskey) {
+            void *ndata = raxGetData(h);
+            raxSetData(splitnode,ndata);
+        }
+        memcpy(parentlink,&splitnode,sizeof(splitnode));
+    } else {
+        /* 3b: Coupe le nœud compressé. */
+        trimmed->size = j;
+        memcpy(trimmed->data,h->data,j);
+        trimmed->iscompr = j > 1 ? 1 : 0;
+        trimmed->iskey = h->iskey;
+        trimmed->isnull = h->isnull;
+        if (h->iskey && !h->isnull) {
+            void *ndata = raxGetData(h);
+            raxSetData(trimmed,ndata);
+        }
+        raxNode **cp = raxNodeLastChildPtr(trimmed);
+    ...
+```
 
 
 Comme vous pouvez le voir, la description dans le commentaire est réutilisée avec les même label dans le code.
@@ -389,26 +405,32 @@ ou simplement de la complexité naturelle apparaissant dans les systèmes, il n'
 il y a donc des commentaires dans le code qui vous rappelerons certaines chose à faire dans d'autres endroits du code.
 Le concept général est :
 
-    /* Attention: si vous ajoutez un ID de type ici, assurez-vous de modifier
-     * le function getTypeNameByID() également. */
+```c
+/* Attention: si vous ajoutez un ID de type ici, assurez-vous de modifier
+ * le function getTypeNameByID() également. */
+```
 
 Dans un monde parfait, ceci ne serais jamais nécessaire, mais en pratique il n'y a parfois aucun moyen d'y échapper.
 Par exemple, les types de Redis pourraient être représentés via une structure «type objet»,
 et tous les objets seraient liées au type objet auquel il appartient, donc vous pourriez faire :
 
-    printf("Type is %s\n", myobject->type->name);
+```c
+printf("Type is %s\n", myobject->type->name);
+```
 
 Mais devinez quoi ? C'est trop coûteux pour nous, car un objet Redis est représenté ainsi :
 
-    typedef struct redisObject {
-        unsigned type:4;
-        unsigned encoding:4;
-        unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
-                                * LFU data (least significant 8 bits frequency
-                                * and most significant 16 bits access time). */
-        int refcount;
-        void *ptr;
-    } robj;
+```c
+typedef struct redisObject {
+    unsigned type:4;
+    unsigned encoding:4;
+    unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
+                            * LFU data (least significant 8 bits frequency
+                            * and most significant 16 bits access time). */
+    int refcount;
+    void *ptr;
+} robj;
+```
 
 Nous utilisons 4 bits plutôt que 64 pour représenter le type. Tout ceci est là juste pour montrer pourquoi les choses ne sont pas aussi centralisées et naturelles
 que ce qu'elles devraient. Dans une telle situation, ce sont sont les commentaires défensifs (NdT: référence à la programmation défensive) qui nous aident,
@@ -422,11 +444,13 @@ Un autre exemple dans blocked.c, quand un nouveau type de blocage est introduit 
 
 blocked.c:
 
-     * Quand implemente un nouveau type d'opération de blockage, l'implémentation
-     * doit modifier unblockClient() et replyToBlockedClientTimedOut() pour
-     * gérer le comportement de btype-specific dans ces deux fonctions.
-     * Si l'opération de blocage attends certaines clefs pour changer d'état,
-     * la fonction clusterRedirectBlockedClientIfNeeded() doit aussi être mise à jour.
+```c
+/* Quand implemente un nouveau type d'opération de blockage, l'implémentation
+ * doit modifier unblockClient() et replyToBlockedClientTimedOut() pour
+ * gérer le comportement de btype-specific dans ces deux fonctions.
+ * Si l'opération de blocage attends certaines clefs pour changer d'état,
+ * la fonction clusterRedirectBlockedClientIfNeeded() doit aussi être mise à jour.
+```
 
 Le commentaire check-list est aussi utile dans un contexte similaire à celui où les commentaires *pourquoi* sont utilisés : quand il n'est pas évident
 de savoir pourquoi un code doit être exécuté à une place donnée, avant ou après quelque autre traitement.
@@ -437,10 +461,12 @@ sans casser le comportement du code.
 
 cluster.c:
 
-    /* Mise à jour de nos info à propos de l'emplacement servis.
-     *
-     * Note: ceci DOIT arriver après que l'on mette à jour l'état du maître/réplica
-     * pour que le flag CLUSTER_NODE_MASTER soit allumé. */
+```c
+/* Mise à jour de nos info à propos de l'emplacement servis.
+ *
+ * Note: ceci DOIT arriver après que l'on mette à jour l'état du maître/réplica
+ * pour que le flag CLUSTER_NODE_MASTER soit allumé. */
+```
 
 Les commentaires de check-list sont très communs dans le kernel Linux, où l'ordre de certaines opérations est extrèmement important.
 
@@ -461,20 +487,22 @@ La seule raison d'exister des commentaires guides est de diminuer la charge cogn
 
 rax.c:
 
-    /* Apelle le callback du nœud si il y en a un, et remplace
-     * le pointeur du nœuds si le callback renvoit vrai. */
-    if (it->node_cb && it->node_cb(&it->node))
-    memcpy(cp,&it->node,sizeof(it->node));
+```c
+/* Apelle le callback du nœud si il y en a un, et remplace
+ * le pointeur du nœuds si le callback renvoit vrai. */
+if (it->node_cb && it->node_cb(&it->node))
+memcpy(cp,&it->node,sizeof(it->node));
 
-    /* Pour l'étape "suivante", s'arrêter chaque fois que
-     * l'on trouve une clef sur le chemin, puisque la clef
-     * est lexicographiquement plus petite comparée
-     * à ce qui suit dans le sous-enfant. */
-    if (it->node->iskey) {
-    it->data = raxGetData(it->node);
+/* Pour l'étape "suivante", s'arrêter chaque fois que
+ * l'on trouve une clef sur le chemin, puisque la clef
+ * est lexicographiquement plus petite comparée
+ * à ce qui suit dans le sous-enfant. */
+if (it->node->iskey) {
+it->data = raxGetData(it->node);
 
-    return 1;
-    }
+return 1;
+}
+```
 
 Il n'y a rien que les commentaires ajoutent au code ci-dessus.
 Les commentaires guides vous assistent à la lecture du code, et vous assurent que vous comprenez bien.
@@ -483,40 +511,42 @@ Plus d'exemples.
 
 networking.c:
 
-    /* Log les déconnexions de liens avec les réplica */
-    if ((c->flags & CLIENT_SLAVE) && !(c->flags & CLIENT_MONITOR)) {
-        serverLog(LL_WARNING,"Connection with replica %s lost.",
-            replicationGetSlaveName(c));
-    }
+```c
+/* Log les déconnexions de liens avec les réplica */
+if ((c->flags & CLIENT_SLAVE) && !(c->flags & CLIENT_MONITOR)) {
+    serverLog(LL_WARNING,"Connection with replica %s lost.",
+        replicationGetSlaveName(c));
+}
 
-    /* Libère le buffer de requête */
-    sdsfree(c->querybuf);
-    sdsfree(c->pending_querybuf);
-    c->querybuf = NULL;
+/* Libère le buffer de requête */
+sdsfree(c->querybuf);
+sdsfree(c->pending_querybuf);
+c->querybuf = NULL;
 
-    /* Désalloue les structures utilisées pour bloquer les opérations bloquantes. */
-    if (c->flags & CLIENT_BLOCKED) unblockClient(c);
-    dictRelease(c->bpop.keys);
+/* Désalloue les structures utilisées pour bloquer les opérations bloquantes. */
+if (c->flags & CLIENT_BLOCKED) unblockClient(c);
+dictRelease(c->bpop.keys);
 
-    /* Arrête de surveiller toutes les clefs */
-    unwatchAllKeys(c);
-    listRelease(c->watched_keys);
+/* Arrête de surveiller toutes les clefs */
+unwatchAllKeys(c);
+listRelease(c->watched_keys);
 
-    /* Se désinscrit de toutes les chaînes de pubsub */
-    pubsubUnsubscribeAllChannels(c,0);
-    pubsubUnsubscribeAllPatterns(c,0);
-    dictRelease(c->pubsub_channels);
-    listRelease(c->pubsub_patterns);
+/* Se désinscrit de toutes les chaînes de pubsub */
+pubsubUnsubscribeAllChannels(c,0);
+pubsubUnsubscribeAllPatterns(c,0);
+dictRelease(c->pubsub_channels);
+listRelease(c->pubsub_patterns);
 
-    /* Libère des structures de données. */
-    listRelease(c->reply);
-    freeClientArgv(c);
+/* Libère des structures de données. */
+listRelease(c->reply);
+freeClientArgv(c);
 
-    /* Délie le client: ceci va clore le socket, enlever
-     * les gestionnaires d'I/O, et enlever les références du client
-     * de différentes places où des clients actifs
-     * pourraient être référencés. */
-    unlinkClient(c);
+/* Délie le client: ceci va clore le socket, enlever
+ * les gestionnaires d'I/O, et enlever les références du client
+ * de différentes places où des clients actifs
+ * pourraient être référencés. */
+unlinkClient(c);
+```
 
 Redis est *littéralement* remplis de commentaires guides, au point que tout fichier que vous ouvrirez en contiendra des pelletées.
 Pourquoi s'embêter ? De tous les types de commentaires que j'ai analysés jusque là dans cet article, j'admet qu'il s'agit bien du plus subjectif.
@@ -551,13 +581,15 @@ Les commentaires de dette sont des déclarations de dette technique explicitemen
 
 t_stream.c:
 
-    /* Ici on devrait lancer le ramasse-miette au cas où
-     * à ce moment il y a trop d'entrées supprimées dans la listpack. */
-    entries -= to_delete;
-    marked_deleted += to_delete;
-    if (entries + marked_deleted > 10 && marked_deleted > entries/2) {
-    /* TODO: lancer une garbage collection. */
-    }
+```c
+/* Ici on devrait lancer le ramasse-miette au cas où
+ * à ce moment il y a trop d'entrées supprimées dans la listpack. */
+entries -= to_delete;
+marked_deleted += to_delete;
+if (entries + marked_deleted > 10 && marked_deleted > entries/2) {
+/* TODO: lancer une garbage collection. */
+}
+```
 
 L'extrait ci-dessus vient de l'implémentation des flux de Redis. Les flux de Redis permettent de supprimer des éléments au milieu en utilisant la commande XDEL.
 Ce peut être utile dans différents cas, particulièrement dans le contexte de régulation de la vie privée où certaines données ne peuvent être conservées,

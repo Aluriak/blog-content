@@ -257,7 +257,7 @@ et des forks qui simplifient un peu le code en découplant les nombreux tests de
 Enfin, quelque soit votre langage de prédilection,
 il y a [probablement une](https://quantumcomputing.stackexchange.com/questions/1474/what-programming-languages-are-available-for-quantum-computers),
 voire plusieurs librairies qui vous permettront de jouer avec des qubits.
-Voire même des librairies pour simuler des ordinateurs quantique !
+Voire même des librairies ou des langages pour simuler des ordinateurs quantique !
 
 Par exemple, [qutip](http://qutip.org/) ou [qubiter](https://github.com/artiste-qb-net/qubiter). Formidable !
 
