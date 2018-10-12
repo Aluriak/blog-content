@@ -1,4 +1,4 @@
-Title: Écrire des systèmes logiciels: les commentaires
+Title: Écrire des logiciels systèmes: les commentaires
 Date: 2018-10-09
 Tags: language
 Authors: Lucas Bourneuf
@@ -22,7 +22,7 @@ Si vous voyez des coquilles, améliorations, [les pull requests sont bienvenues]
 
 <center><i>Début de traduction</i></center>
 
-Cela fait un certain temps que je voulais publier une vidéo à propos des commentaires (du code) pour ma série «Writing system software» (NdT: «écrire des systèmes logiciels») sur YouTube.
+Cela fait un certain temps que je voulais publier une vidéo à propos des commentaires (du code) pour ma série «Writing system software» (NdT: «écrire des logiciels systèmes») sur YouTube.
 Mais en y réfléchissant, j'ai réalisé que le sujet serait mieux traité via un article de blog. Nous y voilà.
 Dans cet article, je vais analyser des commentaires du code de Redis, en essayant de les catégoriser.
 Au fur et à mesure, je vais montrer pourquoi, selon moi, écrire des commentaires est d'une importance capitale lorsque que l'on produit du code de qualité,
@@ -643,6 +643,7 @@ Les commentaires coopèrent avec le code, l'assistent, décrivent nos efforts, e
 - [Les exemples sont adaptés du code source de Redis (en)](https://github.com/antirez/redis/tree/unstable/src)
 - [antirez (en)](http://antirez.com) est le créateur de Redis, et publie régulièrement sur son blog éponyme
 - [*Writing system software* (en)](https://www.youtube.com/watch?v=VBrnmciV9fM&list=PLrEMgOSrS_3fghr8ez63xKFNF-BA6Pz13), la série de vidéo par antirez
+- [les logiciels systèmes](https://fr.wikipedia.org/wiki/Logiciel%5Fsyst%C3%A8me)
 - [L'arbre radix](https://fr.wikipedia.org/wiki/Arbre%5Fradix) expliqué par wikipédia
 - [pycrastinate (en)](https://github.com/isaacbernat/pycrastinate) le module python qui aide à gérer les commentaires de dette.
 - [Combien y a-t-il de TODO et FIXME dans le kernel linux ? (en)](http://smackerelofopinion.blogspot.com/2016/01/fixme-and-todo-comments-in-linux-kernel.html)
