@@ -485,6 +485,8 @@ Je ne vais pas s'amuser à annoter tout le code de clyngor, mais plus précisém
 [PyConstraint](https://github.com/Aluriak/clyngor/blob/impl/propagator/clyngor/propagators.py)
 qui implémente le comportement. Ici, ce sera juste l'occasion de voir comme cette merveilleuse API fonctionne *under the hood*.
 
+Ce sera l'occasion de voir un autre propagateur, ainsi l'usage des [*clauses*](https://en.wikipedia.org/wiki/Clause%5F(logic)) pour modifier l'exploration de l'espace de recherche.
+
 Voici donc le code de la classe (légèrement simplifié pour ignorer les détails dû à l'API de clyngor) :
 
 ```python
@@ -529,14 +531,12 @@ class Constraint:
                 self.__symbols[lit].add(repr_raw)
 
 
-    # cette fonction est appelée lorsqu'un modèle s'apprête à être généré. C'est là qu'il faut décider si oui ou non
-    #  la contrainte est respectée, pour empêcher le modèle de sortir si ce n'est pas le cas.
-    def check(self, ctl):
-        value_of = ctl.assignment.value  # raccourcis vers la fonction pour check la valeur d'un littéral
+    # fonction appelée quand une propagation est réalisée
+    def propagate(self, ctl, changes):
         # on appelle la formule donnée par l'utilisateur, avec en argument un dictionnaire qui mappe
         #  la représentation d'un atome et sa valeur de vérité.
         checked = self.__formula({
-            repr: value_of(lit)
+            repr: ctl.assignment.value(lit)
             for lit, reprs in self.__symbols.items()
             for repr in reprs  # plusieurs atomes peuvent avoir la même valeur de littéral
         })
@@ -549,16 +549,15 @@ class Constraint:
         self.__added_lit = ctl.add_literal()
         # Les deux lignes suivantes servent à ajouter une «clause», indiquant que notre nouveau littéral est vrai.
         #  Quand on ajoute une clause, il se peut que le solveur ait besoin de revérifier l'espace de recherche.
-        #  Dans notre cas, on le change pas car le littéral assigné est tout nouveau et est indépendant du programme ASP.
-        #  mais dans le cas général, on pourrait assigner la valeur d'un atome existant, et donc là le solveur doit réagir en conséquence.
+        #  Dans notre cas, on ne le change pas puisque le littéral assigné est tout nouveau et est indépendant du programme ASP.
+        #  mais dans le cas général, on pourrait assigner la valeur d'un atome existant, et donc là le solveur devrait réagir en conséquence.
         if not ctl.add_clause([self.__added_lit]) or not ctl.propagate():
             return
-        # C'est là que la magie se passe : si la formule de l'utilisateur indique que le modèle n'est pas conforme,
-        #  on dit que le littéral est faux.
+        # C'est là que la magie se passe : on dit que le littéral est faux.
         if not ctl.add_nogood([self.__added_lit]) or not ctl.propagate():
             return
-        # Ce qui entre en conflit avec l'opération précédente, qui le requiert vrai.
-        #  donc ça va annuler le check, et donc le modèle !
+        # Ce qui entre en conflit avec la clause précédente, qui le déclarait vrai.
+        # La situation est donc instable, aucun modèle ne pourra être vrai dans ces conditions !
 
 
     # Les fonctions suivantes sont des détails d'implémentation, et n'ont pas grand chose à voir avec les propagateurs,
@@ -586,7 +585,6 @@ class Constraint:
                         return True
 ```
 
-Si vous vous demandez ce qu'est une *clause* en logique, [wikipédia vous aidera](https://en.wikipedia.org/wiki/Clause%5F(logic)).
 
 
 # Conclusions
