@@ -1,5 +1,5 @@
 Title: Answer Set Programming — Les propagateurs
-Date: 2018-04-13
+Date: 2018-10-17
 Tags: asp, language, tuto
 Authors: Lucas Bourneuf
 Summary: une quête annexe pour le tuto ASP
@@ -41,39 +41,47 @@ Avec Python et un peu de connaissance sur clingo, il est possible d'écrire un p
 par exemple, changer la véracité de certains atomes en fonction de celle d'autres atomes.
 
 Notez que l'API officielle de clingo est nécessaire ici. Si vous ne l'avez pas, vous ne pourrez pas exécuter les exemples
-(mais vous pourrez les comprendre quand même ; notre cerveau est bien pratique parfois).
+(mais vous pourrez les comprendre quand même, notre cerveau ne s'embarassant pas de problèmes aussi mondains que les dépendances).
 
 
 ## Sous le capot de clingo
-Clingo, en interne, ne s'amuse pas à manipuler les atomes comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`
+Clingo, en interne, ne s'amuse pas à manipuler les atomes via leurs *symboles* (comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`)
 sous la forme de chaîne de caractères, ou d'objets plus complexes.
 
 La raison est simple : c'est inefficace, d'autant que clingo se fiche de savoir que tel atome a tel predicat et tel arguments :
 il s'intéresse uniquement aux propagations qu'il peut faire selon les règles qu'on lui a fournis.
 
-Par exemple, `p(5):- p(4).` devient pour clingo quelque chose comme `12 :- 45`. Là, j'ai choisi les entiers au hasard,
+Par exemple, `p(5):- p(4).` devient pour clingo quelque chose comme `12 :- 45`,
+qui indique que l'atome 12 est vrai si l'atome 45 l'est. Une table en mémoire permettra
+de retrouver la correspondance avec les symboles p(5) et p(4) lorsqu'il faudra les afficher à l'utilisateur.
+
+Ici, j'ai choisi les entiers 12 et 45 au hasard,
 mais clingo, d'après ce que j'ai vu, les numérote à partir de 1, dans l'ordre où il les rencontre.
 C'est donc, de notre point de vue d'utilisateur extérieur, aléatoire.
+Notez que cette compilation des symboles aux identifiants uniques est permise par l'expension des variables au grounding,
+i.e. le fait que gringo va remplacer une règle contenant une variable par toutes les règles possibles ; le solveur ne manipule de fait aucune variable, juste des état de vérité pour des atomes.
 
-Donc, clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
+Revenons à nos moutons : clingo manipule des entiers, qui sont appelés officiellement des *solver literals*, ou litéraux du solver.
 Ces litéraux du solveur ne changent pas durant tout le solving, et ce sont les éléments de base qu'un propagateur va manipuler.
 Le solveur associe à ces littéraux une des trois valeurs de vérité suivante : vrai, faux, non valide.
-Au tout départ, tous les atomes sont non valides, sauf ceux dont vous indiquez la véracité par défaut, par exemple avec l'expression `a.`: l'atome `a` ne sera jamais faux.
+Au tout départ, tous les atomes sont non valides, sauf ceux dont vous indiquez la véracité par défaut, par exemple avec l'expression `a.` : l'atome `a` sera toujours vrai.
 Puis, en respectant les règles comme `p(X):- q(X) ; r(X).`, le solveur va pas-à-pas changer les valeurs de vérité des atomes.
-Si à un moment il s'aperçoit que ce qu'il fait est impossible, il *backtrack*, c'est-à-dire qu'il va revenir en arrière, pour essayer d'autres combinaisons.
+Si à un moment il s'aperçoit que ce qu'il fait est impossible (car une contrainte devient vraie par exemple),
+il *backtrack*, c'est-à-dire qu'il va revenir en arrière, pour essayer d'autres combinaisons.
 
 Et si à un moment tous les atomes ont une valeur de vérité vraie ou fausse, et qu'aucune contrainte n'est violée, alors le solveur sait qu'il s'agit d'un ensemble réponse :
-il affiche alors tous les atomes ayant une valeur de vérité vraie.
+il affiche alors tous les atomes ayant une valeur de vérité vraie (en utilisant la table de correspondance numéro ⇔ symbole).
 
 Un propagateur va pouvoir agir à différents moments : au début, lorsque le solveur découvre les atomes, lorsque le solveur propose une valeur de vérité pour un atome (on dit alors qu'il *propage*), lorsqu'il *backtrack*, ou lorsqu'il a dans les mains un answer-set valide.
 
 Voici un exemple de code ASP :
 
 ```asp
-1{a;b}1.
-1{c;d}1:-a.
-1{e;f}1:-b.
+a;b.
+c;d:-a.
+e;f:-b.
 ```
+
 (Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas de regarder tous les answer-set)
 
 Et voici comment clingo explore l'espace :
@@ -116,12 +124,19 @@ Lorsque tous les atomes ont une valeur de vérité (on parle alors d'assignement
 où ne sont assignés à une valeur de vérité qu'une partie des atomes),
 il faut décider si le modèle est valide, c'est-à-dire si les valeurs de vérité (l'assignation) n'entre en conflit avec aucune contrainte.
 
-(en réalité, la vérification des contraintes se fait au fur et à mesure, sur les assignements partiels, histoire d'éviter de chercher un assignement total là où de toute façon on trouve une contradiction)
+(en réalité, la vérification des contraintes se fait au fur et à mesure, sur les assignements partiels,
+histoire d'éviter de chercher un assignement total là où de toute façon on trouve une contradiction ; autrement dit, *les contraintes élaguent l'espace de recherche*)
 
 C'est le dernier moment pour les contraintes pour montrer que l'assignement total entre en conflit avec une contrainte, prouvant que le modèle n'est pas valide,
 et donc qu'il n'a pas a être écrit en sortie de programme.
 
+Et tout ce processus pourra être suivis et manipulé par les *propragateurs*.
 
+## Les propagateurs
+Les propagateurs sont des programmes écrits dans des langages comme Python et C.
+Ils utilisent l'interface de clingo pour accéder et modifier les assignations partielles et totales.
+
+Les prochaines sections présenterons chacune un exemple de propagateur.
 
 
 
@@ -170,7 +185,7 @@ class Propagator:
 
 # notez que la function main est une convention de l'API de clingo :
 #  si elle existe, elle reçoit le contrôleur du solveur, et nous
-#  permet donc de contrôler le solving avec l'objet `prg`.
+#  permet donc de contrôler tout le processus de solving.
 def main(prg):
     # prg: un contrôleur du solveur.
     # d'abord, on enregistre une instance de notre propagateur
@@ -406,7 +421,7 @@ class DotPropagator:
     def write_nodes(self):  # pour écrire les nœuds
         for uid, atoms in self.__symbols.items():
             self.write('\t{} [label="{}"{}];'.format(
-                uid, ' '.join(str(atom.symbol) for atom in atoms),
+                uid, ' '.join(str(atom) for atom in atoms),
                 ' fillcolor="green"' if uid in self.__stable_nodes else ''
             ))
 
@@ -433,10 +448,32 @@ def main(prg):
 ```
 
 
-## Tips
-`#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
 
 
+## Utiliser le propagateur graphviz/dot
+Le code va générer un fichier `out.dot`. Avec [graphviz](http://www.webgraphviz.com/), ou tout autre logiciel qui gère le format DOT,
+vous pouvez afficher le résultat comme une image.
+
+Si vous réutilisez le code du pigeon-hole problem vu plus haut,
+vous verrez que le graphe généré est un gros sac de nœud (qu'est-ce qu'on rigole !).
+
+Avec le code suivant :
+
+```asp
+a;b.
+c;d:-a.
+e;f:-b.
+```
+
+Vous verrez quelque chose de *beaucoup* plus simple, que vous avez déjà vu plus haut :
+
+<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "Résultat donné par le graphviz/dot propagator pour un code simple avec trois embranchements." %}</center>
+
+Quelques questions pour le lecteur attentif :
+
+- que se passe-t-il si on ne demande qu'un seul answer set au solveur ?
+- que se passe-t-il si deux choix différents peuvent décider la valeur d'un seul atome ?
+- et donc, dans quels cas le graphe généré est-il un arbre ?
 
 
 
@@ -457,9 +494,9 @@ from clyngor import Constraint, Variable as V, Main
 # On définit la contrainte
 def formula(inputs):
     # inputs: c'est un dictionnaire qui mappe un atome avec sa valeur de vérité (True/False)
-    # on retourne si oui ou non on garde le modèle.
+    # on retourne si oui ou non on écarte le modèle.
     # ici, si le modèle contient b(2), on l'écarte
-    return not inputs[('b', (2,))]
+    return inputs[('b', (2,))]
 
 # On l'encapsule dans l'objet dédié, qui est en fait un propagateur
 constraint = Constraint(formula, {('b', (V,))})
@@ -473,23 +510,51 @@ main = Main(constraint)
 ```
 
 Les résultats attendus sont les suivants :
-```
-Answer 1:
-b(1)
-Answer 2:
-b(3)
-```
+
+    Answer 1:
+    b(1)
+    Answer 2:
+    b(3)
 
 ## Réalisation
 Je ne vais pas s'amuser à annoter tout le code de clyngor, mais plus précisément celui de l'objet
 [PyConstraint](https://github.com/Aluriak/clyngor/blob/impl/propagator/clyngor/propagators.py)
 qui implémente le comportement. Ici, ce sera juste l'occasion de voir comme cette merveilleuse API fonctionne *under the hood*.
 
-Ce sera l'occasion de voir un autre propagateur, ainsi l'usage des [*clauses*](https://en.wikipedia.org/wiki/Clause%5F(logic)) pour modifier l'exploration de l'espace de recherche.
+Ce sera l'occasion de voir un autre propagateur, ainsi l'usage des [*clauses*](https://en.wikipedia.org/wiki/Clause%5F(logic))
+pour modifier l'exploration de l'espace de recherche.
 
-Voici donc le code de la classe (légèrement simplifié pour ignorer les détails dû à l'API de clyngor) :
+Voici donc le code de la classe et des fonctions/objets qu'elle utilise
+(légèrement simplifié pour ignorer les détails dû à l'API de clyngor) avec le code d'exemple, il ne vous reste plus qu'à copier-coller :
 
 ```python
+#script(python)
+from collections import defaultdict
+Variable = ...  # Ellipsis en Python
+
+
+# La fonction qui suit sert à transformer un argument d'atome,
+#  sous la forme d'une instance de la classe clingo.Symbol,
+# en objet purement python (listes, tuples, int,…).
+# Cette fonction est en réalité plus complexe,
+#  car elle doit gérer les structures récursives,
+#  les types non standards de clingo (comme #inf et #sup),
+#  et les double quotes dans les strings.
+# le code complet est ici :
+#  https://github.com/Aluriak/clyngor/blob/impl/propagator/clyngor/utils.py#L56
+def clingo_value_to_python(obj:int or str or 'Symbol'):
+    if isinstance(obj, (int, str)):
+        return obj
+    if type(obj).__name__ == 'Symbol':
+        typename = str(obj.type).lower()
+        if typename == 'string':
+            return '"' + obj.replace('"', '\\"') + '"'
+        if typename == 'number':
+            return int(str(obj))
+    raise TypeError("Can't handle values like {} of type {}."
+                    "".format(obj, type(obj)))
+
+# La classe qui implémente le comportement complet
 class Constraint:
 
     # Le constructeur de la classe : on prend une formule
@@ -535,12 +600,13 @@ class Constraint:
     def propagate(self, ctl, changes):
         # on appelle la formule donnée par l'utilisateur, avec en argument un dictionnaire qui mappe
         #  la représentation d'un atome et sa valeur de vérité.
-        checked = self.__formula({
+        fulfilled = self.__formula({
             repr: ctl.assignment.value(lit)
             for lit, reprs in self.__symbols.items()
             for repr in reprs  # plusieurs atomes peuvent avoir la même valeur de littéral
         })
-        if not checked:
+        # si la contrainte est remplie, on invalide le modèle
+        if fulfilled:
             self.__invalidate_model(ctl)
 
     def __invalidate_model(self, ctl):
@@ -583,13 +649,38 @@ class Constraint:
                     #  soit c'est celui attendu.
                     if param is Variable or arg == param:
                         return True
+
+
+# On implémente la contrainte
+def formula(inputs):
+    # c'est équivalent à `:- b(2).`
+    return inputs[('b', (2,))]
+
+# On lance le grounding et le solving, avec le propagateur enregistré
+def main(prg):
+    constraint = Constraint(formula, {('b', (Variable,))})
+    prg.register_propagator(constraint)
+    prg.ground([("base", [])])
+    prg.solve()
+
+#end.
+
+% un code ASP qui génère 1 parmi b(1..3).
+1{b(X): X=1..3}1.
 ```
+
+Avec ce code complet et fonctionnel, les modèles de sortie seront bien `b(3)` et `b(1)`.
+
+Notez que l'objet Contrainte réalise les vérifications à chaque propagations.
+Il est possible de ne les enclencher que sur les *check*, en changeant `def propagate(self, ctl, changes):` par `def check(self, ctl):`.
+Avec ce changement, la contrainte sera vérifiée seulement lorsqu'un modèle sera prêt à être envoyé ;
+il s'agit donc moins de guider le solveur que de contrôler les sorties.
 
 
 
 # Conclusions
 C'était une grosse quête annexe, avec beaucoup de code (et hélas, pas en ASP). Mais c'est un mal pour un bien :
-l'interface des propagateurs est un outils extrèmement puissant pour travailler *avec* le solveur.
+l'interface des propagateurs est un outils extrêmement puissant pour travailler *avec* le solveur.
 En effet, jusqu'alors, on déléguait au solveur des questions. Maintenant, nous avons un moyen de dialoguer
 avec lui pendant ses recherches pour l'aider, ou contrôler finement l'exploration de l'espace de recherche.
 
@@ -603,3 +694,6 @@ D'autres quêtes annexes viendront, pour apporter d'autres applications aux prop
 Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
 Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
 Il propose aussi une implémentation complète de PyConstraint que nous avons détaillé dans la dernière section.
+
+
+*Anecdote que-je-sais-pas-où-la-mettre :* `#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
