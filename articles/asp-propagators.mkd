@@ -6,7 +6,7 @@ Summary: une quête annexe pour le tuto ASP
 Slug: asp-propagateurs
 Lang: français
 Translation: false
-Status: draft
+Status: published
 
 Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qui permettent de suivre l'évolution du solving en temps réel,
@@ -15,7 +15,7 @@ pour le regarder, l'aider, et même le modifier.
 Je considère dans la suite Python comme un langage acquis. Au besoin, allez faire un tour du côté de [Swinnen](https://python.developpez.com/cours/TutoSwinnen/).
 S'il vous manque les notions de POO (bien qu'on en utilise moins de 1% ici), allez voir [sam et max](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
 
-On commence avec une présentation théorique, suivis de trois exemples rigolos (mais néanmoins utiles !).
+On commence avec une présentation théorique, suivis de trois exemples rigolos (mais néanmoins utiles !) et d'un cas pratique consistant à écrire des contraintes ASP en Python.
 
 
 <br/>
@@ -95,9 +95,12 @@ et les numéros indiquent dans quel ordre il faut suivre les flèches. Les nœud
 
 Suivons l'aventure pas-à-pas.
 Au début, clingo considère que tous les atomes sont de valeur non déterminée, et dans le dessin cet état est indiqué par le nœud *Start*.
-Ensuite, en première étape (flèche 1) clingo va assigner *vrai* à b. Puis à l'étape 2, *vrai* à f. On devine qu'en même temps, les atomes a et e sont mis à faux (car ils ne peuvent pas être vrais en même temps que b et f, d'après le programme), ainsi que c et d, qui ne peuvent pas être vrais car a est faux (toujours d'après le programme).
-Tous les atomes possèdent une valeur de vérité : il s'agit donc d'un modèle possible ; c'est pourquoi le nœud f est vert. Lorsque clingo atteint cet état,
-il affiche à l'écran tous les symboles des atomes dont la valeur de vérité est vraie.
+Ensuite, en première étape (flèche 1) clingo va assigner *vrai* à b. Puis à l'étape 2, *vrai* à f.
+On devine qu'en même temps les atomes a et e sont mis à faux (car ils ne peuvent pas être vrais en même temps que b et f d'après le programme),
+ainsi que c et d, qui ne peuvent pas être vrais car a est faux (toujours d'après le programme).
+
+Tous les atomes possèdent une valeur de vérité : il s'agit donc d'un modèle possible et c'est pourquoi le nœud f est vert.
+Lorsque clingo atteint cet état, il affiche à l'écran tous les symboles des atomes dont la valeur de vérité est vraie.
 
 Ensuite, il *backtrack* : il revient sur le nœud b. C'est là qu'il choisi différemment qu'à l'étape 2, c'est-à-dire e comme vrai ; f est alors faux, et comme tous les atomes ont une valeur de vérité, il peut sortir le modèle (c'est pourquoi e est également en vert).
 
@@ -504,9 +507,20 @@ Quelques questions pour le lecteur attentif :
 
 # Écrire des contraintes en Python
 Les contraintes, [on s'en souvient]({filename}/articles/asp-tuto.mkd#Contraintes) :
-ce sont ces expressions très utiles qui permettent d'écarter un modèle s'il réponds pas à certains critères.
+ce sont ces expressions très utiles qui permettent d'écarter un modèle s'il ne réponds pas à certains critères.
 
-L'idée serait de pouvoir, simplement, écrire des contraintes en Python plutôt qu'en ASP.
+L'objectif ici est de pouvoir, simplement, écrire des contraintes en Python plutôt qu'en ASP.
+
+Le rationnel est simple : une contrainte en ASP est intégralement traduite durant le grounding,
+ce qui peux coûter très cher si elle utilise beaucoups de variables.
+Par exemple, si vous voulez vérifier que deux variables conservent une dépendance particulière (l'une plus grande que l'autre, par exemple),
+la contrainte devra énumérer tous les cas possibles, c'est-à-dire toutes les combinaisons des valeurs de variables : la complexité en mémoire est quadratique.
+
+Il n'existe pas de moyen pour dire au solveur «ne grounde pas cette contrainte, mais évalue-la pendant le solving»,
+ce qui serait peut-être moins rapide, mais clairement moins coûteux en mémoire.
+
+D'où l'intérêt d'écrire les contraintes à l'aide d'un propagateur :
+le propagateur travaille en même temps que le solveur, sans être limité par lui.
 
 Cette section s'intéresse en fait à une fonctionnalité de [clyngor](https://github.com/aluriak/clyngor),
 mon module surcouche à l'API officielle. Clyngor propose dans son API un moyen simple pour faire des contraintes en ASP :
@@ -531,7 +545,8 @@ main = Main(constraint)
 
 #end.
 
-1{b(X): X=1..3}1.
+b(1);b(2);b(3).  % choisi l'un des trois
+
 ```
 
 Les résultats attendus sont les suivants :
@@ -550,7 +565,7 @@ Ce sera l'occasion de voir un autre propagateur, ainsi l'usage des [*clauses*](h
 pour modifier l'exploration de l'espace de recherche.
 
 Voici donc le code de la classe et des fonctions/objets qu'elle utilise
-(légèrement simplifié pour ignorer les détails dû à l'API de clyngor) avec le code d'exemple, il ne vous reste plus qu'à copier-coller :
+(légèrement simplifié pour ignorer les détails dû à l'API de clyngor) avec le code d'exemple ; il ne vous reste plus qu'à copier-coller ça dans un fichier :
 
 ```python
 #script(python)
@@ -714,14 +729,14 @@ il s'agit donc moins de guider le solveur que de contrôler les sorties.
 
 
 # Conclusions
-C'était une grosse quête annexe, avec beaucoup de code (et hélas, pas en ASP). Mais c'est un mal pour un bien :
+C'était une grosse (quête) annexe, avec beaucoup de code (et hélas, pas en ASP). Mais c'est un mal pour un bien :
 l'interface des propagateurs est un outils extrêmement puissant pour travailler *avec* le solveur.
 En effet, jusqu'alors, on déléguait au solveur des questions. Maintenant, nous avons un moyen de dialoguer
 avec lui pendant ses recherches pour l'aider, ou contrôler finement l'exploration de l'espace de recherche.
 
 Dans les applications évidentes, on trouve les «observateurs», qui regardent comment se passent
 le solving et propose un rendu en conséquence. On trouvera aussi toutes les notions rigolotes relatives aux contraintes dynamiques,
-ou plus généralement l'appel à des sources extérieur pour résoudre des propagations.
+ou plus généralement l'appel à des sources extérieures pour résoudre des propagations ou valider les modèles.
 
 D'autres quêtes annexes viendront, pour apporter d'autres applications aux propagateurs,
 ou montrer d'autres manières d'étendre ASP.
