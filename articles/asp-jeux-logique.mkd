@@ -55,7 +55,7 @@ et nous cherchons celui qui n'a aucun prédécesseur, c'est-à-dire la racine.
 
 C'est un problème assez standard de théorie des graphes, et la résolution est intuitive dés lors que l'on visualise l'arbre tel qu'il est réellement :
 
-<center>{% img {filename}/images/asp/brother-tree.png 700 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
+<center>{% img {filename}/images/asp/brother-tree.png 670 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
 <!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
 
 

@@ -297,7 +297,7 @@ de nombreuses entreprises ont annoncé leur volonté de faire pareil.
 Les meilleurs ressources sont clairement les deux talks linkés précédemment,
 mais voici un petit rappel :
 
-<center>{% img {filename}/images/spacex/spacex_bfr_to_mars.png 700 "bfr to mars" %}</center>
+<center>{% img {filename}/images/spacex/spacex_bfr_to_mars.png 670 "bfr to mars" %}</center>
 
 Une fusée, le [BFR](https://en.wikipedia.org/wiki/BFR%20(rocket)),
 [intégralement réutilisable](https://en.wikipedia.org/wiki/SpaceX%20reusable%20launch%20system%20development%20program),
