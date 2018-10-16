@@ -688,7 +688,9 @@ Dans les applications évidentes, on trouve les «observateurs», qui regardent 
 le solving et propose un rendu en conséquence. On trouvera aussi toutes les notions rigolotes relatives aux contraintes dynamiques,
 ou plus généralement l'appel à des sources extérieur pour résoudre des propagations.
 
-D'autres quêtes annexes viendront, pour apporter d'autres applications aux propagateurs, ou montrer d'autres manières d'étendre ASP.
+D'autres quêtes annexes viendront, pour apporter d'autres applications aux propagateurs,
+ou montrer d'autres manières d'étendre ASP.
+<!-- ou montrer d'autres manières d'étendre ASP avec [les observateurs du grounding]({filename}/articles/asp-observateurs.mkd). -->
 <!-- Ainsi, cette quête annexe se poursuit au travers d'une autre quête annexe : le [clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd). -->
 
 Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
