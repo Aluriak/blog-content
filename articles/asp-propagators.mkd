@@ -13,7 +13,7 @@ s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qu
 pour le regarder, l'aider, et même le modifier.
 
 Je considère dans la suite Python comme un langage acquis. Au besoin, allez faire un tour du côté de [Swinnen](https://python.developpez.com/cours/TutoSwinnen/).
-S'il vous manque les notions de POO (bien qu'on n'en utilise que 1% ici), allez voir [sam et max](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
+S'il vous manque les notions de POO (bien qu'on en utilise moins de 1% ici), allez voir [sam et max](http://sametmax.com/le-guide-ultime-et-definitif-sur-la-programmation-orientee-objet-en-python-a-lusage-des-debutants-qui-sont-rassures-par-les-textes-detailles-qui-prennent-le-temps-de-tout-expliquer-partie-1/).
 
 On commence avec une présentation théorique, suivis de trois exemples rigolos (mais néanmoins utiles !).
 
@@ -30,23 +30,23 @@ On commence avec une présentation théorique, suivis de trois exemples rigolos 
 Vous avez déjà étendu Python avec du C pour gagner un peu en performances ?
 Eh bien, de la même manière, on peut mettre du Python (ou du Lua) dans ASP
 pour profiter, pendant le solving même, de la puissance d'un langage impératif.
-C'est ce qu'on nomme embedding, ou extending selon le point de vue.
-Ici, nous allons voir comment embed du Python dans ASP, ou, c'est équivalent, extend ASP avec Python.
+C'est ce qu'on nomme embedding ou extending, selon le point de vue.
+Ici, nous allons voir comment embarquer du Python dans ASP, ou, c'est équivalent, étendre ASP avec Python.
 
 Les propagateurs sont des objets assez connus dans le monde du solving.
 Il s'agit plus ou moins d'un plugin qui va pouvoir suivre et modifier le déroulement de l'heuristique.
-Pour être encore plus pédagogue : un propagateur permet d'écrire des contraintes en python plutôt qu'en ASP.
+Pour être encore plus précis : un propagateur permet d'écrire des contraintes en Python plutôt qu'en ASP.
 
 Avec Python et un peu de connaissance sur clingo, il est possible d'écrire un propagateur pouvant,
 par exemple, changer la véracité de certains atomes en fonction de celle d'autres atomes.
 
 Notez que l'API officielle de clingo est nécessaire ici. Si vous ne l'avez pas, vous ne pourrez pas exécuter les exemples
-(mais vous pourrez les comprendre quand même, notre cerveau ne s'embarassant pas de problèmes aussi mondains que les dépendances).
+(mais vous pourrez les comprendre quand même, notre cerveau ne s'embarassant pas de problèmes mondains tels que les dépendances).
 
 
 ## Sous le capot de clingo
-Clingo, en interne, ne s'amuse pas à manipuler les atomes via leurs *symboles* (comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`)
-sous la forme de chaîne de caractères, ou d'objets plus complexes.
+Clingo, en interne, ne s'amuse pas à manipuler les atomes via leurs *symboles* (comme `p(5)` ou `q(a,b,c(p(a,b("e"),d)))`),
+sous la forme de chaîne de caractères ou d'objets plus complexes.
 
 La raison est simple : c'est inefficace, d'autant que clingo se fiche de savoir que tel atome a tel predicat et tel arguments :
 il s'intéresse uniquement aux propagations qu'il peut faire selon les règles qu'on lui a fournis.
@@ -82,20 +82,22 @@ c;d:-a.
 e;f:-b.
 ```
 
-(Si vous ne comprenez pas bien ce qu'il fait, lancez clingo dessus. N'oubliez pas de regarder tous les answer-set)
+(Si vous ne comprenez pas bien ce qu'il fait, [lancez clingo](https://potassco.org/clingo/run/) dessus. N'oubliez pas de regarder tous les answer-set)
 
 Et voici comment clingo explore l'espace :
 
 <center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "Dessin de l'exploration par clingo de l'espace de recherche composé de 6 atomes." %}</center>
 
-Pour lire le dessin : les ellipses sont des états du solving, reliés par une flèche pleine pour symboliser une *assignation* du solveur,
+Pour lire le dessin : les ellipses sont des *décisions* du solving où l'atome indiqué est décidé vrai,
+reliés par une flèche pleine pour symboliser une *assignation* du solveur,
 des flèches en pointillé pour symboliser les *backtracks*,
 et les numéros indiquent dans quel ordre il faut suivre les flèches. Les nœuds verts correspondent à un modèle généré par le solveur.
 
 Suivons l'aventure pas-à-pas.
 Au début, clingo considère que tous les atomes sont de valeur non déterminée, et dans le dessin cet état est indiqué par le nœud *Start*.
 Ensuite, en première étape (flèche 1) clingo va assigner *vrai* à b. Puis à l'étape 2, *vrai* à f. On devine qu'en même temps, les atomes a et e sont mis à faux (car ils ne peuvent pas être vrais en même temps que b et f, d'après le programme), ainsi que c et d, qui ne peuvent pas être vrais car a est faux (toujours d'après le programme).
-Tous les atomes possèdent une valeur de vérité : il s'agit donc d'un modèle possible ; c'est pourquoi le nœud f est vert. Lorsque clingo atteint cet état, il affiche à l'écran tous les atomes dont la valeur de vérité est vraie.
+Tous les atomes possèdent une valeur de vérité : il s'agit donc d'un modèle possible ; c'est pourquoi le nœud f est vert. Lorsque clingo atteint cet état,
+il affiche à l'écran tous les symboles des atomes dont la valeur de vérité est vraie.
 
 Ensuite, il *backtrack* : il revient sur le nœud b. C'est là qu'il choisi différemment qu'à l'étape 2, c'est-à-dire e comme vrai ; f est alors faux, et comme tous les atomes ont une valeur de vérité, il peut sortir le modèle (c'est pourquoi e est également en vert).
 
@@ -136,7 +138,9 @@ Et tout ce processus pourra être suivis et manipulé par les *propragateurs*.
 Les propagateurs sont des programmes écrits dans des langages comme Python et C.
 Ils utilisent l'interface de clingo pour accéder et modifier les assignations partielles et totales.
 
-Les prochaines sections présenterons chacune un exemple de propagateur.
+Les prochaines sections présenterons chacune un exemple de propagateur qui utilise cette interface pour implémenter un comportement
+que l'on aurait pas pu obtenir avec juste un code externe au solveur.
+Le premier propagateurs utilise très peu de notions de l'API, et les suivants augmenterons progressivement en complexité et complétude.
 
 
 
@@ -327,6 +331,9 @@ Le code réel est [ici](https://github.com/aluriak/learning-ASP/blob/master/prop
 Il n'est pas très différent, mais largement moins annoté.
 
 
+
+
+*Anecdote que-je-sais-pas-où-la-mettre :* `#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
 
 
 
@@ -696,6 +703,3 @@ ou montrer d'autres manières d'étendre ASP.
 Enfin, maintenant que vous avez les bases, je vous recommande [clyngor](https://github.com/aluriak/clyngor), ne serait-ce que pour y jeter un œil.
 Ce package propose quelques aides pour les propagateurs, l'API générale de clingo et l'appel de ce dernier dans python. En un mot, c'est une surcouche à l'API officielle.
 Il propose aussi une implémentation complète de PyConstraint que nous avons détaillé dans la dernière section.
-
-
-*Anecdote que-je-sais-pas-où-la-mettre :* `#count{}.%` est le plus simple des débuts de ligne que j'ai trouvé pour faire un commentaire à la fois en ASP et en Python. En Python, toute la ligne est ignorée, et en ASP `#count{}` ne produit aucune règle. Il s'agit donc bien d'un commentaire pour les deux langages.
