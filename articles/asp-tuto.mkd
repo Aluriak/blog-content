@@ -11,13 +11,17 @@ Status: published
 
 ```genmark
 # montre le pourcentage d'avancée de la traduction
-with open('articles/asp-tuto_en.mkd') as fd:
+with open('content/articles/asp-tuto_en.mkd') as fd:
     anglais = sum(1 for line in fd)
-with open('articles/asp-tuto.mkd') as fd:
-    francais = sum(1 for line in fd)
+with open('content/articles/asp-tuto.mkd') as fd:
+    français = sum(1 for line in fd)
 percent = f'{round((anglais/français)*100,1)}%'
-print('<center>*[' + percent + ' translated in english]({filename}/articles/asp-tuto_en.mkd)*</center>')
+print(f'<center>*about [{percent}', 'translated in english]({filename}/articles/asp-tuto_en.mkd)*</center>')
+print('<br/><br/><br/>')
 ```
+<!-- <center>[Looking for the english version ?]({filename}/articles/asp-tuto_en.mkd)</center> -->
+
+
 
 ASP est un langage de programmation un peu particulier, à ne pas confondre avec l'[Astronomical Society of the Pacific](https://fr.wikipedia.org/wiki/Astronomical%5FSociety%5Fof%5Fthe%5FPacific), [le groupe de métal](https://fr.wikipedia.org/wiki/ASP%5F(groupe)), ou l'[ASP.NET](https://fr.wikipedia.org/wiki/Active%5FServer%5FPages).
 C'est ce genre de langage qui en bave des ronds de chapeaux pour additionner les éléments d'une liste,
