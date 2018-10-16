@@ -86,7 +86,7 @@ e;f:-b.
 
 Et voici comment clingo explore l'espace :
 
-<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "Dessin de l'exploration par clingo de l'espace de recherche composé de 6 atomes." %}</center>
+<center>{% img {filename}/images/asp/dotpropagatorresult.png 670 "Dessin de l'exploration par clingo de l'espace de recherche composé de 6 atomes." %}</center>
 
 Pour lire le dessin : les ellipses sont des *décisions* du solving où l'atome indiqué est décidé vrai,
 reliés par une flèche pleine pour symboliser une *assignation* du solveur,
@@ -159,32 +159,42 @@ Suis la version annotée des sources.
 
 from time import sleep  # pour donner une dimension humaine au programme
 
-# La classe qui contient les méthodes. Notez qu'il n'y a évidemment aucune contrainte sur le nom,
+# La classe qui contient les méthodes.
+# Notez qu'il n'y a évidemment aucune contrainte sur le nom,
 # et surtout que la classe n'hérite de rien. Duck Typing FTW.
 class Propagator:
 
-    # Première méthode : init (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
+    # Première méthode : init
+    #  (sans les `__`, car il s'agit bien de l'init du propagateur, pas de l'objet)
     def init(self, init):
         # init: un objet qui va nous donner des infos sur le solving
         for atom in init.symbolic_atoms:  # pour chacun des atomes du programme
             init.add_watch(init.solver_literal(atom.literal))  # on le surveille
-            # atom.literal: la version littérale de l'atome, unique (contrairement aux littéraux du solveur).
-            # init.solver_literal: donne pour un littéral d'atome le littéral que le solveur utilise pour le référencer
-            # init.add_watch: méthode qui permet d'ajouter un littéral à surveiller
+            # atom.literal: la version littérale de l'atome, unique
+            #               (contrairement aux littéraux du solveur).
+            # init.solver_literal: donne pour un littéral d'atome le littéral
+            #                      que le solveur utilise pour le référencer.
+            # init.add_watch: méthode qui permet d'ajouter un littéral à surveiller.
 
     def propagate(self, ctl, changes):
-        # ctl: c'est le contrôleur du solving ; un objet qui mériterait une section à lui tout seul.
-        # changes: la liste des littéraux qui ont eu une assignation ; c'est eux qui nous intéressent.
+        # ctl: c'est le contrôleur du solving ; un objet qui mériterait
+        #      une section à lui tout seul.
+        # changes: la liste des littéraux qui ont eu une assignation ;
+        #          c'est eux qui nous intéressent.
         for _ in changes:  # la valeur exacte ne nous intéresse pas
             print('.', flush=True, end='')  # afficher un `.` sans passer à la ligne
             sleep(0.1)  # sans ça, on va rien voir, le programme semblera immédiat
-        # À essayer de votre côté : afficher changes à la place des points. Ça permet de voir en quoi consiste le backtrack.
+        # À essayer de votre côté : afficher changes à la place des points.
+        # Ça permet de voir en quoi consiste le backtrack.
 
     def undo(self, solver_id, assign, undo):
         # undo contient la liste des littéraux dont l'assignation est annulée.
         # on va donc enlever un '.' pour chacune de ces assignation.
         for _ in undo:  # la valeur exacte ne nous intéresse pas
-            print('\b \b', flush=True, end='')  # revenir en arrière, afficher un espace, revenir en arrière
+            # D'abord, revenir en arrière avec \b,
+            #  puis afficher un espace (effacer le point déjà affiché),
+            #  puis revenir en arrière.
+            print('\b \b', flush=True, end='')
             sleep(0.1)  # sans ça, vous n'allez rien voir, le programme semblera immédiat
 
 # notez que la function main est une convention de l'API de clingo :
@@ -209,7 +219,7 @@ Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples
 
 Le résultat est, vous vous en doutez, diablement rigolo :
 
-<center>{% img {filename}/images/asp/dotpropagator.gif 700 "Le dot propagator en action" %}</center>
+<center>{% img {filename}/images/asp/dotpropagator.gif 670 "Le dot propagator en action" %}</center>
 
 
 
@@ -337,6 +347,8 @@ Il n'est pas très différent, mais largement moins annoté.
 
 
 
+
+
 # Exemple de propagateur : graphviz/dot propagator
 Nous allons créer le propagateur qui permet de faire le dessin vu en introduction (avec les nœuds verts, les backtracks…).
 
@@ -357,7 +369,7 @@ Le résultat est de facto très visuel : on génère des visualisations de graph
 ## Le graphviz/dot propagator
 Le code est disponible [sur son dépôt](https://github.com/aluriak/dot-propagator), et reproduit ci-après avec des annotations supplémentaires :
 
-```asp
+```python
 #script(python)
 class DotPropagator:
     """A non-literal *dot* propagator"""
@@ -398,20 +410,23 @@ class DotPropagator:
         # sid: on s'en fiche
         # assign: ce sont les assignations de valeurs de vérité, on s'en fiche aussi
         # undo: les litéraux qui ont été changés
+        template = '\t{} -> {} [style=dotted label={}];'
         while undo:  # tant qu'il y a un nœud dans les undo
             prev_node = self.pull_node()  # on récupère le sommet de la pile
-            assert prev_node in undo  # par construction, il appartient aux nœuds qui sont retirés
-            # on affiche le backtrack en dot avec une flèche en pointillé qui retourne sur le nœud actuel (la tête de pile).
-            self.write('\t{} -> {} [style=dotted label={}];'.format(prev_node, self.last_node, self.__step))
+            assert prev_node in undo  # par construction, il appartient aux nœuds retirés
+            # On affiche le backtrack en dot avec une flèche en pointillé
+            #  qui retourne sur le nœud actuel (la tête de pile).
+            self.write(template.format(prev_node, self.last_node, self.__step))
             undo.remove(prev_node)  # on enlève le littéral de la liste des undo
 
     def check(self, ctl):
-        # le solveur trouve que l'assignation est totale et valide : il s'apprête à générer l'answer set !
-        # que faisons-nous ? On marque le nœud courant comme tel.
+        # Le solveur trouve que l'assignation est totale et valide :
+        #  il s'apprête à générer l'answer set !
+        # Que faisons-nous ? On marque le nœud courant comme tel.
         self.__stable_nodes.add(self.last_node)
 
 
-    # méthodes pour modifier le nœud courant (le sommet de la pile)
+    # Méthodes pour modifier le nœud courant (le sommet de la pile)
     def pull_node(self):  # le nœud courant devient le précédent
         *self.__stack, ret = self.__stack
         return ret
@@ -432,10 +447,13 @@ class DotPropagator:
                 ' fillcolor="green"' if uid in self.__stable_nodes else ''
             ))
 
-    # Deux méthodes pour les premières et dernières lignes du dot, qui sont toujours les mêmes
+    # Deux méthodes pour les premières et dernières lignes du dot,
+    #  qui sont toujours les mêmes.
     def write_header(self):
         self.write('digraph solving {')
-        self.write('\tnode [style=filled];')
+        self.write('\tgraph [dpi=400];')  # bonne résolution
+        self.write('\tnode [style=filled];')  # affiche la couleurs de fond
+        self.write('\tedge [arrowsize=0.5];')  # flèche plus petites
     def finalize(self):
         self.write_nodes()
         self.write('}')
@@ -445,7 +463,7 @@ class DotPropagator:
 #  sauf le fait que l'on fait tout le solving avec un fichier ouvert,
 #  que l'on donne à notre propagateur.
 def main(prg):
-    with open('out/out.dot', 'w') as fd:
+    with open('out.dot', 'w') as fd:
         propagator = DotPropagator(fd)  # c'est notre propagateur !
         prg.register_propagator(propagator)  # on l'enregistre
         prg.ground([("base", [])])  # on ground
@@ -453,8 +471,6 @@ def main(prg):
         propagator.finalize()  # et on termine d'écrire le dot
 #end.
 ```
-
-
 
 
 ## Utiliser le propagateur graphviz/dot
@@ -472,15 +488,17 @@ c;d:-a.
 e;f:-b.
 ```
 
-Vous verrez quelque chose de *beaucoup* plus simple, que vous avez déjà vu plus haut :
+Vous verrez quelque chose de *beaucoup* plus simple, que vous avez déjà vue plus haut :
 
-<center>{% img {filename}/images/asp/dotpropagatorresult.png 700 "Résultat donné par le graphviz/dot propagator pour un code simple avec trois embranchements." %}</center>
+<center>{% img {filename}/images/asp/dotpropagatorresult.png 670 "Résultat donné par le graphviz&#47;dot propagator pour un code simple avec trois embranchements." %}</center>
 
 Quelques questions pour le lecteur attentif :
 
 - que se passe-t-il si on ne demande qu'un seul answer set au solveur ?
 - que se passe-t-il si deux choix différents peuvent décider la valeur d'un seul atome ?
 - et donc, dans quels cas le graphe généré est-il un arbre ?
+
+
 
 
 
@@ -592,21 +610,22 @@ class Constraint:
             lit = init.solver_literal(atom.literal)
             # d'abord on teste l'atome lorsque représenté comme une string
             repr_str = str(atom.symbol)
-            if self._match_str(repr_str):  # la fonction retourne vrai si repr_str est attendu par la formule
+            if self._match_str(repr_str):  # vrai si repr_str est attendu par la formule
                 init.add_watch(lit)
                 self.__symbols[lit].add(repr_str)
                 continue
             # et ensuite, on le teste sous le format raw
-            repr_raw = atom.symbol.name, tuple(map(clingo_value_to_python, atom.symbol.arguments))
-            if self._match_raw(*repr_raw):  # idem que self._match_str ; cf plus bas pour la définition
+            repr_args = tuple(map(clingo_value_to_python, atom.symbol.arguments))
+            repr_raw = atom.symbol.name, repr_args
+            if self._match_raw(*repr_raw):  # idem que self._match_str, mais avec Variable
                 init.add_watch(lit)
                 self.__symbols[lit].add(repr_raw)
 
 
     # fonction appelée quand une propagation est réalisée
     def propagate(self, ctl, changes):
-        # on appelle la formule donnée par l'utilisateur, avec en argument un dictionnaire qui mappe
-        #  la représentation d'un atome et sa valeur de vérité.
+        # on appelle la formule donnée par l'utilisateur, avec en argument un dictionnaire
+        #  qui mappe la représentation d'un atome et sa valeur de vérité.
         fulfilled = self.__formula({
             repr: ctl.assignment.value(lit)
             for lit, reprs in self.__symbols.items()
@@ -617,36 +636,45 @@ class Constraint:
             self.__invalidate_model(ctl)
 
     def __invalidate_model(self, ctl):
-        # on ajoute, si c'est pas encore fait, un nouveau littéral. C'est un peu comme si on ajoutait un atome,
+        # On ajoute, si c'est pas encore fait, un nouveau littéral.
+        # C'est un peu comme si on ajoutait un atome,
         #  mais sans lui donner de représentation comme a(2) par exemple.
         self.__added_lit = ctl.add_literal()
-        # Les deux lignes suivantes servent à ajouter une «clause», indiquant que notre nouveau littéral est vrai.
-        #  Quand on ajoute une clause, il se peut que le solveur ait besoin de revérifier l'espace de recherche.
-        #  Dans notre cas, on ne le change pas puisque le littéral assigné est tout nouveau et est indépendant du programme ASP.
-        #  mais dans le cas général, on pourrait assigner la valeur d'un atome existant, et donc là le solveur devrait réagir en conséquence.
+        # Les deux lignes suivantes servent à ajouter une «clause»,
+        #  indiquant que notre nouveau littéral est vrai.
+        # Quand on ajoute une clause, il se peut que le solveur
+        #  ait besoin de revérifier l'espace de recherche.
+        # Dans notre cas, on ne le change pas puisque le littéral assigné est tout nouveau
+        #  et est indépendant du programme ASP.
+        # Mais dans le cas général, on pourrait assigner la valeur d'un atome existant,
+        #  et donc là le solveur devrait réagir en conséquence.
         if not ctl.add_clause([self.__added_lit]) or not ctl.propagate():
             return
         # C'est là que la magie se passe : on dit que le littéral est faux.
         if not ctl.add_nogood([self.__added_lit]) or not ctl.propagate():
             return
         # Ce qui entre en conflit avec la clause précédente, qui le déclarait vrai.
-        # La situation est donc instable, aucun modèle ne pourra être vrai dans ces conditions !
+        # La situation est donc instable,
+        #  aucun modèle ne pourra être vrai dans ces conditions !
 
 
-    # Les fonctions suivantes sont des détails d'implémentation, et n'ont pas grand chose à voir avec les propagateurs,
+    # Les fonctions suivantes sont des détails d'implémentation,
+    #  et n'ont pas grand chose à voir avec les propagateurs,
     #  mais je les laisse là pour la complétude du code.
 
     def _match_str(self, atom:str) -> bool:
-        # Retourne vrai si l'atome en string donné est dans les inputs attendus par la formule
+        # Retourne vrai si l'atome en string donné
+        #  est dans les inputs attendues par la formule.
         if atom in self.__str_inputs:
             return True
 
     def _match_raw(self, name:str, args:tuple) -> bool:
-        # Retourne vrai si l'atome en tuple donné est dans les inputs attendus par la formule
-        # Premier cas : pas de Variable dans le tuple
+        # Retourne vrai si l'atome en tuple donné
+        #  est dans les inputs attendues par la formule.
+        # Premier cas : pas de Variable dans le tuple.
         if (name, args) in self.__raw_inputs:
             return True
-        # Second cas : il y a des Variable dans le tuple
+        # Second cas : il y a des Variable dans le tuple.
         for pred, params in self.__raw_inputs:
             if pred == name and len(args) == len(params):
                 # C'est le même prédicat et le même nombre de variable
