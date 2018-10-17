@@ -70,7 +70,6 @@ D'autres articles de ce blog à propos d'ASP s'intègrent dans ce tuto. Il s'agi
 Une compréhension de base du langage est parfois nécessaire, donc n'allez sur les quêtes annexes qu'après avoir avancé un peu sur la quête principale (le présent tuto, donc).
 
 <!-- - [Observateurs]({filename}/articles/asp-observateurs.mkd), un moyen pour suivre, gérer et étendre le grounding -->
-<!-- - [Propagateurs]({filename}/articles/asp-propagateurs.mkd), un moyen pour suivre, gérer et étendre le solving -->
 <!-- - [Clustering conceptuel]({filename}/articles/asp-clustering-conceptuel.mkd), un moyen pour suivre, gérer et étendre le solving -->
 <!-- - [Métaprogrammation]({filename}/articles/asp-metaprogrammation.mkd), un follow-up de la section [Métaprogrammation](#mtaprogrammation) -->
 <!-- - [Theory Atoms]({filename}/articles/asp-theory-atoms.mkd), pour manipulation avancée de l'heuristique -->
@@ -78,6 +77,7 @@ Une compréhension de base du langage est parfois nécessaire, donc n'allez sur 
 <!-- - [Jeux de logique]({filename}/articles/asp-jeux-logique.mkd), résolution d'énigmes logiques trouvées sur internet -->
 - [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle d'espace de recherche et des coûts induits par certains encodings
 - [Logique temporelle]({filename}/articles/asp-temporal.mkd), où l'on parle de représentation du temps et de la résolution de problèmes qui en utilise la notion
+- [Propagateurs]({filename}/articles/asp-propagators.mkd), un moyen pour suivre, gérer et étendre le solving
 <!-- TODO: search for /asp- to find inline references to sidequests -->
 
 Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page web ;)
