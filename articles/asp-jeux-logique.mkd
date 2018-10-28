@@ -20,7 +20,8 @@ cela permet de découper la méthode logique nécessaire à leur résolution.
 Ensuite, s'intercale une partie sur les limites d'ASP, en montrant des énigmes
 qu'ASP ne peut pas résoudre directement.
 
-On termine sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant
+On ré-attaque ensuite avec différentes énigmes ou questions trouvées ça et là,
+et onn termine en trombe sur l'énigme d'Einstein, qui fait intervenir des nordiques fumant
 et buvant avec leurs animaux de compagnie dans des maisons colorées.
 
 
@@ -503,6 +504,42 @@ ce qui a été fait dans cette quête annexe : utiliser le temps pour simuler l'
 
 
 
+
+# Énigmes simples, deuxième fournée
+
+## Le coût de la vie
+On sait qu'un bonnet et un ballon coûtent ensemble 1.10€,
+et que le bonnet coûte 1€ de plus que le ballon.
+
+De par sa simplicité, cette énigme existe en beaucoup de variations,
+ne serais-ce que pour le nom des deux objets, mais aussi en utilisant des âges de personnes plutôt que des coûts.
+
+### Résolution en ASP
+On peut simplement encoder le problème en donnant un choix sur le prix, et en indiquant des contraintes sur le choix.
+ASP va alors nous énumérer toutes les combinaisons possibles.
+
+```asp
+1{bonnet(1..110)}1.  % on choisi un coût pour chaque objet
+1{ballon(1..110)}1.  %  (on compte en centime)
+
+% le bonnet coûte 100 (1€) de plus que le ballon
+bonnet(C+100):- ballon(C).
+
+% Calculons le total
+total(O+T):- bonnet(O) ; ballon(T).
+
+% Assurons-nous qu'il atteint exactement 110 (1.10€)
+:- total(N) ; N!=110.
+```
+
+Et le résultat est unique : il n'existe donc qu'une seule combinaison de prix qui corresponde à l'énoncé.
+Je vous laisse lancer votre clingo ou votre cerveau pour obtenir la réponse.
+
+
+
+
+
+
 # Énigme d'Einstein
 Vous vous en souvenez certainement : [cette énigme](https://fr.wikipedia.org/wiki/%C3%89nigme%5Fd%27Einstein) occupe les repas de famille tous les ans,
 sans qu'aucune solution ne soit trouvée. Elle est très bien [expliquée ici](http://villemin.gerard.free.fr/Puzzle/Enigme5.htm),
@@ -658,11 +695,14 @@ Et la réponse est… L'allemand. En effet, le seul answer-set donné par le sol
 Évidemment, toutes les assocations sont données, par exemple `fume(danois,blend)`, qui ne peut être deviné lorsque l'on déroule l'énigme que dans les dernières étapes.
 
 
+
+
+
 # Conclusion
 Pour certains jeux de logique, ASP est utile. Même quand les relations s'accumulent, ou que l'instance grossie,
 il reste possible d'obtenir un code relativement simple qui réponde à la question.
 
-Quelles énigmes ASP ne peut-il pas résoudre ? Eh bien, beaucoup. Notamment ceux qui font appelle à la logique épistémologique,
+Quelles énigmes ASP ne peut-il pas résoudre directement ? Eh bien, beaucoup. Notamment ceux qui font appelle à la logique épistémologique,
 ou demandent l'élaboration de protocoles. Ou alors, comme on l'a vu dans la partie dédiée,
 il faut élaborer une recherche de la solution sois-même, il ne suffit plus de décrire le problème.
 Heureusement, de nombreuses techniques permettent de se simplifier la vie, même dans ces cas complexes, par exemple
