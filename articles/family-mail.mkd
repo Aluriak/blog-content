@@ -1,0 +1,324 @@
+Title: Des adresses mails pour toute la famille
+Date: 2018-11-05
+Tags: opinion, tuto
+Authors: Lucas Bourneuf
+Summary: une solution à un problème finalement soluble
+Slug: family-mail
+Lang: français
+Translation: false
+Status: published
+
+Ce billet est un retour sur ma recherche d'un serveur mail familial,
+qui s'est soldée par une réussite.
+Les services utilisés sont nommés, et même vantés ; **ceci n'est pas une revue des alternatives, mais un retour d'expérience**.
+
+Mon objectif ? Montrer que même quand on est pas versé dans l'informatique,
+on peut facilement avoir son adresse en prénom@nomdefamille.net ou quelque chose du genre,
+pour toute sa famille, sans y perdre trop de temps ni d'argent.
+
+Les connaissances déployées ici ne sont pas spécifiques aux deux services utilisés,
+ils se transposent sans problèmes avec des alternatives (dont je fais une petite liste à la fin).
+
+
+<br/>
+
+[TOC]
+
+<br/>
+
+
+# Première expérience : Protonmail
+Il y a un an, je me suis intéressé à [Protonmail](https://protonmail.com). J'ai souscris à un abonnement annuel, et testé le truc.
+Protonmail s'est vendu comme une solution intégralement chiffrée : seuls les utilisateurs peuvent accéder à leurs mails, grâce au chiffrement asymétrique.
+Les serveurs sont sous 1km de roche, en suisse, le service est donc solide niveau sécurité.
+Problème à l'époque : pas interfaçable avec le reste du monde, puisqu'on ne peut pas utiliser une clef privée existante, ou son client mail préféré. C'était donc réservé aux personnes qui acceptaient d'utiliser un webmail uniquement, et qui n'avaient pas encore d'identité sur le Web of Trust.
+
+En un an, les choses ont avancé : les clefs sont exportables, et il existe une interface pour quelques rares clients mail, même pour linux.
+En fait, le problème de fond est le manque d'interopérabilité avec des protocoles standards. Ça s'améliore, mais pas suffisamment pour me convenir.
+Et hélas, c'est dû à la techno elle-même, extrèmement efficace, mais peu flexible. Ce n'est donc pas de la volonté des devs de Protonmail, et risque donc d'être bloqué pour longtemps.
+
+Le bilan est finalement mitigé : ça marche bien, mais puisqu'il faut pratiquer la magie noire (utiliser le terminal) pour le faire fonctionner avec mon thunderbird chéri
+(autant vous dire que le support de mutt sur archlinux n'arrivera pas avant longtemps), je n'ai jamais sauté le pas.
+Mon adresse en `prénom@nom.net` est restée inutile.
+
+Là où j'ai complètement abandonné le navire,
+c'est lorsque j'ai voulu étudier la possibilité de donner une adresse pour tous les membres de ma famille.
+
+Plus précisément, j'ai besoin de pouvoir donner une adresse à chacun, avec sa boîte et son couple identifiant/mot de passe.
+Eh bien, figurez-vous que pour cela, on a besoin de la gamme pro, qui coûte 75€ par an **et par personne** !
+
+C'est cher, surtout pour un mail que certains d'entre nous n'utiliseraient pas puisque le support des clients externes est loin d'être standard.
+
+Donc, désolé Protonmail : tu fais rêver, mais ma famille et moi ne sommes pas les clients visé par ton offre et ta techno.
+Mais, grâce à cette aventure, je suis capable de dire exactement de quoi j'ai besoin, maintenant !
+
+
+
+
+# Ce que nous cherchions
+
+## Domaine perso
+Évidemment, on voulait une adresse en `@nom.net`. C'est le gros point de la manœuvre.
+Ce domaine, je l'utilise pour mon serveur perso, il est donc déjà loué et administré auprès de [gandi](https://www.gandi.net/fr).
+
+## 1 boîte mail par personne
+Ce que Protonmail donnait facilement, c'était des *alias*, donc des adresses qui arrivaient dans la même boîte.
+Mais ça, je m'en fiche : je veux ma boîte, et ne la partager avec personne. Pareil pour les autres membre de la famille.
+Ça c'est la base, et non-négociable.
+
+Niveau taille max, on peut s'accomoder de seulement quelques gigabits par personnes.
+
+## Webmail et ¬webmail
+Beaucoup de membres n'ont pas de clients mail, il faut donc un webmail.
+D'autres utilisent un client mail, comme thunderbird ou outlook, il faut que le support soit simple (donc : standard).
+
+L'idéal, ce serais un webmail qui fait chiffrement par défaut,
+sauf pour les utilisateurs qui passent par leur clients mails propres, et qui gèrent de facto le chiffrement eux-même (via Enigmail par exemple).
+
+
+## Prix pas prohibitif
+50€/personne/an serait un grand maximum. Et encore, c'est cher. Trop cher.
+
+Bien sûr, on évite les services gratuits comme la peste : ils viennent en général avec leur lots de déconvenues
+(vente de données perso, pubs insérées dans les mails, limites très importantes d'usage),
+quand ce n'est pas juste de l'espionnage à but publicitaire.
+
+La seule alternative gratuite intéressante serait d'héberger moi-même un serveur mail ; je n'ai néanmoins pas le temps,
+ni assez confiance dans mes compétences pour endosser la responsabilité de la maintenance des boîtes mails d'autres personnes.
+
+## Chiffrement total ?
+C'était un gros argument de Protonmail, et ça le restera je pense, car le chiffrement complet vient avec un coût :
+les interfaces avec les client mails ne peuvent plus être simples et standards.
+
+Donc, tant pis, le chiffrement se fera «manuellement» avec des plugins comme Enigmail.
+C'est peut-être pas plus mal, au fond, ça responsabilise l'utilisateur.
+
+## Vie privée
+Avoir une assurance minimale de respect de vie privée.
+Donc, exit les services gratuits, qui se font du blé en étudiant les données perso,
+et ceux hébergés aux USA, où la loi les oblige à fournir ces données au gouvernement sur simple demande.
+
+Les pays nordiques et la suisse sont les plus pertinents (et écolos).
+
+
+# Les fausses solutions
+## Utiliser les adresses incluses avec le NDD
+Les loueurs de NDD proposent souvent des services périphériques, comme des adresses mails qui utilisent le NDD loué.
+C'est très bien pour des services ponctuels ou limités à un usage très spécifique, mais utiliser ça comme base de mail familial me pose trois problèmes :
+
+- *pas d'interface*: ce n'est pas très configurable, ni associé à un webmail/service dédié
+- *pas évolutif*: seulement une demi-douzaine d'adresse avec Gandi, ça veut dire que si j'en ai besoin d'une supplémentaire, il me faut abandonner le service et trouver autre chose : retour à la case départ
+- *pas propre*: ça donne l'impression de passer le contrôle technique de sa voiture chez son dentiste. Les NDD et les mails sont deux services très différents, je trouve curieux de mélanger les deux par pure fainéantise.
+
+
+
+# La solution retenue : Migadu
+J'ai étudié la doc de [Migadu](https://www.migadu.com) et… j'ai adoré. Leur façon d'expliquer **exactement** ce qu'ils font, et, plus important encore,
+[ce qu'ils ne font pas](https://www.migadu.com/en/drawbacks.html), m'a beaucoup plu, et m'a permis de me dire que c'était une bonne piste.
+
+Ça fait penser à la philosophie *no-bullshit* de gandi : Migadu gère les mails, et c'est tout. Pas de fonctionnalités inutiles, pas de trucs compliqué,…
+
+Mieux : ils ont visiblement une idée très rationnelle de ce que devrait faire un service mail. J'adore, j'adhère !
+Le principe est assez simple : ils ne mesurent **que** le nombre de message envoyé. Que vous ayez 1000 comptes qui envoient chacun 1 mail ou 1 compte qui envoie 1000 mails, [pour eux c'est pareil](https://www.migadu.com/en/faq.html#anchor_daily_quota).
+[Leurs plans de paiements](https://www.migadu.com/en/pricing.html) ne diffèrent que par la limite (non-bloquante) de mails envoyés par jours.
+Cette limite peut faire un peu peur, mais je me dis que si on utilise tant les mails que l'abonnement à 150€/an ne suffit plus, c'est que la famille aura beaucoup grandit,
+et ça ne va pas arriver tout de suite, on a le temps de voir venir.
+
+Comparons à nos demandes, point par point :
+
+- *Domaine perso*: support pour un nombre non-limité de domaines perso. Nous, on en a qu'un, mais si un jour on devait en avoir un autre, ça serait immédiat à mettre en place, et sans surcoût.
+- *1 boîte mail par personne*: Migadu explose tout, avec un nombre d'adresse, de boîte et d'alias illimité. On pourra même faire une adresse pour notre grille-pain connecté.
+- *Webmail et ¬webmail*: ils ont un webmail compatible téléphone, qui se veut simple ([rainloop](https://www.rainloop.net/) peut-être ?), et qui s'interface de manière standard avec le reste du monde. Thunderbird marche sans problème avec, et il n'y a aucune raison de penser que d'autres clients ne fonctionneraient pas. Parfait !
+- *Prix pas prohibitif*: 50€ par an pour toute la famille, ou 150€ si on envoie entre 100 et 500 mails par jour. Ça me va, c'est simple, c'est propre, c'est facile à expliquer aux autres.
+- *Chiffrement*: rien de natif, mais s'interface avec le reste de manière standard, donc à la limite, c'est pas bien grave, ça ne change la vie de personne.
+- *Vie privée*: c'est en france (et en suisse, un peu aussi), et notre paiement est leur modèle économique. [Ils ne collectent rien pour revendre ailleurs](https://www.migadu.com/en/privacy.html). Ce n'est donc pas parfait (france, état d'urgence,…), mais suffisant.
+
+
+
+
+
+# Le tuto : mise en place pour toute la famille
+Pour le tuto, on imaginera que votre nom de famille est colupokaradipevypudori,
+et que trois personnes veulent une adresse : Jean-Jacques, Cunégonde et Kiwi.
+
+(Kiwi, c'est le chien, et oui, il a besoin d'une adresse mail, c'est primordial… J'imagine.)
+
+Préparez-vous psychologiquement : ce tuto consiste essentiellement en une réécriture en français, et plus exhaustive,
+[du tuto officiel de Migadu](https://www.migadu.com/en/guides/from_scratch.html).
+
+
+## Le Nom De Domaine (NDD)
+D'abord, il vous faut [louer votre NDD](http://sebsauvage.net/comprendre/dns/index.html).
+
+En général, cela coûtera, selon le domaine utilisé (`.fr`, `.net`, `.eu`, `.name`,…)
+et le second domaine (la longueur de votre nom de famille peut jouer), entre quelques euros et une vingtaine par an,
+parfois beaucoup plus pour les domaines un peu à la mode, comme `.io`.
+
+[Gandi](https://www.gandi.net/fr) me trouve, au moins cher et en excluant les opérations des prix initiaux
+(«*60 centimes la première année ! (et 30€ les suivantes, mais chuuuut on ne le dit pas)*»), 15€ pour le `.net`.
+
+C'est partit, prenons `colupokaradipevypudori.net`, et allons conquérir le monde !
+
+
+### Enregistrement DNS
+L'enregistrement DNS, c'est un petit fichier texte qui indique comment doivent réagir les serveurs DNS
+lorsqu'un utilisateur souhaite accéder à `colupokaradipevypudori.net`,
+ou n'importe quel domaine.
+
+En général, ces enregistrements vont indiquer l'adresse IP du serveur à contacter, afin que, par exemple, lorsque quelqu'un demande le site sur lequel vous lisez ce texte,
+il termine sur le serveur qui contient mon site perso.
+
+L'enregistrement peut porter aussi pas mal d'informations supplémentaires, pour d'autres services que les sites persos, par exemple les mails.
+C'est exactement ce que nous allons faire lorsque nous allons pairer notre NDD avec notre compte Migadu
+(d'ailleurs, cette appairage est identique à celui demandé par d'autres services mails qui supportent des NDD perso).
+
+Dans gandi, il faut voyager un peu dans l'interface pour trouver l'onglet «domains» à gauche, puis cliquer sur son NDD au centre, et trouver à nouveau l'onglet «DNS records» à gauche.
+Là, vous aurez le choix entre deux vues possible du même fichier : «Table mode» ou «Text mode». En gros, le text mode, c'est le fichier lui-même, en toute lettre. Le table mode, c'est une vision en tableau avec les champs dans leur colonne. Vous pourrez utiliser l'un ou l'autre, ou les deux en même temps, j'essaierai de donner des indications pour les deux.
+
+Notez que :
+
+- l'enregistrement DNS est (en gros) public, vous pouvez retrouver celui des autres avec [ce genre de site](http://dns-record-viewer.online-domain-tools.com) ;
+- une fois modifié, il faut parfois plusieurs heures avant que tous les serveurs DNS sur la planète soient au courant de la modification. Ne soyez pas pressés ; l'interface de Migadu vous indiquera ce qu'il détecte, et ce qui lui manque.
+
+
+
+## Mise en place de Migadu
+Notre objectif, c'est d'avoir trois adresses mails : `jean-jacques@colupokaradipevypudori.net`, `cunegonde@colupokaradipevypudori.net`
+et `kiwi-est-trop-mignon-ololololo-regardez-comme-il-est-choupi@colupokaradipevypudori.net`.
+On pensera à créer un alias plus simple pour cette dernière.
+
+### Pairage avec le DNS
+C'est la partie délicate et un peu technique, mais pas d'inquiétude : ça se fait même sans grandes connaissances.
+
+D'abord, allez dans l'onglet «Domains», et ajoutez un nouveau domaine (avec le bouton «add new domain»… quand je vous disais que c'était simple).
+Donnez `colupokaradipevypudori.fr`, laissez l'outil créer les alias par défaut vers admin@colupokaradipevypudori.fr, et sélectionnez ce nouveau domaine dans l'onglet.
+Nous allons maintenant le mettre en place via l'onglet «DNS Setup».
+
+Dans configuration profile, deux solutions :
+
+- si vous utilisez votre NDD pour autre chose (un serveur perso par exemple), utilisez la méthode externe.
+- sinon, utilisez la version «migadu simple DNS» : ils font tout pour vous, ça évite de réfléchir. Par contre, je ne peux plus vous aider pour le pairage, puisque c'est pas comme ça que j'ai fais.
+
+Ensuite, suivez les indications dans l'onglet «instructions».
+À la fin, Cunégonde (qui s'occupe de faire ce tuto pour tout le monde) avait un truc comme ça :
+
+    @ 3600 IN MX 10 aspmx1.migadu.com.
+    @ 3600 IN MX 20 aspmx2.migadu.com.
+    @ 3600 IN TXT "v=spf1 a mx include:spf.migadu.com ~all"
+    _dmarc 3600 IN TXT "v=DMARC1; p=none; fo=1; rua=mailto:admin@colupokaradipevypudori.net"
+    default._domainkey 3600 IN TXT "v=DKIM1; k=rsa; s=email; p=ZZZZZclefZtrèsZlongueZZZZZ"
+
+Notez qu'il existe un type SPF pour les entrées SPF, mais Migadu nécessite explicitement du TXT, et ne détecte pas les champs SPF.
+
+Cunégonde a attendu un peu moins d'une heure, et paf ! Le «health check» est passé intégralement au vert !
+Elle s'est donc attelée à l'étape suivante : la création des comptes (bon, en vrai, elle a commencé directement sans attendre, comme ça elle a pu envoyer des mails tout de suite).
+
+
+
+### Création des comptes
+Attention, il ne faut pas confondre :
+- le compte d'administration
+- les comptes des personnes
+
+Ainsi, nous aurons en réalité, et sans compter les alias, 4 adresses mails : les trois que nous voulons, et `admin@colupokaradipevypudori.net`.
+Aussi, une adresse extérieur (probablement l'ancienne adresse de Cunégonde),
+sera utilisée comme adresse de contact et de login pour la gestion du compte.
+
+C'est donc seulement dans le webmail que les adresses en `@colupokaradipevypudori.net` serons utilisées,
+afin d'avoir accès… Aux mails, évidemment.
+
+Dans l'interface d'administration de Migadu, aller dans «Domains», puis «colupokaradipevypudori.net», puis «Mailboxes»,
+puis utiliser le bouton «Add new mailbox» autant de fois que nécessaire.
+Vous avez maintenant moyen de donner les infos minimales pour le compte. Exemple pour Jean-Jacques :
+
+    > Address
+    jean-jacques
+    > Display Name
+    Jean-Jacques Colupokaradipevypudori
+    > Initial Password
+    Le petit bonhomme en mousse
+
+(le `@colupokaradipevypudori.fr` est ajouté tout seul)
+
+Notez que le mot de passe initial est connu de Cunégonde, puisque c'est elle qui le donne.
+C'est un problème de sécurité majeur auquel Jean-Jacques et Kiwi remédierons en changeant [leurs mots de passe](https://www.ssi.gouv.fr/guide/mot-de-passe/).
+
+En cliquant sur la nouvelle mailbox, en-dessous du bouton «Add new mailbox», Cunégonde pourra, dans l'onglet «client configuration»,
+envoyer à Jean-Jacques et elle-même les instructions qui lui permettrons de mettre en place son client Thunderbird.
+
+
+### Quand tout marche bien
+Quand tout marche bien, et qu'on est content, on peut [souscrire à un abonnement](https://www.migadu.com/en/pricing.html).
+Dans le doute, et vu le prix, il vaut mieux souscrire à un annuel.
+
+JJ, Cunégonde et Kiwi décident de souscrire au plan «mini», car ils imaginent mal envoyer plus de 100 mails par jours. En fait, c'est arrivé une fois, pour la première sortie dominicale en forêt de Kiwi, car il avait ses petites chaussettes bleues et son chapeau fleurit, et que c'était très mignon, et que Jean-Jacques à voulu faire partager l'expérience à tous ses amis du bowling du jeudi soir, et que Cunégonde a voulu en parler à ses sœurs et ses amies du club de jet-ski, mais c'était assez exceptionnel, et de toute façon, même en additionnant les amis du bowling, du jet-ski, les sœurs de Cunégonde, les voisins dont on aurait eu le mail on sait pas comment, et les autres mails de la journée notamment celui concernant les horribles nouvelles sandales de Monsieur Roublatoff, ça faisait en fait moins de 100 mails, et bien qu'on aurait pu les atteindre en comptant les réponses affectueuses de Cunégonde à ceux qui auront répondu dans la soirée, et les appels au scandale anti-sandales de Jean-Jacques, il ne faut pas oublier que nos deux amis étaient couchés avant que les réponses ne leurs parviennent, car voyez-vous, ce sont des gens sérieux qui se couchent tôt, et cela même s'ils ont une adresse personnalisée que tout le monde leur envie, du moins jusqu'à la lecture du présent tuto qu'ils n'ont pas manqué de faire suivre à leurs voisins, le jour où ils ont eu leur adresse mail, qui n'étaient alors pas encore personnalisées, sinon quoi leur faire suivre ledit présent tuto n'aurait pas été très malin, ou alors l'acte d'une personne fatiguée, ce qui n'est pas possible puisque les Colupokaradipevypudori se couchent tôt.
+
+
+## Accès facile au webmail
+Parce que ni Jean-Jacques, ni Cunégonde, ni Kiwi ne se souviendrons de l'adresse `webmail.migadu.com`,
+il faut mettre en place une redirection, afin qu'ils puissent aussi utiliser le très mémorable `mail.colupokaradipevypudori.net` dans leur navigateur.
+
+Pour cela, [suivons les conseils de la doc](https://www.migadu.com/en/guides/webmail.html),
+et ajoutons la ligne suivante dans l'enregistrement DNS :
+
+    mail 1800 IN CNAME webmail.migadu.com
+
+Dans le mode tableau, il s'agit simplement d'ajouter un CNAME dont
+l'hostname est `mail` et la valeur `webmail.migadu.com`.
+
+
+## Cunégonde et l'Oiseau-Tonnerre
+Pour configurer son Thunderbird, Cunégonde va simplement lui demander de créer un compte à partir d'un mail existant, `cunegonde@colupokaradipevypudori.fr`.
+Elle donnera son mot de passe, ainsi que [les infos données par Migadu](https://www.migadu.com/en/guides/config.html) pour la configuration des clients mail.
+
+Cunégonde utilise SMTP, car elle va s'interfacer avec sa boîte mail depuis l'ordinateur familial, mais aussi depuis son [ordiphone](https://fr.wikipedia.org/wiki/Ordiphone)
+sur lequel [K9](https://k9mail.github.io) et [OpenKeyChain](https://www.openkeychain.org) sont installés (elle a suivis [ce tuto](https://lhommenumerique.wordpress.com/2017/07/25/howto-chiffrer-vos-mails-avec-k9-mail-et-openkeychain-sous-android) pour les installer).
+Elle veut donc s'assurer d'une synchronisation entres ses deux appareils, ce que SMTP gère très bien.
+
+De son côté, Jean-Jacques n'utilise qu'un seul ordinateur, et veut utiliser POP3, quoique SMTP fonctionnerait tout aussi bien,
+mais il aime bien le mot «POP», ça lui rappelle ses jeunes années quand il dansait en pat def.
+
+Quant à Kiwi, il se fiche totalement de tout ça, car il a reçu un nouveau jouet en plastique rose qui fait *couiiiic!*
+quand il le mort au milieu, un peu sur la droite. Probablement utilisera-t-il uniquement le webmail ?
+
+
+### Contact familial
+Cunégonde a aussi mis en place un alias, nommé `famille@colupokaradipevypudori.net`, qui renvoie vers les trois adresses mails (La sienne, celle de Jean-Jacques, et celle de Kiwi).
+Ainsi, lorsque l'un d'entre eux veux parler aux autres, ou que des amis veulent partager leurs photos de vacances à Reykjavík avec les Colupokaradipevypudori,
+ils peuvent simplement écrire à la famille.
+
+Plus tard, Cunégonde s'aperçoit que certains de ses amis et collègues anglais se trompent, et utilisent `family@colupokaradipevypudori.net`. Zut !
+Elle supprime l'alias qu'elle a créé, et créé à la place un «catch-all», qu'elle nourris avec la [regex](https://fr.wikipedia.org/wiki/Expression%5Fr%C3%A9guli%C3%A8re) suivante :
+
+    ^famil(le|y)$@colupokaradipevypudori.net
+
+Et, comme pour l'alias, renvois tous les mails reçu par ce catch-all vers les trois adresses voulues. Maintenant, les deux adresses fonctionnent !
+
+
+
+# Conclusion
+Il est possible, avec juste quelques clics et tapages de clavier, de mettre en place un serveur mail pour toute sa famille.
+C'est super ! Il y encore quelques jours, je pensais que ce serais beaucoup plus compliqué.
+
+Il existe beaucoup d'alternatives aux services proposés ici, comme [euroDNS](https://www.eurodns.com/) pour louer des NDD,
+ou ceux listés dans le [tuto de sebsauvage](http://sebsauvage.net/comprendre/dns/index.html).
+Au final, je ne trouve pas qu'il y ait beaucoup de différences entre les différents loueurs, si on ne regarde pas les services périphériques.
+Je ne suis même pas certains que les prix varient beaucoup.
+
+Quant au serveurs mails, vous voudrez probablement regarder les même chose que j'ai regardé :
+boîtes séparées, interfaces disponibles, gammes de prix, respect de la vie privée.
+Les alternatives connues sont [FastMail](https://www.fastmail.com) ou [Zoho](https://www.zoho.com), mais il en existe bien d'autres.
+On peut trouver en ligne [des comparaisons](https://thatoneprivacysite.net/email-comparison-chart), alimentées par des communautés de motivés,
+qui vous aideront à explorer un peu cette univers fourmillant.
+
+
+Quelque soit votre choix, l'essentiel est dans ce tuto : louer un NDD, mettre en place le serveur via l'interface du fournisseur, créer les boîtes mails.
+Pensez à voir avec votre famille aussi : certains services n'offiront pas un webmail suffisamment complet, ou le support des calendrier (CalDAV).
+Ce pourrait être rédhibitoire pour certains, qui auront besoin de ces fonctionalités, même pour les mails persos.
+
+Pour finir, je dirais que la seule véritable variable dans toute cette opération, c'est la récupération d'un NDD perso :
+mon nom de famille avait la chance de ne pas être (complètement) pris.
+Mais pour ceux dont le nom est plus répandu, même les `.name`, `.tv` ou `.site` sont déjà pris ;
+il va vous falloir trouver un préfixe, un pseudonyme, une apocope, un suffixe,…
+
+Le préfixe `famille-`, peut-être ?
