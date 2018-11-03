@@ -102,8 +102,8 @@ PREY, PRED = 10, 5
 def next_pop(pops, t):
     """Return populations growth"""
     prey, pred = pops
-    return np.array([ prey * (PREY_REPRO_RATE - PREY_DEATH_RATE*pred),
-                      pred * (PRED_DEATH_RATE*prey - PRED_REPRO_RATE)])
+    return np.array([prey * (PREY_REPRO_RATE - PREY_DEATH_RATE*pred),
+                     pred * (PRED_DEATH_RATE*prey - PRED_REPRO_RATE)])
 
 
 def vizualize(pops:[(float, float)]):
