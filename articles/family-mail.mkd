@@ -1,5 +1,5 @@
 Title: Des adresses mails pour toute la famille
-Date: 2018-11-05
+Date: 2018-11-02
 Tags: opinion, tuto
 Authors: Lucas Bourneuf
 Summary: une solution à un problème finalement soluble
@@ -10,7 +10,8 @@ Status: published
 
 Ce billet est un retour sur ma recherche d'un serveur mail familial,
 qui s'est soldée par une réussite.
-Les services utilisés sont nommés, et même vantés ; **ceci n'est pas une revue des alternatives, mais un retour d'expérience**.
+Les services utilisés sont nommés, et même vantés ;
+**ceci n'est pas une revue objective des alternatives, mais un retour d'expérience subjectif**.
 
 Mon objectif ? Montrer que même quand on est pas versé dans l'informatique,
 on peut facilement avoir son adresse en prénom@nomdefamille.net ou quelque chose du genre,
@@ -282,7 +283,7 @@ Quant à Kiwi, il se fiche totalement de tout ça, car il a reçu un nouveau jou
 quand il le mort au milieu, un peu sur la droite. Probablement utilisera-t-il uniquement le webmail ?
 
 
-### Contact familial
+## Contact familial
 Cunégonde a aussi mis en place un alias, nommé `famille@colupokaradipevypudori.net`, qui renvoie vers les trois adresses mails (La sienne, celle de Jean-Jacques, et celle de Kiwi).
 Ainsi, lorsque l'un d'entre eux veux parler aux autres, ou que des amis veulent partager leurs photos de vacances à Reykjavík avec les Colupokaradipevypudori,
 ils peuvent simplement écrire à la famille.
