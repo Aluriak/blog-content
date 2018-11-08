@@ -118,7 +118,7 @@ J'ai étudié la doc de [Migadu](https://www.migadu.com) et… j'ai adoré. Leur
 
 Ça fait penser à la philosophie *no-bullshit* de gandi : Migadu gère les mails, et c'est tout. Pas de fonctionnalités inutiles, pas de trucs compliqué,…
 
-Mieux : ils ont visiblement une idée très rationnelle de ce que devrait faire un service mail. J'adore, j'adhère !
+Mieux : ils ont visiblement une idée très rationnelle de ce que devrait faire un service mail. J'adule, j'adore, j'adhère !
 Le principe est assez simple : ils ne mesurent **que** le nombre de message envoyé. Que vous ayez 1000 comptes qui envoient chacun 1 mail ou 1 compte qui envoie 1000 mails, [pour eux c'est pareil](https://www.migadu.com/en/faq.html#anchor_daily_quota).
 [Leurs plans de paiements](https://www.migadu.com/en/pricing.html) ne diffèrent que par la limite (non-bloquante) de mails envoyés par jours.
 Cette limite peut faire un peu peur, mais je me dis que si on utilise tant les mails que l'abonnement à 150€/an ne suffit plus, c'est que la famille aura beaucoup grandit,
