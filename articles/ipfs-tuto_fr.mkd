@@ -260,7 +260,7 @@ ce qui assure la disponibilité des données même (et surtout) en cas d'accès 
 
 <!-- Bonus 3 : et tout ça, c'est l'objet d'un de mes projets perso, [Wagon](https://github.com/aluriak/Wagon). -->
 
-Concernant, les entreprises, vous êtes vous déjà demandé comment les
+Concernant les entreprises, vous êtes vous déjà demandé comment les
 gros éditeurs de jeux vidéos faisaient
 pour distribuer plusieurs dizaines de gigaoctets de données à tous leur clients,
 le jour de la sortie d'un jeu vidéo ?
@@ -371,6 +371,7 @@ Cette liste grandit vite, et beaucoup de projets proposés ont clairement un pie
 - [wiki interplanétaire](https://github.com/jamescarlyle/ipfs-wiki), preuve de concept pour un wiki distribué
 - [module firefox](https://github.com/ipfs/ipfs-firefox-addon) qui agit comme une gateway
 - [js-ipfs](https://github.com/ipfs/js-ipfs), l'implémentation d'IPFS en javascript. Hyperactif, mais probablement mort dans 6 mois (EDIT: je suis mauvaise langue ; le projet semble encore actif).
+- [ipfs-wormhole](https://github.com/aurelg/ipfs-wormhole), pour transférer des fichiers de manière sécurisée d'un ordinateur à l'autre (diantre, depuis le temps que j'attends ça !)
 
 
 ### Le mot de la fin (de l'introduction)
