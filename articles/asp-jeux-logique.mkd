@@ -11,7 +11,7 @@ Status: draft
 Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant à la modélisation et résolution de problème de logique, sous la forme d'une volée de cas pratiques.
 
-[Sources des codes](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%5Fwarmup)
+les sources des codes peuvent être trouvés sur mon dépôt [learning-ASP](https://github.com/Aluriak/learning-ASP),
 
 Les premiers problèmes sont les *warmup logic exercises* du site [brilliant.org](https://brilliant.org).
 Tous les problèmes ne sont pas solvables simplement, mais pour ceux qui le sont,
@@ -33,6 +33,9 @@ et buvant avec leurs animaux de compagnie dans des maisons colorées.
 
 
 # Énigmes simples
+Les énigmes qui suivent viennent du site brilliant.org.
+Les codes sont [agglomérés ici](https://github.com/Aluriak/learning-ASP/tree/master/brilliant/logic%5Fwarmup).
+
 ## brothers
 On nous donne les tailles relatives de 5 frères (par exemple, *Alex est plus grand que Brian*), et nous devons deviner qui est le plus grand.
 
@@ -232,8 +235,11 @@ La réponse est `car(2) p(3)`.
 
 
 # Limites d'ASP
+La quatrième des énigmes proposées dans la catégorie «recherche de vérité» n'est pas facilement soluble avec ASP.
+Intéressons-nous à ce cas un peu particulier.
 
 ## Quatrième
+
 > On a 4 boites. La première est étiquettée comme contenant une pomme, la seconde une banane, la troisième une carotte, et la dernière une datte.
 > Sachant qu'une seule d'entre elle est étiquettée correctement,
 > combien de boites au pire doit-on ouvrir pour savoir de laquelle il s'agit ?
@@ -242,7 +248,7 @@ Cette énigme ne se résouds pas en ASP, du moins pas de manière directe comme 
 La résolution de cette énigme requiert l'usage de la [logique épistémique](https://fr.wikipedia.org/wiki/Logique%5F%C3%A9pist%C3%A9mique),
 où l'on est capable de représenter les *connaissances* de différents agents.
 
-### Résoudre avec une itérative
+## Résoudre avec une itérative
 Une solution pour s'en dépatouiller est de faire l'algo nous-même.
 Déjà, on observe que lorsqu'on ouvre une boite, il y a deux cas de figure :
 
@@ -381,7 +387,7 @@ Voilà la réponse à la question.
 
 Cependant, il y a encore bien des choses à dire…
 
-### Généralisations
+## Généralisations
 Avez-vous remarqué que le code est spécifiquement fait pour pouvoir facilement rajouter des objets ?
 C'est parti, rajoutons des boites !
 
@@ -506,6 +512,8 @@ ce qui a été fait dans cette quête annexe : utiliser le temps pour simuler l'
 
 
 # Énigmes simples, deuxième fournée
+Les énigmes suivantes viennent d'internet. Lorsqu'elles sont utilisées (en général sur les sites aggrégant ce genre d'énigme),
+aucun auteur n'est crédité.
 
 ## Le coût de la vie
 On sait qu'un bonnet et un ballon coûtent ensemble 1.10€,
@@ -533,8 +541,150 @@ total(O+T):- bonnet(O) ; ballon(T).
 ```
 
 Et le résultat est unique : il n'existe donc qu'une seule combinaison de prix qui corresponde à l'énoncé.
-Je vous laisse lancer votre clingo ou votre cerveau pour obtenir la réponse.
+Je vous laisse lancer clingo ou votre cerveau pour obtenir la réponse.
 
+
+
+## La Maison des Mères
+
+> Dans une famille, on trouve 2 mères, 2 filles, 1 grand-mère, et 1 petit-fille.
+> Combien cette famille contient-elle de personnes ?
+
+L'encoding de cette énigme est un poil long, mais, et c'est assez drôle,
+la majorité des règles sont finalement là pour expliquer les bases à l'ordinateur.
+
+Le [code source complet de la solution est là](https://github.com/Aluriak/learning-ASP/tree/master/mothers).
+
+```asp
+% Vu le phrasé de l'énigme, on considère que le nombre de mère
+%  est égal au nombre de fille. Idem pour les grand-mères et petite filles.
+% Donc on se contente de donner le nombre de (grand-)mère.
+#const nb_mother=2.
+#const nb_grandmother=1.
+
+% Choix d'un nombre d'individus consécutifs
+%  (comme 1,2,3, ou 1,2,3,4, mais pas 1,3,4 par exemple).
+% C'est ça qui nous intéresse, pour répondre à la question.
+indiv(1).
+0 {indiv(N+1)} 1:- indiv(N) ; N<10.
+:- indiv(I) ; not relation(I,_) ; not relation(_,I).  % an individual must be used
+
+% Maintenant, on doit définir des liens familiaux,
+%  et écarter ceux qui ne sont pas valides.
+
+% On définit un ensemble de relation mère/fille.
+%  on force un ordre arbitraire sur les individus pour éviter d'avoir
+%  trop de solutions avec juste un ordre différents de nœud.
+{mother(X,Y): indiv(X), indiv(Y), X<Y }.
+
+% On déduit les autres relations à partir des relations mère/fille.
+daughter(Y,X) :- mother(X,Y).
+grandmother(X,Z) :- mother(X,Y) ; mother(Y,Z).
+granddaughter(Z,X) :- mother(X,Y) ; mother(Y,Z).
+
+% La notion de relation est une abstraction.
+relation(X,Y):- mother(X,Y).
+relation(X,Y):- grandmother(X,Y).
+relation(X,Y):- daughter(X,Y).
+relation(X,Y):- granddaughter(X,Y).
+
+% Contrainte biologique à expliquer à l'ordinateur :
+%  on n'a qu'une seule mère.
+:- indiv(I) ; 2{mother(_,I)}.
+
+% Écarte les modèles où on n'a pas le bon nombre de chaque relation.
+:- not nb_grandmother{granddaughter(_,_)}nb_grandmother.
+:- not nb_grandmother{grandmother(_,_)}nb_grandmother.
+:- not nb_mother{mother(_,_)}nb_mother.
+:- not nb_mother{daughter(_,_)}nb_mother.
+```
+
+### Le sens de la famille
+Notons que la question demande seulement le nombre de membres dans la famille.
+On peut donc, pour limiter aux réponses voulues, projetter sur indiv/1 et n'afficher que leur nombre :
+
+```asp
+% on compte et affiche uniquement le nombre d'individus.
+nb_indiv(N):- N={indiv(_)}.
+#show nb_indiv/1.
+% si plusieurs modèles ont les mêmes atomes nb_indiv/1, on en garde un seul.
+%  (nécessite l'option --project lors de l'appel à clingo)
+#project nb_indiv/1.
+```
+
+Mais voilà : c'est un peu nul, car on ne fait que répondre à la question,
+sans comprendre pourquoi on arrive à ce nombre exact de personnes dans la famille.
+Et si on affichait l'arbre généalogique, plutôt ?
+
+### Voire avec ses yeux
+Histoire de visualiser les solutions, plutôt que projeter le nombre d'individu et n'afficher que le résultat,
+on peut utiliser [biseau](https://gitlab.inria.fr/lbourneu/biseau) :
+
+```asp
+link(X,Y):- mother(X,Y).
+label(X,Y,mother):- mother(X,Y).
+obj_property(edge,arrowhead,normal).
+```
+
+Et, avec la commande `python -m biseau encoding.lp -o "out-{}.png"`, qui créé un graphe pour chaque solution,
+on obtient l'unique arbre généalogique suivant :
+
+<center>{% img {filename}/images/asp/genealogy-mothers.png 670 "Arbre généalogique ; pas hyper intéressant, vu les données du problème, mais si on permettait plus de (grand-)mères, ça grossirais assez vite… Et il y aurait plusieurs solutions !" %}</center>
+<!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
+
+Lorsque l'on changera le nombre attendu de mères et grand-mères (essayez 4 mères et 2 grands-mères par exemple, c'est le cas typique),
+on verra que beaucoup d'autres solutions sont proposées, mais aussi que la majorité
+sont des répétitions inutiles : seul le nom des nœuds changent.
+
+Aussi, un autre type de famille apparaîtra, et en __très__ grand nombre :
+celles qui se composent en réalité de deux arbres généalogiques indépendant. Zut, c'est pas ce qu'on voulait.
+
+### Liens du sang
+La contrainte manquante : que tout le monde soit de la même famille, autrement dit, que tous les membres de la famille soient liés.
+Du code sera nécessaire pour s'assurer qu'aucune [composante connexe](https://fr.wikipedia.org/wiki/Graphe%5Fconnexe) ne se trouve dans le graphe final :
+
+```asp
+% On doit tous appartenir à la même famille.
+path(X,Y):- relation(X,Y).
+path(X,Z):- relation(X,Y) ; path(Y,Z).
+:- indiv(I) ; indiv(J) ; I<J ; not path(I,J).
+```
+
+Bim bam boum, voilà ! Avec 4 mères et 2 grand-mères, on passe de 51 solutions à 11. Pas mal !
+Mais c'est encore insuffisant : de nombreuse symmétries permettent à deux solutions
+de notre point de vue identique d'exister indépendamment l'une de l'autre.
+
+### Suppression d'autres symmétries
+Pour supprimer toutes les symmétries inutiles pour le cas avec 4 mères et 2 grand-mères, voici trois contraintes.
+Si vous les ajoutez et générez les images, vous ne trouverez que les trois solutions possibles, sans les répétitions :
+
+```asp
+% Une nièce doit être plus grande que sa tante.
+:- indiv(I) ; indiv(J) ; I<J ; mother(M,J), grandmother(M,I).
+% Une sœur plus petite ne peut avoir d'enfant si les plus grandes n'en ont pas.
+:- indiv(I) ; indiv(J) ; I<J ; mother(M,I) ; mother(M,J) ; mother(I,_) ; not mother(J,_).
+% La sœur la plus grande a l'enfant le plus grand.
+:- indiv(I) ; indiv(J) ; I<J ; mother(M,I) ; mother(M,J) ; mother(I,X) ; mother(J,Y) ; X>Y.
+```
+
+(Évidemment, ici, par «la plus grande», on sous-entends bien que c'est le numéro d'individu qui est plus grand,
+rien à voir avec la taille, le poids ou que-sais-je, qui n'ont aucun intérêt dans la question)
+
+Enlevez n'importe laquelle de ces trois contraintes, et vous aurez des doublons.
+Avec ces trois contraintes complètement arbitraires,
+on obtient bien seulement 3 cas bien différents en topologie.
+
+Si vous vous demandez pourquoi, retirez une contrainte, et regardez les doublons qui apparaissent.
+Ces trois contraintes ne sont en fait que l'énonciation «humanisée» de trois contraintes :
+
+- un nœud avec N prédécesseurs a un identifiant plus grand que celui d'un nœud avec moins de N successeurs
+- pour deux nœuds ayant le même prédécesseur, celui ayant l'identifiant le plus petit ne peux avoir de successeur si l'autre n'en a pas
+- le nœud ayant le plus grand identifiant parmi les successeurs d'un nœud N sera aussi le prédecesseur du nœud de plus grand identifiant parmis tous les successeurs des successeurs de N.
+
+Ces contraintes, je les ai imaginées en regardant les doublons. En testouillant un peu,
+j'ai vu qu'elles fonctionnaient encore bien avec d'autres valeurs (6 mères, 3 grand-mères), mais laissaient passer quelques doublons.
+Peut-être est-il possible de trouver des contraintes qui suppriment les doublons dans tous les cas ?
+L'autre solution serais de comparer *a posteriori* tous les graphes entre eux, en ne regardant que la topologie. Mais c'est un problème complexe.
 
 
 
@@ -548,7 +698,7 @@ ainsi que deux méthodes de résolutions possibles : avec la tête, ou algorithm
 En gros, selon certains indices, il faut savoir qui parmis l'anglais, le norvégien, le suédois, le danois et l'allemand possède les *poissons*.
 La modélisation du problème est un poil longue, car il y a beaucoup de relations à écrire, et aussi beaucoup d'évidences.
 
-Allons-y pas-à-pas…
+Le [code source complet est là](https://github.com/Aluriak/learning-ASP/tree/master/einstein-riddle.lp). Allons-y ensembles, pas-à-pas…
 
 ## Les données
 ```asp
@@ -591,7 +741,7 @@ next(X,Y) :- next(Y,X).  % réciprocité
 
 Rien de très intéressant ici. Notez que, pour faire une association 1-pour-1 parfait, deux règles sont nécessaires :
 l'une pour dire qu'il y a un humain pour chaque chose, et une autre pour dire qu'il y a une chose pour chaque humain.
-Retirez une seule de ces règles, et vous obtenez plusieurs solutions où des humains se partagent des objets ou inversement.
+Retirez une seule de ces règles, et vous obtenez des solutions où des humains se partagent des objets ou inversement.
 
 ### Généralisations des valeurs
 Notez qu'en plaçant le nom des objets (boisson, fume, couleur, animal, place) comme argument d'un atome,
@@ -695,6 +845,213 @@ Et la réponse est… L'allemand. En effet, le seul answer-set donné par le sol
 Évidemment, toutes les assocations sont données, par exemple `fume(danois,blend)`, qui ne peut être deviné lorsque l'on déroule l'énigme que dans les dernières étapes.
 
 
+## Trop facile !
+Clairement, cette énigme d'einstein est trop simple : certains indices sont juste là pour aider les humains !
+
+la prochaine fois que vous la poserez, ne donnez pas les indices 1 et 9. Essayez : clingo vous donne plusieurs solutions possible,
+mais le possesseur des poissons reste le même.
+
+Eh !
+Et si on faisait un code Python qui cherchait à minimiser le nombre de règles à donner ?
+[Allez !](https://github.com/Aluriak/learning-ASP/tree/master/einstein/meta) Le voici :
+
+```python
+import os
+import itertools
+import clyngor
+
+
+ASP_SRC_BASE = """
+% Les données
+humain(anglais;suedois;danois;norvegien;allemand).
+couleur(rouge;bleue;jaune;verte;blanche).
+animal(chiens;oiseaux;cheval;chats;poisson).
+boisson(lait;biere;the;cafe;eau).
+fume(dunhill;blue_master;blend;prince;pall_mall).
+
+% Les maisons sont proches selon leur place.
+next(1,2). next(2,3). next(3,4). next(4,5).
+next(X,Y) :- next(Y,X).  % réciprocité
+
+% Chaque humain a une couleur de maison.
+1 { maison(H,C): couleur(C) } 1 :- humain(H).
+% Chaque couleur de maison a un humain.
+1 { maison(H,C): humain(H) } 1 :- couleur(C).
+
+% Chaque humain a un animal.
+1 { animal(H,A): animal(A) } 1 :- humain(H).
+% Chaque animal a un humain.
+1 { animal(H,A): humain(H) } 1 :- animal(A).
+
+% Pareil pour la boisson…
+1 { boisson(H,B): boisson(B) } 1 :- humain(H).
+1 { boisson(H,B): humain(H) } 1 :- boisson(B).
+
+% Pareil pour le tabac…
+1 { fume(H,F): fume(F) } 1 :- humain(H).
+1 { fume(H,F): humain(H) } 1 :- fume(F).
+
+% Pareil pour la place de maison…
+1 { place_maison(H,P): next(P,_) } 1 :- humain(H).
+1 { place_maison(H,P): humain(H) } 1 :- next(P,_).
+"""
+
+ASP_RULES = (  # set of rules narrowing the solutions
+    'maison(anglais,rouge).',
+    'animal(suedois,chiens).',
+    'boisson(danois,the).',
+    ':- maison(H1,blanche) ; place_maison(H1,Pb) ; maison(H2,verte) ; place_maison(H2,Pv) ; Pb-Pv!=1.',
+    'boisson(P,cafe) :- maison(P,verte).',
+    'fume(P,pall_mall) :- animal(P,oiseaux).',
+    'maison(P,jaune) :- fume(P,dunhill).',
+    'place_maison(P,3) :- boisson(P,lait).',
+    'place_maison(norvegien,1).',
+    'fume(P,blend) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonChat) ; place_maison(HommeChat,MaisonChat) ; animal(HommeChat,chats).',
+    'animal(P,cheval) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonDunhill) ; place_maison(HommeDunhill,MaisonDunhill) ; fume(HommeDunhill,dunhill).',
+    'boisson(P,biere) :- fume(P,blue_master).',
+    'fume(allemand,prince).',
+    '1 { maison(Autre,bleue): next(PlaceNorvegien,PlaceAutre), place_maison(Autre,PlaceAutre) } 1 :- place_maison(norvegien,PlaceNorvegien).',
+    'fume(P,blend) :- place_maison(P,MaisonP) ; next(MaisonP,MaisonEau) ; place_maison(HommeEau,MaisonEau) ; boisson(HommeEau,eau).',
+)
+
+
+def rules_are_valid(rules_indexes:{int}) -> bool:
+    "True if the set of rules yield only good solutions"
+    rules_indexes = set(rules_indexes)
+    asp = ASP_SRC_BASE + ''.join(rule for idx, rule in enumerate(ASP_RULES, start=1) if idx in rules_indexes)
+    for model in clyngor.solve(inline=asp).by_predicate:
+        for *human, animal in model['animal']:
+            # NB: human may be a list containing a nationality (allemand, suedois,…)
+            #  or an empty list. Beware !
+            if human == ['allemand'] and animal != 'poisson':
+                return False
+            elif human and human != ['allemand'] and animal == 'poisson':
+                return False
+    return True
+
+
+def powerset(iterable, minsize=0):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(minsize, len(s)+1))
+
+def compute_valid_sets_of_rules(minsize:int=10) -> [frozenset]:
+    "Yield the valid sets of rules"
+    for rules in powerset(range(1, 16), minsize=minsize):
+        rules = tuple(rules)
+        if rules_are_valid(rules):
+            yield frozenset(rules)
+
+def filter_suboptimal_valid_sets(valid_sets:[frozenset]) -> [frozenset]:
+    """Yield given valid sets, except those that are superset of others.
+
+    Example: the valid set {a, b, c} is not yielded if {a, b} is also a valid set
+
+    """
+    for valid_set in valid_sets:
+        if not any(other_valid_set < valid_set for other_valid_set in valid_sets):
+            yield valid_set
+
+def write_valid_sets(valid_sets, minsize:int=10):
+    "Write valid sets in the dedicated module"
+    valid_sets = tuple(valid_sets)
+    with open('meteinstein_data.py', 'w') as fd:
+        fd.write(f'# File generated by meteinstein_riddle.py\n\n')
+        fd.write(f'# valid sets of rules with at least {minsize} elements\n')
+        fd.write('valid_sets = {  # exclude suboptimal ones\n')
+        for valid_set in filter_suboptimal_valid_sets(valid_sets):
+            fd.write('\tfrozenset((' + ', '.join(map(str, sorted(tuple(valid_set)))) + ')),\n')
+        fd.write('}\n\n')
+        fd.write('all_valid_sets = {  # including the suboptimals\n')
+        for valid_set in valid_sets:
+            fd.write('\tfrozenset((' + ', '.join(map(str, sorted(tuple(valid_set)))) + ')),\n')
+        fd.write('}\n')
+
+
+def rules_statistics(valid_sets) -> [(str, str)]:
+    "Yield pairs (metric, value)"
+    necessary_rules = frozenset.intersection(*valid_sets)
+    yield 'necessary rules', ', '.join(map(str, necessary_rules))
+    yield 'minimal rule number', min(map(len, valid_sets))
+    yield 'useless rules', ', '.join(map(str, (set(range(1, 16)) - frozenset.union(*valid_sets)) or ['none']))
+
+def rule_context_asp_repr(valid_sets) -> [str]:
+    "Yield lines representing context in ASP format, as rel/2 atoms"
+    for idx, rules in enumerate(sorted(tuple(valid_sets)), start=1):
+        for rule in rules:
+            yield f'rel(ans{idx},r{rule}).'
+
+if __name__ == '__main__':
+    if not os.path.exists('meteinstein_data.py'):
+        write_valid_sets(compute_valid_sets_of_rules())
+
+    from meteinstein_data import valid_sets
+
+    for metric, value in rules_statistics(valid_sets):
+        print(metric + ':', value)
+
+    with open('meteinstein-riddle.lp', 'w') as fd:
+        for line in rule_context_asp_repr(valid_sets):
+            fd.write(line + '\n')
+```
+
+Ok, c'est carrément bourrin, mais le principe est bon : on teste toutes les combinaisons de règles avec au moins 9 d'entre elles.
+Et qu'apprend-t-on ?
+
+Que les règles 2, 3, 6, 10, 11, 12 et 13 sont nécessaires : virez-en une seule, et l'énoncé permet à plusieurs humains d'avoir les poissons.
+Autrement dit, sans elles, le problème est mal posé.
+Cependant, ces 7 règles ne sont pas *suffisantes*: en effet, il faut au moins trois autres règles — les 8, 9 et 15 — pour avoir un énoncé propre
+qui ne laisse qu'un seul propriétaire possible aux poissons.
+
+On constate qu'il existe au total 48 énoncés différents possibles qui mènent à la solution,
+dont 8 sont réellement différents les uns des autres (intuitivement, si une solution ayant 10 règles est valide,
+alors une solution avec les mêmes 10 règles et 1, 2, 3 ou 4 autres en plus est aussi valide, c'est pourquoi on arrive à 48 énoncés).
+
+Les 8 solutions peuvent être montrées de plein de manières différentes : un treillis de Galois, par exemple !
+
+<center>{% img {filename}/images/asp/einstein-lattice.png 670 "Treillis de Galois, montrant les concepts sur le contexte où les objets sont des solutions, et les attributs les règles utilisées par ces solutions" %}</center>
+<!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
+
+Le treillis n'est pas très aidant, car trop gros… Regardons la compression alors !
+
+<center>{% img {filename}/images/asp/einstein-compressed.png 670 "Graphe d'interaction Règle/réponse. AnsX correspond à la réponse X, et est relié aux règles rY qu'elle utilise" %}</center>
+<!-- (compression faite avec [powergrasp](https://powergrasp.bourneuf.net)) -->
+
+Bof. On voit bien les règles nécessaires, regroupées à droite, mais les autres relations sont pas des masses claires…
+
+Bon, ben, un bête tableau…
+
+                  Règles à ajouter
+               1  4  5  7  8  9 14 15
+    réponse 1:             X  X     X       -> la meilleure !
+    réponse 2:    X  X  X  X  X  X
+    réponse 3: X              X  X  X
+    réponse 4: X     X  X  X     X  X
+    réponse 5: X  X     X  X     X  X
+    réponse 6: X  X     X  X  X  X
+    réponse 7: X  X  X  X     X  X
+    réponse 8: X  X  X  X  X  X
+
+On note qu'il y a toujours au moins deux trous :
+il y a autrement dit toujours au moins deux règles en trop :)
+
+On note aussi que le tableau est très rempli… et si on créait un treillis et un graphe, mais sur le tableau *inversé* ?
+
+<center>{% img {filename}/images/asp/einstein-rev-lattice.png 670 "Treillis de Galois sur le contexte inversé des règles à ajouter pour obtenir une réponse valide" %}</center>
+
+<center>{% img {filename}/images/asp/einstein-rev-compressed.png 670 "Graphe d'interaction Règle/réponse. La réponse X, et est relié aux règles rY qu'elle n'utilise pas !" %}</center>
+
+Bim ! Et voilà des structures plus compréhensibles !
+On peut y lire par exemple :
+
+- le nœud affublé de `ans1` signifie que la réponse 1 est dans ce concept et tous ceux qui lui sont supérieurs
+- le nœud affublé de `14` signifie que la règle 14 n'est pas utilisée par les réponses dans ce concept et ceux qui lui sont inférieurs
+- la règle 8 n'est pas utilisée par les réponse 3 et 7
+- on voit très bien la règle numéro 15 juste au-dessus des 4 réponses où elle n'apparaît pas
+
+Au final, ça reste décevant, car c'est vachement intriqué.
+On remarque cependant la place particulière des règles 4, 5 et 15, qui sont présentes dans beaucoup de concepts, montrant une certaine absence dans les données ;
+en d'autres termes, ce sont clairement les règles les plus dispensables de l'énigme.
 
 
 
