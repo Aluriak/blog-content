@@ -74,7 +74,7 @@ Une compréhension de base du langage est parfois nécessaire, donc n'allez sur 
 <!-- - [Métaprogrammation]({filename}/articles/asp-metaprogrammation.mkd), un follow-up de la section [Métaprogrammation](#mtaprogrammation) -->
 <!-- - [Theory Atoms]({filename}/articles/asp-theory-atoms.mkd), pour manipulation avancée de l'heuristique -->
 <!-- - [Variantes de solving]({filename}/articles/asp-variantes-solving.mkd), où l'on parle de multi-shot et iterative solving -->
-<!-- - [Jeux de logique]({filename}/articles/asp-jeux-logique.mkd), résolution d'énigmes logiques trouvées sur internet -->
+- [Jeux de logique]({filename}/articles/asp-jeux-logique.mkd), résolution d'énigmes logiques diverses, incluant l'énigme d'Einstein
 - [Encodings]({filename}/articles/asp-encodings.mkd), où l'on parle d'espace de recherche et des coûts induits par certains encodings
 - [Logique temporelle]({filename}/articles/asp-temporal.mkd), où l'on parle de représentation du temps et de la résolution de problèmes qui en utilise la notion
 - [Propagateurs]({filename}/articles/asp-propagators.mkd), un moyen pour suivre, gérer et étendre le solving
