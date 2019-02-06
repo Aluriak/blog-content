@@ -699,7 +699,7 @@ Si au bout de 20 minutes vous :
 
 - **n'avez rien essayé :** bah quoi ? Allez-y ! **Tapez des trucs !** Si ya bien un domaine où il faut se tromper pour y arriver, c'est l'informatique ! Et l'ordi il est là pour ça vous savez ; et il aura oublié aussi tôt que vous aurez essayé autre chose. À moins que vous ne soyez détenu par un psychopathe qui vous observe et vous oblige à faire ce tuto ? Et qu'à la moindre erreur, il vous fait boire une soupe d'avocat ? Si c'est le cas, je suis désolé que ça tombe sur mon tuto, mais cela étant dit, je suis assez content d'avoir vu juste. Envoyez moi un mail quand vous serez sortit de là, hein ? Ça me rassurera. Et puis, dans votre malchance, vous avez de la chance : ya vraiment rien de *compliqué*. Nouveau, oui, mais il faut savoir sortir de sa zone de confort. Par contre, j'avoue, la soupe d'avocat c'est un peu sévère. Bref. Concentrez-vous, vous allez y arriver, faites-vous confiance (par contre, dépêchez-vous, la soupe d'avocat froide, c'est encore pire ! … désolé).
 - **n'avez rien essayé, malgré le fait qu'aucun psychopathe ne vous menace avec une soupe d'avocat :** là, il va falloir se lancer, hein (et revenez ensuite, hein ?).
-- **toujours pas trouvé, malgré bien des tentatives :** en bas de page, ya [les solutions](#Exeeeeerciiiiiiice--Tel-pre-tel-fils).
+- **toujours pas trouvé, malgré bien des tentatives :** en bas de page, ya [les solutions](#tel-pere-tel-fils).
 
 ### Bonus
 Considérons qu'un atome `moi/1` indique qui je suis. En utilisant toujours les même données,
@@ -1139,7 +1139,7 @@ Si au bout de 10 minutes, vous:
 
 - **n'avez rien essayé :** faites une pause plutôt qu'attendre que ça se passe : chantez les plus grands tubes de la compagnie créole, ça détends.
 - **n'avez rien essayé, mais ya des nouvelles couleurs dans les couleurs de l'arc-en-ciel :** GG. Un indice : dichotomie. Ou négation. Ou choix. Ou les deux ?
-- **avez trouvé comment faire, mais seulement dans le vide et avec des copains sphériques :** je suis content de voir que mon tuto est utile aux physiciens ! La solution est en [fin de tuto](Garde-contre-et-roi-de-trfle).
+- **avez trouvé comment faire, mais seulement dans le vide et avec des copains sphériques :** je suis content de voir que mon tuto est utile aux physiciens ! La solution est en [fin de tuto](#garde-contre-et-roi-de-trefle).
 
 
 
@@ -1273,7 +1273,7 @@ Si au bout de 30 minutes, vous:
 
 - **n'avez rien essayé :** bon, au risque de paraître un tantinet habité d'une quelconque passion à propos d'une soupe où nagerait des atomes d'avocats (au sens philosophique, pas physique), j'aimerais vous raconter une petite anecdote, que je connais d'expérience, et qui est assez représentative de l'expérience générale des enseignants dans mon domaine. Il se trouve que, lorsqu'on enseigne, on s'aperçoit assez vite que pas mal d'étudiants (et il se trouve qu'il s'agit majoritairement de filles, moins souvent des gars ; rapport à l'éducation ?) essayent à peine, ou lorsqu'ils essayent, c'est avec un mélange de timidité et de stress ; si bien que, au bout de longues minutes à s'imaginer être incompétents, ils finissent par appeler l'enseignant pour de l'aide. Enseignant qui ne voit qu'un écran blanc, et n'a comme unique information *j'y arrive pas*. Difficile de faire quoique ce soit dans ce contexte, et même impossible si yavais soupe d'avocat à la cantine. Le truc, c'est que ces étudiants ne se lancent pas, craignent l'idée de ne pas réussir du premier coups (comme si c'était possible, ou même souhaitable). Je sais que c'est un problème très commun en info (ça doit arriver ailleurs, certainement), mais je n'ai aucune espèce de piste pour résoudre le problème, à part travailler, en amont, au niveau de l'éducation elle-même. La conséquence de ça, je pense, c'est que ces étudiants ne collectent aucune expérience qui sera plus tard nécessaire à faire un boulot en info (ou un boulot tout courts). Certains arrivent au bout de plusieurs années d'études, et sont toujours incapable de lire ou écrire un quelconque morceau de code. Je n'ose imaginer ce que ça donne après dans un contexte professionnel. Bref, évitez la soupe à l'avocat.
 - **n'avez rien essayé, mais c'est parce que votre poisson rouge est mort, votre grand-mère s'est remise à l'haltérophilie, votre ordinateur fait des mises à jour, et il est déjà 24h64 à hawaï :** je comprend, ça doit être dur. Un indice : l'ASP c'est tellement haut niveau, il suffit souvent de traduire les phrases pour avoir un résultat.
-- **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage et à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. [Les solutions](Yodel-et-papier-crpon) sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
+- **avez trouvé 18 manières différentes de résoudre le problème, mais toutes nécessitent un microscope électronique à balayage et à pile, ou une fusée voyageant à au moins 0.6c :** vous avez peut-être mal compris l'énoncé. [Les solutions](#yodel-et-papier-crepon) sont toujours en bas de page, et vous noterez qu'elles ne nécessitent aucun appareillage sophistiqué.
 
 
 
@@ -2393,7 +2393,7 @@ sur la métaprogrammation et l'embedding de Python.
 
 
 ## Placement de table, seconde approche
-Après [la première approche](#placement-de-table-premire-approche) vient… la seconde approche !
+Après [la première approche](#placement-de-table-premiere-approche) vient… la seconde approche !
 
 Nous avons vu le placement bourrin de table, où l'objectif était de satisfaire toutes les contraintes.
 Ça marche le plus souvent, mais si votre famille est trop compliquée, ça marche plus : le problème est juste insatisfiable,
@@ -2441,7 +2441,7 @@ pas_copain(@gen_id(),X,Y):- pas_copain(X,Y).
 contrainte(Uid,-10):- pas_copain(Uid,H1,H2) ; place(X,H1) ; place(Y,H2) ; proche(X,Y).
 ```
 
-Notez que l'on utilise la fonction `gen_id` vue dans la partie sur [l'extending d'ASP](#Extending-dASP),
+Notez que l'on utilise la fonction `gen_id` vue dans la partie sur [l'extending d'ASP](#extending-dasp),
 mais que ce n'est pas obligé : on pourrait donner les identifiants à la main ; c'est juste plus simple ainsi.
 
 Maintenant que tous nos `pas_copain/2` sont convertis en contraintes uniques de poids -10, il nous reste deux choses à faire :
@@ -3226,7 +3226,7 @@ Vous souvenez-vous de l'introduction ? On parlait du code ASP qui génèrais les
 
 Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions différentes du langage : les contraintes, les choix, les négations dichotomiques,…
 
-[*NE PAS CLIQUER* solutions *NE PAS CLIQUER*](#Fil-rouge-en-trois-actes)
+[solutions](#fil-rouge-en-trois-actes)
 
 
 # Liens
@@ -3258,7 +3258,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 `k/3`, `coucou/0` et `symballium/10`.
 
 ### Tel père, tel fils
-[Énoncé](#Exeeeeerciiiiiiice--Tel-pre-tel-fils)
+[Énoncé](#exeeeeerciiiiiiice-tel-pere-tel-fils)
 
 ```asp
 enfant(Enfant,Papa):- papa(Papa,Enfant).
@@ -3277,14 +3277,14 @@ nooooooooooon:- moi(E) ; papa(P,E) ; mechant(P).
 ```
 
 ### Mon papa c'est le meilleur
-[Énoncé](#Exeeeeerciiiiiiice--Mon-papa-cest-le-meilleur)
+[Énoncé](#exeeeeerciiiiiiice-mon-papa-cest-le-meilleur)
 ```asp
 papa(P):- papa(P,_).
 1 { meilleur_papa(P): papa(P) } 1.  % ou papa(P,_), mais sans la règle précédente ça revient au même
 ```
 
 ### Garde contre et roi de trèfle
-[Énoncé](#Exeeeeerciiiiiiice--Garde-contre-et-roi-de-trfle)
+[Énoncé](#exeeeeerciiiiiiice-garde-contre-et-roi-de-trefle)
 Les deux règles suivantes sont équivalentes dans ce contexte :
 ```asp
 on_joue_au_ballon:- -on_joue_au_tarot.
@@ -3293,7 +3293,7 @@ on_joue_au_ballon:- copain(C) ; not en_recre(C).
 ```
 
 ### Yodel et papier crépon
-[Énoncé](#Exeeeeerciiiiiiice--Yodel-et-papier-crpon)
+[Énoncé](#exeeeeerciiiiiiice-yodel-et-papier-crepon)
 Une première solution, qui génère aussi les sous-ensembles de solutions :
 ```asp
 2 {peoples(X): aime(X,_) }.
@@ -3315,7 +3315,7 @@ subject(Y):- aime(_,Y) ; aime(X,Y): peoples(X).
 ```
 
 ### Fil rouge en trois actes
-[Énoncé](#Exeeeeerciiiiiiice--Fil-rouge-en-trois-actes)
+[Énoncé](#exeeeeerciiiiiiice-fil-rouge-en-trois-actes)
 Une première solution, qui génère un answer set pour chaque solution :
 ```asp
 candidats(1..100).  % les valeurs candidates
