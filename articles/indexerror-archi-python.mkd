@@ -1,0 +1,11 @@
+# Question
+Je cherche un dessin une image montrant l'architecture de Python (comme il en existe une de Linux, oui je sais, rien à voir, mais quand même)
+Je n'ose espérer trouver une animation montrant son fonctionnement 
+
+
+# Réponse
+Je part du principe que tu veux parler de CPython, l'implémentation de référence du language Python.
+
+Tu peux trouver pas mal de ressources sur le sujet, par exemple [The bricks](http://pyvideo.org/pycon-ca-2016/architecture-of-cpython-the-bricks.html), l'excellent [cpython internals](http://pgbovine.net/cpython-internals.htm), et bien sûr [la doc](https://docs.python.org/devguide/setup.html) qui donne les bases.
+
+Pour l'organisation d'un compilateur/interpréteur, n'importe quelle ressource sur la question fera l'affaire : CPython n'est pas très original de ce point de vue.
