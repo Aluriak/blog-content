@@ -88,8 +88,12 @@ Si vous voulez un aperçu de ce qui arrive, regardez les sources de cette page w
 
 Je conseille volontier la lecture parallèle d'un tuto existant ; ça aide toujours d'avoir
 plusieurs sources pour comprendre un concept.
-Pour être franc, je n'ai trouvé que [celui-ci](https://cjamcl.com/blog/a-gentle-introduction-to-asp) (en anglais),
-qui passe très vite sur les bases.
+
+Voici quelques liens :
+
+- [un dépôts de codes et d'exemple](http://www.hakank.org/answer%20set%20programming)
+- [un tuto applicatif avec toute une démarche de construction d'un projet](https://zimbra.inria.fr/zimbra/mail#1) (PDF)
+- [un tuto qui passe très vite sur les bases](https://cjamcl.com/blog/a-gentle-introduction-to-asp) (en anglais) __(LIEN MORT: je cherche le contenu)__
 
 Les scripts utilisés ici sont disponibles
 sur le dépôt [learning-ASP](https://github.com/Aluriak/learning-ASP).
@@ -259,8 +263,8 @@ En ASP, nous pourrions résoudre ce problème ainsi :
 #show solution(X): X=1..100, X\3=0.
 ```
 
-On retrouve la même structure que tout à l'heure : afficher solution(X) pour X entre 1 et 100, et `X\3=0`
-qui est la vérification que X est bien multiple de 3. C'est finalement assez proche que la proposition précédente.
+On retrouve la même structure que tout à l'heure : afficher solution(X) pour X entre 1 et 100 (génération de l'espace de recherche), et `X\3=0`
+qui est la vérification que X est bien multiple de 3 (contrainte). C'est finalement assez proche que la proposition précédente.
 
 À la fin de ce tuto, vous serez capable de comprendre parfaitement ce code, et d'imaginer d'autres manières de le résoudre.
 
@@ -441,7 +445,7 @@ dans l'entrée standard de clingo (j'aurais aussi pu l'écrire directement dans 
     ❯ echo "a. b." > program.lp
     ❯ clingo -n 0 program.lp
     clingo version 5.2.1
-    Reading from stdin
+    Reading from program.lp
     Solving...
     Answer: 1
     a b
@@ -555,14 +559,18 @@ L'usage typique des arguments, c'est de donner des valeurs à un concept, par ex
 
 ```
 papa(jacques_dutronc,thomas_dutronc).  % J. Dutronc est le papa de T. Dutronc
-papa(dark_vador,luke_skywalker).  % Pareil pour dark vador et luke
+papa(dark_vador,luke).  % Pareil pour dark vador et luke
 papa(chronos,zeus).  % idem
-papa(zeus,athena).  % bref, vous avez compris
-papa(zeus,hercule).
-papa(geb,isis).
-papa(geb,nephtys).
-papa(geb,osiris).
-papa(zurg,buzz).
+papa(zurg,buzz).  % bref, vous avez compris
+maman(metis,athena).  % pareil, mais pour les mamans
+papa(zeus,athena).
+papa(la_force,dark_vador).  % c'est ça ou les midichloriens :D
+maman(shmi,dark_vador).
+maman(padme,luke).
+maman(jobal,padme).  % la famille Naberrie
+papa(ruwee,padme).
+maman(jobal,sola).  % Sola est la sœur de Padmé
+papa(ruwee,sola).
 ```
 
 Voilà, toutes ces données sont considérées vraies par clingo (et en plus sont vraies dans réalité véritable, que demander de plus ?).
@@ -683,16 +691,18 @@ C'est ce qu'on appelle du *sucre syntaxique* : un truc sympa qui ne fait que sim
 
 ## Exeeeeerciiiiiiice ! Tel père, tel fils
 Petit exercice à faire chez vous, c'est obligatoire, sinon,
-lorsque vous commencerez à lire la partie suivante,
-ce site s'autodétruira (offre soumise à condition).
+lorsque vous commencerez à lire la partie suivante, ce site s'autodétruira (offre soumise à condition).
 
-Je vous propose simplement de reprendre la base de donnée des pères [présentée plus haut](#Les-atomes)
+Je vous propose simplement de reprendre la base de donnée des filiations [présentée plus haut](#Les-atomes)
 (avec `papa(jacques_dutronc,thomas_dutronc)` et les autres),
 et de faire un programme qui, connaissant ces liens de parenté, va définir qui est l'enfant de qui.
 
-En clair, si j'ai `papa(monpapa,moi).`, je veux obtenir `enfant(moi,monpapa).`.
+En clair, si j'ai `papa(monpapa,moi).` ou `maman(mamaman,moi).`, je veux obtenir `enfant(moi,monparent).`.
 
 Pour réussir ce petit tour, il faut utiliser les deux concepts vus précédemments : les règles et les variables.
+
+(NB: pour simplifier la sortie de votre programme en affichant uniquement les atomes enfant/2,
+utilisez l'expression `#show enfant/2.`. Nous verrons plus tard le fonctionnement exact de ce genre d'expression)
 
 ### Aide
 Si au bout de 20 minutes vous :
@@ -736,6 +746,26 @@ ok(X):- nb_in(X).
 ```
 
 
+## Exeeeeerciiiiiiice ! Tel non-père, non-tel fils
+Toujours avec la base de donnée des filiations [présentée plus haut](#Les-atomes)
+(avec `papa(jacques_dutronc,thomas_dutronc)` et les autres),
+l'objectif est de déterminer les atomes `papapa/1`, indiquant quels *enfants* ne sont pas papa.
+
+Par exemple, dans les résultats attendus, on s'attends à trouver `papapa(athena).` et `papapa(luke)`.
+
+Il va falloir utiliser la négation, sans oublier que si vous vous contentez de dire ce que *ça n'est pas*, ASP ne peut pas deviner ce que *ça est* : il faut donc indiquer qui sont les enfants.
+
+(NB: pour simplifier la sortie de votre programme en affichant uniquement les atomes enfant/2,
+utilisez l'expression `#show enfant/2.`. Nous verrons plus tard le fonctionnement exact de ce genre d'expression)
+
+### Aide
+Si au bout de 20 minutes vous :
+
+- **n'avez rien essayé :** essayez un truc. N'importe quoi. Genre `papapa X papa :- choux-rouge enfant X,_`, qui n'a pas beaucoup de sens mais c'est déjà un début. Ensuite, comme on sent bien que `choux-rouge` n'a rien à faire ici, on l'enlève. Ensuite, c'est un peu mélangé entre papa et enfant : relisez bien les parties juste précédentes, réorganisez bien. Pensez à lancer régulièrement clingo sur votre code, et si il fait une erreur, dites vous «pfff, il faut vraiment que je lui explique tout !»
+- **n'avez rien essayé, mais c'est parce que vous lisez ce tuto en diagonale avant de savoir «si je vais vraiment le faire» :** chaque exercice est un petit bonbon mental : ne refusez pas une telle confiserie à votre cerveau, il aime ça !
+- **vous avez beaucoup cherché, mais votre seule trouvaille est une idole en or massif appartenant à un peuple péruvien oublié :** se pourrait-il qu'ASP ait été inventé pendant une danse du Soleil par un cosmologiste incas ? Ou alors peut-être cherchez vous au mauvais endroit ? Vite, allons voir [les solutions](#tel-non-pere-non-tel-fils) pour le découvrir !
+
+
 ## Disjonction (choix)
 Une construction très importante en ASP est le *choix*.
 Le choix consiste en un… choix. C'est dur à expliquer autrement.
@@ -744,7 +774,7 @@ Voici un exemple simple, avec le résultat donné par clingo,
 qui consiste en un choix de exactement 1 parmis 3 atomes :
 
 ```asp
-1 { a ; b ; c } 1.
+1 { a;b;c } 1.
 ```
 
 Notez qu'il s'agit d'une règle sans *corps*, donc avec uniquement une *tête*.
@@ -787,7 +817,7 @@ C'est vrai ça ! Pourquoi on pourrait pas avoir *a* et *b* en même temps par ex
 
 Résonnons par l'absurde : si on a *a* et *b* en même temps, cela veut dire que a et b sont vrais dans le même modèle.
 
-Or, dans le programme, il est dit `1 { a ; b ; c } 1.`, c'est-à-dire qu'au moins une et qu'au plus un
+Or, dans le programme, il est dit `1 { a;b;c } 1.`, c'est-à-dire qu'au moins une et qu'au plus un
 des trois atomes entre accolades est vrai.
 Si *a* et *b* sont vrais, alors il y a deux valeurs vraies parmis les valeurs entre accolades,
 ce qui n'est pas possible, puisqu'il doit n'y en avoir qu'une !
@@ -795,11 +825,15 @@ ce qui n'est pas possible, puisqu'il doit n'y en avoir qu'une !
 En suivant la même logique, on devine qu'il ne peut pas non plus y avoir *a*, *b* et *c* en même temps,
 ni aucun des trois.
 
+Le fait qu'il n'y ait qu'un seul des trois de vrai pour un modèle donné *agit comme une contrainte*.
+
 
 ### Pourquoi cet ordre ?
+C'est vrai ça ? Pourquoi le modèle 1 contient b, le 2 contient c et le dernier contient a ? Pourtant, l'ordre alphabétique, c'est fantastique !
+
 Parce qu'en ASP, on travaille sur des *set* (answer *set* programming).
-Les *set*, *ensemble* en français, au sens mathématique du terme,
-sont des ensembles **non ordonnés** d'éléments **uniques**.
+Les *set*, ou *ensemble* en français, sont au sens mathématique du terme,
+des ensembles **non ordonnés** d'éléments **uniques**.
 
 Les conséquences de ces propriétés sont les suivantes :
 
@@ -812,16 +846,16 @@ la construction mathématique derrière ASP, et donc dans les notions que l'on v
 
 
 ### Retour à nos moutons
-Le programme traité par clingo est le *choix* suivant : `1 { a ; b ; c } 1`,
+Le programme traité par clingo est le *choix* suivant : `1 { a;b;c } 1`,
 qui se traduit *un élément parmis a, b ou c*.
 Le 1 à gauche est la borne minimale, par défaut égale à zéro.
 Le 1 à droite est la borne maximale, par défaut l'infini.
 
-Si le programme avait été `2 { a ; b ; c } 2`, j'aurais également eu trois modèles/réponses,
+Si le programme avait été `2 { a;b;c } 2`, j'aurais également eu trois modèles/réponses,
 mais leur contenu exact aurait changé:  `a b`, `b c` et `a c` sont les trois ensembles possibles de deux éléments parmis a, b et c.
 
-De la même manière, si le programme était `{ a ; b ; c }`, j'aurais eu 8 modèles.
-Et si il était `{ a ; b ; c } 2`, j'aurais eu 7 modèles.
+De la même manière, si le programme était `{ a;b;c }`, j'aurais eu 8 modèles.
+Et si il était `{ a;b;c } 2`, j'aurais eu 7 modèles.
 Pourquoi 8 et 7 ? Je vous laisse tester vous-même,
 vous comprendrez tout de suite.
 
@@ -838,13 +872,43 @@ Aller, un dernier exemple pour la route, qui montre comment avoir un seul `nb(X)
 Vous pouvez (devriez) vérifier : nous obtenons bien 100 answer sets, chacun avec sa propre valeur de nb(X).
 
 
+## «Je veux celui-là !» : choisir parmis un ensemble
+Tel que je vous l'ai décrit, le choix ne peux se réaliser que sur un ensemble décidé à l'avance.
+Mais mettons que je veuille choisir une maman parmis toutes les mamans de la base de connaissance. Comment faire ?
+
+Une première façon, à la fois très rébarbative et risquée, serait de recopier les noms des candidates :
+
+```asp
+1 { meilleure_maman(metis) ; meilleure_maman(shmi) ;
+    meilleure_maman(padme) ; meilleure_maman(jobal) } 1.
+% Ou, c'est équivalent :
+1 { meilleure_maman(metis;shmi;padme;jobal) } 1.
+```
+
+Mais, heureusement, il existe un moyen simple pour s'assurer de choisir dans un ensemble donné :
+
+```asp
+1 { meilleure_maman(M): maman(M,_) } 1.
+```
+
+Ici, on dit «*choisir exactement un M sachant que M doit apparaître comme premier argument d'un atome maman/2*».
+Notons qu'il est possible de donner plusieurs conditions, séparées par des virgules (car le point-virgule sépare les choix), comme par exemple :
+
+```asp
+1 { meilleure_maman(M): maman(M,_), est_candidate(M) } 1.
+```
+
+
+
 ## Exeeeeerciiiiiiice ! Mon papa c'est le meilleur
-Un petit exercice tout simple : encore avec la base de donnée des papa, choisir le *Papa de l'Année*, titre honorifique
+Un petit exercice tout simple : toujours avec la base de donnée des filiations, choisir le *Papa de l'Année*, titre honorifique
 qui sera officiellement décerné lors d'une grande fête intergalactique.
 
-Votre tache, si vous l'acceptez (et vous êtes obligés, sinon la fête est annulée et tout le monde va vous en vouloir, surtout l'infâme Zurg, et il est vachement rancunier alors je serais vous je ferais vachement gaffe), est de choisir le *Papa de l'Année*.
+Votre tâche, si vous l'acceptez (et vous êtes obligés, sinon la fête est annulée et tout le monde va vous en vouloir,
+surtout l'infâme Zurg, et il est vachement rancunier alors je serais vous je ferais vachement gaffe), est de choisir le *Papa de l'Année*.
 
-Bon, avec un grand pouvoir vient de grandes désillusion : les grandes fêtes intergalactique, je vous le cache pas, c'est surtout une occasion de revoir la famille lointaine et d'essayer ce nouvel alcool fort de tonton Gaston.
+Bon, avec un grand pouvoir vient de grandes désillusion : les grandes fêtes intergalactique, je vous le cache pas,
+c'est surtout une occasion de revoir la famille lointaine et d'essayer ce nouvel alcool fort de tonton Gaston.
 Du coups, quelque soit le papa que vous choisissez, il y aura des bastons et des gens qui hurlent.
 
 Donc, comme on aime bien investir, nous, les illuminatis-de-l'espace-qu-on-contrôle-toute-la-galaxie-tavu, nous sommes dit
@@ -857,8 +921,8 @@ on prendra le premier modèle (ou le second. Ou le dernier. Bref, celui qui nous
 Si au bout de 20 minutes, vous:
 
 - **n'avez rien essayé :** j'en déduit que la soupe d'avocat est bonne. Perso, la seule fois où on en a fait, j'étais tout petit, y avait mon papa et ma maman qui avaient fait la soupe. Ben personne n'en a mangé. C'était. Vraiment. Pas. Bon. En vrai, rien qu'à l'odeur, on a tous fait des têtes bizarres. Et ensuite ma maman elle a goûté, et ensuite elle nous a défendu d'en prendre. Plus tard, dans ma fratrie, la légende racontait (racon*tait*, hein, parce que bon, maintenant on a grandit, on sait tous que je l'avais inventée juste pour faire mon intéressant, alors qu'en vrai c'était juste l'hiver) que, après que les parents l'ai jetée dans le compost, les plantes ont arrêtée de pousser pendant plusieurs mois.
-- **n'avez rien essayé, mais êtes bien conscient qu'il faut se lancer, mais au font avez trop peur qu'en appuyant sur la mauvaise touche, je sorte de l'écran, bouillant de rage, en hurlant des insanités et en maudissant votre famille sur 29.3 générations :** un indice : avec deux expressions, ça se fait bien.
-- **avez tout essayé, y compris de faire une méta-méta-heuristique qui contrôlait un algo génétique multi-agent qui testait des combinaisons au hasard de lettre pendant plus de 25 ans sur un supercalculateur :** il y a [les solutions en bas de page](#mon-papa-cest-le-meilleur), mais en vrai, c'est d'un séminaire sur le lâché prise dont vous avez besoin.
+- **n'avez rien essayé, mais êtes bien conscient qu'il faut se lancer, mais au font avez trop peur qu'en appuyant sur la mauvaise touche, je sorte de l'écran, bouillant de rage, en hurlant des insanités et en maudissant votre famille sur 29.3 générations :** un indice : il suffit de choisir un papa parmis tous ceux qui sont papa de quelqu'un.
+- **avez tout essayé, y compris de faire une méta-méta-heuristique qui contrôlait un algo génétique multi-objectif qui testait des combinaisons au hasard de lettre pendant plus de 25 ans sur un supercalculateur :** il y a [les solutions en bas de page](#mon-papa-cest-le-meilleur), mais en vrai, c'est d'un séminaire sur le lâché prise dont vous avez besoin.
 
 
 
@@ -3262,6 +3326,7 @@ Trouvez 3 autres manière d'encoder le problème, en utilisant des expressions d
 
 ```asp
 enfant(Enfant,Papa):- papa(Papa,Enfant).
+enfant(Enfant,Maman):- maman(Maman,Enfant).
 ```
 
 Pour le bonus, une première solution «naïve» :
@@ -3276,6 +3341,19 @@ mechant(dark_vador;zurg).
 nooooooooooon:- moi(E) ; papa(P,E) ; mechant(P).
 ```
 
+### Tel non-père, non-tel fils
+[Énoncé](#exeeeeerciiiiiiice-tel-non-pere-non-tel-fils)
+
+```asp
+papapa(Lui):- papa(_,Lui) ; not papa(Lui,_).
+pamaman(Elle):- maman(_,Elle) ; not maman(Elle,_).
+```
+
+En revanche, aucune trace de cosmologiste incas :/
+
+
+### Une famille en answer-set
+[Énoncé](#exeeeeerciiiiiiice-tel-non-pere-non-tel-fils)
 ### Mon papa c'est le meilleur
 [Énoncé](#exeeeeerciiiiiiice-mon-papa-cest-le-meilleur)
 ```asp
