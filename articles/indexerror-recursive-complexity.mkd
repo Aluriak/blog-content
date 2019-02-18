@@ -1,0 +1,55 @@
+
+
+# Question
+Comment doit-je calculer la complexité d'un algorithme récursif ?
+En particulier, je doit calculer la complexité de celui ci :
+
+```python
+def guerrier(jour, monstres, pv=10, gold=0, chemin=""):
+    if jour >= len(monstres):
+        return jour, monstres, pv, gold, chemin
+    else:
+        # Cas du repos.
+        pv_repos = pv + 5 if pv <= 5 else 10
+        repos = guerrier(jour+1, monstres, pv_repos, gold, chemin + "A")
+        # Cas de l'attaque.
+        atq = [0, 0, 0, -1] # J'initialise l'attaque afin d'être sûr de comparer.
+        if pv > monstres[jour].force:
+            gold_atq = gold + monstres[jour].gold
+            pv_atq = pv - monstres[jour].force
+            atq = guerrier(jour+1, monstres, pv_atq, gold_atq, chemin + "F")
+        return repos if repos[3] >= atq[3] else atq
+```
+
+# Réponse
+
+*Disclaimer :* je n'y connais pas grand chose en complexité.
+
+En considérant le pseudo-code suivant, qui a AFAIK le même comportement que la fonction de l'OP :
+
+```python
+def f(n, m):
+    if c1(n, m):
+        return n, m
+    first_call = f(decay(n), m)
+    second_call = f(decay(n), decay(m)) if c2(m) else default_m_and_n
+    return first_call if c3(first_call, second_call) else second_call
+```
+
+Qui peut, par exemple, être instanciée comme suit :
+
+```python
+def f(n, m):
+    if n < m:
+        return n, m
+    first_call = f(n-1, m)
+    second_call = second_call = f(n-1, m+n) if m % 2 == 0 else 1, 0
+    return first_call if second_call[1] < first_call[1] else second_call
+```
+
+
+Maintenant, pour être plus précis, ça dépend beaucoup des conditions. Si c1 est du style `n < 0`, on est en exponentiel. Si il dépends de m et de n, c'est plus compliqué, puisqu'on peut avoir des branches entières qui se coupent, et qui de fait peuvent casser la complexité.
+
+De la même manière, si `c2` est souvent fausse, la complexité tombe en linéaire puisqu'un appel de fonction ne mène en général qu'à un seul autre appel.
+
+La fonction de l'OP semble tomber dans le cas exponentiel, puisque jour doit atteindre une valeur qui n'est jamais modifiée durant l'exécution de la fonction.
