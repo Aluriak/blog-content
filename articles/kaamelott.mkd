@@ -1,0 +1,129 @@
+Title: Kaamelott soundboard: le jeu du caillou
+Date: 2019-04-19
+Tags: kaamelott, graphics, viz
+Authors: Lucas Bourneuf
+Summary: des stats sur les citations de Kaamelott
+Slug: kaamelott-viz
+lang: fr
+translation: false
+status: draft
+
+
+Le projet [Kaamelott soundboard](https://github.com/2ec0b4/kaamelott-soundboard) est [très rigolo](https://kaamelott-soundboard.2ec0b4.fr/#son/cest_pas_jo_le_rigolo).
+Et il l'est encore plus quand on voit que les métadonnées sont encodées en json,
+[prêtes à être utilisées](https://github.com/2ec0b4/kaamelott-soundboard/blob/master/sounds/sounds.json).
+
+
+# Répartition des citations
+Première étape, étudier la répartition des citations récupérées.
+
+C'est la première chose mise en place dans mon projet [kaamelott-soundboard-viz](https://github.com/Aluriak/kaamelott-soundboard-viz),
+qui m'a permis d'obtenir ceci :
+
+
+```genmark
+"""Plotting of Kaamelott data, using file sounds.json of
+kaamelott-soundboard project.
+
+"""
+import re
+import json
+import urllib.request
+import itertools
+from collections import defaultdict
+
+import plotly.offline as py
+import plotly.graph_objs as go
+
+
+DATAFILE_URL = 'https://raw.githubusercontent.com/2ec0b4/kaamelott-soundboard/master/sounds/sounds.json'
+REGEX_INFO = re.compile(r'Livre ([IV]+), ([0-9]+) - (.*)')
+LIVRE_ORDER = 'I', 'II', 'III', 'IV', 'V', 'VI', 'VI'
+
+
+def extract_jsondata_from_file(fname='sounds.json'):
+    with open(fname) as fd:
+        return json.load(fd)
+
+
+def extract_data_from_json(rawjson:list):
+    "Return dict mapping season -> episode -> [citations]"
+    data = defaultdict(lambda: defaultdict(list))
+    for citation in rawjson:
+        match = REGEX_INFO.fullmatch(citation['episode'])
+        if not match:  continue
+        season, number, title = match.groups(0)
+        data[season][int(number)].append(citation['title'])
+    return data
+
+
+def citation_heatmap(data):
+    MAX_CITE_COUNT = max(len(cites) for ep in data.values() for cites in ep.values())
+    formated = [
+        [len(data[season][episode+1]) for episode in range(max(data[season]))]
+        for season in LIVRE_ORDER
+    ]
+    formated_text = [
+        ['<br>'.join(data[season][episode+1]) for episode in range(max(data[season]))]
+        for season in LIVRE_ORDER
+    ]
+
+    def keycolor_from_nbcit(nb:int) -> str:
+        ratio = round(nb / MAX_CITE_COUNT, 2)
+        val = (ratio) * 255
+        red = 255-int(round(ratio * 255, 0))
+        green = int(round(255, 0))
+        blue = 255-int(round(ratio * 255, 0))
+        return [ratio, f'rgb({red},{green},{blue})']
+
+    colorscale = [keycolor_from_nbcit(nb) for nb in range(MAX_CITE_COUNT+1)]
+
+    trace = go.Heatmap(
+        z=formated,
+        y=[f'Livre {s}' for s in LIVRE_ORDER],
+        text=formated_text,
+        colorscale=colorscale,
+    )
+    with open('out.html', 'w') as fd:
+        html = py.plot([trace], output_type='div')
+        fd.write(html)
+
+
+data = extract_data_from_json(extract_jsondata_from_file('content/data/kaamelott/sounds.json'))
+citation_heatmap(data)
+```
+
+Intéressant !
+Certains épisodes sont de toute évidence plus «citables» que d'autres. Bon, c'est un travail collaboratif encore loin d'être terminé,
+donc les biais sont nombreux : la tendance à intégrer les citations de tout un épisode à la fois, par exemple.
+
+
+# Sac de mots
+
+
+# Répartition entre les personnages
+
+
+
+# Raccourcisseur de citation
+Pour ceux qui connaissent [ASP]({filename}/articles/asp-tuto.mkd), cette partie est l'occasion d'en faire un peu.
+
+L'objectif est le suivant :
+
+> sachant l'ensemble des citations (notamment leur nom de fichier),
+> déterminer un nom raccourcis pour chacune d'elle de telle manière
+> que le nom raccourcis soit unique, minimal, et identifie au mieux la citation.
+
+Par exemple, la citation «[est-ce qu'on peut s'en servir pour donner de l'élan à un pigeon ?](https://kaamelott-soundboard.2ec0b4.fr/#son/est_ce_que_peut_servir_elan_pigeon)»
+est nommée `est_ce_que_peut_servir_elan_pigeon`.
+Une version minimale et toujours claire pourrait être `elan_pigeon`, voir même
+juste un seul de ces deux mots si ce n'est pas déjà utilisé ailleurs.
+
+La solution proposée ici pour ce problème est constituée de deux étapes :
+
+- chopper l'ensemble des citations dont le titre possèdre un mot spécifique, i.e. utilisé *uniquement* par cette citation
+- pour les autres, demander à ASP de trouver des associations minimales et uniques
+
+La première étape est évidemment là pour simplifier la vie au solveur.
+
+Cette solution est implémentée [dans ce dépôt](https://github.com/Aluriak/kaamelott-soundboard-viz/tree/master/shortener).
