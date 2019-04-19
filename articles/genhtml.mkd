@@ -56,7 +56,7 @@ and the `str.strip` to ensure a minimal number of punctuation noise.
 
 Now, we have to ask ourselves, which words do we want to match ?
 
-```genmark interpret=both
+```genmark interpret=both global-env=true
 CATEGORIES = {
     'languages': {'python', 'markdown', 'asp', 'c', 'c++', 'java', 'rust', 'ruby', 'html', 'perl', 'ada', 'lisp'},
     'humans': {'sagan', 'rossum', 'einstein'},
@@ -93,6 +93,8 @@ Note that the function *prints* the output, which is in our case some plotly HTM
 Now, we need a fonction that will compute the subset of the `words` dict that match a particular category. It will do it twice, and call accordingly the `make_pie` function twice:
 
 ```genmark interpret=both global-env=true
+from collections import defaultdict
+
 def make_category(category:str, title:str=None):
     "build two pie charts for given categories"
     if title is None:
@@ -107,7 +109,7 @@ def make_category(category:str, title:str=None):
 
 And, finally, we will call the `make_category` for all available categories:
 
-```genmark interpret=both
+```genmark interpret=both global-env=true
 for category in CATEGORIES:
     make_category(category, f'{category.title()}-related words in this blog articles')
 ```
