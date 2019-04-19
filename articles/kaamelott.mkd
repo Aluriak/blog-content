@@ -14,34 +14,59 @@ Et il l'est encore plus quand on voit que les métadonnées sont encodées en js
 [prêtes à être utilisées](https://github.com/2ec0b4/kaamelott-soundboard/blob/master/sounds/sounds.json).
 
 
+# Sac de mots
+Quels sont les mots les plus utilisés dans les citations ? Faisons un [nuage de mot](https://fr.wikipedia.org/wiki/Nuage%5Fde%5Fmots-cl%C3%A9s) avec [wordcloud](https://github.com/amueller/word%5Fcloud) :
+
+
+```genhtml global-env=true footer=png-image format=png
+import numpy as np
+from PIL import Image
+from wordcloud import WordCloud
+
+def get_citation_texts(data):
+    for episodes in data.values():
+        for citations in episodes.values():
+            yield from citations
+def get_stop_words():
+    with open('content/images/kaamelott/stopwords') as fd:
+        for line in fd:
+            yield line.strip()
+
+data = extract_data()
+stopwords = set(get_stop_words())
+mask = np.array(Image.open('content/images/kaamelott/kaamelott-mask.png'))
+text = '\n'.join(get_citation_texts(data)).lower()
+wc = WordCloud(margin=10, stopwords=stopwords, mask=mask).generate(text)
+image = wc.to_image()
+```
+
+J'ai simplement aggrandit l'image du [compte twitter officiel de Kaamelott](https://twitter.com/kaamelott%5Ftweet)
+où j'ai accentué les bords et le différentiel de couleur.
+
+
+
+
+
 # Répartition des citations
 Première étape, étudier la répartition des citations récupérées.
 
 C'est la première chose mise en place dans mon projet [kaamelott-soundboard-viz](https://github.com/Aluriak/kaamelott-soundboard-viz),
 qui m'a permis d'obtenir ceci :
 
-
-```genmark
-"""Plotting of Kaamelott data, using file sounds.json of
-kaamelott-soundboard project.
-
-"""
+```genmark global-env=true
 import re
 import json
-import urllib.request
-import itertools
 from collections import defaultdict
 
 import plotly.offline as py
 import plotly.graph_objs as go
 
 
-DATAFILE_URL = 'https://raw.githubusercontent.com/2ec0b4/kaamelott-soundboard/master/sounds/sounds.json'
 REGEX_INFO = re.compile(r'Livre ([IV]+), ([0-9]+) - (.*)')
 LIVRE_ORDER = 'I', 'II', 'III', 'IV', 'V', 'VI', 'VI'
 
 
-def extract_jsondata_from_file(fname='sounds.json'):
+def extract_jsondata_from_file(fname='content/images/kaamelott/sounds.json'):
     with open(fname) as fd:
         return json.load(fd)
 
@@ -56,6 +81,17 @@ def extract_data_from_json(rawjson:list):
         data[season][int(number)].append(citation['title'])
     return data
 
+
+def extract_data():
+    return extract_data_from_json(extract_jsondata_from_file())
+```
+
+
+```genmark global-env=True
+"""Plotting of Kaamelott data, using file sounds.json of
+kaamelott-soundboard project.
+
+"""
 
 def citation_heatmap(data):
     MAX_CITE_COUNT = max(len(cites) for ep in data.values() for cites in ep.values())
@@ -84,21 +120,15 @@ def citation_heatmap(data):
         text=formated_text,
         colorscale=colorscale,
     )
-    with open('out.html', 'w') as fd:
-        html = py.plot([trace], output_type='div')
-        fd.write(html)
+    print(py.plot([trace], output_type='div'))
 
-
-data = extract_data_from_json(extract_jsondata_from_file('content/data/kaamelott/sounds.json'))
-citation_heatmap(data)
+citation_heatmap(extract_data())
 ```
 
 Intéressant !
 Certains épisodes sont de toute évidence plus «citables» que d'autres. Bon, c'est un travail collaboratif encore loin d'être terminé,
 donc les biais sont nombreux : la tendance à intégrer les citations de tout un épisode à la fois, par exemple.
 
-
-# Sac de mots
 
 
 # Répartition entre les personnages
