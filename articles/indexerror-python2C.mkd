@@ -1,4 +1,0 @@
-http://indexerror.net/4639/est-il-possible-de-transformer-un-code-python-en-c
-
-et intégrer ça aussi:
-http://indexerror.net/4638/cr%C3%A9er-un-packet-python-embarquant-du-c-avec-ctypes
