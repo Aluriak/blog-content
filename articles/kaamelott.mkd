@@ -6,133 +6,134 @@ Summary: des stats sur les citations de Kaamelott
 Slug: kaamelott-viz
 lang: fr
 translation: false
-status: draft
+status: published
 
 
-Le projet [Kaamelott soundboard](https://github.com/2ec0b4/kaamelott-soundboard) est [très rigolo](https://kaamelott-soundboard.2ec0b4.fr/#son/cest_pas_jo_le_rigolo).
+Le projet [Kaamelott soundboard est très rigolo](https://kaamelott-soundboard.2ec0b4.fr/#son/cest%5Fpas%5Fjo%5Fle%5Frigolo).
 Et il l'est encore plus quand on voit que les métadonnées sont encodées en json,
 [prêtes à être utilisées](https://github.com/2ec0b4/kaamelott-soundboard/blob/master/sounds/sounds.json).
 
-
-# Sac de mots
-Quels sont les mots les plus utilisés dans les citations ? Faisons un [nuage de mot](https://fr.wikipedia.org/wiki/Nuage%5Fde%5Fmots-cl%C3%A9s) avec [wordcloud](https://github.com/amueller/word%5Fcloud) :
+Il m'en faut pas plus pour occuper mon samedi soir : explorons les données que la communauté a produite !
 
 
-```genhtml global-env=true footer=png-image format=png
-import numpy as np
-from PIL import Image
-from wordcloud import WordCloud
+<br/>
 
-def get_citation_texts(data):
-    for episodes in data.values():
-        for citations in episodes.values():
-            yield from citations
-def get_stop_words():
-    with open('content/images/kaamelott/stopwords') as fd:
-        for line in fd:
-            yield line.strip()
+[TOC]
 
-data = extract_data()
-stopwords = set(get_stop_words())
-mask = np.array(Image.open('content/images/kaamelott/kaamelott-mask.png'))
-text = '\n'.join(get_citation_texts(data)).lower()
-wc = WordCloud(margin=10, stopwords=stopwords, mask=mask).generate(text)
-image = wc.to_image()
-```
-
-J'ai simplement aggrandit l'image du [compte twitter officiel de Kaamelott](https://twitter.com/kaamelott%5Ftweet)
-où j'ai accentué les bords et le différentiel de couleur.
+<br/>
 
 
+Les codes utilisés pour générer ces visualisations sont dans [ce dépôt](https://github.com/aluriak/kaamelott-soundboard-viz).
+Vous noterez, au chargement de la page, l'usage de [plotly](https://plot.ly), une lib python plutôt sympa orientée web pour l'affichage de graphiques interactifs.
+Je l'utilise surtout pour les sankey plot, mais dans ce billet, on va aussi avoir une heatmap et des barres interactives.
+
+L'inconvénient se mesure à 2 Mo par graphique, donc oui, plotly c'est à la fois un truc de bourgeois citadin et une forme de foutage de gueule pour tout ceux qui n'ont pas la fibre.
+[Charmant](https://kaamelott-soundboard.2ec0b4.fr/#son/charmant).
 
 
 
 # Répartition des citations
-Première étape, étudier la répartition des citations récupérées.
+Première étape, étudier la répartition des citations récupérées. Ce sera utile pour ceux qui chercherais des épisodes
+potentiellement riches en citations encore non intégrées (il y a [une liste vivante ici](https://github.com/2ec0b4/kaamelott-soundboard/issues/106)).
 
-C'est la première chose mise en place dans mon projet [kaamelott-soundboard-viz](https://github.com/Aluriak/kaamelott-soundboard-viz),
-qui m'a permis d'obtenir ceci :
-
-```genmark global-env=true
-import re
-import json
-from collections import defaultdict
-
-import plotly.offline as py
-import plotly.graph_objs as go
-
-
-REGEX_INFO = re.compile(r'Livre ([IV]+), ([0-9]+) - (.*)')
-LIVRE_ORDER = 'I', 'II', 'III', 'IV', 'V', 'VI', 'VI'
-
-
-def extract_jsondata_from_file(fname='content/images/kaamelott/sounds.json'):
-    with open(fname) as fd:
-        return json.load(fd)
-
-
-def extract_data_from_json(rawjson:list):
-    "Return dict mapping season -> episode -> [citations]"
-    data = defaultdict(lambda: defaultdict(list))
-    for citation in rawjson:
-        match = REGEX_INFO.fullmatch(citation['episode'])
-        if not match:  continue
-        season, number, title = match.groups(0)
-        data[season][int(number)].append(citation['title'])
-    return data
-
-
-def extract_data():
-    return extract_data_from_json(extract_jsondata_from_file())
-```
+En utilisant quelques lignes de python, on peut obtenir ça :
 
 
 ```genmark global-env=True
-"""Plotting of Kaamelott data, using file sounds.json of
-kaamelott-soundboard project.
-
-"""
-
-def citation_heatmap(data):
-    MAX_CITE_COUNT = max(len(cites) for ep in data.values() for cites in ep.values())
-    formated = [
-        [len(data[season][episode+1]) for episode in range(max(data[season]))]
-        for season in LIVRE_ORDER
-    ]
-    formated_text = [
-        ['<br>'.join(data[season][episode+1]) for episode in range(max(data[season]))]
-        for season in LIVRE_ORDER
-    ]
-
-    def keycolor_from_nbcit(nb:int) -> str:
-        ratio = round(nb / MAX_CITE_COUNT, 2)
-        val = (ratio) * 255
-        red = 255-int(round(ratio * 255, 0))
-        green = int(round(255, 0))
-        blue = 255-int(round(ratio * 255, 0))
-        return [ratio, f'rgb({red},{green},{blue})']
-
-    colorscale = [keycolor_from_nbcit(nb) for nb in range(MAX_CITE_COUNT+1)]
-
-    trace = go.Heatmap(
-        z=formated,
-        y=[f'Livre {s}' for s in LIVRE_ORDER],
-        text=formated_text,
-        colorscale=colorscale,
-    )
-    print(py.plot([trace], output_type='div'))
-
-citation_heatmap(extract_data())
+def plot(fname:str):
+    print(open(f'content/images/kaamelott/{fname}.htm').read())
+    print(f"<center>[ouvrir en grand]({{filename}}/images/kaamelott/{fname}.htm)</center>")
+    print('<br/>')
+```
+```genmark global-env=True
+plot('citation-count-heatmap')
 ```
 
-Intéressant !
-Certains épisodes sont de toute évidence plus «citables» que d'autres. Bon, c'est un travail collaboratif encore loin d'être terminé,
+[C'est intéressant !](https://kaamelott-soundboard.2ec0b4.fr/#son/cest%5Finteressant)
+
+Certains épisodes sont de toute évidence plus «citables» que d'autres ; le Livre I est clairement le plus exploré actuellement.
+
+Bien sûr, ce soundboard est un travail collaboratif encore loin d'être terminé,
 donc les biais sont nombreux : la tendance à intégrer les citations de tout un épisode à la fois, par exemple.
 
 
 
-# Répartition entre les personnages
+# Sac de mots
+Quels sont les mots les plus utilisés dans les citations ?
+Faisons un [nuage de mot](https://fr.wikipedia.org/wiki/Nuage%5Fde%5Fmots-cl%C3%A9s) avec [wordcloud](https://github.com/amueller/word%5Fcloud) :
 
+<center>{% img {filename}/images/kaamelott/wordcloud.png 670 "Nuage de mot des citations de Kaamelott" "" %}</center>
+
+J'ai simplement aggrandit l'image du [compte twitter officiel de Kaamelott](https://twitter.com/kaamelott%5Ftweet)
+où j'ai accentué les bords et le différentiel de couleur.
+
+Le résultat est assez *plat* : comparé à d'autres nuages de mots dans d'autres contextes, aucun mot ne semble *véritablement* ressortir (mention spéciale à «con», il faut lui reconnaître un certain succès).
+
+Une certaine richesse du vocabulaire peut-être ?
+Si tous les personnages disaient *cochonnade* à chaque réplique, ça se verrait beaucoup ; l'absence d'hyper-représentation de mots me semble être une bonne chose de ce point vue.
+
+En réalité, les mots les plus présents («moi», «dire», «je», «j'ai», «me», «non», «oui», «dit»,…) sont en fait des mots courants dans le parlé.
+
+Ils sont donc filtrés pour laisser plus de place aux autres mots ; la liste de ces mots, nommés «stop words» par les linguistes,
+dépends partiellement du contexte : j'ai donc ajouté quelques mots à la liste que j'avais récupérée (notamment ceux que j'ai cité).
+
+À partir de quand un mot cesse-t-il d'être une particule du langage, et commence-t-il à être représentatif de Kaamelott ?
+C'est finalement assez subjectif.
+Libre à chacun de jouer avec le code et la liste de stop words pour avoir son nuage qui lui semble le plus juste.
+
+
+
+
+# Représentation des personnages
+L'autre question, c'est évidemment la quantité de citations faisant intervenir chaque personnages…
+Rien de plus simple !
+
+```genmark global-env=True
+plot('characters-pie')
+```
+
+Ou, de manière plus prosaïque, parce que [les camemberts ça pue la mort](https://duckduckgo.com/?q=should+i+use+pie+chart), faisons des barres,
+et profitons de l'occasion pour enrichir avec les livres d'origine des citations :
+
+```genmark global-env=True
+plot('characters-bar')
+```
+
+Sympa ! Sans surprise, c'est le personnage principal qui est le plus prolixe.
+On observe aussi, en accord avec la heatmap vue plus haut,
+que la saison 1 est plutôt bien citée comparée aux autres.
+
+
+
+
+# Narrative chart
+Inspiré d'[XKCD](https://www.xkcd.com/657), j'ai déjà eu l'occasion [de les appliquer à la saga audio Reflet d'Acide]({filename}/articles/rda-chart.mkd).
+Les sankey graphs ont quelque chose de fascinant, je trouve.
+
+Commençons simplement avec les 10 premiers épisodes du premier livre :
+
+```genmark global-env=True
+plot('narrative_chart_1_1-10')
+```
+
+(Si vous trouvez le truc un peu fouilli, n'hésitez pas à le réorganiser en cliquant-glissant sur les épisodes/barres verticales)
+
+L'idée est très simple : chaque trace est un personnage, commençant à gauche et se déplaçant vers la droite.
+Lorsque deux personnages interviennent dans le même épisode, leur trace s'arrête sur la barre associée. Ils repartent ensuite en direction du prochain épisode qui les accueille.
+
+Bien sûr, c'est très dépendant des citations ; si un personnage n'a aucune répartie intéressante dans un épisode,
+probablement ne seront-elles jamais dans les données.
+
+Appliquée à l'ensemble de Kaamelott, le sankey graph est beaucoup plus touffu, mais révèle une forme intéressante… :
+
+
+```genmark global-env=True
+plot('narrative_chart_all')
+```
+
+On voit les personnages les plus récurrents qui s'enroulent autour de l'axe principal.
+
+[C'est beau, quand même !](https://kaamelott-soundboard.2ec0b4.fr/#son/cest%5Fbeau%5Fquand%5Fmeme)
 
 
 # Raccourcisseur de citation
@@ -144,10 +145,10 @@ L'objectif est le suivant :
 > déterminer un nom raccourcis pour chacune d'elle de telle manière
 > que le nom raccourcis soit unique, minimal, et identifie au mieux la citation.
 
-Par exemple, la citation «[est-ce qu'on peut s'en servir pour donner de l'élan à un pigeon ?](https://kaamelott-soundboard.2ec0b4.fr/#son/est_ce_que_peut_servir_elan_pigeon)»
+Par exemple, la citation «[est-ce qu'on peut s'en servir pour donner de l'élan à un pigeon ?](https://kaamelott-soundboard.2ec0b4.fr/#son/est%5Fce%5Fque%5Fpeut%5Fservir%5Felan%5Fpigeon)»
 est nommée `est_ce_que_peut_servir_elan_pigeon`.
 Une version minimale et toujours claire pourrait être `elan_pigeon`, voir même
-juste un seul de ces deux mots si ce n'est pas déjà utilisé ailleurs.
+juste un seul de ces deux mots si il n'est pas déjà utilisé par une autre citation.
 
 La solution proposée ici pour ce problème est constituée de deux étapes :
 
@@ -157,3 +158,71 @@ La solution proposée ici pour ce problème est constituée de deux étapes :
 La première étape est évidemment là pour simplifier la vie au solveur.
 
 Cette solution est implémentée [dans ce dépôt](https://github.com/Aluriak/kaamelott-soundboard-viz/tree/master/shortener).
+
+
+## Données, méthode
+Les données sont extraites en python, et encodées pour ASP sous la forme d'atomes `word/2`,
+tel que `word(N,W)` indique que le fichier/citation N contient/utilise le mot W.
+ASP devra alors simplement nous dire quelle est sa sélection, sous la forme d'atomes `selword(N,W)`,
+où N est le fichier/la citation, et W un mot à utiliser dans son identifiant unique.
+
+La méthode est assez simple : deux citations doivent avoir des ensemble de mots dans leur identifiants uniques *strictement* différents,
+mais le plus petit possible. C'est l'occasion de faire de la minimisation.
+
+
+## Une solution
+Voilà celle utilisée actuellement dans le dépôt :
+
+```asp
+% ENTRÉE: word(C,M): la citation C utilise le mot M
+% SORTIE: selword(C,M): la citation C doit utiliser le mot M dans son uid
+
+% Choix d'au moins un mot pour chaque citation.
+1{ selword(N,W): word(N,W) } :- word(N,_).
+
+% Écarter les modèles où deux citations utilise les même mots.
+:- selword(N1,_) ; selword(N2,_) ; N1!=N2 ; selword(N1,X): selword(N2,X) ; selword(N2,Y): selword(N1,Y).
+
+% Minimisation du nombre de selword.
+nb_selword(N) :- N={selword(_,_)}.
+#minimize{N:nb_selword(N)}.
+```
+
+[C'est bien fait, hein ?](https://kaamelott-soundboard.2ec0b4.fr/#son/cest%5Fbien%5Ffait)
+
+On notera que rien n'empêche une citation de posséder comme identifiant unique
+un sous-ensemble strict des mots d'une autre citation. Il n'y a en théorie rien
+de mal avec ça, alors on peut probablement laisser comme ça.
+
+
+## Résultats
+Comme montré [ici](https://github.com/Aluriak/kaamelott-soundboard-viz/tree/master/shortener#exemple-de-proposition-de-raccourcissement),
+il existe une solution où chaque citation est réduite à *un* mot. Super ! Ça corrobore l'hypothèse vue plus haut sur la diversité du vocabulaire.
+
+
+## Améliorations
+Outre l'inclusion dans le site (il faudra avoir un bon résultat final pour ça), il y a une amélioration notable :
+quel mot spécifique à une citation doit être conservé ?
+
+En effet, à l'étape de détection des mots spécifiques, on observe que parfois ces mots sont peut représentatifs de la citation ;
+il s'agit en fait d'une particule ou d'un petit mot trouvé nul part ailleurs, plus par chance que par réel sens,
+et rien n'empêche le code actuel de faire ce choix.
+
+Exemple : [cette citation](https://kaamelott-soundboard.2ec0b4.fr/#son/ils%5Fse%5Fbarrent%5Fen%5Fmission%5Fpendant%5Ftrois%5Fmois%5Fet%5Fils%5Freviennent%5Favec%5Fune%5Fanguille)
+possède 5 mots spécifiques : pendant, mission, reviennent, barrent, anguille. De part l'application d'une règle arbitraire que j'ai décidé d'implémenter au pied levé, sans plus de réflexion,
+c'est actuellement «revienne» qui est choisi.
+
+La règle arbitraire implémentée au moment d'écrire ce billet est de privilégier les mots contenant un «z», et prendre celui le plus long.
+
+En vérité, en regardant [les résultats](https://github.com/Aluriak/kaamelott-soundboard-viz/blob/master/shortener/out-choices.txt),
+on devrait trouver un système de règles plus fin, peut-être à base d'étude des parties du discours.
+
+Par exemple, préférer les noms commun qu'on ne trouve rarement dans un grand corpus de texte ?
+
+
+
+# Conclusion
+Voilà qui clôt l'article pour le moment. Celui-ci étant vivant, si d'autres visualisations sympa sont ajoutées au dépôt,
+elles seront ajoutées ici aussi, pour le plaisir des yeux.
+
+Sur ce, [à plus tard](https://kaamelott-soundboard.2ec0b4.fr/#son/a%5Fplus%5Ftard) !
