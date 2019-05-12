@@ -1,4 +1,4 @@
-Title: Kaamelott soundboard: le jeu du caillou
+Title: Visualisations de Kaamelott Soundboard
 Date: 2019-04-19
 Tags: kaamelott, graphics, viz
 Authors: Lucas Bourneuf
@@ -79,7 +79,7 @@ dépends partiellement du contexte : j'ai donc ajouté quelques mots à la liste
 
 À partir de quand un mot cesse-t-il d'être une particule du langage, et commence-t-il à être représentatif de Kaamelott ?
 C'est finalement assez subjectif.
-Libre à chacun de jouer avec le code et la liste de stop words pour avoir son nuage qui lui semble le plus juste.
+Libre à chacun de jouer avec [le code](https://github.com/Aluriak/kaamelott-soundboard-viz/blob/master/citation-wordcloud.py) et la liste de stop words pour avoir son nuage qui lui semble le plus juste.
 
 
 
@@ -124,7 +124,7 @@ Lorsque deux personnages interviennent dans le même épisode, leur trace s'arr�
 Bien sûr, c'est très dépendant des citations ; si un personnage n'a aucune répartie intéressante dans un épisode,
 probablement ne seront-elles jamais dans les données.
 
-Appliquée à l'ensemble de Kaamelott, le sankey graph est beaucoup plus touffu, mais révèle une forme intéressante… :
+Appliquée à l'ensemble de Kaamelott, le sankey graph est beaucoup plus touffu, mais révèle une forme intéressante :
 
 
 ```genmark global-env=True
@@ -134,6 +134,52 @@ plot('narrative_chart_all')
 On voit les personnages les plus récurrents qui s'enroulent autour de l'axe principal.
 
 [C'est beau, quand même !](https://kaamelott-soundboard.2ec0b4.fr/#son/cest%5Fbeau%5Fquand%5Fmeme)
+
+
+
+
+# Graphe d'interaction
+Les données permettent aussi quelque chose de rigolo : savoir quand deux personnages sont présents dans le même épisode. Ça n'indique pas s'ils se *parlent*
+l'un à l'autre, mais on peut imaginer donner un graphe d'«interaction» où les personnages sont des nœuds, et où les arcs sont d'autant plus épais
+que les deux personnages se trouvent souvent dans le même épisode.
+
+Un coups de [biseau](https://gitlab.inria.fr/lbourneu/biseau), et c'est parti !
+
+<center>{% img {filename}/images/kaamelott/interaction-graph.png 670 "Graphe d'interaction des personnages de Kaamelott" "" %}</center>
+
+On sent bien un décalage entre ce qu'on connaît de Kaamelott et les interactions décrites par les données,
+comme par exemple Élias et Galessin qui se retrouvent tout deux liés uniquement au roi Loth,
+ou le duo Yvain-Gauvain qui contrairement à son habitude passe assez inaperçu.
+C'est sans surprise Léodagan et Arthur qui sont au centre du graphe,
+ainsi que, sans surprise, un gros triangle Arthur-Karadoc-Perceval, gros générateur de répliques mémorables.
+
+Plus encore que les autres, cette représentation souffre grandement du manque de données. Pour résoudre ce problème, outre compléter les données,
+il existe des techniques de compression comme [l'analyse powergraph](https://en.wikipedia.org/wiki/Power%5Fgraph%5Fanalysis),
+qui groupent des nœuds et des arcs en suivant des motifs particuliers (cliques et bicliques).
+
+Sur notre graphe d'interaction, cela donne ceci :
+
+<center>{% img {filename}/images/kaamelott/interaction-graph.bbl.png 670 "Graphe d'interaction compressé des personnages de Kaamelott" "" %}</center>
+
+Le principe est le suivant : le programme de compression prend deux ensembles de nœuds qui sont tous reliés 2 à 2 (une [*biclique*](https://fr.wikipedia.org/wiki/Graphe%5Fbiparti%5Fcomplet)),
+totalisant le plus grand nombre d'arcs (il laisse tomber l'information sur la quantité d'épisode en commun).
+Dans notre cas, il a commencé par Arthur-Léodagan et Perceval-Merlin-Guenièvre-…-Kadoc. Comme il y a 2 nœud d'un côté, et 11 de l'autre, ça fait 22 arcs couverts par cette biclique.
+Il a donc créé un *power-nœud* (cercle noir épais) où il a mit les 2 premiers, et un second où il a mit les 11 autres. Et ils les a relié par un *power-arc* (trait noir épais qui relie les deux cercles).
+Et il a répété cette opération, tout en «cassant» des bicliques si elles se chevauchent (parce que les chevauchements, c'est bof).
+Les arcs gris et fins sont les arcs restants, incompressibles.
+
+Cas particulier, le power-nœud Karadoc-Maître d'armes-Kadoc est en vert, car il s'agit d'une [*clique*](https://fr.wikipedia.org/wiki/Clique_(th%C3%A9orie_des%5Fgraphes)) : chacun de ces trois personnages intéragit avec les deux autres. D'autres cliques existent, mais le programme à favorisé des bicliques cassant ces cliques, car les bicliques couvraient plus d'arcs.
+
+D'ailleurs, cette seule clique est très centrale dans le graphe : nous découvrons ainsi une info qui était plus difficile à voir que dans la version «plate» du graphe :
+ces trois personnages sont partout, extrêmement centraux dans les citations. Arthur et Léodagan partagent une place très proche, ce qui corrobore leur rôle central dans le graphe plat.
+On peut aussi facilement voir les spécifiques à chacun de ces deux rois, dans les power-nœuds à gauche et en bas à gauche (Attila est spécifique à Léodagan, Lancelot à Arthur…).
+
+La conséquence immédiate, c'est que les nœuds sont groupés ensembles lorsqu'ils partagent des voisins en commun.
+
+L'avantage, outre que la représentation du graphe est plus compréhensible (une fois qu'on a l'habitude), c'est que ladite représentation est résistante au bruit, notamment les arcs en trop.
+Dans notre cas, comme il *manque* des arcs, c'est moins efficace. Pour trouver les structure importante avec ce genre de technique, il faudrait donc s'intéresser aux quasi-motifs :
+des motifs presques complets, où il manque quelques arcs.  Je ferais ça quand j'aurais le temps.
+
 
 
 # Raccourcisseur de citation
@@ -208,7 +254,7 @@ En effet, à l'étape de détection des mots spécifiques, on observe que parfoi
 il s'agit en fait d'une particule ou d'un petit mot trouvé nul part ailleurs, plus par chance que par réel sens,
 et rien n'empêche le code actuel de faire ce choix.
 
-Exemple : [cette citation](https://kaamelott-soundboard.2ec0b4.fr/#son/ils%5Fse%5Fbarrent%5Fen%5Fmission%5Fpendant%5Ftrois%5Fmois%5Fet%5Fils%5Freviennent%5Favec%5Fune%5Fanguille)
+Exemple : la citation «[Ils se barrent en mission pendant 3 mois, et ils reviennent avec une anguille ?](https://kaamelott-soundboard.2ec0b4.fr/#son/ils%5Fse%5Fbarrent%5Fen%5Fmission%5Fpendant%5Ftrois%5Fmois%5Fet%5Fils%5Freviennent%5Favec%5Fune%5Fanguille)»
 possède 5 mots spécifiques : pendant, mission, reviennent, barrent, anguille. De part l'application d'une règle arbitraire que j'ai décidé d'implémenter au pied levé, sans plus de réflexion,
 c'est actuellement «revienne» qui est choisi.
 
@@ -224,5 +270,7 @@ Par exemple, préférer les noms commun qu'on ne trouve rarement dans un grand c
 # Conclusion
 Voilà qui clôt l'article pour le moment. Celui-ci étant vivant, si d'autres visualisations sympa sont ajoutées au dépôt,
 elles seront ajoutées ici aussi, pour le plaisir des yeux.
+
+Vivement les prochaines citations, car chacune d'entre elles peut transformer le graphe d'interaction et verdir la heatmap.
 
 Sur ce, [à plus tard](https://kaamelott-soundboard.2ec0b4.fr/#son/a%5Fplus%5Ftard) !
