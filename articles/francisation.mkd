@@ -11,6 +11,7 @@ status: draft
 
 
 todo: https://www.afjv.com/news/7942_parution-du-vocabulaire-des-tic-2017.htm
+todo: petit florilège à l'usage de l'usage de réseau sociaux™
 
 
 De temps à autre, des instances officielles nous montrent que le français n'est pas une langue morte,

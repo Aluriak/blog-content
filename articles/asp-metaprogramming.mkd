@@ -49,3 +49,11 @@ Un détail avec de l'importance.
 Des fichiers dans des fichiers.
 Présenté rapidement ici, la directive #program n'est utile que lorsque utilisée avec un langage de script pour manipuler le grounding/solving.
 Voir l'annexe sur [les variantes de solving]({filename}/articles/asp-solving-variants.mkd).
+
+
+# #defined
+
+```
+a(X) :- b(X).
+#defined b/1.
+```
