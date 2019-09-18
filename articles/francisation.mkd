@@ -10,6 +10,9 @@ translation: false
 status: draft
 
 
+todo: https://www.afjv.com/news/7942_parution-du-vocabulaire-des-tic-2017.htm
+
+
 De temps à autre, des instances officielles nous montrent que le français n'est pas une langue morte,
 et qu'elle aussi, possède des mots pour décrire des trucs qu'on avait pas avant.
 
@@ -167,6 +170,6 @@ Bon, ici c'est fini, mais il y a plus !
 Outre les différentes publications sur le JORF, vous pouvez explorer :
 
 - [le grand dictionnaire de l'office Québéquois de la langue française](http://www.granddictionnaire.com/), et voir les différences de traduction entre le québec et la france concernant certains termes (backlinks, par exemple).
-- [bitoduc.fr](http://bitoduc.fr/), un site non officiel mais très fournis de traductions de beaucoup de vocabulaire de l'informatique. Certains termes sont un peu tristes (*malinphone*… argh), mais c'est essentiellement à but humoristique. Il y a néanmoins de bonnes idées (TV;PL pour TL;DR, volubile pour verbose), et quelques mots déjà utilisés (illectronisme, logiciel de gestion de version, internet des objets).
+- [bitoduc.fr](http://bitoduc.fr/), un site non officiel mais très fournis de traductions de beaucoup de vocabulaire de l'informatique. Certains termes sont un peu tristes (*malinphone*… argh), mais c'est essentiellement à but humoristique (deprecated devient ringardisé). Il y a néanmoins de bonnes idées (TV;PL pour TL;DR, volubile pour verbose, cybersou pour cryptocoin, antémémoire pour cache memory), et quelques mots déjà utilisés (illectronisme, logiciel de gestion de version, internet des objets).
 - [l'épopée d'une fusio-demande](https://vimeo.com/album/4668845/video/224467972), un talk de quelques minutes où des mots issus de bitoduc.fr et du projet [OS souverain](http://www.01net.com/actualites/le-projet-d-un-os-souverain-provoque-l-hilarite-sur-twitter-943802.html) (désolé, pas de meilleur lien pour ça… [Le compte twitter parodique officiel](https://twitter.com/ossouverain) n'est pas très docte à son propre sujet)
 - humour de programmeur : un port français de docker appelé [*marcel*](https://github.com/brouberol/marcel).
