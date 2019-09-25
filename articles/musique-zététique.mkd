@@ -16,3 +16,7 @@ src: https://www.youtube.com/watch?v=5PSHtH8zo7w
 
 TOFIND: les jingles falafels de defakator:
 src: https://www.youtube.com/watch?v=crTt-QIyS-o&list=PLzU8PC8KVrx9tuxK6LM6h_UjQ8IpAkYJG
+
+TOFIND: un best of de tim minchin:
+- https://www.youtube.com/watch?v=IZeWPScnolo
+- https://www.youtube.com/watch?v=bBsnEL9nQ6E
