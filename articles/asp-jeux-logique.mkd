@@ -204,6 +204,48 @@ Par exemple, si ellis est chevalier, alors farin est un joker, ce qui pourrait i
 sauf que l'on sait qu'il n'y en a qu'un seul, donc, comme il ment, c'est une canaille.
 
 
+### Second, le retour en terre de chevaliers
+#### Énoncé
+Une variation du thème précédent n'employant que des chevaliers et des canailles est proposé [ici](https://puzzling.stackexchange.com/questions/89443/knights-and-knaves-what-does-c-say).
+
+L'énoncé est le suivant :
+
+> Sur une île, on ne trouve que 2 types d'habitants, les chevaliers (qui disent toujours la vérité) et les canailles (qui mentent toujours).
+> Considérons trois habitants, A, B et C. A dit «B et C sont de même type» (ils sont soit deux chevalier, soit deux canailles).
+> On demande ensuite à C si A et B sont de même type. Quelle est la réponse de C ?
+
+Certaines des réponses données par les participants sont très intéressantes, notamment [celle-ci](https://puzzling.stackexchange.com/a/89500).
+La résolution en ASP est quant à elle un poil longue.
+
+#### Résolution
+```asp
+habitants(a;b;c).
+1 { chevalier(X) ; canaille(X) } 1 :- habitants(X).
+
+% A dit que B et C sont de même type.
+idem(b,c) :- chevalier(a).
+diff(b,c) :- canaille(a).
+
+% Implementation de idem/2 et diff/2.
+idem(X,Y) :- chevalier(X) ; chevalier(Y) ; X!=Y.
+idem(X,Y) :- canaille(X) ; canaille(Y) ; X!=Y.
+diff(X,Y) :- chevalier(X) ; canaille(Y) ; X!=Y.
+diff(X,Y) :- diff(Y,X).
+:- idem(X,Y) ; chevalier(X) ; canaille(Y).
+:- idem(Y,X) ; chevalier(X) ; canaille(Y).
+:- diff(X,Y) ; chevalier(X) ; chevalier(Y).
+:- diff(Y,X) ; canaille(X) ; canaille(Y).
+
+% Quelle est la réponse de C ?
+reponse(yes) :- chevalier(c) ; idem(a,b).
+reponse(yes) :- canaille(c) ; diff(a,b).
+reponse(no) :- canaille(c) ; idem(a,b).
+reponse(no) :- chevalier(c) ; diff(a,b).
+
+#show reponse/1.
+```
+
+
 ### Troisième
 #### Énoncé
 Trois boîtes indiquent chacune :
