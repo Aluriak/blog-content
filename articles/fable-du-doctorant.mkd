@@ -1,17 +1,17 @@
 Title: La fable du doctorant
 Date: 2019-10-17
-Tags: français, opinion
+Tags: thèse, écrit, vidéo
 Authors: Lucas Bourneuf
 Summary: Un écrit, une interprétation.
-Slug: fable-doctorant
+Slug: fable-du-doctorant
 lang: fr
 translation: false
 status: published
 
-Pour le festival Sciences en Cour[t]s, que j'ai eu la chance d'animer,
+Pour le [festival Sciences en Cour\[t\]s](http://sciences-en-courts.fr), que j'ai eu la chance d'animer,
 j'ai écris avec Hugo Talibard une fable, simplement intitulée la fable du doctorant.
 Nous l'avons écrite en quelques heures (car, figurez-vous, je devais rendre ma thèse ce jour-là),
-et souffre donc de quelques erreurs.
+et souffre donc de quelques imperfections.
 
 Elle raconte, en oubliant bien des aspects du doctorat, et en en fantasmant d'autres,
 les trois années d'un doctorant fictif, mais auquel certainement un véritable doctorant s'identifiera.
@@ -22,13 +22,13 @@ et ma prestation montée spécifiquement pour ne garder que [la fable](https://w
 
 Je remercie tout particulièrement Mikail Marchand pour m'avoir encouragé à me lancer dans cette fable,
 et pour ses apports discrets mais importants,
-et l'équipe de Sciences en Cour[t]s pour m'avoir donné carte blanche concernant mes interventions lors de ce festival.
+et l'équipe de Sciences en Cour\[t\]s pour m'avoir donné carte blanche concernant mes interventions lors de ce festival.
 
 Bonne lecture !
 (pour une version imprimable, c'est [ici](https://lucas.bourneuf.net/files/fable-du-doctorant.pdf))
 
 
-# La Fable du Doctorant
+# La fable du doctorant
 ## 1ère année
 
 Un doctorant commençait sa première année.  
@@ -92,7 +92,7 @@ Et des schémas sibyllins aux formes incertaines
 Inondèrent bientôt les pages de son cahier Clairefontaine.  
 
 Sa moitié s'agita, voulut lui demander ce qu'il s'était passé,  
-Puis se rappela «Ah oui, c'est vrai, la recherche ça rend cinglé...»  
+Puis se rappela «Ah oui, c'est vrai, la recherche ça rend cinglé…»  
 
 Le lendemain, le doctorant se précipita au laboratoire  
 Bien décidé à ajouter sa pierre à l'édifice du savoir.  
@@ -100,16 +100,16 @@ Il commença alors, avec application,
 à mettre en forme sa future contribution.  
 
 Pendant des jours, avec le café comme carburant, il turbina avec acharnement  
-Son prototype prenait vie, à un rythme exaltant, Il était confiant...  
+Son prototype prenait vie, à un rythme exaltant, Il était confiant…  
 Il ne lui manquait plus que les résultats !  
-Il lança donc l'expérience et... Ça ne marchait pas !  
+Il lança donc l'expérience et… Ça ne marchait pas !  
 
 
-Bon ... Gardons notre sang-froid ...  
+Bon … Gardons notre sang-froid …  
 Un peu de café ? Pas du déca !  
-Changeons ce détail là ...  
+Changeons ce détail là …  
 C'est pire comme ça !  
-Changeons de contexte ...  Argh !  
+Changeons de contexte …  Argh !  
 Ça marche toujours pas !  
 Quid du postulat ?  
 C'est la cata !  
@@ -172,7 +172,7 @@ Et cela le fit cogiter
 Même le lendemain, pendant le congrès  
 Le surlendemain, pendant la soirée  
 Et en rentrant, dans le TGV  
-Et le jour suivant, une fois arrivé...  
+Et le jour suivant, une fois arrivé…  
 Il se dit «C'est une super idée.»  
 
 Les jours passaient, et les résultats continuaient de s'améliorer.  
@@ -180,7 +180,7 @@ Quand sa directrice de thèse lança «Mais dis-moi, il faudrait penser à rédi
 
 Il s'attela à la tâche, se vissa sur sa chaise  
 Sa page resta longtemps blanche, son inspiration au minimum  
-Puis finalement il commença : «De tous temps, les hommes...»  
+Puis finalement il commença : «De tous temps, les hommes…»  
 
 Il posa, tout fier, sur le bureau de sa directrice, son premier chapitre  
 Qui revint couvert de rouge - elle avait même barré les titres  
@@ -197,4 +197,4 @@ il tienne entre ses mains un bloc de feuilles plutôt lourd - son manuscrit.
 C'est alors qu'il regarda derrière lui, et fut frappé d'une vision  
 Il ne pensait pas que le chemin parcouru avait été si long  
 Il ne voyait plus la petite colline au loin d'où il était parti  
-Lui qui avait passé toute sa thèse en pensant n'avoir rien produit...  
+Lui qui avait passé toute sa thèse en pensant n'avoir rien produit…  
