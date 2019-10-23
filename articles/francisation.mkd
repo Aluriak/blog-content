@@ -47,7 +47,8 @@ En fait, il s'agit de [la comission d'enrichissement de la langue française](ht
 qui publie régulièrement des textes officiels présentant les équivalents français à des mots parfois très pointus issus du jargon informatique, à la base essentiellement anglais.
 
 Le site de legifrance est vraiment mal fichu : je ne peux pas mettre un lien vers le résultat de la recherche qui m'a permis de récupérer tous les textes qui nous intéressent ici.
-Cependant, je peux vous expliquer la démarche : il faut aller [sur la recherche experte](https://www.legifrance.gouv.fr/initRechExpTexteJorf.do)
+Cependant, je peux vous expliquer la démarche : il faut aller
+[sur la recherche experte](https://www.legifrance.gouv.fr/initRechExpTexteJorf.do)
 au [JORF](https://fr.wikipedia.org/wiki/Journal_officiel_de_la_R%C3%A9publique_fran%C3%A7aise), et mettre dans le champs de recherche textuel
 *Vocabulaire de l'informatique et de l'internet*. Et paf, vous avez la liste des quelques documents sortis là dessus (j'en ai 7 personnellement, mais qui dit qu'ils ont tous le même nom ?).
 
