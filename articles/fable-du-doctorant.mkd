@@ -1,0 +1,200 @@
+Title: La fable du doctorant
+Date: 2019-10-17
+Tags: français, opinion
+Authors: Lucas Bourneuf
+Summary: Un écrit, une interprétation.
+Slug: fable-doctorant
+lang: fr
+translation: false
+status: published
+
+Pour le festival Sciences en Cour[t]s, que j'ai eu la chance d'animer,
+j'ai écris avec Hugo Talibard une fable, simplement intitulée la fable du doctorant.
+Nous l'avons écrite en quelques heures (car, figurez-vous, je devais rendre ma thèse ce jour-là),
+et souffre donc de quelques erreurs.
+
+Elle raconte, en oubliant bien des aspects du doctorat, et en en fantasmant d'autres,
+les trois années d'un doctorant fictif, mais auquel certainement un véritable doctorant s'identifiera.
+Du moins l'espèrès-je.
+
+Grâce à Nicolas Guillaudeux, le festival a été capté [dans son intégralité](https://www.youtube.com/watch?v=QJ8_fnV3yMg),
+et ma prestation montée spécifiquement pour ne garder que [la fable](https://www.youtube.com/watch?v=8_CrIkqQSps).
+
+Je remercie tout particulièrement Mikail Marchand pour m'avoir encouragé à me lancer dans cette fable,
+et pour ses apports discrets mais importants,
+et l'équipe de Sciences en Cour[t]s pour m'avoir donné carte blanche concernant mes interventions lors de ce festival.
+
+Bonne lecture !
+(pour une version imprimable, c'est [ici](https://lucas.bourneuf.net/files/fable-du-doctorant.pdf))
+
+
+# La Fable du Doctorant
+## 1ère année
+
+Un doctorant commençait sa première année.  
+Comme tous les doctorants avant lui,  
+Il s'efforçait de se constituer une bibliographie.  
+
+Il lisait en grand nombre, des journaux, des papiers,  
+Il lisait, et le soir venu s'endormait, le cerveau plein de nouvelles idées.  
+Il lisait, lisait de la théorie, des études, des applications !  
+Il lisait, lisait, lisait toute la journée, de cœur et de passion,  
+
+Mais avant que l'année ne s'achève,  
+le doctorant commença à entendre, en son fort intérieur, une voix.  
+Elle n'était alors que murmure, il ne la comprenait pas.  
+Mais une nuit, elle devint claire, forte,  
+et avait le ton de ceux qui savent qu'ils ne devraient pas poser leur question.  
+«Alors, mon cher doctorant. Tu t'amuses, tu t'instruis, tu apprends.  
+Mais quid de ta publication ?»  
+
+Le doctorant fût comme physiquement frappé par cette interrogation.  
+Pour tout dire, il ne se l'était jamais posée !  
+Pour le restant de la nuit, il garda les yeux ouverts et l'esprit paralysé.  
+Et dans les nuits qui suivirent perdit le sommeil,  
+accroché à sa couverture, ses yeux ronds, collés au plafond.  
+
+Il pensait. «Quand pourrais-je publier ? Peu peut-être,  
+mais la première participation peut être parfaitement prosaïque,  
+pas besoin de partir passionné pour présenter une prouesse palpitante !  
+N'ais-je pas perdu ma première année à lire,  
+en oubliant que pour trouver, il faut chercher ?»  
+
+Le doctorant avait perdu le sommeil, la passion, mais pas la raison.  
+Ne voulant céder à la folie, à cette voix qui le hantait dans la nuit,  
+Il alla voir sa directrice de thèse, pour lui communiquer ses appréhensions.  
+Elle avait été à sa place, elle avait de l'expérience,  
+elle saurait aider son apprenti.  
+
+Mon cher doctorant, si la recherche est une autoroute,  
+la première année de thèse n'est rien d'autre  
+que la bretelle qui permet d'y accéder.  
+Et si nul ne voyage en y restant coincé,  
+chacun pourtant se doit de l'emprunter,  
+il n'y a rien d'anormal à y passer une année.  
+
+Et le doctorant retrouva la joie, le sommeil et la passion.  
+La science ne l'intimais pas à publier aujourd'hui, ni demain !  
+Il termina sa première année, sans crainte de la voix au ton sournois.  
+
+
+
+
+## 2ème année
+
+Inspiré, motivé, de nouvelles connexions s'étaient créées,  
+Et comme presque chaque matin de sa deuxième année,  
+le doctorant se releva, en nage dans son lit : une idée !  
+
+Il courut hors de son lit, attrapa un crayon,  
+Griffonna, calcula, posa des équations  
+Et des schémas sibyllins aux formes incertaines  
+Inondèrent bientôt les pages de son cahier Clairefontaine.  
+
+Sa moitié s'agita, voulut lui demander ce qu'il s'était passé,  
+Puis se rappela «Ah oui, c'est vrai, la recherche ça rend cinglé...»  
+
+Le lendemain, le doctorant se précipita au laboratoire  
+Bien décidé à ajouter sa pierre à l'édifice du savoir.  
+Il commença alors, avec application,  
+à mettre en forme sa future contribution.  
+
+Pendant des jours, avec le café comme carburant, il turbina avec acharnement  
+Son prototype prenait vie, à un rythme exaltant, Il était confiant...  
+Il ne lui manquait plus que les résultats !  
+Il lança donc l'expérience et... Ça ne marchait pas !  
+
+
+Bon ... Gardons notre sang-froid ...  
+Un peu de café ? Pas du déca !  
+Changeons ce détail là ...  
+C'est pire comme ça !  
+Changeons de contexte ...  Argh !  
+Ça marche toujours pas !  
+Quid du postulat ?  
+C'est la cata !  
+
+CALMONS-NOUS !  
+
+
+Il sortit du bureau d'un pas mal assuré, l'air abattu  
+Et alla voir sa directrice, pour avouer qu'il était perdu.  
+Elle qui avait une brillante carrière - deux doctorats et une HDR -  
+Elle se moquerait sûrement de lui, peut-être même avec une pointe de mépris  
+
+Mais, plutôt que de le réprimander, elle lui expliqua, autour d'un café  
+Que la science est plus qu'un ensemble de connaissance ;  
+c'est une manière de penser  
+Cette phrase de Sagan, dans ce cas idoine, le plongea dans un état méditatif  
+C'est à ce moment qu'il comprit que toute percée commence par des résultats négatifs  
+
+Le doctorant, apaisé, avait repris courage  
+Il retourna à son bureau et se remit à l'ouvrage  
+Il n'avait peut-être rien de solide jusqu'à présent, mais sa réflexion avait avancé  
+Et sa passion le replongea dans un travail acharné  
+
+Mais alors qu'il voyait défiler les jours, les semaines, les mois, les saisons,  
+Il sentait aussi s'épaissir la goutte de sueur sur son front.  
+«Mais que vais-je faire ?» se demanda t-il, «je n'ai toujours pas de publication»  
+«Est-ce qu'ils embauchent toujours dans cette SS2I près de Dijon ?»  
+
+Il regarda autour de lui, et constata que ses camarades,  
+Doctorants eux aussi, vivaient la même chose que lui.  
+La pression,  
+La dépression.  
+(( Quelqu'un crie : «Bon, apéro ?!» ))  
+Une pression !  
+
+
+
+## 3ème année
+
+Quand notre doctorant entra dans sa 3ème année,  
+Figurez-vous qu'il s'apprêtait à publier.  
+Il avait enfin des résultats, des petits, qu'il trouvait franchement bancals,  
+Mais suffisamment intéressants pour une conférence internationale.  
+
+Ainsi était venu le temps, de sa première publication en premier auteur  
+Il affronta sa fatigue, son stress et les relecteurs.  
+Et le papier fût envoyé, revu, accepté,  
+Le doctorant craignait de devoir le présenter,  
+devant un parterre d'expert en terre étrangère.  
+
+Tremblant de peur à l'idée de passer un mauvais quart d'heure,  
+Il monta sur l'estrade, présenta sa contribution,  
+Et lorsque fût venu le temps des question,  
+Il se surpris à répondre sans craintes ni tensions.  
+
+Parmi le public toutefois se trouvait un expert,  
+Qui avait une question, enfin, plutôt un commentaire…  
+
+Et cela le fit cogiter  
+Même le lendemain, pendant le congrès  
+Le surlendemain, pendant la soirée  
+Et en rentrant, dans le TGV  
+Et le jour suivant, une fois arrivé...  
+Il se dit «C'est une super idée.»  
+
+Les jours passaient, et les résultats continuaient de s'améliorer.  
+Quand sa directrice de thèse lança «Mais dis-moi, il faudrait penser à rédiger»  
+
+Il s'attela à la tâche, se vissa sur sa chaise  
+Sa page resta longtemps blanche, son inspiration au minimum  
+Puis finalement il commença : «De tous temps, les hommes...»  
+
+Il posa, tout fier, sur le bureau de sa directrice, son premier chapitre  
+Qui revint couvert de rouge - elle avait même barré les titres  
+Il en devint vert de rage - c'était ELLE qui avait choisi les titres !  
+
+Il donc fit les corrections nécessaires  
+et se mit à écrire des pages et des pages couvertes d'Arial  
+Qui lui revenaient toujours  
+d'un rouge et noir qui n'avait rien à envier à Stendhal  
+
+Jusqu'à ce qu'un beau jour, ou plutôt une nuit,  
+il tienne entre ses mains un bloc de feuilles plutôt lourd - son manuscrit.  
+
+C'est alors qu'il regarda derrière lui, et fut frappé d'une vision  
+Il ne pensait pas que le chemin parcouru avait été si long  
+Il ne voyait plus la petite colline au loin d'où il était parti  
+Lui qui avait passé toute sa thèse en pensant n'avoir rien produit...  
