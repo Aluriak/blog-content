@@ -9,7 +9,7 @@ translation: false
 status: published
 
 Pour le festival Sciences en Cour[t]s, que j'ai eu la chance d'animer,
-j'ai écris avec Hugo Talibard une fable, simplement intitulée la fable du doctorant.
+j'ai écris avec Hugo Talibart une fable, simplement intitulée la fable du doctorant.
 Nous l'avons écrite en quelques heures (car, figurez-vous, je devais rendre ma thèse ce jour-là),
 et souffre donc de quelques erreurs.
 
