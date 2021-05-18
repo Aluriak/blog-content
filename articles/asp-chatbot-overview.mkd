@@ -1,0 +1,304 @@
+Title: Ma petite aventure dans le conversationnel : point de vue technique
+Date: 2021-03-21
+Tags: asp, language, tuto, conversationnel
+Authors: Lucas Bourneuf
+Summary: une petite présentation de trucs que j'ai fait dans le milieu du conversationnel en 2021
+Slug: asp-chatbot-overview
+Lang: français
+Translation: false
+Status: published
+
+> Texte initialement écrit pour le blog interne d'une entreprise (où le vocabulaire «enrichi» a été remplacé par des mots plus… consensuels) où j'ai bossé sur un système de Dialog Manager pour un chatbot nouvelle génération. Aventure à suivre, mais pour le moment en pause en attendant qu'un mécène aie envie de devenir leader mondial du chatbot.
+> Merci aux deux commanditaires de ce texte, Alizée Bodenez et Mathieu Le Quernec, pour m'avoir encouragé à l'écrire, m'en avoir laissé la paternité, et pour leurs relectures.
+
+
+# La programmation logique : un cas d'usage dans le conversationnel
+
+*Où est certainement introduit, trop longuement sans doute, un contexte probablement plus important que le sujet de l'article lui-même*
+
+Sans doute avez-vous déjà connu ce moment un peu ennuyeux où vous devez
+concevoir un algorithme, nécessaire mais complètement anecdotique par
+rapport à la tâche à réaliser.
+
+Oui, un ordinateur peut le faire, mais il va falloir lui expliquer. Et c'est là que ça coince. Parce que le problème n'est pas seulement compliqué, mais que l'implémentation d'un programme demande du temps, que l'expertise pour concevoir l'algorithme idoine n'est pas là, ou que le problème risque de changer au prochain contact avec le client, et, plus généralement, que ça vous ennuie beaucoup de devoir s'occuper de cette sous-tâche secondaire à la fois trop générale pour être utilisée plus tard, et trop spécifique pour être taclée par un code existant sans sortir une machine à gaz.
+Bref, on sait ce qu'on veut, mais c'est über-chiant.
+
+Puis en plus, même les sorties sont compliquées à tester, parce qu'avec
+un peu de chance, même les données minimales de test génèrent une sortie
+monstrueuse dont l'étude de validité est un problème à lui tout seul.
+
+Non, vraiment, le genre de job aux effluves de crottin qui vous chatouillent le reniflant, même en vent contraire depuis le centre-bourg.
+
+Ben c'est un peu ce que nous avons eu dans l'équipe conversationnelle,
+avec un problème somme toute assez rigolo — d'autant que c'était un
+aspect d'un problème plus large étudié par d'anciens collègues, quand
+j'étais doctorant dans un labo de recherche en informatique théorique
+— mais demandant une bonne dose d'énergie pour être résolu, plus que
+quelques heures entre deux pauses cafés.
+
+L'avantage d'avoir déjà passé mes pauses cafés à causer avec lesdits
+collègues, c'est que j'avais quelques notions pour ce problème de
+théorie des graphes.
+
+Et l'avantage d'avoir bossé avec eux pour pondre un programme qui
+résout leur problème, parce qu'à force d'en parler on finit par faire,
+c'est que j'avais même une idée de nos options à
+disposition pour pas se prendre trop la tête.
+
+Dans mon labo, un langage utilisé par pas mal de monde pour manipuler et
+travailler sur des données complexes, c'est *Answer Set Programming*,
+ou ASP. J'ai tellement bossé avec que j'en ai fais sur ce blog même [un long tutoriel]({filename}/article/asp-tuto.mkd) de
+la taille d'un bouquin, à la fois complété et résumé en 20 pages dans
+mon manuscrit de thèse.
+
+ASP, ou comme les autres chercheurs qui ne l'utilisent pas l'appelait
+tendrement «*votre truc bizarre, là*», est à la programmation logique
+ce que Haskell est à la programmation fonctionnelle.
+Une bestiole un poil académique, complètement lunaire, mais franchement passionnante à étudier et utiliser, parce que justement son approche pure de l'idée de base permet d'en toucher la substantifique moëlle.
+
+Si vous connaissez Prolog, et que vous avez appris qu'il n'était pas un
+langage complètement logique, et que ça le rendait généraliste : c'est
+vrai, et ASP, c'est l'inverse : ASP, globalement, c'est pareil que Prolog, mais en plus logique, sans coupures (pas besoins, ya de vrais négations), sans boucles inifinies (c'est une heuristique complexe (et complète), pas juste un arbre de décision), et de fait aux ambiguités non prédictible (à moins d'être expert en heuristiques branch and bound).
+Il est de fait inutilisable dans beaucoup de cas. C'est le genre de langage qui
+résout en 3 lignes de code et en un pouillème de seconde un sudoku
+cornélien, mais demande 2 Go de RAM et 20 minutes pour gérer une mutiplication.
+
+Vous vous dites certainement que ce n'est pas demain la veille que vous
+vous lancerez avec un langage qui a l'air aussi bizarre et limité, et
+vous avez bien raison, après tout vous n'avez pas de temps à perdre,
+vous avez du XML à parser en Java.
+
+Je vais vous dire : mon équipe non plus ne s'y attendait pas.
+
+## Le problème
+
+*Où le problème est abordé avec moult explications*
+
+Le problème à résoudre était le suivant : implémenter un chatbot
+spécialisé dans un domaine, capable de tenir le crachoir à un humain qui
+lui parle (quelle idée), et lui pose des questions.
+
+Genre, pour un bot qui vendrait des places de cinéma, l'utilisateur
+pourrait lui demander de réserver une place.
+
+Et là, et c'est tout le sel de ce domaine merveilleux appelé le
+conversationnel, c'est au *Dialog Manager*, comme on dit dans la langue
+de Batman, de gérer.
+
+Quel film ? Où ? Quand ? Quelles options ? Y a-t-il d'autres gens ? Il
+paye comment ? Comment ça des chèques vacances ? Popcorns ? Sucrés ou
+salés ?
+
+Ce sont toutes ces questions auxquelles le chatbot va devoir trouver
+réponse. Si possible, rapidement, c'est-à-dire avant que l'utilisateur
+n'en ai marre de parler à un faux conseiller qui lui annonce bêtement
+les conditions d'utilisation que personne ne lira, même mises en scène
+par un dev front qui sait faire des animations dynamiques en vue.js, et
+décide d'aller se référer à un véritable humain par tous les moyens.
+
+Et ça, récupérer ces questions, être capable de gérer quand
+l'utilisateur décide de parler de ses problèmes personnels ou de la
+conjoncture actuelle, ne pas se retrouver perdu dans la forêt des
+dialogues quand l'utilisateur décide, alors qu'il doit taper son
+numéro de carte bleue, de plutôt rajouter à la séance sa petite nièce
+— qu'il avait oubliée — de 11 ans mais on dirait qu'elle en fait
+10 ça doit bien compter pour le tarif enfant, et, plus généralement, de
+gérer le munificent tumulte de la vie en pleine effervescence, c'est à
+la fois primordial et le job du *Dialog Manager.*
+
+Sauf que, vu la richesse inhérente au métier, pour arriver à choisir
+quelles questions poser à l'utilisateur, dans le doux et bel espoir de
+recevoir une réponse, c'est déjà un problème en soi. Parce que ça
+dépend de ce que vous savez de lui, de ce qu'il veut, de ce que vous
+pouvez lui donner et de ce qu'il acceptera de vous fournir.
+
+Bref, le genre de problème dans lequel vous n'avez pas envie de vous
+lancer le vendredi après-midi après le goûter.
+
+
+
+## La solution
+
+*Où la solution est présentée comme telle*
+
+La solution, vous l'avez deviné, c'est ASP.
+
+En effet, en ASP, on décrit la solution voulue. Plus encore, ASP
+travaille sur des mathématiques discrètes, ce qui est particulièrement
+adapté au graphe qui encode le labyrinthique modèle décrivant
+l'ensemble des conversations possibles avec l'utilisateur.
+
+Autrement dit : plutôt que de devoir expliquer à l'ordinateur comment
+arriver aux solutions souhaitées, on allait juste pouvoir lui expliquer
+à quoi ressemblait la solution.
+
+Ou *les* solutions, d'ailleurs, nous dira ASP lorsqu'on aura encodé le
+problème et qu'il nous fera passer pour des lemmings devant tous nos
+collègues en nous disant que, ben oui bonhomme, des fois, ya plusieurs
+solutions équivalentes, tu vas faire quoi ? (c'est l'inconvénient des
+maths : on a parfois la nette impression qu'elles nous agressent)
+
+Et à quoi elle ressemble la solution ? Ben justement, c'est là qu'il a
+fallu réfléchir un peu, histoire de se mettre au clair avec nous même.
+
+### Naviguer intelligemment
+
+Pour assurer un parcours conversationnel à la fois humain et efficace,
+nous avons dégagé des paramètres qui devraient permettre, lorsque
+plusieurs chemins sont possibles, de choisir le plus adapté à l'humain
+en face.
+
+### Répondre à l'utilisateur
+
+Ça paraît évident, mais ça l'est pas tellement pour la machine : quand
+on est parti sur un sujet (genre, quel film on veut voir), faut éviter
+de sauter du coq à l'âne en embrayant sur un aspect de la conversation
+complètement étranger. En effet : la machine qui te demande ton numéro
+de sécurité, l'âge de tes parents et qui te demande ensuite si t'es
+bien domicilié dans le Loire et Cher, ne semble pas très organique.
+Ainsi, même si plusieurs connaissances sont nécessaires pour réussir à
+calculer un comportement précis, le bot privilégiera de finir une
+conversation avant d'en entamer une autre.
+
+### Éviter de se répéter
+
+Pareil, l'évidence même, sauf pour les autres espèces que les humains :
+si on a posé une question X dans l'espoir d'obtenir une information Y
+de l'utilisateur, et qu'on l'a obtenue, c'est que l'utilisateur
+n'a pas voulu nous répondre. Donc, on peut essayer de préférer un autre
+chemin n'impliquant pas cette question. Bien sûr, s'il n'y a pas le
+choix, tant pis, mais s'il y a le choix, on va essayer de poser une
+autre question. Ça permet aussi d'éviter le côté «forceur» du bot qui
+répète inlassablement le même «c'est quoi ton 06» parce qu'à chaque
+fois qu'on lui dit qu'on en a pas on a l'impression qu'il s'imagine
+qu'on a pas compris la question.
+
+### Éviter les longs parcours
+
+Si on peut le faire en trois étapes, pas la peine de passer par un
+chemin qui en demande douze. Plutôt simple, plutôt efficace.
+
+### Préférence des profils
+
+Certains profils utilisateurs préféreront passer par certains chemins
+plutôt que d'autres. Par exemple, un habitué du cinéma (il a un compte,
+il vient régulièrement) sait certainement quel film il vient voir, il
+n'y a donc pas besoin de lui afficher une liste de film, mais peut-être
+de lui demander directement quel film il veut voir. À l'inverse, un
+profil plus «amateur» appréciera sûrement de recevoir une liste de film
+ainsi qu'une «suggestion de la semaine».
+
+Pour implémenter cela, on peut simplement prioriser les parcours
+conversationnel adaptés au profil. Et comment sait-on quels sont les
+parcours adaptés à un profil donné ? Le métier aura sans doute une
+petite idée, que les statistiques d'utilisation se feront un plaisir de
+confirmer, d'infirmer, ou d'enrichir. Toujours est-il que c'est une
+donnée d'entrée associée au démarrage de la conversation,
+et que le Dialog Manager doit pouvoir l'utiliser.
+
+
+## L'implémentation
+
+*Où la question de l'implémentation est abordée afin de garder un côté technique*
+
+En ASP, écrire le programme qui va extraire les données importantes,
+calculer l'ensemble des solutions, puis extraire celle(s) qui est la
+plus désirable, prend une cinquantaine de SLOC. Au final, seules une
+dizaine de lignes sont vraiment stratégiques (sélection des métriques à
+optimiser), et le temps d'exécution est évalué en dixièmes de
+millisecondes.
+
+Intégré dans la POC en Python que j'ai mise en place, ça prend une
+trentaine de SLOC d'une simplicité abrutissante, et paf : j'ai mon
+Dialog Manager fonctionnel et prêt à croiser le fer avec la vie réelle.
+
+Enfin, presque, parce qu'en vrai, mon Dialog Manager est composé
+d'autres composants, mais c'est une autre histoire.
+
+D'ailleurs, petite discussion au coin du feu : pour certains de ces
+composants, j'aurais pu les implémenter en ASP, mais c'était tout
+aussi simple de le faire en Python, donc je me suis pas pris la tête. La
+détection d'un cas qui peut facilement être donné à manger à ASP (ou,
+plus généralement, à un langage d'un autre paradigme) fait partie de
+l'arsenal de l'habitué, qui devine une tâche comme triviale avec un
+certain paradigme. Comprendre cela m'a donné envie d'apprendre plus de
+paradigme, ça c'est une certitude.
+
+
+
+## Optimisations & Efficacité
+
+*Où l'on aborde l'épineuse question du coût induit par cette solution*
+
+Le calcul de la navigation conversationnelle, malgré deux appels
+consécutifs au solveur ASP, ne prend pas plus d'une milliseconde sur le
+jeu de donnée actuellement utilisé en test, qui est probablement 10
+(peut-être 20) fois plus petit qu'un jeu de donnée «réaliste».
+
+Cela étant dit, le temps de calcul du solveur ne grimpera pas bien haut,
+grâce à l'étape de réduction qui, quelque soit le jeu de donnée, le
+réduit à une taille minuscule. En effet, histoire de se simplifier la
+vie ou d'améliorer les perfs du bot, sont implémentés actuellement deux
+autres comportements en ASP, avec au final une centaine de lignes de
+code (ASP et Python confondus) pour l'ensemble :
+
+1.  la réduction du graphe à un instant T à juste les nœuds et arcs qui nous intéresse (pour accélérer — voir trivialiser — l'étape suivante).
+2.  la représentation graphique du graphe de conversation annoté avec les informations stratégiques, utile pour débugger quand le bot réagis bizarrement.
+
+Il y aurait beaucoup de choses à dire sur l'efficacité du solveur ASP, parce que, notamment, c'est une science à part entière d'estimer l'efficacité d'une heuristique. Si vous aimez la lecture, je vous renvoie sur [une quête annexe dédiée de mon tuto ASP](https://lucas.bourneuf.net/blog/asp-encodings.html) qui s'intéresse à un aspect du problème, en montrant des encodings (le nom un peu classe pour dire programme dans l'univers des solveurs) ASP et les conséquences de leurs différences.
+
+## Déploiement de la solution
+
+Où l'on parle de déploiement, un terme très «catchy» pour dire qu'on
+copie-colle des fichiers sur un autre ordinateur
+
+Au début, vu que toute la base de code était en Python et [*qu'ASP s'intègre très bien dans Python*](https://github.com/Aluriak/clyngor),
+j'ai pas réfléchi longtemps.
+
+Mais voilà : nous sommes partis pour avoir aussi une implémentation en
+Kotlin du Dialog Manager. Le plus simple dans un premier temps, plutôt
+que de perdre du temps à refaire ce qu'on a fait en ASP dans un autre
+framework estampillé Java, j'ai encapsulé le code ASP dans un petit
+serveur ReST facilement interrogeable, avec les fonctions de cache
+adaptées, prêt à déterminer le chemin conversationnel à emprunter
+sachant l'état d'une conversation. Efficace de base, hyper-efficace
+avec le cache, il faut reconnaître que c'est très rigolo comme manière
+de faire, on se croirait dans les TP de L2 quand on apprend la notion de
+réseau et qu'on s'amuse à faire transiter n'importe quoi dans les
+RJ45.
+
+Objectif réussi en tout cas ! Avec ça, quel que soit le langage utilisé
+pour les prochaines implémentations, et en attendant qu'on décide le
+langage à utiliser en prod, nous pouvons toujours nous éviter
+l'implémentation de la navigation conversationnelle en utilisant cette
+petite brique prête à l'emploi !
+
+
+## Le message Prend-Maison
+
+*Où l'on donne aux affamés de gastronomie le pinacle de l'information sous la forme d'un prêt-à-manger impropre à une rapide consommation qu'il se vante pourtant de permettre*
+
+Le take-home message de ce petit billet, parce qu'il en faut bien un il
+paraît, c'est «si c'est ennuyeux, c'est que ya un meilleur moyen». Et
+là, dans notre cas, le meilleur moyen, c'était d'utiliser un langage
+déclaratif pour faire un traitement pas trivial à coder avec des
+langages impératifs.
+
+Ça paraît évident, en fait. Mais ça l'est tellement moins quand vous
+avez la tête dans un problème et qu'il n'est pas assez formalisé pour
+que quelqu'un puisse dire «eh, mais attend, c'est un problème standard
+ton histoire !».
+
+Bref, apprenez des manières différentes de faire, un jour, ça vous
+servira pour bricoler un programme vachement pratique à un moment où
+tout le monde se dit que ça va être bien compliqué.
+
+Et, pour ASP : ici, on s'en sert pour l'étude et le choix de chemin dans la conversation, en optimisant (i.e. maximisant ou minimisant) des métriques, par exemple minimiser le nombre de questions posées à l'utilisateur, ou préférer continuer les chemins déjà entamés (histoire de pas sauter du coq à l'âne entre deux réponses), et donc assurer automatiquement un rendu (plus ou moins) «humain» au bot au niveau de la navigation.
+
+
+## Aller plus loin avec son navigateur
+
+<!-- - le [MVP du DialogManager chatbot]() -->
+- si vous avez envie d'aller plus loin avec ASP, [voici le seul tuto français à ma connaissance](http://lucas.bourneuf.net/blog/asp-tuto.html).   (disclaimer, c'est moi qui l'ait écrit)
+- [biseau](https://gitlab.inria.fr/lbourneu/biseau), un module que j'ai codé ya fort longtemps, un module qui permet de dessiner des graphes en ASP.
+- [la page wikipédia](https://en.wikipedia.org/wiki/Answer_set_programming), si vous me faites pas confiance.
