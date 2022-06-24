@@ -42,7 +42,7 @@ En utilisant quelques lignes de python, on peut obtenir ça :
 ```genmark global-env=True
 def plot(fname:str):
     print(open(f'content/images/kaamelott/{fname}.htm').read())
-    print(f"<center>[ouvrir en grand]({{filename}}/images/kaamelott/{fname}.htm)</center>")
+    print(f"<center>[ouvrir en grand]({{static}}/images/kaamelott/{fname}.htm)</center>")
     print('<br/>')
 ```
 ```genmark global-env=True
