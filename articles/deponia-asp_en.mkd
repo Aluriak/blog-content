@@ -5,7 +5,6 @@ Authors: Lucas Bourneuf
 Summary: solve one of Deponia's enigma with ASP and graph theory
 Slug: deponia-asp-en
 Lang: en
-Translation: true
 Status: published
 
 <center>*[Link to the original (french) post]({filename}/articles/deponia-asp.mkd)*</center>

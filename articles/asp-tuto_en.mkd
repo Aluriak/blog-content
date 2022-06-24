@@ -6,7 +6,6 @@ Authors: Lucas Bourneuf
 Summary: a tutorial for ASP
 Slug: tuto-asp-en
 Lang: english
-Translation: true
 Status: draft
 
 <center>[Vous cherchez la version française ?]({filename}/articles/asp-tuto.mkd)</center>

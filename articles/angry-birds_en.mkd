@@ -5,7 +5,6 @@ Authors: Lucas Bourneuf
 Summary: About my result
 Slug: angry-birds-en
 lang: en
-translation: true
 status: draft
 
 <center>*[French version]({filename}/articles/angry-birds_fr.mkd)*</center>
