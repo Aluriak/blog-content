@@ -47,7 +47,7 @@ disposition pour pas se prendre trop la tête.
 
 Dans mon labo, un langage utilisé par pas mal de monde pour manipuler et
 travailler sur des données complexes, c'est *Answer Set Programming*,
-ou ASP. J'ai tellement bossé avec que j'en ai fais sur ce blog même [un long tutoriel]({filename}/article/asp-tuto.mkd) de
+ou ASP. J'ai tellement bossé avec que j'en ai fais sur ce blog même [un long tutoriel]({filename}/articles/asp-tuto.mkd) de
 la taille d'un bouquin, à la fois complété et résumé en 20 pages dans
 mon manuscrit de thèse.
 

@@ -10,7 +10,7 @@ Status: published
 
 <center>*Want to read this in english ? [Look here !]({filename}/articles/deponia-asp_en.mkd)*</center>
 
-<center>{% img {filename}/images/deponia/deponia-asp-logo.png 670 "Mélange entre le logo du jeu Deponia et celui de Potassco Labs, qui fournit une implémentation d'ASP" "" %}</center>
+<center>{% img {static}/images/deponia/deponia-asp-logo.png 670 "Mélange entre le logo du jeu Deponia et celui de Potassco Labs, qui fournit une implémentation d'ASP" "" %}</center>
 
 <br>
 
@@ -42,7 +42,7 @@ ou [la page wikipédia](https://fr.wikipedia.org/wiki/Th%C3%A9orie_des_graphes) 
 
 Je vais aussi beaucoup utiliser [Answer Set Programming](https://fr.wikipedia.org/wiki/Answer_set_programming) (ASP),
 et plus précisément clingo, l'implémentation de [Potassco Labs](https://potassco.org).
-[Un gros tuto est dispo]({filename}/articles/tuto-asp.mkd),
+[Un gros tuto est dispo]({filename}/articles/asp-tuto.mkd),
 mais il n'est pas fondamentalement nécessaire. J'ai énormément annoté les quelques codes,
 mais l'important, c'est ce qui se passe autour d'eux, pas dedans.
 
@@ -58,7 +58,7 @@ mais l'important, c'est ce qui se passe autour d'eux, pas dedans.
 ## leviers
 Voici la situation :
 
-<center>{% img {filename}/images/deponia/plan.png 670 "Capture d'écran du jeu, on voit le plan de la mine en arrière-plan" "" %}</center>
+<center>{% img {static}/images/deponia/plan.png 670 "Capture d'écran du jeu, on voit le plan de la mine en arrière-plan" "" %}</center>
 
 Notre personnage, en bas sur son dragster/chariot des mines (et accompagné d'un autre personnage, plus ou moins en train de faire la sieste),
 veut passer au travers de la montagne. Les mines sont un véritable dédale, mais heureusement, il y a un plan du réseau de rails !
@@ -66,7 +66,7 @@ veut passer au travers de la montagne. Les mines sont un véritable dédale, mai
 Le voici en plus gros, où l'on voit les fourches, à chaque fois colorées de vert, rouge ou jaune, et accompagnées d'une flèche qui indique
 quelle sera la direction empruntée par le chariot. On commence en haut à gauche, on doit aller en bas à droite.
 
-<center>{% img {filename}/images/deponia/plan-reduced.png 670 "Capture d'écran du jeu, centrée sur le plan de la mine" "" %}</center>
+<center>{% img {static}/images/deponia/plan-reduced.png 670 "Capture d'écran du jeu, centrée sur le plan de la mine" "" %}</center>
 
 Le joueur peut agir sur trois leviers, un pour chaque couleur, afin de modifier l'aiguillage pour toutes les fourches de ladite couleur.
 Comme il y a deux chemins possibles pour chaque fourches, le levier a deux positions possibles.
@@ -123,7 +123,7 @@ La théorie des graphes, c'est génial \[\[citation needed\]\], et pour ce probl
 
 Tout d'abord, donnons des noms aux fourches (on garde P1 et P2 pour les deux portes), et au départ et à l'arrivée:
 
-<center>{% img {filename}/images/deponia/plan-annotated-reduced.png 670 "Le plan de la mine annoté avec notamment le nom des fourches" %}</center>
+<center>{% img {static}/images/deponia/plan-annotated-reduced.png 670 "Le plan de la mine annoté avec notamment le nom des fourches" "" %}</center>
 
 Maintenant, nous pouvons observer une propriété intéressante du graphe : si je prend par exemple la fourche A,
 et je dis que j'arrive dessus par la gauche (donc en position de choix). Question : où vais-je aller ensuite ?
@@ -183,7 +183,7 @@ mais nous verrons comment régler ce problème… petit à petit.
 ## Exemple de rendu final
 Voici un exemple avec juste les arcs partant de A, B, D et F :
 
-<center>{% img {filename}/images/deponia/graph-simple-example.png 220 "Exemple de graphe qui modélise le problème" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-example.png 220 "Exemple de graphe qui modélise le problème" "" %}</center>
 
 Allez-y, vérifiez en regardant sur le plan.
 Mais du coups, est-ce qu'on aura le vrai graphe ? Bien sûr, mais d'abord il faut… le récupérer.
@@ -245,7 +245,7 @@ obj_property(graph,dpi,400).
 
 Et on obtient le graphe qui modélise l'instance, tel que définit plus haut, que j'ai nommé le __graphe Deponia__ :
 
-<center>{% img {filename}/images/deponia/graph-simple-full.png 470 "Le graphe qui modélise le problème" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-full.png 470 "Le graphe qui modélise le problème" "Le graphe qui modélise le problème" %}</center>
 
 Et ça veut dire qu'il manque pas grand chose pour commencer à faire des trucs… C'est parti !
 
@@ -429,7 +429,7 @@ Ah, c'est beau, je suis tellement pressé de les tester !
 
 Tiens, en attendant, voilà le tracé sur le plan de la première !
 
-<center>{% img {filename}/images/deponia/plan-annotated-reduced-traced.png 670 "Le plan de la mine, avec un chemin solution tracé en rouge" %}</center>
+<center>{% img {static}/images/deponia/plan-annotated-reduced-traced.png 670 "Le plan de la mine, avec un chemin solution tracé en rouge" "" %}</center>
 
 
 Quelques observations en vrac avant de couper avec une transition grave et sérieuse :
@@ -470,11 +470,11 @@ Juste, le fait qu'une fois arrivé sur un nœud, on ait qu'un seul et unique cho
 
 Voici par exemple le graphe expansé pour la configuration 111, avec uniquement les nœuds atteignables depuis le départ ou une porte :
 
-<center>{% img {filename}/images/deponia/graph-expanded-111-first.png 170 "Graphe expansé pour la configuration 111" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-111-first.png 170 "Graphe expansé pour la configuration 111" "" %}</center>
 
 Idem pour la configuration 211:
 
-<center>{% img {filename}/images/deponia/graph-expanded-211.png 170 "Graphe expansé pour la configuration 211" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-211.png 170 "Graphe expansé pour la configuration 211" "" %}</center>
 
 Bon, ok, mais nous ne gèrons pas les portes. Et elles commencent à nous ennuyer avec leur changement de configuration.
 Sauf que, nous allons le voir, notre modèle de graphe expansé fonctionne très bien. Il nous faut juste 66 graphes supplémentaires.
@@ -489,7 +489,7 @@ et les portes des Portes des Étoiles que le chariot peut emprunter pour sauter 
 
 Pour l'exemple, voici le cheminement de la quatrième solution trouvée dans la partie précédente :
 
-<center>{% img {filename}/images/deponia/graph-expanded-stargate.png 670 "graphe montrant l'effet stargate des portes" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-stargate.png 670 "graphe montrant l'effet stargate des portes" "" %}</center>
 
 On commence à la fourche A dans la configuration `111`, et on termine à T dans la configuration `112`.
 Entre temps, comme le montre le chemin coloré en rouge et la solution données par ASP,
@@ -542,7 +542,7 @@ qui permettent de répondre au problème initial : passer au chapitre suivant de
 Le graphe unique qui contient toutes les configurations est gigantesque. J'ai pas réussi à le générer avec dot.
 Du coups, voilà une image du graphe Deponia [compressé](https://en.wikipedia.org/wiki/Power_graph_analysis) pour compenser :
 
-<center>{% img {filename}/images/deponia/graph-simple-full-compressed.png 370 "le graphe deponia, après compression powergraph" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-full-compressed.png 370 "le graphe deponia, après compression powergraph" "" %}</center>
 
 
 ## Close the gate
@@ -635,4 +635,4 @@ J'ai passé 12h non-stop sur une énigme de Deponia, plus 6 autres heures pour f
 Sur ce, je vous laisse, je vais configurer mon dragster des mines.
 
 
-<center>{% img {filename}/images/deponia/ending.png 670 "" "Capture d'écran du jeu, chariot configuré et prêt à partir" %}</center>
+<center>{% img {static}/images/deponia/ending.png 670 "" "Capture d'écran du jeu, chariot configuré et prêt à partir" %}</center>

@@ -86,7 +86,7 @@ e;f:-b.
 
 Et voici comment clingo explore l'espace :
 
-<center>{% img {filename}/images/asp/dotpropagatorresult.png 670 "Dessin de l'exploration par clingo de l'espace de recherche composé de 6 atomes." %}</center>
+<center>{% img {static}/images/asp/dotpropagatorresult.png 670 "Dessin de l'exploration par clingo de l'espace de recherche composé de 6 atomes." "" %}</center>
 
 Pour lire le dessin : les ellipses sont des *décisions* du solving où l'atome indiqué est décidé vrai,
 reliés par une flèche pleine pour symboliser une *assignation* du solveur,
@@ -222,7 +222,7 @@ Le [pigeon-hole problem](https://github.com/potassco/clingo/blob/master/examples
 
 Le résultat est, vous vous en doutez, diablement rigolo :
 
-<center>{% img {filename}/images/asp/dotpropagator.gif 670 "Le dot propagator en action" %}</center>
+<center>{% img {static}/images/asp/dotpropagator.gif 670 "Le dot propagator en action" "" %}</center>
 
 
 
@@ -493,7 +493,7 @@ e;f:-b.
 
 Vous verrez quelque chose de *beaucoup* plus simple, que vous avez déjà vue plus haut :
 
-<center>{% img {filename}/images/asp/dotpropagatorresult.png 670 "Résultat donné par le graphviz&#47;dot propagator pour un code simple avec trois embranchements." %}</center>
+<center>{% img {static}/images/asp/dotpropagatorresult.png 670 "Résultat donné par le graphviz&#47;dot propagator pour un code simple avec trois embranchements." "" %}</center>
 
 Quelques questions pour le lecteur attentif :
 

@@ -11,7 +11,7 @@ Status: published
 <center>*[Link to the original (french) post]({filename}/articles/deponia-asp.mkd)*</center>
 
 
-<center>{% img {filename}/images/deponia/deponia-asp-logo.png 670 "Mixing of Deponia's logo and those of Potassco Labs, which provides an ASP implementation" "" %}</center>
+<center>{% img {static}/images/deponia/deponia-asp-logo.png 670 "Mixing of Deponia's logo and those of Potassco Labs, which provides an ASP implementation" "" %}</center>
 
 <br>
 
@@ -42,7 +42,7 @@ or [the wikipedia page](https://en.wikipedia.org/wiki/Graph_theory) for text.
 I will also use [Answer Set Programming](https://en.wikipedia.org/wiki/Answer_set_programming) (ASP),
 more precisely clingo, [Potassco Labs' implementation](https://potassco.org).
 A big tutorial (in french) is on the way,
-<!-- [A big tutorial (in french) is on the way]({filename}/articles/tuto-asp.mkd), -->
+<!-- [A big tutorial (in french) is on the way]({filename}/articles/asp-tuto.mkd), -->
 but it's not absolutely necessary. I have annotated a lot the few source codes,
 the important is really what happen around them, not inside.
 
@@ -58,7 +58,7 @@ the important is really what happen around them, not inside.
 ## levers
 This is the situation :
 
-<center>{% img {filename}/images/deponia/plan.png 670 "Game screenshot, we see the mine plan in the underground" "" %}</center>
+<center>{% img {static}/images/deponia/plan.png 670 "Game screenshot, we see the mine plan in the underground" "" %}</center>
 
 Our character, sitting on its mines dragster/trolley (and accompanied by another character, taking a nap, more or less),
 wants to pass through montains. Mines are a real maze, but fortunately, there is a plan of the railway network !
@@ -66,7 +66,7 @@ wants to pass through montains. Mines are a real maze, but fortunately, there is
 Here is it, bigger, when we can see the forks/points, each time colored in green, red or yellow, along with an arrow indicating which direction will be took by the trolley.
 We start on the upper left, and the goal is to go to the lower right.
 
-<center>{% img {filename}/images/deponia/plan-reduced.png 670 "Game screenshot, focus on the mine layout" "" %}</center>
+<center>{% img {static}/images/deponia/plan-reduced.png 670 "Game screenshot, focus on the mine layout" "" %}</center>
 
 The player may act on three levers, one for each color, to modify the points of the said color.
 Since there is two possible paths for each fork, the lever has two possible positions.
@@ -118,7 +118,7 @@ Graph theory is awesome \[\[citation needed\]\], and for that precise problem, i
 
 First thing first, let's give a name to all forks (we keep P1 and P2 for the gates), and to the start (S) and the end (T):
 
-<center>{% img {filename}/images/deponia/plan-annotated-reduced.png 670 "Annotated mine plan with names on the points" %}</center>
+<center>{% img {static}/images/deponia/plan-annotated-reduced.png 670 "Annotated mine plan with names on the points" "" %}</center>
 
 Now we can observ an interesting property of the graph: if a take for instance the point A,
 and i say i come to it by the left. Question : where will i going next ?
@@ -173,7 +173,7 @@ but we will see how to handle it… step by step.
 ## Example of final model
 This is an example with only the edges going from A, B, D and F:
 
-<center>{% img {filename}/images/deponia/graph-simple-example.png 220 "Subset of the graph describing the puzzle instance" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-example.png 220 "Subset of the graph describing the puzzle instance" "" %}</center>
 
 Go ahead, verifiy by looking on the plan.
 Will we have the real graph ? Sure, but we first have to… retrieve it.
@@ -228,7 +228,7 @@ obj_property(graph,dpi,400).
 
 To get the following visual of the __Deponia graph__:
 
-<center>{% img {filename}/images/deponia/graph-simple-full.png 470 "The graph modeling the instance" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-full.png 470 "The graph modeling the instance" "" %}</center>
 
 That indicate that we have everything we need to do what we want to. Let's go !
 
@@ -411,7 +411,7 @@ That's awesome ! I want to test them all !
 
 Let's first verify our work :
 
-<center>{% img {filename}/images/deponia/plan-annotated-reduced-traced.png 670 "Mine's plan, with the fourth solution marked in red" %}</center>
+<center>{% img {static}/images/deponia/plan-annotated-reduced-traced.png 670 "Mine's plan, with the fourth solution marked in red" "" %}</center>
 
 
 Few observations:
@@ -452,11 +452,11 @@ Consequences are interestings:
 The simple fact of having only one choice of propagation on all node is overwhelming !
 There is for instance the expanded graph for configuration 111, with only the nodes reachables from the start point or a gate:
 
-<center>{% img {filename}/images/deponia/graph-expanded-111-first.png 170 "expanded graph for configuration 111" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-111-first.png 170 "expanded graph for configuration 111" "" %}</center>
 
 Same for configuration 211:
 
-<center>{% img {filename}/images/deponia/graph-expanded-211.png 170 "expanded graph for configuration 211" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-211.png 170 "expanded graph for configuration 211" "" %}</center>
 
 Well, ok, but we do not handle the gates. And they start to bore us with their configuration changes.
 Except that, we will see this, our model with expanded graph works well, even with gates. We just need 66 other graphs.
@@ -470,7 +470,7 @@ It's like if the graphs were planets, and the gates were Star Gates the trolley 
 
 For the exemple, there is the path taken by the trolley for the fourth solution found in the previous section:
 
-<center>{% img {filename}/images/deponia/graph-expanded-stargate.png 670 "stargate graph, showing a solution for the instance" %}</center>
+<center>{% img {static}/images/deponia/graph-expanded-stargate.png 670 "stargate graph, showing a solution for the instance" "" %}</center>
 
 We start at fork A in configuration 111, and we stop at T in configuration 112.
 In the meantime, as shown by the red-colored path and the solution provided by ASP,
@@ -526,7 +526,7 @@ The former are the configurations we wants. It's the configurations that allows 
 The unique total expanded graph which contains all the configurations is gargantuan. I didn't succeed to load it with dot.
 Sorry. To make up for this loss, here is a [compressed](https://en.wikipedia.org/wiki/Power_graph_analysis) version of the Deponia graph:
 
-<center>{% img {filename}/images/deponia/graph-simple-full-compressed.png 370 "Deponia graph, after powergraph compression" %}</center>
+<center>{% img {static}/images/deponia/graph-simple-full-compressed.png 370 "Deponia graph, after powergraph compression" "" %}</center>
 
 
 ## Close the gate
@@ -617,4 +617,4 @@ I pass beyond 12h non-stop on a Deponia's enigma, plus 8 other hours to perfect 
 With this, i leave you, i have a mine dragster to configure.
 
 
-<center>{% img {filename}/images/deponia/ending.png 670 "" "Game screenshot, trolley is configured with a good solution, and ready to go" %}</center>
+<center>{% img {static}/images/deponia/ending.png 670 "" "Game screenshot, trolley is configured with a good solution, and ready to go" %}</center>

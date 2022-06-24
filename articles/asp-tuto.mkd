@@ -3111,7 +3111,7 @@ Bien sûr, vous vous doutez que si j'en parle ici, c'est parce que nous allons n
 
 Voici une image piquée à la vidéo [*The Legend of Zelda: A Link Between Worlds' dungeon design | Boss Keys*](https://www.youtube.com/watch?v=E7sm-0nGV34) :
 
-<center>{% img {filename}/images/asp/zelda_mark_brown_dungeon.png 670 "Zelda dungeon representation by Mark Brown" %}</center>
+<center>{% img {static}/images/asp/zelda_mark_brown_dungeon.png 670 "Zelda dungeon representation by Mark Brown" "" %}</center>
 
 On voit bien le départ, la fin (*boss*, en bas), et les différentes étapes qui mène à la résolution du donjon.
 On comprend bien ici qu'une solution au donjon est un parcours de ce graphe qui part du départ et arrive au boss

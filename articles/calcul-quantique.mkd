@@ -63,7 +63,7 @@ Je vais rester sur le graphique, le textuel étant réservé à ceux qui compren
 ## qubit
 Un qubit, c'est un objet assez complexe qu'on peut représenter comme une [sphère de Bloch](https://fr.wikipedia.org/wiki/Sph%C3%A8re%5Fde%5FBloch) :
 
-<center>{% img {filename}/images/quantum/bloch-sphere.png 370 "Une sphère de Bloch, représentation théorique d'un qubit" "" %}</center>
+<center>{% img {static}/images/quantum/bloch-sphere.png 370 "Une sphère de Bloch, représentation théorique d'un qubit" "" %}</center>
 
 Ok, ça a l'air chiant, ça rappelle des cours de trigonométrie. Effectivement, c'est lié, mais c'est pas le plus important.
 
@@ -103,12 +103,12 @@ Bon, le problème avec cette définition, c'est qu'elle est imprécise : quel po
 
 Déjà, regardons ce qui se passe lorsque je simule un ordinateur quantique avec un qubit sur lequel j'applique la porte d'Hadamard :
 
-<center>{% img {filename}/images/quantum/hadamard-example.png 670 "Example d'usage de la porte d'Hadamard" "" %}</center>
+<center>{% img {static}/images/quantum/hadamard-example.png 670 "Example d'usage de la porte d'Hadamard" "" %}</center>
 
 On voit ici que j'applique la porte d'Hadamard (le carré bleu avec un H) sur le qubit numéro 0, et ensuite je l'affique (carré rose).
 Je lance la simulation, et voici :
 
-<center>{% img {filename}/images/quantum/hadamard-example-result.png 670 "Résultats de la porte d'Hadamard" "" %}</center>
+<center>{% img {static}/images/quantum/hadamard-example-result.png 670 "Résultats de la porte d'Hadamard" "" %}</center>
 
 Nous voyons deux barres bleue, d'à peu près la même taille. Elles indiquent les proportions de combinaisons de qubit obtenus. Ici, puisque 4 des 5 qubits ne sont pas touchés,
 ils sont à zéro (valeur de base, mise par défaut par l'interface, c'est-à-dire que ϴ=Φ=zéro, c'est un choix arbitraire). Il n'y a donc que deux possibilités : soit le cinquième qubit est à 1, soit il est à 0. Hors, grâce à la porte d'Hadamard, nous avons fait en sorte qu'il soit à 1 dans 50% des cas.
@@ -142,7 +142,7 @@ on ouvre la boîte et on regarde. La valeur est fixée.
 ## Autre opérations basiques
 Voici une nouvelle simulation : j'applique trois transformations différentes à trois qubits, indépendamment les un des autres :
 
-<center>{% img {filename}/images/quantum/basic-moves.png 670 "Trois usages basiques de portes pour définir la valeur d'un qubit dans l'interface" "" %}</center>
+<center>{% img {static}/images/quantum/basic-moves.png 670 "Trois usages basiques de portes pour définir la valeur d'un qubit dans l'interface" "" %}</center>
 
 La première, nous venons de la voir, c'est la porte d'Hadamard. Les suivantes font appel à de nouvelles portes.
 La seconde (sur la ligne *q[1]*), c'est la rotation de pi sur l'axe X, aussi appelée rotation de [Pauli](https://fr.wikipedia.org/wiki/Wolfgang%5FPauli) X. En clair, vous prenez la sphère sur l'axe X, et vous la faite tourner autour de cet axe de pi (un demi-cercle). Si votre point/qubit était au pôle nord, alors il va finir au pôle sud. Autrement dit, la valeur attendue pour le second qubit est 1 dans 100% des cas, soit *1×1 + 0×0*.
@@ -155,7 +155,7 @@ Comme montré dans la sphère de Bloch, theta est l'angle avec l'axe Z. En le me
 
 Et lorsque je lance la simulation avec 1000 tirs, j'obtiens :
 
-<center>{% img {filename}/images/quantum/basic-moves-result.png 670 "Résultats donnés par les trois usages de portes" "" %}</center>
+<center>{% img {static}/images/quantum/basic-moves-result.png 670 "Résultats donnés par les trois usages de portes" "" %}</center>
 
 Ah ! Vérifions que notre théorie sur le fonctionnement de l'ordinateur quantique fonctionne :
 tout d'abord, nous nous attendions à avoir toujours 1 pour le second qubit (en partant de la fin), et effectivement,
@@ -165,7 +165,7 @@ Nous devrions donc avoir quatre valeurs différentes avec un nombre d'occurence 
 
 Maintenant, relançons la simulation, mais avec un peu moins de pi/2, par exemple 1 tout rond, comme valeur pour theta :
 
-<center>{% img {filename}/images/quantum/theta-less.png 670 "Résultats donnés avec U3(1,0,0)" "" %}</center>
+<center>{% img {static}/images/quantum/theta-less.png 670 "Résultats donnés avec U3(1,0,0)" "" %}</center>
 
 Et on obtient bien un avantage certains pour zéro, puisque qu'avec un angle plus petit sur l'axe Z, notre qubit est plus proche du pôle nord que de l'équateur.
 
@@ -177,7 +177,7 @@ Maintenant que l'on sait comment jouer avec les bases, et qu'on arrive à lire l
 La porte Controlled-NOT est assez simple : si un qubit donné est à 1, alors on opère une rotation de Pauli X sur un autre qubit donné.
 Voici un exemple complet, avec le q[0] qui est choisi aléatoirement grâce à la porte Hadamard, et qui va modifier la valeur de q[1] :
 
-<center>{% img {filename}/images/quantum/struct-not-result.png 670 "Résultats donnés avec l'usage d'une porte CNOT" "" %}</center>
+<center>{% img {static}/images/quantum/struct-not-result.png 670 "Résultats donnés avec l'usage d'une porte CNOT" "" %}</center>
 
 Le résultat est assez évident : dans 50% des cas, q[0] est à 1, donc active la porte CNOT qui opère une rotation de Pauli X sur q[1],
 qui passe alors à 1. À l'inverse, quand q[0] est à zéro, la porte CNOT laisse q[1] tranquille, il est donc inchangé, c'est-à-dire à 0 dans 100% des cas.

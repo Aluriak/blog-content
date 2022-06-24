@@ -463,7 +463,7 @@ Néanmoins, il a battu notre version implémentée à la main, car il a eu besoi
 Cela est probablement dûs à deux facteurs :
 
 - notre code «naïf» n'est probablement pas aussi efficace que le code produit par telingo
-- contrairement à telingo, nous n'avions pas pu dire qu'il n'existait aucune solution utilisant moins de 7 mouvements, ce qui pourrait diminuer considérablement [l'espace de recherche]({filename}/articles/asp-encodings).
+- contrairement à telingo, nous n'avions pas pu dire qu'il n'existait aucune solution utilisant moins de 7 mouvements, ce qui pourrait diminuer considérablement [l'espace de recherche]({filename}/articles/asp-encodings.mkd).
 
 On trouve aussi une indication à propos d'un atome transvase/3 ; j'avoue n'avoir aucune idée de l'origine de ce message,
 vu qu'aucun atome de ce type n'existe ni n'est référencé dans le code.

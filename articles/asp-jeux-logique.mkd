@@ -60,7 +60,7 @@ et nous cherchons celui qui n'a aucun prédécesseur, c'est-à-dire la racine.
 
 C'est un problème assez standard de théorie des graphes, et la résolution est intuitive dés lors que l'on visualise l'arbre tel qu'il est réellement :
 
-<center>{% img {filename}/images/asp/brother-tree.png 270 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" %}</center>
+<center>{% img {static}/images/asp/brother-tree.png 270 "Arbre des tailles relatives ; Ç'aurait pu être un DAG, mais là non, c'est un arbre" "" %}</center>
 <!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
 
 
@@ -672,7 +672,7 @@ obj_property(edge,arrowhead,normal).
 Et, avec la commande `python -m biseau encoding.lp -o "out-{}.png"`, qui créé un graphe pour chaque solution,
 on obtient l'unique arbre généalogique suivant :
 
-<center>{% img {filename}/images/asp/genealogy-mothers.png 120 "Arbre généalogique ; pas hyper intéressant, vu les données du problème, mais si on permettait plus de (grand-)mères, ça grossirais assez vite… Et il y aurait plusieurs solutions !" %}</center>
+<center>{% img {static}/images/asp/genealogy-mothers.png 120 "Arbre généalogique ; pas hyper intéressant, vu les données du problème, mais si on permettait plus de (grand-)mères, ça grossirais assez vite… Et il y aurait plusieurs solutions !" "" %}</center>
 <!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
 
 Lorsque l'on changera le nombre attendu de mères et grand-mères (essayez 4 mères et 2 grands-mères par exemple, c'est le cas typique),
@@ -1052,12 +1052,12 @@ alors une solution avec les mêmes 10 règles et 1, 2, 3 ou 4 autres en plus est
 
 Les 8 solutions peuvent être montrées de plein de manières différentes : un treillis de Galois, par exemple !
 
-<center>{% img {filename}/images/asp/einstein-lattice.png 670 "Treillis de Galois, montrant les concepts sur le contexte où les objets sont des solutions, et les attributs les règles utilisées par ces solutions" %}</center>
+<center>{% img {static}/images/asp/einstein-lattice.png 670 "Treillis de Galois, montrant les concepts sur le contexte où les objets sont des solutions, et les attributs les règles utilisées par ces solutions" "" %}</center>
 <!-- (image faite avec [biseau]({filename}/articles/seb-biseau.mkd)) -->
 
 Le treillis n'est pas très aidant, car trop gros… Regardons la compression alors !
 
-<center>{% img {filename}/images/asp/einstein-compressed.png 670 "Graphe d'interaction entre règle et réponse. AnsX correspond à la réponse X, et est relié aux règles rY qu'elle utilise" %}</center>
+<center>{% img {static}/images/asp/einstein-compressed.png 670 "Graphe d'interaction entre règle et réponse. AnsX correspond à la réponse X, et est relié aux règles rY qu'elle utilise" "" %}</center>
 <!-- (compression faite avec [powergrasp](https://powergrasp.bourneuf.net)) -->
 
 Bof. On voit bien les règles nécessaires, regroupées à droite, mais les autres relations sont pas des masses claires…
@@ -1080,9 +1080,9 @@ il y a autrement dit toujours au moins deux règles en trop :)
 
 On note aussi que le tableau est très rempli… et si on créait un treillis et un graphe, mais sur le tableau *inversé* ?
 
-<center>{% img {filename}/images/asp/einstein-rev-lattice.png 670 "Treillis de Galois sur le contexte inversé des règles à ajouter pour obtenir une réponse valide" %}</center>
+<center>{% img {static}/images/asp/einstein-rev-lattice.png 670 "Treillis de Galois sur le contexte inversé des règles à ajouter pour obtenir une réponse valide" "" %}</center>
 
-<center>{% img {filename}/images/asp/einstein-rev-compressed.png 370 "Graphe d'interaction entre règle et réponse. La réponse X, et est relié aux règles rY qu'elle n'utilise pas !" %}</center>
+<center>{% img {static}/images/asp/einstein-rev-compressed.png 370 "Graphe d'interaction entre règle et réponse. La réponse X, et est relié aux règles rY qu'elle n'utilise pas !" "" %}</center>
 
 Bim ! Et voilà des structures plus compréhensibles !
 On peut y lire par exemple :

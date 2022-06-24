@@ -309,15 +309,15 @@ plt.show()
 ## Représentation scolaire
 Comme à l'école, montrons la courbe de la fonction selon la valeur en abscisse. Intéressons-nous d'abord aux années 1922 à 2005 :
 
-<center>{% img {filename}/images/rollin/trace-1922-2005.png 670 "Trace de la fonction de Rollin pour les années 1922 à 2005" "" %}</center>
+<center>{% img {static}/images/rollin/trace-1922-2005.png 670 "Trace de la fonction de Rollin pour les années 1922 à 2005" "" %}</center>
 
 La courbe ne montre à priori aucune régularité évidente, et ceci est appuyé par la visualisation de l'évolution du nombre de Rollin :
 
-<center>{% img {filename}/images/rollin/evolution-1922-2005.png 670 "Évolution du nombre de Rollin pour les années 1922 à 2005" "" %}</center>
+<center>{% img {static}/images/rollin/evolution-1922-2005.png 670 "Évolution du nombre de Rollin pour les années 1922 à 2005" "" %}</center>
 
 Maintenant, regardons pour les années de 1 à 2005 :
 
-<center>{% img {filename}/images/rollin/trace-1-2018.png 670 "Trace de la fonction de Rollin pour les années 1 à 2018" "" %}</center>
+<center>{% img {static}/images/rollin/trace-1-2018.png 670 "Trace de la fonction de Rollin pour les années 1 à 2018" "" %}</center>
 
 C'est moche ! Notons que la visualisation laisse entendre que les extrêmes sont sous-représentés. Comme nous le verrons plus tard, une telle sous-représentation n'est pas visible.
 Il s'agit en réalité d'un artefact de visualisation, probablement dû à un effet graphique (qui a certainement un nom très connu parmi ceux qui le connaissent déjà),
@@ -332,12 +332,12 @@ ce qui explique également l'apparente faible densité pour les lignes 2 et 8, e
 Une représentation plus intéressante serait de montrer le nombre d'années concernées par chaque nombre de Rollin. En d'autres terme, combien y a-t-il d'années à 1 ? À 2 ? À 3 ?
 Regardons d'abord le comptage pour les années 1 à 2018 :
 
-<center>{% img {filename}/images/rollin/comptage-1-2018.png 670 "Comptage des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
+<center>{% img {static}/images/rollin/comptage-1-2018.png 670 "Comptage des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
 
 Bon, sur de larges périodes, on observe une distribution uniforme. Cela étant dit, notons la place particulière des années de nombre de Rollin 3, qui sont les moins représentées.
 Là où c'est carrément questionnable, c'est sur les périodes récentes, où les résultats sont encore plus remarquables :
 
-<center>{% img {filename}/images/rollin/comptage-1922-2005.png 670 "Comptage des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
+<center>{% img {static}/images/rollin/comptage-1922-2005.png 670 "Comptage des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
 
 On retrouve les même résultats en lançant le programme pour les années -8000 à 8000.
 On observe donc que ces dernière années particulièrement, mais également de manière générale, le nombre d'année ayant un nombre de Rollin de 3 est sous-représenté. Intéressant.
@@ -349,7 +349,7 @@ Objectivement, c'est emmerdant, car la fonction de Rollin n'est pas utilisable p
 
 ## Boxplot de la distribution des données
 
-<center>{% img {filename}/images/rollin/distribution-1-2018.png 670 "Distribution des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
+<center>{% img {static}/images/rollin/distribution-1-2018.png 670 "Distribution des années 1 à 2018 pour chaque nombre de Rollin" "" %}</center>
 
 Comment sont réparties les années ? De ce point de vue, sur plusieurs dizaines de générations, la fonction de Rollin est à l'image de l'humanité vue en gros :
 monotone (au sens où on se fait chier, pas au sens mathématique),
@@ -358,7 +358,7 @@ c'est-à-dire des distributions avec des moyennes, médiane et écarts à la moy
 D'aucun dit que l'histoire se répète, au point de devenir lassante ?  La fonction Rollin nous le montre avec virtuosité !
 Mais que se passe-t-il si on zoom sur une ou deux générations ?
 
-<center>{% img {filename}/images/rollin/distribution-1922-2005.png 670 "Distribution des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
+<center>{% img {static}/images/rollin/distribution-1922-2005.png 670 "Distribution des années 1922 à 2005 pour chaque nombre de Rollin" "" %}</center>
 
 C'est tout de suite plus intéressant ! Notez encore le statut particulier des chem… des années avec un nombre de Rollin de 3 !
 

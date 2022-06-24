@@ -31,7 +31,7 @@ Few necessary features:
 - language extension: i want to be able to add easily new terms and routines, to simplify my life (e.g. shortcuts to earth, blue giants and black holes).
 
 
-<center>{% img {filename}/images/se/kalgash2.png 670 "The Kalgash 2 system, with a ring of suns orbiting a black hole, and a red dwarf between them. The Kalgash planet is orbiting the red dwarf" "" %}</center>
+<center>{% img {static}/images/se/kalgash2.png 670 "The Kalgash 2 system, with a ring of suns orbiting a black hole, and a red dwarf between them. The Kalgash planet is orbiting the red dwarf" "" %}</center>
 
 
 # Internal model
@@ -236,7 +236,7 @@ In JSON:
 }
 ```
 
-<center>{% img {filename}/images/se/kalgash4.png 670 "The Kalgash 4 system, with two rings of suns orbiting a black hole, and the Kalgash planet between them." "" %}</center>
+<center>{% img {static}/images/se/kalgash4.png 670 "The Kalgash 4 system, with two rings of suns orbiting a black hole, and the Kalgash planet between them." "" %}</center>
 
 ## Kalgash 5
 In ASP:
@@ -276,7 +276,7 @@ In JSON:
 }
 ```
 
-<center>{% img {filename}/images/se/kalgash5-ground.png 670 "The Kalgash 5 system, as seen from the ground, with stars raising above a volcano." "" %}</center>
+<center>{% img {static}/images/se/kalgash5-ground.png 670 "The Kalgash 5 system, as seen from the ground, with stars raising above a volcano." "" %}</center>
 
 
 ## The Ultimate Engineered Solar System
