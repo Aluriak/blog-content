@@ -1,4 +1,12 @@
-
+title: musique zététique
+Date: 2020-12-12
+Modified: 2020-12-12
+Tags: music
+Authors: Lucas Bourneuf
+Summary: 
+Slug: musique-zététique
+lang: fr
+status: draft
 
 
 - Ganesh2 — Homéo&Juliette, les médic-amants: https://www.youtube.com/watch?v=WLXCTvMtY5Y

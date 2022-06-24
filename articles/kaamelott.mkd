@@ -62,7 +62,7 @@ donc les biais sont nombreux : la tendance à intégrer les citations de tout un
 Quels sont les mots les plus utilisés dans les citations ?
 Faisons un [nuage de mot](https://fr.wikipedia.org/wiki/Nuage%5Fde%5Fmots-cl%C3%A9s) avec [wordcloud](https://github.com/amueller/word%5Fcloud) :
 
-<center>{% img {filename}/images/kaamelott/wordcloud.png 670 "Nuage de mot des citations de Kaamelott" "" %}</center>
+<center>{% img {static}/images/kaamelott/wordcloud.png 670 "Nuage de mot des citations de Kaamelott" "" %}</center>
 
 J'ai simplement aggrandit l'image du [compte twitter officiel de Kaamelott](https://twitter.com/kaamelott%5Ftweet)
 où j'ai accentué les bords et le différentiel de couleur.
@@ -154,8 +154,8 @@ que les deux personnages se trouvent souvent dans le même épisode.
 Un coups de [biseau](https://gitlab.inria.fr/lbourneu/biseau), et c'est parti !
 
 <center>
-{% img {filename}/images/kaamelott/interaction-graph.png 670 "Graphe d'interaction des personnages de Kaamelott" "" %}
-[ouvrir en grand]({filename}/images/kaamelott/interaction-graph.png)
+{% img {static}/images/kaamelott/interaction-graph.png 670 "Graphe d'interaction des personnages de Kaamelott" "" %}
+[ouvrir en grand]({static}/images/kaamelott/interaction-graph.png)
 </center>
 
 On sent bien un décalage entre ce qu'on connaît de Kaamelott et les interactions décrites par les données,
@@ -171,8 +171,8 @@ qui groupent des nœuds et des arcs en suivant des motifs particuliers (cliques 
 Sur notre graphe d'interaction, cela donne ceci :
 
 <center>
-{% img {filename}/images/kaamelott/interaction-graph.bbl.png 670 "Graphe d'interaction compressé des personnages de Kaamelott" "" %}
-[ouvrir en grand]({filename}/images/kaamelott/interaction-graph.bbl.png)
+{% img {static}/images/kaamelott/interaction-graph.bbl.png 670 "Graphe d'interaction compressé des personnages de Kaamelott" "" %}
+[ouvrir en grand]({static}/images/kaamelott/interaction-graph.bbl.png)
 </center>
 
 Le principe est le suivant : le programme de compression prend deux ensembles de nœuds qui sont tous reliés 2 à 2 (une [*biclique*](https://fr.wikipedia.org/wiki/Graphe%5Fbiparti%5Fcomplet)),
