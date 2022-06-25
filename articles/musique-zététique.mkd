@@ -1,4 +1,4 @@
-title: musique zététique
+Title: musique zététique
 Date: 2020-12-12
 Modified: 2020-12-12
 Tags: music
