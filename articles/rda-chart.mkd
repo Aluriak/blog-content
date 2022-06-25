@@ -83,7 +83,7 @@ Je donnerais à chaque fois la commande qui a permit de générer le graphique, 
 def plot(name:str):
     # print le code qui print les lignes (sauf la première, qui contient un backlink)
     print(f"```genhtml\nprint('\\n'.join(open('content/images/rda/{name}.htm').readlines()[1:]))\n```")
-    print(f"<center>[ouvrir en grand]({{filename}}/images/rda/{name}.htm), en [noir]({{filename}}/images/rda/{name}-black.htm)</center>")
+    print(f"<center>[ouvrir en grand]({{static}}/images/rda/{name}.htm), en [noir]({{static}}/images/rda/{name}-black.htm)</center>")
 ```
 
 ## Complet de 6
