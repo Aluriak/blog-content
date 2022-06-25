@@ -6,26 +6,26 @@ Authors: Lucas Bourneuf
 Summary: Réponse fleuve à une question récurrente
 Slug: metavers
 Lang: français
-Translation: false
 Status: published
 
-Voici une explication de ce qu'est le métaverse.
 
-_____
+Voici une explication de ce qu'est le métaverse/métavers, bref, le machin que personne ne comprend qui est actuellement présenté par Facebook comme l'évolution future des réseaux sociaux.
 
-Partie 1 : à l'origine des communications
 
-As-tu déjà remarqué que tu peux échanger des mails avec quelqu'un, même si son mail, ses infos et son serveur ne sont pas du tout le même que le tiens ?
 
-T'es chez laposte, lui chez google, ben ça marche quand même. Même le système de calendrier marche à travers plusieurs entreprises indépendante. Tu peux même monter ton propre serveur mail, tu va pouvoir communiquer avec les gens hébergés sur google, laposte, la terre entière.
+## Partie 1 : à l'origine des communications
+
+Avez-vous déjà remarqué que vous pouvez échanger des mails avec quelqu'un, même si son mail et ses infos ne sont pas du tout gérés par la même entreprise ?
+
+Vous êtes chez laposte, lui chez google, ben ça marche quand même. Même le système de calendrier marche à travers plusieurs entreprises indépendante. Tu peux même monter ton propre serveur mail, tu va pouvoir communiquer avec les gens hébergés sur google, laposte, la terre entière.
 
 En fait, le protocole mail est un protocole *ouvert*, que tout le monde peut implémenter pour échanger avec les autres.
 
 Ceci créé quelque chose que l'on connaîs tous sans comprendre : un marché.
 
-Il y a un espace dans lequel des agents (toi, moi) avons besoin d'un service (une adresse mail, une interface), et n'importe quelle entreprise peut proposer une incarnation de ce service (gmail, laposte.net,…), et les agents sont libres de rejoindre et quitter les services pour un coût limité.
+Il y a un espace dans lequel des agents (vous, moi) avons besoin d'un service (une adresse mail, une interface), et n'importe quelle entreprise peut proposer une incarnation de ce service (gmail, laposte.net,…), et les agents sont libres de rejoindre et quitter les services pour un coût limité.
 
-En échange d'argent, rarement, et plus souvent, en échange d'un changement de statut. Au lieu d'être client de gmail ou laposte.net, tu es producteur de données. Les clients sont alors les annonceurs qui te balanceront de la pub, ou directement l'entreprise qui a un intérêt à stocker de la donnée en grande quantité (espionnage, recherche,…).
+En échange d'argent, rarement, et plus souvent, en échange d'un changement de statut. Au lieu d'être client de gmail ou laposte.net, nous sommes producteurs de données. Les clients sont alors les annonceurs qui nous balancent de la pub, ou directement l'entreprise qui a un intérêt à stocker de la donnée en grande quantité (espionnage, recherche,…).
 
 Mais ya un problème : une boîte n'a pas la possibilité de forcer une nouvelle fonctionalité sur le protocole de communication.
 
@@ -36,9 +36,8 @@ Autrement dit, on peut changer d'adresse mail. On peut en avoir plusieurs. On a 
 Mais bien sûr, cela a vite changé, car des monopoles sont apparus.
 
 
-____
 
-Partie 2 : captation des canaux de communication
+## Partie 2 : captation des canaux de communication
 
 Il se passe un truc a partir de 2006 : les mails sont supplantés par d'autres systèmes.
 
@@ -46,7 +45,7 @@ On parlera de chats, de réseaux sociaux (facebook en tête), qui commencent à 
 
 Tout le monde est sur Facebook, qui intègrera bientôt un système de chat intégré. Google intègre aussi un chat intégré élaboré, qui remplace presque complètement les mails dans certaines entreprises.
 
-Le tronc commun de ces nouveaux médias, c'est d'abord "que tout le monde y est". Pas le monde entier, mais ça c'est pas grave ; plutôt "tout ceux que vous auriez besoin de contacter".
+Le tronc commun de ces nouveaux médias, c'est d'abord «que tout le monde y est». Pas le monde entier, mais ça c'est pas grave ; plutôt «tout ceux que vous auriez besoin de contacter».
 
 Facebook, ya vos amis, votre famille. Le chat google, y a tous vos contacts pros au sein de votre boîte.
 
@@ -56,17 +55,16 @@ Et les protocoles de chat, d'échange de photo, et autres proposés par ces plat
 
 Non. Évidemment que non.
 
-Nous, "utilisateurs/producteurs de données" de facebook, instagram, twitter, etc, sommes *captif* de ces plateformes. L'énergie pour changer de plateforme, ou simplement les quitter, est énorme, et d'autant plus difficile à déployer que tout est fait pour que nous y restions.
+Nous, «utilisateurs/producteurs de données» de facebook, instagram, twitter, etc, sommes *captif* de ces plateformes. L'énergie pour changer de plateforme, ou simplement les quitter, est énorme, et d'autant plus difficile à déployer que tout est fait pour que nous y restions.
 
-Du point de vue de l'entreprise qui a la main mise sur ce système fermé dont personne ne s'échappe, c'est la poule aux œufs d'or. Vous pouvez "innover" librement, tant en vendant des services de (dés)informations, de publicités. La chose est sans limite.
+Du point de vue de l'entreprise qui a la main mise sur ce système fermé dont personne ne s'échappe, c'est la poule aux œufs d'or. Vous pouvez «innover» librement, tant en vendant des services de (dés)informations, de publicités. La chose est sans limite.
 
-Là où avant il y avait un marché, on trouve désormais un ensemble de lieux aux règles et usages différents, qui sont, de par leur puissance, capable d'étouffer toute alternative par le simple fait que, sur ces alternatives, il n'y a pas "tout le monde".  
+Là où avant il y avait un marché, on trouve désormais un ensemble de lieux aux règles et usages différents, qui sont, de par leur puissance, capable d'étouffer toute alternative par le simple fait que, sur ces alternatives, il n'y a pas «tout le monde».
 
 Et cette logique, cette *privatisation* de l'espace ouvert, elle est applicable au-delà des communications. Elle peut être appliquée à l'ensemble d'internet.
 
-_____
 
-Partie 3 : le graal, la captation totale
+## Partie 3 : le graal, la captation totale
 
 Début 2000, il y avait des géants qui menaient la danse. Microsoft, qui a pourrit durablement les normes de conception des site web avec le monopole d'*internet explorer*, et google, et son moteur de recherche révolutionnaire.
 
@@ -95,20 +93,19 @@ Et cette annonce est très importante, car elle positionne facebook comme un fai
 Et cela devrait vous faire penser à l'internet chinois, où les utilisateurs n'utilisent pas un navigateur web pour surfer, mais un navigateur web qui n'accède qu'à un site, une sorte de super-facebook qui permet de payer, de discuter, de faire son CV ou que sais-je encore, dans la seule interface conçue par le gouvernement, et où les entreprises se trouvent aussi, pour faire publicité, vendre leurs produits, etc.
 Et c'est normal : c'est exactement ce que sera le métavers : une surcouche au web existant qui doit capter l'ensemble des échanges d'informations ayant lieu sur le net.
 
-__________________
 
-Partie 4 : Le métavers, un investissement commun dans un méta-marché englobant et privatisé
+## Partie 4 : Le métavers, un investissement commun dans un méta-marché englobant et privatisé
 
 Le modèle chinois est plus rentable que l'internet libre et ouvert, car tout, absolument tout, peux y être monnayé, là où laisser la possibilité aux utilisateurs/producteurs de donnée de se déplacer librement avec des protocoles ouverts empêche une bonne partie du tracking et du contrôle de contenu.
 
 Mais il n'est pas applicable dans nos sociétés occidentales où il y a une très forte volonté de dispersion des services, et justement, abhorre le contrôle du contenu.
 
-Le métavers de facebook est justement une manière de résoudre ce problème : en vendant "un progrès technologique", que personne dans nos sociétés occidentale ne saurait refuser, accompagné d'une symbolique forte perçue comme positive, voire inévitable.
+Le métavers de facebook est justement une manière de résoudre ce problème : en vendant «un progrès technologique», que personne dans nos sociétés occidentale ne saurait refuser, accompagné d'une symbolique forte perçue comme positive, voire inévitable.
 
 (on a tous en tête les images hollywoodiennes des technologies futuristes de réalité augmentées, avec les interfaces flottantes dans l'air, les informations qui s'affichent dans l'environnement. Je profite de cette parenthèse pour rappeler que si elles sont effectivement à portée de main, ces technologies ne sont néanmoins pas nécessaires pour assurer l'existence et la pérennité du socle privatisé, ce qui compromet leur apparition)
 
 Et dans les faits, cela se réalisera en déplacant le socle des services internet, pour permettre, in fine, la marchandisation et le contrôle absolu des données sur internet par une seule entité privée.
 
-Bref, le métavers est l'habillage sympathique et mûrement réfléchit par des experts en communication, d'une tentative de privatisation de l'information.
+Bref, le métavers est l'habillage sympathique et mûrement réfléchit par des experts en communication, d'une tentative de privatisation de l'ensemble des flux d'information.
 
 TL;DR: *capitalism as usual*.
