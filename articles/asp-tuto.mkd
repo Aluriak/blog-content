@@ -627,7 +627,7 @@ En ASP, cela se fait avec l'opérateur `:-`, une espèce de *si* :
 % l'atome ok est vrai SI l'atome a est vrai
 ok :- a.
 % l'atome ok est vrai SI les atomes b ET c sont vrais
-ok :- b ; c.  % notez que le ET est symbolisé par le point-virgule
+ok :- b , c.  % notez que le ET est symbolisé par la virgule
 ```
 
 On appelle la partie *avant* le `:-` la *tête* (head),
