@@ -70,7 +70,7 @@ Début 2000, il y avait des géants qui menaient la danse. Microsoft, qui a pour
 
 Les géants se sont démultipliés, autant en nombre qu'en force. Désormais, Google (Alphabet, pardon) n'est pas une simple start-up californienne experte en indexation, mais une boîte qui bosse dans absolument tout les domaine de l'informatique, de la recherche en IA au déploiement de service d'authentification en passant par le traitement de donnée et le stockage massif.
 
-Pareil pour Facebook, avec une différence notable : autant google est très utilisé dans les entreprises à tous les niveaux, autant facebook est très implantée dans le quotidien du grand public.
+Pareil pour Facebook (Meta, pardon), avec une différence notable : autant google est très utilisé dans les entreprises à tous les niveaux, autant facebook est très implantée dans le quotidien du grand public, via instagram et whatsapp.
 
 Et ces dernières années, Facebook a montré une capacité d'accaparement des sphères privées du grand public, que seul le géant chinois tiktok arrive à égaler ou dépasser.
 
@@ -85,24 +85,23 @@ Non, car le protocole *ouvert* n'est pas rentable en lui-même : il existe, mais
 
 La solution est apportée par Facebook à l'annonce du multivers, qui avait deux messages très distincts, pour deux catégories de personnes.
 
-Le grand public, les utilisateurs de réseau sociaux, se sont vu vendre une vision très science-fictionnelle d'un futur, avec un récit très parlant invoquant les symboles habituels du futur, notamment des technologies toujours plus faciles à utiliser et toujours mieux intégrée dans notre quotidien, notamment les réalités virtuelle et augmentée.
+Le grand public, les utilisateurs de réseau sociaux, se sont vu vendre une vision très science-fictionnelle d'un futur, avec un récit très parlant invoquant les symboles habituels du futur, notamment des technologies toujours plus faciles à utiliser et toujours mieux intégrée dans notre quotidien, notamment les réalités virtuelle et augmentée. Nous avons effectivement tous en tête les images hollywoodiennes des technologies futuristes de réalité augmentées, avec les interfaces flottantes dans l'air, les informations qui s'affichent dans l'environnement. (Je profite de parenthèses pour rappeler que si elles sont effectivement à portée de main, ces technologies ne sont néanmoins pas nécessaires pour assurer l'existence et la pérennité du socle privatisé, ce qui compromet leur apparition)
 
-Les investisseurs, les industriels, eux, ont reçu un autre récit : facebook annonce qu'il met en chantier un système *privatisé* et non-ouvert qui va capter à la fois les communications les échanges médias, les achats, et tout ce qu'internet permet de faire. Et même plus, en fait : car avec les caméras et les systèmes d'information nécessaires pour gérer la réalité virtuelle, il y aura encore plus de caméra, encore plus d'appréhension du monde réel depuis internet.
-Et cette annonce est très importante, car elle positionne facebook comme un faiseur de marché. Si suffisemment d'entreprises jouent le jeu, et si une masse critique d'utilisateurs/producteurs de données rejoignent le train en marche, alors facebook sera gestionnaire et possesseur de son propre marché, le métavers, le méta-marché, donc, un système privé et cloisonné qui en son sain permet de créer des entreprises, des services,…
+Les investisseurs, les industriels, eux, ont reçu un autre récit : facebook annonce qu'il met en chantier un système *privatisé* et non-ouvert qui va capter à la fois les communications les échanges médias, les achats, et tout ce qu'internet permet de faire. Et cela, sous la férule américaine, rendant possible l'investissement par les mécanismes de la bourse (contrairement à tiktok, qui n'est pas côté en bourse). Et même plus, en fait : car avec les caméras et les systèmes d'information nécessaires pour gérer la réalité virtuelle, il y aura encore plus de caméra, encore plus d'appréhension du monde réel depuis internet.
+Et cette annonce est très importante, car elle positionne Facebook comme un faiseur de marché. Si suffisemment d'entreprises jouent le jeu, et si une masse critique d'utilisateurs/producteurs de données rejoignent le train en marche, alors facebook sera gestionnaire et possesseur de son propre marché, le métavers, un système privé et cloisonné qui en son sain permet de créer des entreprises, des services,… Un méta-marché, donc.
 
-Et cela devrait vous faire penser à l'internet chinois, où les utilisateurs n'utilisent pas un navigateur web pour surfer, mais un navigateur web qui n'accède qu'à un site, une sorte de super-facebook qui permet de payer, de discuter, de faire son CV ou que sais-je encore, dans la seule interface conçue par le gouvernement, et où les entreprises se trouvent aussi, pour faire publicité, vendre leurs produits, etc.
+Et cela devrait vous faire penser à l'internet chinois, où les utilisateurs n'utilisent pas un navigateur web pour surfer, mais un navigateur web qui n'accède qu'à un site, une sorte de super-facebook qui permet de payer, de discuter, de se mettre en relation professionnelle ou que sais-je encore, dans la seule interface conçue par le gouvernement, et où les entreprises se trouvent aussi, pour faire publicité, vendre leurs produits, etc.
 Et c'est normal : c'est exactement ce que sera le métavers : une surcouche au web existant qui doit capter l'ensemble des échanges d'informations ayant lieu sur le net.
 
 
 ## Partie 4 : Le métavers, un investissement commun dans un méta-marché englobant et privatisé
 
-Le modèle chinois est plus rentable que l'internet libre et ouvert, car tout, absolument tout, peux y être monnayé, là où laisser la possibilité aux utilisateurs/producteurs de donnée de se déplacer librement avec des protocoles ouverts empêche une bonne partie du tracking et du contrôle de contenu.
+Le modèle chinois est plus rentable que l'internet libre et ouvert, car tout, absolument tout, peux y être monnayé, y compris l'accès à certains «sites», là où laisser la possibilité aux utilisateurs/producteurs de donnée de se déplacer librement avec des protocoles ouverts empêche une bonne partie du tracking et du contrôle de contenu.
 
 Mais il n'est pas applicable dans nos sociétés occidentales où il y a une très forte volonté de dispersion des services, et justement, abhorre le contrôle du contenu.
 
 Le métavers de facebook est justement une manière de résoudre ce problème : en vendant «un progrès technologique», que personne dans nos sociétés occidentale ne saurait refuser, accompagné d'une symbolique forte perçue comme positive, voire inévitable.
 
-(on a tous en tête les images hollywoodiennes des technologies futuristes de réalité augmentées, avec les interfaces flottantes dans l'air, les informations qui s'affichent dans l'environnement. Je profite de cette parenthèse pour rappeler que si elles sont effectivement à portée de main, ces technologies ne sont néanmoins pas nécessaires pour assurer l'existence et la pérennité du socle privatisé, ce qui compromet leur apparition)
 
 Et dans les faits, cela se réalisera en déplacant le socle des services internet, pour permettre, in fine, la marchandisation et le contrôle absolu des données sur internet par une seule entité privée.
 
