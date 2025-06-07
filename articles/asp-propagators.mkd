@@ -8,6 +8,10 @@ Lang: français
 Translation: false
 Status: published
 
+
+[Accidental tutorial](https://github.com/potassco/clingo/issues/543)
+
+
 Cet article est une quête annexe [du tuto général pour ASP]({filename}/articles/asp-tuto.mkd),
 s'intéressant aux bases de l'écriture de propagateurs en python, ces objets qui permettent de suivre l'évolution du solving en temps réel,
 pour le regarder, l'aider, et même le modifier.
