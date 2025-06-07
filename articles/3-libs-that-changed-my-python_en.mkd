@@ -6,7 +6,6 @@ Authors: Lucas Bourneuf
 Summary: quick overview of three pages of the stdlib documentation
 Slug: 1
 lang: en
-translation: false
 status: published
 
 
