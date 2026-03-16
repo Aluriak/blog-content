@@ -1,0 +1,150 @@
+Title: Answer Set Programming — Résolution d'un mini-jeu type mastermind
+Date: 2026-03-16
+Tags: asp, language, tuto
+Authors: Lucas Bourneuf
+Summary: une quête annexe pour le tuto ASP
+Slug: asp-jeux-squid-skies
+Lang: français
+Translation: false
+Status: draft
+
+Cet article est une quête annexe [du vénérable tuto général pour ASP]({filename}/articles/asp-tuto.mkd), qui fêtera bientôt **ses dix ans** !
+
+Me voilà donc de retour, avec une occasion de me remettre à ASP. Et pour commencer en douceur, je vous propose de vous intéresser à un mini-jeu rencontré occasionnellement pendant un jeu, [Merchant of the Skies](https://coldwild.com/game/MerchantOfTheSkies/) (très bon au demeurant, mais c'est pas le sujet).
+
+Dans ce mini-jeu, un poulpe nous demande de deviner une suite de 3 parmis 4 notes. Comme dans le [mastermind](), il nous indique, à chaque essais combien de notes sont bien positionnées, combien sont présentes mais mal placées, et combien ne sont pas présentes.
+
+Au bout de 4 essais ratés, on a perdu. Si on trouve la permutation, on a gagné.
+
+Plutôt simple non ? Voyons voir comment résoudre ce problème avec ASP !
+
+
+## Le ploupe attaque !
+D'abord, on a zéro connaissance sur la séquence. On en prend une au hasard, et on voit ce que ça donne :
+
+<center>{% img {static}/images/asp/jeux-mots-1.png 270 "Le poulpe répond à notre première proposition" "" %}</center>
+
+Nous venons d'apprendre quelque chose : aucune couleur n'était bien placée, 2 sont bien présentes dans la séquence, et 1 n'est pas présente.
+
+En ASP, on pourrait encoder cette connaissance ainsi :
+
+```
+savoir(g,r,o,0,2,1).  % On sait que Vert-Rouge-Orange donne le score 0-2-1
+```
+
+## Encodage des règles
+Maintenant, on veut lister toutes les permutation de 3 couleurs qui *pourraient* donner un score de 3-0-0.
+
+```
+c(g;b;o;r).   % Les couleurs : green, blue, orange, red
+p(1;2;3).     % les positions : positions
+
+% La solution est 3 couleurs differentes, une pour chacune des trois positions :
+1{ sol(P,C): c(C) } 1 :- p(P).
+:- sol(X,C) ; sol(Y,C) ; X!=Y.  % chaque couleur n'apparaît qu'une fois
+
+% L'une des trois proposition au moins est bonne si X n'est pas nul
+sol(1,A) ; sol(2,B) ; sol(3,C) :- savoir(A,B,C,X,Y,Z) ; X>0.
+
+% Si aucune position n'est bonne, alors on sait que les notes proposées sont fausses
+:- savoir(A,B,C,0,Y,Z) ; sol(1,A).
+:- savoir(A,B,C,0,Y,Z) ; sol(2,B).
+:- savoir(A,B,C,0,Y,Z) ; sol(3,C).
+
+% Si
+:- savoir(A,B,C,X,Y,Z) ; Y>0 ; not sol(_,A) ; not sol(_,B) ; not sol(_,C).
+
+% Si
+:- savoir(A,B,C,X,Y,Z) ; Z>0 ; sol(_,A) ; sol(_,B) ; sol(_,C).
+
+
+% Et enfin, on affiche la solution attendue
+#show.
+#show sol(X,Y,Z) : sol(1,X), sol(2,Y), sol(3,Z).
+```
+
+Ce qui, avec notre savoir initial nous génère… 9 solutions possibles !
+
+```
+❯ clingo merchant.lp 0
+clingo version 5.8.0
+Reading from merchant.lp
+Solving...
+Answer: 1 (Time: 0.001s)
+sol(r,g,b)
+Answer: 2 (Time: 0.001s)
+sol(r,o,b)
+Answer: 3 (Time: 0.001s)
+sol(o,g,b)
+Answer: 4 (Time: 0.001s)
+sol(r,b,g)
+Answer: 5 (Time: 0.001s)
+sol(o,b,g)
+Answer: 6 (Time: 0.001s)
+sol(o,b,r)
+Answer: 7 (Time: 0.001s)
+sol(b,g,r)
+Answer: 8 (Time: 0.001s)
+sol(b,o,r)
+Answer: 9 (Time: 0.001s)
+sol(b,o,g)
+SATISFIABLE
+
+Models       : 9
+Calls        : 1
+Time         : 0.001s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+CPU Time     : 0.001s
+```
+
+On apprend ainsi que la séquence `ogr` (orange, vert, rouge) n'est pas la solution. C'est logique : on *sait* que l'une de ces trois couleurs n'est pas la bonne. Mais on peut quand même la tester dans le jeu, et obtenir une nouvelle connaissance :
+
+```
+savoir(o,g,r,2,0,1).
+```
+
+Ce qui réduit le nombre de possibilité à seulement 6.
+
+Mais si on avait testé l'une des neuf solutions proposées, on aurait appris potentiellement plus de choses, par exemple, avec `savoir(b,o,r,2,0,1).`, on obtient seulement 2 résultats possibles : `bog` ou `bgr`.
+
+## Différents tests
+
+```
+savoir(g,r,o,0,2,1).
+savoir(b,o,r,2,0,1).
+savoir(o,g,r,2,0,1).
+
+%savoir(g,r,o,0,2,1).
+%savoir(b,o,r,2,0,1).
+%savoir(b,o,g,1,1,1).
+
+
+%savoir(b,o,r,0,2,1).
+%savoir(r,o,g,0,2,1).
+%savoir(g,r,b,1,1,1).
+%savoir(g,o,b,1,2,0).
+%savoir(g,b,o,3,0,0).
+```
+<center>{% img {static}/images/asp/jeux-mots-3.png 270 "Là on a perdu là" "" %}</center>
+
+## Aller plus loin : l'arbre de décision
+Okay, on est capable de facilement résoudre n'importe quelle instance de l'énigme du poulpe. Super. Mais, ya-t-il une meilleure manière de jouer ?
+
+Le premier coup, c'est uniquement de la chance. On pourrait, pour une solution donnée, proposer un score à chaque propositions qui serait le nombre de modèles restants après test. Évidemment, la proposition qui tombe juste est al meilleure, avec une seule proposition possible : la bonne.
+
+Mais pour les autres ? Peut-être que toutes les propositions initiales ne sont pas égales ?
+
+Et quid de la deuxième proposition ? Mis à part la pure chance, est-ce qu'il y a une bonne proposition à faire ? Dépend-t-elle de la première proposition ?
+
+Plus généralement, peut-on déterminer une *meilleure* nouvelle proposition sachant les propositions précédentes ?
+
+
+### Les premières propositions ?
+Encodons le problème dans l'autre sens : sachant la bonne réponse, quelles sont les scores des différentes propositions possibles ?
+
+### Combien de modèles laissent elles exister ?
+Maintenant, pour chacune de ces propositions, combien ya-t-il de solutions possibles ?
+
+### Arbre de décision
+On peut montrer ainsi un arbre de décision : pour chaque proposition initiale, quelle sont les propositions suivantes qui diminuent strictement le nombre de solutions possibles ?
+
+## Théorie de l'information
